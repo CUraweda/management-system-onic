@@ -8,7 +8,7 @@
           <q-btn flat round dense icon="search" class="q-mr-xs" />
         </q-toolbar-title>
 
-        <div class="text">Quasar v{{ $q.version }}</div>
+        <!-- <div class="text">{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
@@ -41,35 +41,35 @@
 
           <img src="statics/logo.jpg" class="img" @click="miniState = true">
 
-          <q-item clickable v-ripple class="menu-kiri">
+          <q-item clickable v-ripple class="menu-kiri" to="/Index">
             <img src="statics/dashboard.svg" class="icon">
             <q-item-section class="text">
               Dashboard
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri">
+          <q-item clickable v-ripple class="menu-kiri" to="/Create">
             <img src="statics/create-task.svg" class="icon">
             <q-item-section class="text">
               Create Task
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri">
+          <q-item clickable v-ripple class="menu-kiri" to="/Task">
             <img src="statics/task-monitoring.svg" class="icon">
             <q-item-section class="text">
               Task Monitoring
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri">
+          <q-item clickable v-ripple class="menu-kiri" to="/Task_list">
             <img src="statics/task-list.svg" class="icon">
             <q-item-section class="text">
               Task List
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri">
+          <q-item clickable v-ripple class="menu-kiri" to="/Report">
             <img src="statics/report.svg" class="icon">
             <q-item-section class="text">
               Reports
