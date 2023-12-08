@@ -60,10 +60,11 @@
                 />
               </div>
 
-              <div class="column flex flex-center">
+              <!-- <div class="column flex flex-center">
                 <p style="background-color: #F3F4F6; color: #323842; border-radius: 4px;">powered by</p>
                 <img src="statics/IPS.png">
-              </div>
+              </div> -->
+              
             </q-form>
           </q-card-section>
         </q-card>

@@ -12,9 +12,26 @@
           <div class="text">TASK MANAGEMENT SYSTEM </div>
            <p style="color: black;"> {{ formattedString }} </p>
         </div>
-        <input type="text" class="cari" placeholder="Search" flat round dense icon="search"/>
-        <img src="statics/Bell.svg" style=" margin-right: 16px;">
-        <img src="statics/Question.svg" style=" margin-right: 16px;">
+
+      <div class="item">
+        <q-input
+                  style="background-color:#F3F4F6;"
+                  dense
+                  v-model="filter"
+                  border-radius="50px"
+                  placeholder="Search..."
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="search" style="color: #171A1F;" />
+                  </template>
+                </q-input>
+      </div>
+
+      <div>
+      <img src="statics/Bell.svg" class="item">
+        <img src="statics/Question.svg" class="item">
+        <img src="statics/propil.png" class="item" style="  background-color: cyan; border-radius: 18px;">
+      </div>
       </q-toolbar>
     </q-header>
 
@@ -81,6 +98,9 @@
               Reports
             </q-item-section>
           </q-item>
+
+          
+
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -105,6 +125,8 @@ setup () {
     );
 
   return {
+    search: ref(''),
+    filter: "",
     drawer: ref(false),
     miniState,
     formattedString,
@@ -127,6 +149,14 @@ setup () {
 </script>
 
 <style>
+
+.item{
+  margin-top:1%;
+  margin-right:15px;
+  margin-bottom:auto;
+  text-align:center;
+  width: 21%;
+}
 
 .sidebar{
   width: 270px;
@@ -152,6 +182,7 @@ setup () {
 .jam{
   margin-top: 15px;
   margin-bottom: 0px;
+  margin-right: 35%;
 }
 
 .menu-kiri{
