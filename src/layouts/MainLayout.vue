@@ -4,11 +4,17 @@
       <q-toolbar>
         <q-toolbar-title class="text">
           <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-          BUBUR ONIC
-          <q-btn flat round dense icon="search" class="q-mr-xs" />
+          DASHBOARD
+          <!-- <q-btn flat round dense icon="search" class="q-mr-xs" /> -->
         </q-toolbar-title>
 
-        <!-- <div class="text">{{ $q.version }}</div> -->
+        <div class="jam">
+          <div class="text">TASK MANAGEMENT SYSTEM </div>
+           <p style="color: black;"> {{ formattedString }} </p>
+        </div>
+        <input type="text" class="cari" placeholder="Search" flat round dense icon="search"/>
+        <img src="statics/Bell.svg" style=" margin-right: 16px;">
+        <img src="statics/Question.svg" style=" margin-right: 16px;">
       </q-toolbar>
     </q-header>
 
@@ -86,15 +92,22 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { date } from "quasar";
+import { defineComponent, ref } from "vue";
 
 export default {
 setup () {
-  const miniState = ref(true)
+  const miniState = ref(true);
+  const timeStamp = Date.now();
+    const formattedString = date.formatDate(
+      timeStamp,
+      "dddd, D MMM YYYY h:m A"
+    );
 
   return {
     drawer: ref(false),
     miniState,
+    formattedString,
 
     drawerClick (e) {
       // if in "mini" state and user
@@ -122,6 +135,25 @@ setup () {
   background: #FAFAFB;
 }
 
+.cari {
+  margin-bottom: 0px;
+  margin-left: 100px;
+  margin-right: 17px;
+  background: black url("../../public/statics/Search.svg") no-repeat 15px;
+  display: flex;
+  width: auto;
+  padding: 7px 229px 6px 12px;
+  align-items: center;
+  gap: 6px;
+  border-radius: 0px;
+  background: #F3F4F6;
+}
+
+.jam{
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
 .menu-kiri{
   display: flex;
   height: 40px;
@@ -137,7 +169,7 @@ setup () {
   color: #565E6C;
   font-size: 14px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   line-height: 22px;
 }
 
