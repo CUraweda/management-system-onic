@@ -1,168 +1,168 @@
 <template>
   <q-layout view="lHh lpR fFf">
-    <q-header bordered>
-      <q-toolbar>
-        <q-toolbar-title class="text">
-          <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-          DASHBOARD
-          <!-- <q-btn flat round dense icon="search" class="q-mr-xs" /> -->
-        </q-toolbar-title>
 
-        <div class="jam">
-          <div class="text">TASK MANAGEMENT SYSTEM </div>
-           <p style="color: black;"> {{ formattedString }} </p>
-        </div>
-
-      <div class="item">
-        <q-input
-                  style="background-color:#F3F4F6;"
-                  dense
-                  v-model="filter"
-                  border-radius="50px"
-                  placeholder="Search..."
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="search" style="color: #171A1F;" />
-                  </template>
-                </q-input>
-      </div>
-
-      <div>
-      <img src="statics/Bell.svg" class="item">
-        <img src="statics/Question.svg" class="item">
-        <img src="statics/propil.png" class="item" style="  background-color: cyan; border-radius: 18px;">
-      </div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer
-      v-model="drawer"
-      show-if-above
-      bordered
-      :mini="!drawer || miniState"
-      @click.capture="drawerClick"
-      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
-    >
-      <template v-slot:mini>
-        <q-scroll-area class="fit mini-slot cursor-point">
-          <div class="q-py-l">
-            <div class="column items-start">
-              <img src="statics/logo.jpg" class="mini-img" >
-              <img src="statics/dashboard.svg" class="mini-icon" >
-              <img src="statics/create-task.svg" class="mini-icon" >
-              <img src="statics/task-monitoring.svg" class="mini-icon" >
-              <img src="statics/task-list.svg" class="mini-icon" >
-              <img src="statics/report.svg" class="mini-icon" >
-
+    <!-- header -->
+    <q-header bordered class="bg-white">
+      <div class="q-gutter-y-md q-py-xs">
+        <q-toolbar>
+          <q-toolbar-title class="row">
+            <div class="text-h5 text-cyan q-ma-sm text-weight-bold" @click="drawer = !drawer">
+              DASHBOARD
             </div>
-          </div>
-        </q-scroll-area>
-      </template>
+            <div class="col text-black q-ml-xl">
+              <div class="text-weight-bold text-subtitle2">
+                TASK MANAGEMENT SYSTEM
+              </div>
+              <div class="text-caption">{{ formattedString }}</div>
+            </div>
+          </q-toolbar-title>
 
-      <q-scroll-area class="fit">
+          <q-input class="toolbar-input bg-grey-2" dense standout="bg-grey-2 no-shadow" v-model="search"
+            placeholder="Search...">
+            <template v-slot:prepend>
+              <q-icon v-if="search === ''" name="search" />
+              <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
+            </template>
+          </q-input>
+          <q-btn flat round dense icon="notifications" class="q-ml-xl" color="black" size="15px" />
+          <q-btn flat round dense icon="question_mark" class="q-mx-sm" color="black" size="15px" />
+          <q-avatar color="cyan-3" size="30px">
+            <img src="statics/propil.png" />
+          </q-avatar>
+        </q-toolbar>
+      </div>
+    </q-header>
+    <!-- header -->
+
+    <!-- sidebar -->
+    <q-drawer v-model="drawer" show-if-above :mini="!drawer || miniState" @click.capture="drawerClick" :width="200"
+      :breakpoint="500" :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-1'">
+      <q-scroll-area class="fit bg-grey-1" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list padding>
 
-          <img src="statics/logo.jpg" class="img" @click="miniState = true">
-
-          <q-item clickable v-ripple class="menu-kiri" to="/Index">
-            <img src="statics/dashboard.svg" class="icon">
-            <q-item-section class="text">
-              Dashboard
-            </q-item-section>
+          <q-item>
+            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg" ></q-img>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri" to="/Create">
-            <img src="statics/create-task.svg" class="icon">
-            <q-item-section class="text">
-              Create Task
+          <q-item clickable v-ripple to="/index">
+            <q-item-section avatar>
+              <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
+
+            <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri" to="/Task">
-            <img src="statics/task-monitoring.svg" class="icon">
-            <q-item-section class="text">
-              Task Monitoring
+          <q-item clickable v-ripple to="/create">
+            <q-item-section avatar>
+              <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
             </q-item-section>
+
+            <q-item-section> Create Task </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri" to="/Task_list">
-            <img src="statics/task-list.svg" class="icon">
-            <q-item-section class="text">
-              Task List
+          <q-item clickable v-ripple to="/Task">
+            <q-item-section avatar>
+              <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
+
+            <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="menu-kiri" to="/Report">
-            <img src="statics/report.svg" class="icon">
-            <q-item-section class="text">
-              Reports
+          <q-item clickable v-ripple to="/Task_list">
+            <q-item-section avatar>
+              <q-icon name="list_alt" color="grey-7" size="30px" />
             </q-item-section>
+
+            <q-item-section> Task List </q-item-section>
           </q-item>
 
-          
+          <q-item clickable v-ripple to="/Report">
+            <q-item-section avatar>
+              <q-icon name="assignment" color="grey-7" size="30px" />
+            </q-item-section>
 
+            <q-item-section> Reports </q-item-section>
+
+            <q-item-section>
+              <q-avatar class="q-ml-md" color="red" text-color="white" size="22px">N</q-avatar>
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
+    <!-- sidebar -->
 
+    <!-- content -->
     <q-page-container>
-    <router-view />
-  </q-page-container>
+      <router-view />
+    </q-page-container>
+    <!-- content -->
+
   </q-layout>
 </template>
 
 <script>
+import { ref } from "vue";
 import { date } from "quasar";
-import { defineComponent, ref } from "vue";
 
 export default {
-setup () {
-  const miniState = ref(true);
-  const timeStamp = Date.now();
+  data() {
+    return {
+      search: "",
+    };
+  },
+
+  setup() {
+    const miniState = ref(false);
+    const timeStamp = Date.now();
     const formattedString = date.formatDate(
       timeStamp,
       "dddd, D MMM YYYY h:m A"
     );
 
-  return {
-    search: ref(''),
-    filter: "",
-    drawer: ref(false),
-    miniState,
-    formattedString,
+    return {
+      // search: ref(""),
+      filter: "",
+      drawer: ref(false),
+      miniState,
+      formattedString,
 
-    drawerClick (e) {
-      // if in "mini" state and user
-      // click on drawer, we switch it to "normal" mode
-      if (miniState.value) {
-        miniState.value = false
+      drawerClick(e) {
+        // if in "mini" state and user
+        // click on drawer, we switch it to "normal" mode
+        if (miniState.value) {
+          miniState.value = false;
 
-        // notice we have registered an event with capture flag;
-        // we need to stop further propagation as this click is
-        // intended for switching drawer to "normal" mode only
-        e.stopPropagation()
-      }
-    }
-  }
-}
-}
+          // notice we have registered an event with capture flag;
+          // we need to stop further propagation as this click is
+          // intended for switching drawer to "normal" mode only
+          e.stopPropagation();
+        }
+      },
+    };
+  },
+};
 </script>
 
 <style>
+.icon {
+  width: 100%;
+  height: 100%;
+}
 
-.item{
-  margin-top:1%;
-  margin-right:15px;
-  margin-bottom:auto;
-  text-align:center;
+.item {
+  margin-top: 1%;
+  margin-right: 15px;
+  margin-bottom: auto;
+  text-align: center;
   width: 21%;
 }
 
-.sidebar{
+.sidebar {
   width: 270px;
-  height: 910px;
+  height: inherit;
   flex-shrink: 0;
-  background: #FAFAFB;
+  background: #fafafb;
 }
 
 .cari {
@@ -176,16 +176,17 @@ setup () {
   align-items: center;
   gap: 6px;
   border-radius: 0px;
-  background: #F3F4F6;
+  background: #f3f4f6;
 }
 
-.jam{
+.jam {
   margin-top: 15px;
   margin-bottom: 0px;
-  margin-right: 35%;
+  margin-right: 20%;
+  margin-left: 0%;
 }
 
-.menu-kiri{
+.menu-kiri {
   display: flex;
   height: 40px;
   padding: 8px 115px 8px 16px;
@@ -193,45 +194,46 @@ setup () {
   gap: 8px;
   flex-shrink: 0;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.00);
+  background: rgba(0, 0, 0, 0);
 }
 
-.text{
-  color: #565E6C;
+.text {
+  color: black;
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
   line-height: 22px;
 }
 
-.mini-slot{
-  transition: background-color .28s;
-}
-.mini-slot:hover{
-  background-color: rgba(0, 0, 0, .04);
+.mini-slot {
+  transition: background-color 0.28s;
 }
 
-.icon{
+.mini-slot:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.icons {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
 }
 
-.mini-icon{
-  text-align:center;
+.mini-icons {
+  text-align: center;
   margin-top: 12px;
   font-size: 2em;
   padding: 5px 15px;
 }
 
-.img{
+.img {
   height: 72px;
-  margin-left:80px;
+  margin-left: 80px;
   border-radius: 4px;
 }
 
-.mini-img{
-  height:37px;
+.mini-img {
+  height: 37px;
   margin-top: 15px;
   margin-left: 5px;
 }
