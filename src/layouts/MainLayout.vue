@@ -9,7 +9,7 @@
             <div class="text-h5 text-cyan q-ma-sm text-weight-bold" @click="drawer = !drawer">
               DASHBOARD
             </div>
-            <div class="col text-black q-ml-xl">
+            <div class="col text-black q-ml-xl q-my-xs">
               <div class="text-weight-bold text-subtitle2">
                 TASK MANAGEMENT SYSTEM
               </div>
@@ -25,8 +25,8 @@
             </template>
           </q-input>
           <q-btn flat round dense icon="notifications" class="q-ml-xl" color="black" size="15px" />
-          <q-btn flat round dense icon="question_mark" class="q-mx-sm" color="black" size="15px" />
-          <q-avatar color="cyan-3" size="30px">
+          <q-btn flat round dense icon="question_mark" class="q-mx-xs" color="black" size="15px" />
+          <q-avatar color="cyan-3" size="30px" class="q-mx-xs">
             <img src="statics/propil.png" />
           </q-avatar>
         </q-toolbar>
@@ -145,66 +145,6 @@ export default {
 </script>
 
 <style>
-.icon {
-  width: 100%;
-  height: 100%;
-}
-
-.item {
-  margin-top: 1%;
-  margin-right: 15px;
-  margin-bottom: auto;
-  text-align: center;
-  width: 21%;
-}
-
-.sidebar {
-  width: 270px;
-  height: inherit;
-  flex-shrink: 0;
-  background: #fafafb;
-}
-
-.cari {
-  margin-bottom: 0px;
-  margin-left: 100px;
-  margin-right: 17px;
-  background: black url("../../public/statics/Search.svg") no-repeat 15px;
-  display: flex;
-  width: auto;
-  padding: 7px 229px 6px 12px;
-  align-items: center;
-  gap: 6px;
-  border-radius: 0px;
-  background: #f3f4f6;
-}
-
-.jam {
-  margin-top: 15px;
-  margin-bottom: 0px;
-  margin-right: 20%;
-  margin-left: 0%;
-}
-
-.menu-kiri {
-  display: flex;
-  height: 40px;
-  padding: 8px 115px 8px 16px;
-  align-items: flex-start;
-  gap: 8px;
-  flex-shrink: 0;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0);
-}
-
-.text {
-  color: black;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 22px;
-}
-
 .mini-slot {
   transition: background-color 0.28s;
 }
@@ -213,28 +153,4 @@ export default {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-.icons {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-.mini-icons {
-  text-align: center;
-  margin-top: 12px;
-  font-size: 2em;
-  padding: 5px 15px;
-}
-
-.img {
-  height: 72px;
-  margin-left: 80px;
-  border-radius: 4px;
-}
-
-.mini-img {
-  height: 37px;
-  margin-top: 15px;
-  margin-left: 5px;
-}
 </style>
