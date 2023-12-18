@@ -24,9 +24,9 @@
 
           <q-card-section class="">
             <div class="row">
-                <q-btn style="background-color: #FEF1F1;" class="icons col"><q-img src="statics/google.svg" class="icons-app"></q-img></q-btn>
-                <q-btn style="background-color: #F3F6FB;" class="icons col"><q-img src="statics/facebook.svg" class="icons-app"></q-img></q-btn>
-                <q-btn style="background-color: #F3F4F6;" class="icons col"><q-img src="statics/Apple.svg" class="icons-app"></q-img></q-btn>
+                <q-btn style="background-color: #FEF1F1;" class="ikon col"><q-img src="statics/google.svg" class="ikon-app"></q-img></q-btn>
+                <q-btn style="background-color: #F3F6FB;" class="ikon col"><q-img src="statics/facebook.svg" class="ikon-app"></q-img></q-btn>
+                <q-btn style="background-color: #F3F4F6;" class="ikon col"><q-img src="statics/Apple.svg" class="ikon-app"></q-img></q-btn>
               </div>
           </q-card-section>
 
@@ -64,7 +64,7 @@
                 <p style="background-color: #F3F4F6; color: #323842; border-radius: 4px;">powered by</p>
                 <img src="statics/IPS.png">
               </div> -->
-              
+
             </q-form>
           </q-card-section>
         </q-card>
@@ -131,13 +131,13 @@ methods: {
   margin-bottom:5%;
 }
 
-.icons{
+.ikon{
   margin-right: 5%;
   border-radius: 18px;
   width: 3px;
 }
 
-.icons-app{
+.ikon-app{
   width:25%;
   margin: 7px;
 }

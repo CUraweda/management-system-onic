@@ -143,7 +143,7 @@
           <!-- feedback chart -->
           <div class="row q-ml-lg q-mr-none relative-position q-mb-sm">
             <card-base>
-              <div class="row q-mb-xl ">
+              <div class="row q-mb-xl">
               <div class="q-mt-sm">Employee Performance Monitoring</div>
               <q-space></q-space>
                 <div class="q-mx-xs q-my-none">
@@ -279,7 +279,7 @@
                   </q-input>
                 </div>
               </div>
-              <apex-bar-charts-basic></apex-Bar-charts-basic>
+              <apex-column-charts-basic></apex-column-charts-basic>
             </CardBase>
           </div>
         </div>
@@ -356,7 +356,7 @@ export default {
   components: {
     CardBase,
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
-    ApexBarChartsBasic: () => import("components/ApexBarChartsBasic"),
+    ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
   },
 };
 </script>

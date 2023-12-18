@@ -6,6 +6,30 @@
       <div class="row q-pt-sm">
         <div class="text-h6 q-mt-xs q-pl-md">Overview</div>
         <q-space></q-space>
+        <div class="q-mx-xs">
+          <q-btn-dropdown text-color="dark" borderless color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
+            class="text-weight-regular under-title col no-shadow">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Dep 1</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Dep 2</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Dep 3</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </div>
 
         <div class="q-mx-xs q-my-none">
           <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
@@ -138,41 +162,97 @@
           </q-card>
 
           <!-- bawah feedback -->
+          <div class="row items-start q-mt-sm">
+            <q-input class="toolbar-input bg-grey-2 under-title q-mr-xs col" dense text-color="grey-2"
+              standout="bg-grey-3 no-shadow" v-model="search" placeholder="Search...">
+              <template v-slot:prepend>
+                <q-icon v-if="search === ''" name="search" />
+                <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+              </template>
+            </q-input>
+
+            <div class="q-mx-xs">
+              <q-btn-dropdown text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
+                class="text-weight-regular under-title col">
+                <q-list>
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Dep 1</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Dep 2</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Dep 3</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </div>
+
+            <div class="q-mx-xs">
+              <q-btn-dropdown text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
+                no-caps class="text-weight-regular under-title col">
+                <q-list>
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Per 1</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Per 2</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Per 3</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </div>
+
+            <div class="q-mx-xs q-my-none">
+              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
+                label="From">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="deposit.date" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+
+            <div class="q-mx-xs q-my-none">
+              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
+                label="To">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="deposit.date" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+          </div>
           <!-- bawah feedback -->
 
           <!-- feedback chart -->
           <div class="row q-ml-lg q-mr-none relative-position q-mb-sm">
-            <card-base>
-              <div class="row q-mb-xl ">
-              <div class="q-mt-sm">Employee Performance Monitoring</div>
-              <q-space></q-space>
-                <div class="q-mx-xs q-my-none">
-                  <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date"
-                    mask="date" label="From">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="deposit.date" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-
-                <div class="q-mx-xs q-my-none">
-                  <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date"
-                    mask="date" label="To">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="deposit.date" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-
+            <card-base class="">
+              <div class="q-mb-xl">Employee Performance Monitoring</div>
               <div class="row">
                 <div class="col float-right">
 
@@ -246,40 +326,90 @@
           </q-card>
 
           <!-- bawah Job -->
+          <div class="row items-start q-mt-sm">
+
+            <div class="q-mx-xs">
+              <q-btn-dropdown text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
+                class="text-weight-regular under-title col">
+                <q-list>
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Dep 1</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Dep 2</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Dep 3</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </div>
+
+            <div class="q-mx-xs">
+              <q-btn-dropdown text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
+                no-caps class="text-weight-regular under-title col">
+                <q-list>
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Per 1</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Per 2</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Per 3</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </div>
+
+            <div class="q-mx-xs q-my-none">
+              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
+                label="From">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="deposit.date" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+
+            <div class="q-mx-xs q-my-none">
+              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
+                label="To">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="deposit.date" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+          </div>
           <!-- bawah Job -->
 
           <!-- job chart -->
           <div class="row relative-position q-mb-sm">
             <CardBase>
-              <div class="row">
-                <q-space></q-space>
-                <div class="q-mx-xs q-my-none">
-                  <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date"
-                    mask="date" label="From">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="deposit.date" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-
-                <div class="q-mx-xs q-my-none">
-                  <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date"
-                    mask="date" label="To">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="deposit.date" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-              <apex-bar-charts-basic></apex-Bar-charts-basic>
+              <apex-column-charts-basic></apex-column-charts-basic>
             </CardBase>
           </div>
         </div>
@@ -356,12 +486,13 @@ export default {
   components: {
     CardBase,
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
-    ApexBarChartsBasic: () => import("components/ApexBarChartsBasic"),
+    ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
   },
 };
 </script>
 
 <style>
+
 .card-icon {
   width: 100%;
   height: 100%;
@@ -380,7 +511,7 @@ export default {
 
 .under-title {
   width: 100%;
-  max-height: 50px;
+  height: 100%;
   width: 113px;
   border-radius: 8px;
 }
