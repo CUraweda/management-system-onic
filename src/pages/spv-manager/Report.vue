@@ -9,17 +9,13 @@
 
           <q-card-section>
             <div class="row float-right q-pt-none">
-              <q-circular-progress show-value class="text-black q-ma-md" value="1" size="100px"
-                color="light-blue" />
+              <q-circular-progress show-value class="text-black q-ma-md" value="1" size="100px" color="light-blue" />
 
-              <q-circular-progress show-value class="text-black q-ma-md" value="4" size="100px"
-                color="light-blue" />
+              <q-circular-progress show-value class="text-black q-ma-md" value="4" size="100px" color="light-blue" />
 
-              <q-circular-progress show-value class="text-black q-ma-md" value="45" size="100px"
-                color="light-blue" />
+              <q-circular-progress show-value class="text-black q-ma-md" value="45" size="100px" color="light-blue" />
 
-              <q-circular-progress show-value class="text-black q-ma-md" value="55" size="100px"
-                color="light-blue" />
+              <q-circular-progress show-value class="text-black q-ma-md" value="55" size="100px" color="light-blue" />
             </div>
 
             <div class="row">
@@ -32,7 +28,7 @@
               </div>
             </div>
           </q-card-section>
-            
+
 
           <q-card-section>
             <div class="col float-left">
@@ -61,24 +57,17 @@
         <!-- feedback row -->
         <div class="col items-start q-pa-md q-gutter-lg">
 
-          
-          <!-- feedback chart -->
+
+          <!-- Details -->
           <div class="row q-ml-lg q-mr-none relative-position q-mb-sm">
             <div class="q-mb-xl q-pt-md">Details</div>
             <card-base class="">
-              <div class="row">
-                <div class="col float-right">
-                  
-                </div>
-
-                <div class="col q-pt-xl q-px-none">
-                  
-                </div>
-              </div>
-
+              <div class="">Job</div>
+              <div class="row">Assigned By</div>
+              <div class="row">Due Date</div>
             </card-base>
           </div>
-          <!-- feedback chart -->
+          <!-- Details -->
 
         </div>
         <!-- feedback row float-right -->
@@ -90,6 +79,7 @@
           <div class="row relative-position q-mb-sm">
             <div class="q-mb-xl q-pt-md">Description</div>
             <CardBase class="">
+
             </CardBase>
           </div>
         </div>
@@ -125,7 +115,7 @@ export default {
   },
   setup() {
     return {
-      
+
       onItemClick() {
         // console.log('Clicked on an Item')
       },
@@ -218,4 +208,5 @@ export default {
 
 .bintang {
   border-radius: 18px;
-}</style>
+}
+</style>

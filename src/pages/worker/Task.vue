@@ -90,6 +90,14 @@
         <!-- total -->
       </div>
       <!-- kartu atas -->   
+
+      <div>
+        <q-item-section class="text-weight-bold">
+             Tasks Completed 
+            </q-item-section>
+          
+      </div>
+
       <q-page class="q-pa-sm">
     <q-card>
       <q-table
@@ -102,6 +110,8 @@
         :filter="filter"
         :pagination.sync="pagination"
       >
+
+
         <template >
           <!-- <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
             <template v-slot:append>
@@ -151,13 +161,27 @@
         <template v-slot:body-cell-stage="props">
           <q-td :props="props">
             <q-chip
-              :color="(props.row.stage == 'Draft')?'green':(props.row.stage == 'Cheques'?'orange':'secondary')"
+              :color="(props.row.stage == 'high')?'red':(props.row.stage == 'normal'?'blue':'secondary')"
               text-color="white"
               dense
               class="text-weight-bolder"
               square
               style="width: 85px"
             >{{props.row.stage}}
+            </q-chip>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <q-chip
+              :color="(props.row.status == 'complated')?'blue': (props.row.status == 'in-progres')?'orange':(props.row.status == 'open'?'green':'secondary')"
+              text-color="white"
+              dense
+              class="text-weight-bolder"
+              square
+              style="width: 85px"
+            >{{props.row.status}}
             </q-chip>
           </q-td>
         </template>
@@ -223,21 +247,6 @@
                         sortable: true
                     },
                     {
-                        name: "subject_name",
-                        required: true,
-                        label: "Subject Name",
-                        align: "left",
-                        field: "subject_name",
-                        sortable: true
-                    },
-                    {
-                        name: "amount",
-                        align: "left",
-                        label: "Amount",
-                        field: "amount",
-                        sortable: true
-                    },
-                    {
                         name: "entry_date",
                         align: "left",
                         label: "Entry Date",
@@ -245,19 +254,20 @@
                         sortable: true
                     },
                     {
-                        name: "expired_date",
-                        align: "left",
-                        label: "Expired Date",
-                        field: "expired_date",
-                        sortable: true
-                    },
-                    {
                         name: "stage",
                         align: "left",
-                        label: "Stage",
+                        label: "property",
                         field: "stage",
                         sortable: true
                     },
+                    {
+                        name: "status",
+                        align: "left",
+                        label: "STATUS",
+                        field: "status",
+                        sortable: true
+                    },
+     
                     {
                         name: "action",
                         align: "left",
@@ -273,35 +283,38 @@
                         account: "Leslie Tecklenburg",
                         amount: "$ 4200",
                         entry_date: "05/01/2020",
-                        expired_date: "05/02/2020",
-                        stage: "Draft",
+                        stage: "high",
+                        status:"complated",
                     },
                     {
                         serial_no: "02",
                         subject_name: "Networking",
                         account: "Lia Whitledge",
-                        amount: "$ 2550",
+                        abeng:"stage",
+                        amount: "$ 4200",
                         entry_date: "15/12/2019",
-                        expired_date: "15/04/2020",
-                        stage: "Cheques",
+                        stage: "normal",
+                        status:"open",
                     },
                     {
                         serial_no: "03",
                         subject_name: "Networking",
                         account: "Sam Wileman",
-                        amount: "$ 3800",
+                        abeng:"stage",
+                        amount: "$ 4200",
                         entry_date: "12/11/2019",
-                        expired_date: "15/04/2020",
-                        stage: "Draft",
+                        stage: "high",
+                        status:"in-progres",
                     },
                     {
                         serial_no: "06",
                         subject_name: "Technology",
                         account: "John Rozelle",
-                        amount: "$ 3200",
+                        abeng:"aku",
+                        amount: "$ 4200",
                         entry_date: "10/11/2019",
-                        expired_date: "12/03/2020",
-                        stage: "Transfer",
+                        stage: "normal",
+                        status:"in-progress",
                     },
                     {
                         serial_no: "04",
@@ -309,8 +322,8 @@
                         account: "Edgar Colmer",
                         amount: "$ 4000",
                         entry_date: "11/09/2019",
-                        expired_date: "25/01/2020",
-                        stage: "Cheques",
+                        stage: "normal",
+                        status:"complated",
                     },
                     {
                         serial_no: "05",
@@ -318,17 +331,17 @@
                         account: "Kaiden Rozelle",
                         amount: "$ 1200",
                         entry_date: "10/11/2019",
-                        expired_date: "15/03/2020",
-                        stage: "Transfer",
+                        stage: "normal",
+                        status:"complated",
                     },
                     {
                         serial_no: "07",
                         subject_name: "Technology",
                         account: "Jacob Firtado",
                         amount: "$ 2200",
-                        entry_date: "09/10/2019",
-                        expired_date: "23/03/2020",
-                        stage: "Draft",
+                        entry_date: "09/10/2019",                      
+                        stage: "normal",
+                        status:"open",
                     },
                     {
                         serial_no: "05",
@@ -336,8 +349,8 @@
                         account: "John Doe",
                         amount: "$ 900",
                         entry_date: "12/11/2019",
-                        expired_date: "06/03/2020",
-                        stage: "Transfer",
+                       stage: "high",
+                       status:"open",
                     }
                 ],
                 pagination: {
