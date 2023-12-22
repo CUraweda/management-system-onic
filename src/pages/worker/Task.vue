@@ -4,7 +4,7 @@
         <div class="q-pa-md row items-start q-gutter-md">
         <!-- complete -->
         <q-card class="my-card bg-cyan-1 col q-mr-md" flat>
-          <Status text="completed"/>
+          <!-- <Status text="completed"/> -->
           <q-item>
             <q-item-section class="text-weight-bold">
              Tasks Completed 
@@ -186,7 +186,7 @@
 
 <script>
     import {exportFile} from "quasar";
-    import Status from "components/Status"
+    // import Status from "components/Status"
 
 
     function wrapCsvValue(val, formatFn) {
@@ -365,15 +365,15 @@
                     )
                     .join("\r\n");
 
-                const status = exportFile("quotes.csv", content, "text/csv");
+                // const status = exportFile("quotes.csv", content, "text/csv");
 
-                if (status !== true) {
-                    this.$q.notify({
-                        message: "Browser denied file download...",
-                        color: "negative",
-                        icon: "warning"
-                    });
-                }
+                // if (status !== true) {
+                //     this.$q.notify({
+                //         message: "Browser denied file download...",
+                //         color: "negative",
+                //         icon: "warning"
+                //     });
+                // }
             }
         }
     };
