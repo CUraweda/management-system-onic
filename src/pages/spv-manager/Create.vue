@@ -338,41 +338,35 @@ methods: {
   margin: 0;
 }
 
-
-
 .text-h6{
   height: 50px;
 
 }
 
 .des{
-  width: 1000px;
-}
-.den bg-grey-3{
-  height: 100px;
+  width: 900px;
 }
 
+
 .boys{
-  width: 1000px;
+  width: 900px;
   margin-right: 20px;
   margin-left: 10px;
   margin-top: 10px;
 }
 .desi{
   height: 100px;
-  width: 1000px;
+  width: 900px;
 }
 
 
 .aku{
   height: 100px;
-
   display: flex;
+  align-items: center;
   flex-direction: row;
 
 }
-
-
 
 .acc{
   width: 500px;
@@ -394,13 +388,18 @@ methods: {
 
 }
 
-
-
   .tanggal{
     height: 100px;
     display: flex;
     flex-direction: row;
+    
   }
+
+  .des1 bg-grey-3{
+    border-radius: 15px;
+  }
+
+  
 
 
 
