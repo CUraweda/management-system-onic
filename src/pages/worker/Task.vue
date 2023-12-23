@@ -186,6 +186,49 @@
           </q-td>
         </template>
         <!-- stage -->
+        <template v-slot:body-cell-Progress="props">
+          <q-td :props="props">
+            <q-linear-progress grey :color="getColor(props.row.progress)" :value="props.row.progress/100"
+                               class="q-mt-md"/>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-name="props">
+          <q-td :props="props">
+            <q-item style="max-width: 420px"> 
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="props.row.avatar">
+                </q-avatar>
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label>{{ props.row.name }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-td>
+        </template>
+
+
+        <template v-slot:body-cell-feed="props">
+          <q-td :props="props">
+            <div class="q-gutter-sm">
+              <q-btn dense color="red" label="REVICE"/>
+              <q-btn dense color="primary" label="OK"/>
+            </div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-report="props">
+          <q-td :props="props">
+            <div class="q-gutter-sm">
+              <q-btn>
+                <q-icon name="img:/statics/reportc.svg" />
+              </q-btn>
+            </div>
+          </q-td>
+        </template>
+
 
         <!-- action -->
         <template v-slot:body-cell-action="props">
@@ -239,11 +282,12 @@
                         field: "serial_no",
                         sortable: true
                     },
+
                     {
-                        name: "account",
+                        name: "name",
                         align: "left",
-                        label: "Account",
-                        field: "account",
+                        label: "name",
+                        field: "name",
                         sortable: true
                     },
                     {
@@ -267,6 +311,28 @@
                         field: "status",
                         sortable: true
                     },
+                    {
+                        name: "Progress",
+                        align: "left",
+                        label: "Progress",
+                        field: "Progress",
+                        sortable: true
+                    },
+                    {
+                        name: "report",
+                        align: "left",
+                        label: "report",
+                        field: "report",
+                        sortable: true
+                    },
+                    {
+                        name: "feed",
+                        align: "left",
+                        label: "feed",
+                        field: "feed",
+                        sortable: true
+                    },
+
      
                     {
                         name: "action",
@@ -275,89 +341,106 @@
                         field: "action",
                         sortable: true
                     }
+         
                 ],
                 data: [
                     {
                         serial_no: "01",
                         subject_name: "Design",
-                        account: "Leslie Tecklenburg",
-                        amount: "$ 4200",
+                        name: "Leslie Tecklenburg",
+                  
                         entry_date: "05/01/2020",
                         stage: "high",
                         status:"complated",
+                        progress:50,
+                        avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
                     },
                     {
                         serial_no: "02",
                         subject_name: "Networking",
-                        account: "Lia Whitledge",
+                        name: "Lia Whitledge",
                         abeng:"stage",
-                        amount: "$ 4200",
+               
                         entry_date: "15/12/2019",
                         stage: "normal",
                         status:"open",
+                        progress:50,
+                        avatar:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
                     },
                     {
                         serial_no: "03",
                         subject_name: "Networking",
-                        account: "Sam Wileman",
+                        name: "Sam Wileman",
                         abeng:"stage",
-                        amount: "$ 4200",
+           
                         entry_date: "12/11/2019",
                         stage: "high",
                         status:"in-progres",
+                        progress:100,
+                        avatar:"https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
                     },
                     {
                         serial_no: "06",
                         subject_name: "Technology",
-                        account: "John Rozelle",
+                        name: "John Rozelle",
                         abeng:"aku",
-                        amount: "$ 4200",
+            
                         entry_date: "10/11/2019",
                         stage: "normal",
                         status:"in-progress",
+                        progress: 40,
+                        avatar:"https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4",
                     },
                     {
                         serial_no: "04",
                         subject_name: "Technology",
-                        account: "Edgar Colmer",
-                        amount: "$ 4000",
+                        name: "Edgar Colmer",
+     
                         entry_date: "11/09/2019",
                         stage: "normal",
                         status:"complated",
+                        progress: 100,
+                        avatar:"https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
                     },
                     {
                         serial_no: "05",
                         subject_name: "Networking",
-                        account: "Kaiden Rozelle",
-                        amount: "$ 1200",
+                        name: "Kaiden Rozelle",
+                     
                         entry_date: "10/11/2019",
                         stage: "normal",
                         status:"complated",
+                        progress:30,
+                        avatar:"https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
                     },
                     {
                         serial_no: "07",
                         subject_name: "Technology",
-                        account: "Jacob Firtado",
-                        amount: "$ 2200",
+                        name: "Jacob Firtado",
+                     
                         entry_date: "09/10/2019",                      
                         stage: "normal",
                         status:"open",
+                        progress:70,
+                        avatar:"https://avatars0.githubusercontent.com/u/55240045?s=400&u=cf9bffc2bd2d8e42ca6e5abf40ddd6c1a03ce2860&v=4",
                     },
                     {
                         serial_no: "05",
                         subject_name: "Design",
-                        account: "John Doe",
+                        name: "John Doe",
                         amount: "$ 900",
                         entry_date: "12/11/2019",
                        stage: "high",
                        status:"open",
+                       progress: 80,
+                        avatar:"https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
                     }
                 ],
                 pagination: {
                     rowsPerPage: 10
                 }
             };
-        },
+        }, 
         methods: {
             exportTable() {
                 // naive encoding to csv format
@@ -387,7 +470,16 @@
                 //         icon: "warning"
                 //     });
                 // }
+            },
+
+            getColor(val) {
+            if (val > 70 && val <= 100) {
+              return 'green'
+            } else if (val > 50 && val <= 70) {
+              return 'blue'
             }
+            return 'red'
+          }
         }
     };
 
