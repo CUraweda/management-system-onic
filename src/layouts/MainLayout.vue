@@ -113,7 +113,7 @@ export default {
   },
 
   setup() {
-    const miniState = ref(false);
+    const miniState = ref(true);
     const timeStamp = Date.now();
     const formattedString = date.formatDate(
       timeStamp,
