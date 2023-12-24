@@ -172,7 +172,7 @@
             </q-input>
 
             <div class="q-mx-xs">
-              <q-btn-dropdown text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
+              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
                 class="text-weight-regular under-title col">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
@@ -197,7 +197,7 @@
             </div>
 
             <div class="q-mx-xs">
-              <q-btn-dropdown text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
+              <q-btn-dropdown unelevated text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
                 no-caps class="text-weight-regular under-title col">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
@@ -329,7 +329,7 @@
           <div class="row items-start q-mt-sm">
             <q-space></q-space>
             <div class="q-mx-xs">
-              <q-btn-dropdown text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
+              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
                 class="text-weight-regular under-title col">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
@@ -354,7 +354,7 @@
             </div>
 
             <div class="q-mx-xs">
-              <q-btn-dropdown text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
+              <q-btn-dropdown unelevated text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
                 no-caps class=" no-box-shadow text-weight-regular under-title col">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">

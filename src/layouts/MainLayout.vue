@@ -60,7 +60,7 @@
             <q-item-section> Create Task </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/Task">
+          <q-item clickable v-ripple to="/task_monitoring">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
@@ -68,7 +68,7 @@
             <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/Task_list">
+          <q-item clickable v-ripple to="/task_list">
             <q-item-section avatar>
               <q-icon name="list_alt" color="grey-7" size="30px" />
             </q-item-section>

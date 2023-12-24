@@ -8,8 +8,8 @@ const routes = [
     children: [
       { path: '/index', component: () => import('pages/Index.vue') },
       { path: '/Create', component: () => import('pages/spv-manager/Create.vue') },
-      { path: '/Task', component: () => import('pages/worker/Task.vue') },
-      { path: '/Task_list', component: () => import('pages/worker/Task_list.vue') },
+      { path: '/task_monitoring', component: () => import('pages/spv-manager/task_monitoring.vue') },
+      { path: '/task_list', component: () => import('pages/worker/Task_list.vue') },
       { path: '/Report', component: () => import('pages/spv-manager/Report.vue') },
     ]
   },
