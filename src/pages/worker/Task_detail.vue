@@ -11,12 +11,12 @@
             <div class="row float-right q-pt-none">
 
               <div class="">
-                <q-circular-progress :max="30" show-value track-color="light-blue-2" class="text-black q-ma-md" value="1"
+                <q-circular-progress :max="30" show-value track-color="light-blue-2" class="text-black q-ma-md" value="0"
                   size="100px" color="light-blue" />
                 <div class="vertical-bottom text-center">Days</div>
               </div>
               <div class="">
-                <q-circular-progress :max="24" show-value track-color="light-blue-2" class="text-black q-ma-md" value="4"
+                <q-circular-progress :max="24" show-value track-color="light-blue-2" class="text-black q-ma-md" value="2"
                   size="100px" color="light-blue" />
                 <div class="vertical-bottom text-center">Hours</div>
               </div>
@@ -30,7 +30,6 @@
                   size="100px" color="light-blue" />
                 <div class="vertical-bottom text-center">Second</div>
               </div>
-
             </div>
 
             <div class="row">
@@ -140,20 +139,28 @@
           <div class="q-pt-md">Attachments Download</div>
           <CardBase class="  ">
             <div class="q-pa-md">
-              <q-uploader url="http://localhost:4444/upload" label="Upload files" color="grey" square flat bordered
-                style="max-width: 300px" />
-              <div class="q-pt-md"></div>
-              <q-uploader style="max-width: 300px" url="http://localhost:4444/upload" label="Filtered (png only)" multiple
-                color="grey" />
-              <div class="q-pt-md ">
-                <q-btn unelevated class="q-mr-md" :ripple="{ color: 'red' }" color="red-1" text-color="red" label="Revise"
-                  no-caps />
-                <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK" no-caps />
+              <div class="col-12">
+                <div class="q-pa-md">
+                  <q-uploader url="http://localhost:4444/upload" label="Upload files" color="grey" square flat bordered
+                    style="max-width: 300px" />
+                  <div class="q-pt-md">
+                    <q-uploader style="max-width: 300px" url="http://localhost:4444/upload" label="Filtered (png only)"
+                      multiple color="grey" />
+                  </div>
+                  <q-file outlined v-model="model" class="text-primary q-pt-md" label-color="primary"
+                    label="Upload an attachment">
+                    <template v-slot:prepend>
+                      <q-icon name="attach_file" color="primary" class="rotate-45" />
+                    </template>
+                  </q-file>
+                  <div class="q-pt-md ">
+                  <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue"
+                    label="Start" no-caps />
+                  <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey" label="Finish" no-caps />
+                </div>
+                </div>
               </div>
-              <div class="q-pt-md">Beri Rating untuk Pekerja!</div>
-              <div class="q-gutter-y-md column">
-                <q-rating v-model="ratingModel" size="2em" color="grey" :color-selected="ratingColors" />
-              </div>
+
             </div>
           </CardBase>
         </div>
@@ -191,6 +198,7 @@ export default {
   },
   setup() {
     return {
+      model: ref(null),
 
       onItemClick() {
         // console.log('Clicked on an Item')
