@@ -7,7 +7,7 @@
         <q-toolbar>
           <q-toolbar-title class="row">
             <div class="text-h5 text-cyan q-ma-sm text-weight-bold" @click="drawer = !drawer">
-              DASHBOARD
+              {{ $route.meta.title }}
             </div>
             <div class="col text-black q-ml-xl q-my-xs">
               <div class="text-weight-bold text-subtitle2">
@@ -27,7 +27,7 @@
           <q-btn flat round dense icon="notifications" class="q-ml-xl" color="black" size="15px" />
           <q-btn flat round dense icon="question_mark" class="q-mx-xs" color="black" size="15px" />
           <q-avatar color="cyan-3" size="30px" class="q-mx-xs">
-            <img src="statics/propil.png" />
+            <img src="statics/worker.png" />
           </q-avatar>
         </q-toolbar>
       </div>
@@ -44,7 +44,7 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg" ></q-img>
           </q-item>
 
-          <q-item clickable v-ripple to="/index">
+          <q-item clickable v-ripple to="dashboard">
             <q-item-section avatar>
               <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
@@ -52,23 +52,15 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/create">
-            <q-item-section avatar>
-              <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
-            </q-item-section>
-
-            <q-item-section> Create Task </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple to="/task_monitoring">
+          <q-item clickable v-ripple to="task_list">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
 
-            <q-item-section> Task Monitoring </q-item-section>
+            <q-item-section> Task List </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/Task_detail">
+          <q-item clickable v-ripple to="task_detail">
             <q-item-section avatar>
               <q-icon name="list_alt" color="grey-7" size="30px" />
             </q-item-section>
@@ -76,17 +68,6 @@
             <q-item-section> Task Detail </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/Report">
-            <q-item-section avatar>
-              <q-icon name="assignment" color="grey-7" size="30px" />
-            </q-item-section>
-
-            <q-item-section> Reports </q-item-section>
-
-            <q-item-section>
-              <q-avatar class="q-ml-md" color="red" text-color="white" size="22px">N</q-avatar>
-            </q-item-section>
-          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -106,6 +87,8 @@ import { ref } from "vue";
 import { date } from "quasar";
 
 export default {
+  name: 'ManagerLayout',
+
   data() {
     return {
       search: "",
