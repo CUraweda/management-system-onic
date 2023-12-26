@@ -250,6 +250,7 @@
               </q-chip>
             </q-td>
           </template>
+          
           <!-- stage -->
           <template v-slot:body-cell-Progress="props">
             <q-td :props="props">
