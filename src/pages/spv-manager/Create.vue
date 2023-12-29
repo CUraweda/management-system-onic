@@ -23,7 +23,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Status</q-item-label>
-                  <q-select dense filled outlined v-model="deposit.account" :options="options" stack-label
+                  <q-select dense filled outlined v-model="deposit.status" :options="statusoptions" stack-label
                     options-dense></q-select>
                 </q-item-section>
               </q-item>
@@ -32,7 +32,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Priority</q-item-label>
-                  <q-select dense filled outlined v-model="deposit.account" :options="options" stack-label
+                  <q-select dense filled outlined v-model="deposit.priority" :options="priorityoptions" stack-label
                     options-dense></q-select>
                 </q-item-section>
               </q-item>
@@ -40,12 +40,12 @@
             <div class="col-6">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Deposit Date</q-item-label>
+                  <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
                   <q-input dense filled v-model="deposit.date" mask="date" placeholder="Deposit Date">
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="deposit.date" @input="() => $refs.depositDateProxy.hide()" />
+                          <q-date v-model="deposit.startdate" @input="() => $refs.depositDateProxy.hide()" />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
@@ -56,12 +56,12 @@
             <div class="col-6">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Deposit Date</q-item-label>
+                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
                   <q-input dense filled v-model="deposit.date" mask="date" placeholder="Deposit Date">
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="deposit.date" @input="() => $refs.depositDateProxy.hide()" />
+                          <q-date v-model="deposit.duedate" @input="() => $refs.depositDateProxy.hide()" />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
@@ -171,11 +171,15 @@ export default defineComponent({
   data() {
     return {
       deposit: {},
-      options: [
-        "National Bank",
-        "Bank of Asia",
-        "Corporate Bank",
-        "Public Bank"
+      statusoptions: [
+        "Completed",
+        "In Progres",
+        "Open",
+      ],
+      priorityoptions: [
+        "Important",
+        "High",
+        "Normal",
       ],
     }
   },

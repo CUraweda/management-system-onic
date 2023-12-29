@@ -191,7 +191,77 @@
               <q-td :props="props">
                 <div class="text-center" style="width: 100%">
                   <q-chip
-                    :color="(props.row.status == 'Done') ? 'orange' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                    :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                    text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
+                    style="width: 150px">{{ props.row.status }}
+                  </q-chip>
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-progress="props">
+              <q-td :props="props">
+                <q-linear-progress grey color="purple" rounded size="15px" :value="props.row.progress / 100"
+                  class="q-mt-md" />
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-priority="props">
+              <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
+                <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-date="props">
+              <q-td :props="props" class=" no-shadow align-left bg-grey-3">
+                <div class="text-body1">
+                  {{ props.row.date }}
+                </div>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-details="props">
+              <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
+                <div class="q-gutter-sm">
+                  <q-btn dense unelevated color="indigo-2" text-color="indigo-7">
+                    <q-icon name="img:/statics/Filesearch.svg" />
+                    View
+                  </q-btn>
+                </div>
+              </q-td>
+            </template>
+
+          </q-table>
+        </q-card-section>
+      </q-card>
+    </div>
+
+
+    <div class="q-mx-md">
+      <q-card class="table-bg no-shadow" bordered>
+        <q-card-section>
+          <div class="text-h5 text-weight-bold text-purple-3">
+            Next Week
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pa-none">
+          <q-table class="no-shadow q-ml-md text-body1" :data="data" :hide-header="mode === 'grid'" :columns="columns"
+            row-key="task_title" :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" separator="none">
+
+            <template v-slot:body-cell-task_title="props">
+              <q-td :props="props">
+                <q-card class=" q-pa-md no-shadow align-left text-body1" color="black" bordered>
+                  {{ props.row.task_title }}
+                </q-card>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-status="props">
+              <q-td :props="props">
+                <div class="text-center" style="width: 100%">
+                  <q-chip
+                    :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
                     text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
                     style="width: 150px">{{ props.row.status }}
                   </q-chip>
@@ -291,6 +361,7 @@ export default {
           field: "status",
           sortable: true
         },
+        
         {
           name: "progress",
           align: "center",

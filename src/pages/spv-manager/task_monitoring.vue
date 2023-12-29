@@ -236,8 +236,8 @@
           <!-- stage -->
           <template v-slot:body-cell-stage="props">
             <q-td :props="props">
-              <q-chip :color="(props.row.stage == 'high') ? 'red' : (props.row.stage == 'normal' ? 'blue' : 'secondary')"
-                text-color="white" dense class="text-weight-bolder" square style="width: 85px">{{ props.row.stage }}
+              <q-chip :color="(props.row.stage == 'high') ? 'red-2 text-red' : (props.row.stage == 'normal' ? 'blue-2 text-blue' : 'secondary')"
+                text-color="white" dense class="text-weight-bolder" square style="width: 85px" >{{ props.row.stage }}
               </q-chip>
             </q-td>
           </template>
@@ -245,8 +245,8 @@
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
               <q-chip
-                :color="(props.row.status == 'complated') ? 'blue' : (props.row.status == 'in-progres') ? 'orange' : (props.row.status == 'open' ? 'green' : 'secondary')"
-                text-color="white" dense class="text-weight-bolder" square style="width: 85px">{{ props.row.status }}
+                :color="(props.row.status == 'completed') ? 'blue-2 text-blue'   : (props.row.status == 'in-progress') ? 'orange-2 text-orange' : (props.row.status == 'open' ? 'green-2 text-green' : 'secondary')"
+                dense class="text-weight-bolder" square style="width: 85px">{{ props.row.status }}
               </q-chip>
             </q-td>
           </template>
@@ -422,7 +422,7 @@ export default {
 
           entry_date: "05/01/2020",
           stage: "high",
-          status: "complated",
+          status: "completed",
           progress: 50,
           avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
         },
@@ -446,7 +446,7 @@ export default {
 
           entry_date: "12/11/2019",
           stage: "high",
-          status: "in-progres",
+          status: "in-progress",
           progress: 100,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
         },
@@ -469,7 +469,7 @@ export default {
 
           entry_date: "11/09/2019",
           stage: "normal",
-          status: "complated",
+          status: "completed",
           progress: 100,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
         },
@@ -480,7 +480,7 @@ export default {
 
           entry_date: "10/11/2019",
           stage: "normal",
-          status: "complated",
+          status: "completed",
           progress: 30,
           avatar: "https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
         },

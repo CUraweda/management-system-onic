@@ -77,9 +77,18 @@
           <div class="row q-ml-lg q-mr-none relative-position q-mb-sm">
             <div class="q-pt-md">Details</div>
             <card-base class="">
-              <div class="q-ml-lg">Job</div>
-              <div class="q-ml-lg q-pt-md">PIC</div>
-              <div class="q-ml-lg q-pt-md">Due Date</div>
+              <div class="row">
+                        <div class="col q-ml-lg">
+                          <div class="">Job</div>
+                          <div class="">PIC</div>
+                          <div class="">Due Date</div>
+                        </div>
+                        <div class="col">
+                          <div class="">Laporan Mingguan</div>
+                          <div class="">Bambang</div>
+                          <div class="">08-DEC-2023, 09.00AM</div>
+                        </div>
+                      </div>
               <!-- dropdown -->
               <div class="q-pa-md" style="max-width: 100%">
                 <q-list>
@@ -87,11 +96,18 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Target</div>
-
-                        <div class="q-pt-md">Actuals</div>
-
-                        <div class="q-pt-md">Progress </div>
+                        <div class="row">
+                        <div class="col">
+                          <div class="">Target</div>
+                          <div class="">Actuals</div>
+                          <div class="">Progress</div>
+                        </div>
+                        <div class="col">
+                          <div class="">100%</div>
+                          <div class="">100%</div>
+                          <q-linear-progress style="width: 280px;" rounded value=100% size="15px" class=""/>
+                        </div>
+                      </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -99,9 +115,16 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Create On</div>
-
-                        <div class="q-pt-md">Create By</div>
+                        <div class="row">
+                        <div class="col">
+                          <div class="">Create On</div>
+                          <div class="">Create By</div>
+                        </div>
+                        <div class="col">
+                          <div class="">04-DEC-2023, 09.15 AM</div>
+                          <div class="">RIAN SPV</div>
+                        </div>
+                      </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -140,10 +163,10 @@
           <div class="q-pt-md">Attachments Download</div>
           <CardBase class="  ">
             <div class="q-pa-md">
-              <q-uploader url="http://localhost:4444/upload" label="Upload files" color="grey" square flat bordered
+              <q-uploader url="http://localhost:4444/download" label="File" color="grey" square flat bordered
                 style="max-width: 300px" />
               <div class="q-pt-md"></div>
-              <q-uploader style="max-width: 300px" url="http://localhost:4444/upload" label="Filtered (png only)" multiple
+              <q-uploader style="max-width: 300px" url="http://localhost:4444/download" label="Screenchot" multiple
                 color="grey" />
               <div class="q-pt-md ">
                 <q-btn unelevated class="q-mr-md" :ripple="{ color: 'red' }" color="red-1" text-color="red" label="Revise"
@@ -165,9 +188,11 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -190,8 +215,36 @@ export default {
     };
   },
   setup() {
-    return {
+    const progress = ref(0.01)
+    const buffer = ref(0.01)
 
+    let interval, bufferInterval
+
+    onMounted(() => {
+      interval = setInterval(() => {
+        if (progress.value >= 1) {
+          progress.value = 0.01
+          buffer.value = 0.01
+          return
+        }
+
+        progress.value = Math.min(1, buffer.value, progress.value + 0.1)
+      }, 700 + Math.random() * 1000)
+
+      bufferInterval = setInterval(() => {
+        if (buffer.value < 1) {
+          buffer.value = Math.min(1, buffer.value + Math.random() * 0.2)
+        }
+      }, 700)
+    })
+
+    onBeforeUnmount(() => {
+      clearInterval(interval)
+      clearInterval(bufferInterval)
+    })
+    return {
+      progress,
+      buffer,
       onItemClick() {
         // console.log('Clicked on an Item')
       },
