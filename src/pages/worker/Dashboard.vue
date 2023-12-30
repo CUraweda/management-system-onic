@@ -63,7 +63,7 @@
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-blue-8 card-icon">
-                <img src="statics/load.svg" />
+                <img src="statics/Load.svg" />
               </q-icon>
             </q-item-section>
             <q-item-section class="text-weight-bold">
