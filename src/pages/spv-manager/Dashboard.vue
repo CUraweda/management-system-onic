@@ -87,7 +87,7 @@
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-blue-8 card-icon">
-                <img src="statics/loading.svg" />
+                <img src="statics/load.svg" />
               </q-icon>
             </q-item-section>
             <q-item-section class="text-weight-bold">
@@ -108,7 +108,7 @@
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-orange card-icon">
-                <img src="statics/clock.svg" />
+                <img src="statics/jam.svg" />
               </q-icon>
             </q-item-section>
             <q-item-section class="text-weight-bold">

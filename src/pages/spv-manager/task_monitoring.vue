@@ -289,7 +289,7 @@
           <template v-slot:body-cell-report="props">
             <q-td :props="props">
               <div class="q-gutter-sm">
-                <q-btn dense unelevated>
+                <q-btn dense unelevated to="report">
                   <q-icon name="img:/statics/reportc.svg" />
                 </q-btn>
               </div>

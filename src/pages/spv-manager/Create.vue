@@ -168,11 +168,11 @@
 
           <q-space></q-space>
 
-          <div class="col-12">
+          <div class="col-12 fixed-bottom-right">
             <q-item>
               <q-item-section>
                 <q-space></q-space>
-                <div class="row fixed-bottom-right q-mb-xl q-mr-md">
+                <div class="row q-mb-xl q-mr-md">
                 <q-card-actions>
                   <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                     type="submit" v-close-popup />

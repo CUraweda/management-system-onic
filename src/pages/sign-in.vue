@@ -21,7 +21,7 @@
 
           <q-card-section class="">
             <div class="row">
-              <q-btn style="background-color: #FEF1F1;" class="ikon col"><q-img src="statics/google.svg"
+              <q-btn style="background-color: #FEF1F1;" class="ikon col"><q-img src="statics/google1.svg"
                   class="ikon-app"></q-img></q-btn>
               <q-btn style="background-color: #F3F6FB;" class="ikon col"><q-img src="statics/facebook.svg"
                   class="ikon-app"></q-img></q-btn>

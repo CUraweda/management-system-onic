@@ -222,7 +222,7 @@
             <template v-slot:body-cell-details="props">
               <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated color="indigo-2" text-color="indigo-7">
+                  <q-btn dense unelevated color="indigo-2" text-color="indigo-7" to="task_detail">
                     <q-icon name="img:/statics/Filesearch.svg" />
                     View
                   </q-btn>

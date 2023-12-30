@@ -63,7 +63,7 @@
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-blue-8 card-icon">
-                <img src="statics/loading.svg" />
+                <img src="statics/load.svg" />
               </q-icon>
             </q-item-section>
             <q-item-section class="text-weight-bold">
@@ -84,7 +84,7 @@
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-orange card-icon">
-                <img src="statics/clock.svg" />
+                <img src="statics/Jam.svg" />
               </q-icon>
             </q-item-section>
             <q-item-section class="text-weight-bold">
@@ -279,7 +279,7 @@
                   </q-input>
                 </div>
               </div>
-              <apex-column-charts-basic></apex-column-charts-basic>
+              <apex-bar-charts-basic></apex-bar-charts-basic>
             </CardBase>
           </div>
         </div>
@@ -356,7 +356,7 @@ export default {
   components: {
     CardBase,
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
-    ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
+    ApexBarChartsBasic: () => import("components/ApexBarChartsBasic"),
   },
 };
 </script>
