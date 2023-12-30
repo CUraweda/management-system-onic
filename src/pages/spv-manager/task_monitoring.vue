@@ -301,7 +301,7 @@
             <q-td :props="props">
               <div class="q-gutter-sm">
                 <q-btn dense round unelevated color="blue-1">
-                  <q-icon name="img:/statics/move.svg" />
+                  <q-icon name="img:/statics/Move.svg" />
                 </q-btn>
               </div>
             </q-td>
