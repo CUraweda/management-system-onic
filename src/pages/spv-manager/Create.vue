@@ -4,7 +4,7 @@
       <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
 
         <q-card class="no-shadow" bordered>
-          <div class="row">
+          <div class="row q-mb-md">
             <q-card-section class="text-center text-h6 text-black text-weight-bold">
               <q-img src="statics/info.svg" width="25px" class=" q-mr-sm" />
               General Information
@@ -71,11 +71,10 @@
             </div>
             <div class="col-12">
               <q-item>
-                <q-item-selection>
-                  <q-item-label class="text-weight-bold">Description</q-item-label>
-                  <q-input v-model="text" dense filled type="textarea" class="full-width"
-                    placeholder="Give some example" />
-                </q-item-selection>
+                <q-item-section>
+                  <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
+                  <q-input v-model="text" filled type="textarea" placeholder="Give some example"/>
+                </q-item-section>
               </q-item>
             </div>
             <div class="col-12">
@@ -84,6 +83,28 @@
                   <q-item-label class="text-weight-bold">PIC</q-item-label>
                 </q-item-selection>
               </q-item>
+              <div class="row q-ml-md radius-5">
+                <div class="bg-blue-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px;">
+                  <q-avatar size="30px" color="blue">
+                    <img src="statics/worker.png">
+                  </q-avatar>
+                  Bambang
+                  <q-btn dense flat color="red" size="15px" icon="close" />
+                </div>
+
+                <div class="bg-purple-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px">
+                  <q-avatar size="30px" color="purple">
+                    <img src="statics/worker.png">
+                  </q-avatar>
+                  Rini
+                  <q-btn dense flat color="red" size="15px" icon="close" />
+                </div>
+
+                <div class="bg-white-2 q-pa-sm text-cyan" style="border-radius: 20px; width: 150px">
+                  <q-btn dense flat color="cyan" size="15px" icon="add" />
+                  Add Person
+                </div>
+              </div>
             </div>
             <div class="col-12">
               <q-item>
@@ -91,6 +112,15 @@
                   <q-item-label class="text-weight-bold">Supervisor</q-item-label>
                 </q-item-selection>
               </q-item>
+              <div class="row q-ml-md radius-5 justify-between">
+                <div class="bg-purple-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px">
+                  <q-avatar size="30px" color="purple">
+                    <img src="statics/worker.png">
+                  </q-avatar>
+                  Rian
+                  <q-btn dense flat color="red" size="15px" icon="close" />
+                </div>
+              </div>
             </div>
           </div>
         </q-card>
@@ -142,7 +172,7 @@
             <q-item>
               <q-item-section>
                 <q-space></q-space>
-                <div class="row">
+                <div class="row fixed-bottom-right q-mb-xl q-mr-md">
                 <q-card-actions>
                   <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                     type="submit" v-close-popup />
@@ -172,9 +202,7 @@ export default defineComponent({
     return {
       deposit: {},
       statusoptions: [
-        "Completed",
-        "In Progres",
-        "Open",
+        "To-do",
       ],
       priorityoptions: [
         "Important",

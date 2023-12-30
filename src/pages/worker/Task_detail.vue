@@ -30,16 +30,11 @@
                   size="100px" color="light-blue" />
                 <div class="vertical-bottom text-center">Second</div>
               </div>
+
             </div>
 
             <div class="row">
               <div class="text-h8 text-weight-bold q-mr-md q-mt-noe">LAPORAN MINGGUAN</div>
-              <div class="bg-grey-3  q-mr-md tulisan">
-                <div class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs">Finish</div>
-              </div>
-              <div class="bg-grey-3  q-mr-md tulisan ">
-                <div class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs">On Schedule</div>
-              </div>
             </div>
           </q-card-section>
 
@@ -76,9 +71,18 @@
           <div class="row q-ml-lg q-mr-none relative-position q-mb-sm">
             <div class="q-pt-md">Details</div>
             <card-base class="">
-              <div class="q-ml-lg">Job</div>
-              <div class="q-ml-lg q-pt-md">PIC</div>
-              <div class="q-ml-lg q-pt-md">Due Date</div>
+              <div class="row">
+                        <div class="col q-ml-lg">
+                          <div class="">Job</div>
+                          <div class="">PIC</div>
+                          <div class="">Due Date</div>
+                        </div>
+                        <div class="col">
+                          <div class="">Laporan Mingguan</div>
+                          <div class="">Bambang</div>
+                          <div class="">08-DEC-2023, 09.00AM</div>
+                        </div>
+                      </div>
               <!-- dropdown -->
               <div class="q-pa-md" style="max-width: 100%">
                 <q-list>
@@ -86,11 +90,18 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Target</div>
-
-                        <div class="q-pt-md">Actuals</div>
-
-                        <div class="q-pt-md">Progress </div>
+                        <div class="row">
+                        <div class="col">
+                          <div class="">Target</div>
+                          <div class="">Actuals</div>
+                          <div class="">Progress</div>
+                        </div>
+                        <div class="col">
+                          <div class="">100%</div>
+                          <div class="">15%</div>
+                          <q-linear-progress style="width: 280px;" rounded value=15% size="15px" class=""/>
+                        </div>
+                      </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -98,9 +109,16 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Create On</div>
-
-                        <div class="q-pt-md">Create By</div>
+                        <div class="row">
+                        <div class="col">
+                          <div class="">Create On</div>
+                          <div class="">Create By</div>
+                        </div>
+                        <div class="col">
+                          <div class="">04-DEC-2023, 09.15 AM</div>
+                          <div class="">RIAN SPV</div>
+                        </div>
+                      </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -108,8 +126,8 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Bambang logged 1 Days, 4 Hours, 45 Minutes, 55 Seconds.</div>
-                        <div class="q-pt-md">Finished on 05 Dec 2023, 15:45</div>
+                        <div class="">Bambang logged 3:00 hours.</div>
+                        <div class="q-pt-md">04 Dec 2023</div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -142,27 +160,27 @@
               <div class="col-12">
                 <div class="q-pa-md">
                   <q-uploader url="http://localhost:4444/upload" label="Upload files" color="grey" square flat bordered
-                    style="max-width: 300px" />
-                  <div class="q-pt-md">
-                    <q-uploader style="max-width: 300px" url="http://localhost:4444/upload" label="Filtered (png only)"
+                style="max-width: 300px" />
+              <div class="q-pt-md">
+              <q-uploader style="max-width: 300px" url="http://localhost:4444/upload" label="Filtered (png only)"
                       multiple color="grey" />
-                  </div>
-                  <q-file outlined v-model="model" class="text-primary q-pt-md" label-color="primary"
+              </div>
+              <q-file outlined v-model="model" class="text-primary q-pt-md" label-color="primary"
                     label="Upload an attachment">
-                    <template v-slot:prepend>
-                      <q-icon name="attach_file" color="primary" class="rotate-45" />
-                    </template>
-                  </q-file>
-                  <div class="q-pt-md ">
+                  <template v-slot:prepend>
+                    <q-icon name="attach_file" color="primary" class="rotate-45" />
+                  </template>
+                </q-file>
+                <div class="q-pt-md ">
                   <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue"
                     label="Start" no-caps />
                   <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey" label="Finish" no-caps />
                 </div>
                 </div>
-              </div>
-
-            </div>
-          </CardBase>
+                </div>
+                
+</div>
+              </CardBase>
         </div>
       </div>
     </div>
@@ -172,9 +190,11 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+
+
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -193,13 +213,40 @@ export default {
       search: "",
       deposit: {},
       ratingModel: ref(0),
-      ratingColors: ['orange']
-    };
+      ratingColors: ['orange'],
+    }
   },
   setup() {
-    return {
-      model: ref(null),
+    const progress = ref(0.01)
+    const buffer = ref(0.01)
 
+    let interval, bufferInterval
+
+    onMounted(() => {
+      interval = setInterval(() => {
+        if (progress.value >= 1) {
+          progress.value = 0.01
+          buffer.value = 0.01
+          return
+        }
+
+        progress.value = Math.min(1, buffer.value, progress.value + 0.1)
+      }, 700 + Math.random() * 1000)
+
+      bufferInterval = setInterval(() => {
+        if (buffer.value < 1) {
+          buffer.value = Math.min(1, buffer.value + Math.random() * 0.2)
+        }
+      }, 700)
+    })
+
+    onBeforeUnmount(() => {
+      clearInterval(interval)
+      clearInterval(bufferInterval)
+    })
+    return {
+      progress,
+      buffer,
       onItemClick() {
         // console.log('Clicked on an Item')
       },

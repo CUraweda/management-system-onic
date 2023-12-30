@@ -236,7 +236,7 @@
           <!-- stage -->
           <template v-slot:body-cell-stage="props">
             <q-td :props="props">
-              <q-chip :color="(props.row.stage == 'high') ? 'red-2 text-red' : (props.row.stage == 'normal' ? 'blue-2 text-blue' : 'secondary')"
+              <q-chip :color="(props.row.stage == 'High') ? 'red-2 text-red' : (props.row.stage == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
                 text-color="white" dense class="text-weight-bolder" square style="width: 85px" >{{ props.row.stage }}
               </q-chip>
             </q-td>
@@ -245,7 +245,7 @@
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
               <q-chip
-                :color="(props.row.status == 'completed') ? 'blue-2 text-blue'   : (props.row.status == 'in-progress') ? 'orange-2 text-orange' : (props.row.status == 'open' ? 'green-2 text-green' : 'secondary')"
+                :color="(props.row.status == 'Completed') ? 'blue-2 text-blue'   : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
                 dense class="text-weight-bolder" square style="width: 85px">{{ props.row.status }}
               </q-chip>
             </q-td>
@@ -380,7 +380,7 @@ export default {
         {
           name: "status",
           align: "left",
-          label: "STATUS",
+          label: "Status",
           field: "status",
           sortable: true
         },
@@ -394,14 +394,14 @@ export default {
         {
           name: "report",
           align: "left",
-          label: "report",
+          label: "Report",
           field: "report",
           sortable: true
         },
         {
           name: "feed",
           align: "left",
-          label: "feedback",
+          label: "Feedback",
           field: "feed",
           sortable: true
         },
@@ -421,9 +421,9 @@ export default {
           name: "Leslie Tecklenburg",
 
           entry_date: "05/01/2020",
-          stage: "high",
-          status: "completed",
-          progress: 50,
+          stage: "High",
+          status: "Completed",
+          progress: 100,
           avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
         },
         {
@@ -433,9 +433,9 @@ export default {
           abeng: "stage",
 
           entry_date: "15/12/2019",
-          stage: "normal",
-          status: "open",
-          progress: 50,
+          stage: "Normal",
+          status: "Open",
+          progress: 0,
           avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
         },
         {
@@ -445,9 +445,9 @@ export default {
           abeng: "stage",
 
           entry_date: "12/11/2019",
-          stage: "high",
-          status: "in-progress",
-          progress: 100,
+          stage: "High",
+          status: "In-progress",
+          progress: 50,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
         },
         {
@@ -457,9 +457,9 @@ export default {
           abeng: "aku",
 
           entry_date: "10/11/2019",
-          stage: "normal",
-          status: "in-progress",
-          progress: 40,
+          stage: "Normal",
+          status: "In-progress",
+          progress: 50,
           avatar: "https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4",
         },
         {
@@ -468,8 +468,8 @@ export default {
           name: "Edgar Colmer",
 
           entry_date: "11/09/2019",
-          stage: "normal",
-          status: "completed",
+          stage: "Normal",
+          status: "Completed",
           progress: 100,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
         },
@@ -479,9 +479,9 @@ export default {
           name: "Kaiden Rozelle",
 
           entry_date: "10/11/2019",
-          stage: "normal",
-          status: "completed",
-          progress: 30,
+          stage: "Normal",
+          status: "Completed",
+          progress: 100,
           avatar: "https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
         },
         {
@@ -489,9 +489,9 @@ export default {
           name: "Jacob Firtado",
 
           entry_date: "09/10/2019",
-          stage: "normal",
-          status: "open",
-          progress: 70,
+          stage: "Normal",
+          status: "Open",
+          progress: 0,
           avatar: "https://avatars0.githubusercontent.com/u/55240045?s=400&u=cf9bffc2bd2d8e42ca6e5abf40ddd6c1a03ce2860&v=4",
         },
         {
@@ -499,9 +499,9 @@ export default {
           name: "John Doe",
           amount: "$ 900",
           entry_date: "12/11/2019",
-          stage: "high",
-          status: "open",
-          progress: 80,
+          stage: "High",
+          status: "Open",
+          progress: 0,
           avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
         }
       ],

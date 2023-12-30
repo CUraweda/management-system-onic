@@ -23,7 +23,6 @@
         </q-card-section>
       </q-card>
       <!-- complete -->
-
       <!-- in progres -->
       <q-card class="my-card bg-purple-1 col q-mr-md" flat>
         <q-item>
@@ -357,7 +356,7 @@ export default {
         {
           name: "status",
           align: "center",
-          label: "STATUS",
+          label: "Status",
           field: "status",
           sortable: true
         },
@@ -401,7 +400,7 @@ export default {
           date: "10 Dec",
           priority: "3",
           status: "Done",
-          progress: 50,
+          progress: 100,
         },
         {
           serial_no: "02",
@@ -411,7 +410,7 @@ export default {
           date: "11 Dec",
           priority: "3",
           status: "Stuck",
-          progress: 50,
+          progress: 75,
         },
         {
           serial_no: "03",
@@ -421,7 +420,7 @@ export default {
           date: "12 Dec",
           priority: "5",
           status: "in-progress",
-          progress: 100,
+          progress: 50,
         },
         {
           serial_no: "06",
@@ -431,7 +430,7 @@ export default {
           date: "13 Dec",
           priority: "3",
           status: "in-progress",
-          progress: 40,
+          progress: 50,
         },
         // {
         //   serial_no: "04",
