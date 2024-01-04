@@ -61,6 +61,7 @@
 
       <!-- kartu atas -->
       <div class="q-pa-md row items-start q-gutter-md">
+
         <!-- complete -->
         <q-card class="my-card bg-purple-1 col q-mr-md" flat>
           <q-item>
@@ -123,6 +124,27 @@
           </q-card-section>
         </q-card>
         <!-- overdue -->
+
+        <!-- Opened -->
+        <q-card class="my-card bg-green-1 col q-mr-md" flat>
+          <q-item>
+            <q-item-section avatar>
+              <q-icon class="bg-green card-icon">
+                <img src="statics/check.svg" />
+              </q-icon>
+            </q-item-section>
+            <q-item-section class="text-weight-bold">
+              Opened Tasks
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">84</div>
+              Increased by 8 this week
+            </q-card-section>
+          </q-card-section>
+        </q-card>
+        <!-- Opened -->
 
         <!-- total -->
         <q-card class="my-card bg-cyan-1 col q-mr-xs" flat>
