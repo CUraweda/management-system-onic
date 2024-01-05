@@ -7,7 +7,7 @@
             <q-card flat class="bg-white text-black fixed-full">
               <div class="row justify-end">
 
-                <div class="col-md-4 col-xs-12 q-ma-xl">
+                <div class="col-md-4 col-xs-12 q-my-xl">
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
                     <div class="col items-center">
@@ -67,7 +67,7 @@
                 <q-section></q-section>
 
                 <!-- gambar makanan -->
-                <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
+                <div class="col-md-6 col-xs-12 q-ml-xl mobile-hide">
                   <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
                 </div>
                 <!-- gambar makanan -->
