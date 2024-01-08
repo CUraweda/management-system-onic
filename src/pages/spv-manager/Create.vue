@@ -77,14 +77,19 @@
                 </q-item-section>
               </q-item>
             </div>
+
+            <!-- pic -->
             <div class="col-12">
               <q-item>
                 <q-item-selection>
                   <q-item-label class="text-weight-bold">PIC</q-item-label>
                 </q-item-selection>
               </q-item>
-              <div class="row q-ml-md radius-5">
-                <div class="bg-blue-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px;">
+
+              <!-- pic card -->
+              <div class="row q-ml-xs q-gutter-md">
+
+                <div class="bg-blue-2 q-pa-sm" style="border-radius: 20px; width: 150px;">
                   <q-avatar size="30px" color="blue">
                     <img src="statics/worker.png">
                   </q-avatar>
@@ -92,7 +97,7 @@
                   <q-btn dense flat color="red" size="15px" icon="close" />
                 </div>
 
-                <div class="bg-purple-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px">
+                <div class="bg-purple-2 q-pa-sm" style="border-radius: 20px; width: 150px">
                   <q-avatar size="30px" color="purple">
                     <img src="statics/worker.png">
                   </q-avatar>
@@ -105,14 +110,20 @@
                   Add Person
                 </div>
               </div>
+              <!-- pic card -->
             </div>
+            <!-- pic -->
+
+            <!-- spv -->
             <div class="col-12">
               <q-item>
                 <q-item-selection>
                   <q-item-label class="text-weight-bold">Supervisor</q-item-label>
                 </q-item-selection>
               </q-item>
-              <div class="row q-ml-md radius-5 justify-between">
+
+              <!-- spv card -->
+              <div class="row q-ml-xs q-gutter-md justify-between">
                 <div class="bg-purple-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px">
                   <q-avatar size="30px" color="purple">
                     <img src="statics/worker.png">
@@ -121,7 +132,10 @@
                   <q-btn dense flat color="red" size="15px" icon="close" />
                 </div>
               </div>
+              <!-- spv card -->
             </div>
+            <!-- spv -->
+
           </div>
         </q-card>
 
@@ -168,7 +182,7 @@
 
           <q-space></q-space>
 
-          <div class="col-12 fixed-bottom-right">
+          <div class="col-12 bottom-right" width="400px">
             <q-item>
               <q-item-section>
                 <q-space></q-space>
@@ -226,4 +240,7 @@ export default defineComponent({
 
 <style>
 
+
+
 </style>
+

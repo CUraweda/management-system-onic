@@ -36,10 +36,10 @@
       <!-- overview -->
 
       <!-- kartu atas -->
-      <div class="q-pa-md row items-start q-gutter-md">
+      <div class="q-pa-md row  col-lg-7 col-md-7 col-sm-12 col-xs-12 wrap items-start q-gutter-md items-stretch">
 
         <!-- complete -->
-        <q-card class="my-card bg-purple-1 col q-mr-md" flat>
+        <q-card class="my-card bg-purple-1 col-md-2 items-strech q-mr-md" flat>
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-purple card-icon">
@@ -60,7 +60,7 @@
         <!-- complete -->
 
         <!-- in progres -->
-        <q-card class="my-card bg-blue-1 col q-mr-md" flat>
+        <q-card class="my-card bg-blue-1 col-md-2 items-strech q-mr-md" flat>
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-blue-8 card-icon">
@@ -81,7 +81,7 @@
         <!-- in progres -->
 
         <!-- overdue -->
-        <q-card class="my-card bg-orange-1 col q-mr-md" flat>
+        <q-card class="my-card bg-orange-1 col-md-2 items-strech q-mr-md" flat>
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-orange card-icon">
@@ -102,7 +102,7 @@
         <!-- overdue -->
 
         <!-- Opened -->
-        <q-card class="my-card bg-green-1 col q-mr-md" flat>
+        <q-card class="my-card bg-green-1 col-md-2 items-strech q-mr-md" flat>
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-green card-icon">
@@ -123,7 +123,7 @@
         <!-- Opened -->
 
         <!-- total -->
-        <q-card class="my-card bg-cyan-1 col q-mr-xs" flat>
+        <q-card class="my-card bg-cyan-1 col-md-2  q-mr-xs" flat>
           <q-item>
             <q-item-section avatar>
               <q-icon class="bg-cyan card-icon">
@@ -390,6 +390,10 @@ export default {
   max-height: 35px;
   max-width: 35px;
   border-radius: 6px;
+}
+
+.my-card{
+  width: 203px;
 }
 
 .title-card {

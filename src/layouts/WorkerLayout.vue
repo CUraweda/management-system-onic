@@ -5,11 +5,12 @@
     <q-header bordered class="bg-white">
       <div class="q-gutter-y-md q-py-xs">
         <q-toolbar>
-          <q-toolbar-title class="row">
+          <q-toolbar-title class="row q-gutter-x-md">
             <div class="text-h5 text-cyan q-ma-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
               {{ $route.meta.title }}
             </div>
-            <div class="col text-black q-ml-xl q-my-xs">
+
+            <div class="text-black mobile-hide">
               <div class="text-weight-bold text-subtitle2">
                 TASK MANAGEMENT SYSTEM
               </div>
@@ -75,6 +76,14 @@
 
     <!-- content -->
     <q-page-container>
+      <q-card class="text-center mobile-only no-shadow">
+        <div class="text-black self-end q-py-md">
+          <div class="text-weight-bold text-subtitle2">
+            TASK MANAGEMENT SYSTEM
+          </div>
+          <div class="text-caption">{{ formattedString }}</div>
+        </div>
+      </q-card>
       <router-view />
     </q-page-container>
     <!-- content -->
