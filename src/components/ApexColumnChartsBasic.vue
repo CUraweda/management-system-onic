@@ -1,15 +1,15 @@
 <template>
-  <apexchart type="bar" height="auto" width="100%" :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="bar" height="286"  width="100%" :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
 export default {
   name: 'ApexColumnChartsBasic',
-  data () {
+  data() {
     return {
       series: [{
         name: 'Completed',
-        data: [44, 55, 57, 56]
+        data: [90, 55, 57, 56]
       }, {
         name: 'On-Going',
         data: [76, 85, 101, 98]
@@ -45,7 +45,7 @@ export default {
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '55%',
+            columnWidth: '40%',
             endingShape: 'rounded'
           }
         },
@@ -66,7 +66,6 @@ export default {
           }
         },
         yaxis: {
-
           labels: {
             style: {
               colors: '#000'

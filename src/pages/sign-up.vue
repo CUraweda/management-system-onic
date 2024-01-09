@@ -67,7 +67,7 @@
                 <q-section></q-section>
 
                 <!-- gambar makanan -->
-                <div class="col-md-6 col-xs-12 q-ml-xl mobile-hide">
+                <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
                   <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
                 </div>
                 <!-- gambar makanan -->
@@ -105,7 +105,7 @@ export default {
   methods: {
     loginNotify() {
       this.$q.notify({
-        message: 'Login Successful',
+        message: 'Sign Up Successful',
       })
     }
   },

@@ -6,7 +6,7 @@
       <div class="q-gutter-y-md q-py-xs">
         <q-toolbar>
           <q-toolbar-title class="row q-gutter-x-md">
-            <div class="text-h5 text-cyan q-ma-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
+            <div class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
               {{ $route.meta.title }}
             </div>
 

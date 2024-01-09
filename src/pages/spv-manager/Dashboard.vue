@@ -1,201 +1,179 @@
 <template>
   <q-page>
-    <div id="q-app">
+    <q-card flat>
 
-      <!-- overview -->
-      <div class="row q-pt-sm">
-        <div class="text-h6 q-mt-xs q-pl-md">Overview</div>
+      <q-card-section class="row q-gutter-sm q-pt-md  q-ml-sm q-mr-md items-center">
+        <div class="text-h6 q-mt-xs q-ml-md col-md-5 col-sm-11 col-xs-11">Feedback Review</div>
         <q-space></q-space>
-        <div class="q-mx-xs">
-          <q-btn-dropdown text-color="dark" unelevated borderless color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
-            class="text-weight-regular under-title col no-shadow">
-            <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Dep 1</q-item-label>
-                </q-item-section>
-              </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Dep 2</q-item-label>
-                </q-item-section>
-              </q-item>
+        <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Departement" dropdown-icon="expand_more"
+          no-caps class="text-weight-regular under-title col-lg-2 col-md-2 col-sm-5 col-xs-5">
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Dep 1</q-item-label>
+              </q-item-section>
+            </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick">
-                <q-item-section>
-                  <q-item-label>Dep 3</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </div>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Dep 2</q-item-label>
+              </q-item-section>
+            </q-item>
 
-        <div class="q-mx-xs q-my-none">
-          <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-            label="From">
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                  <q-date v-model="deposit.date" />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Dep 3</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
 
-        <div class="q-mx-xs q-my-none">
-          <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-            label="To">
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                  <q-date v-model="deposit.date" />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-      </div>
-      <!-- overview -->
+        <q-input class=" bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-3 col-xs-3" borderless dense
+          v-model="deposit.date" mask="date" label="From">
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                <q-date v-model="deposit.date" />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
 
-      <!-- kartu atas -->
-      <div class="q-pa-md row items-start q-gutter-md">
+        <q-input class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-3 col-xs-3" borderless dense
+          v-model="deposit.date" mask="date" label="To">
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                <q-date v-model="deposit.date" />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+      </q-card-section>
+    </q-card>
+    <!-- task card  -->
+    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
 
-        <!-- complete -->
-        <q-card class="my-card bg-purple-1 col q-mr-md" flat>
-          <q-item>
-            <q-item-section avatar>
-              <q-icon class="bg-purple card-icon">
-                <img src="statics/check.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-item-section class="text-weight-bold">
-              Completed Tasks
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
+      <!-- completed task -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
+            <q-card-section class="row items-center justify-center">
+              <div class="bg-purple q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+                <img width="35px" src="statics/check.svg" />
+              </div>
+              <div class="text-weight-bold text-center">Completed Tasks</div>
+            </q-card-section>
+            <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">68</div>
               Increased by 6 this week
             </q-card-section>
           </q-card-section>
         </q-card>
-        <!-- complete -->
+      </div>
+      <!-- completed task -->
 
-        <!-- in progres -->
-        <q-card class="my-card bg-blue-1 col q-mr-md" flat>
-          <q-item>
-            <q-item-section avatar>
-              <q-icon class="bg-blue-8 card-icon">
-                <img src="statics/Load.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-item-section class="text-weight-bold">
-              In Progress Tasks
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
+      <!-- in progres task -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+            <q-card-section class="row items-center justify-center">
+              <div class="bg-blue q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+                <img width="35px" src="statics/Load.svg" />
+              </div>
+              <div class="text-weight-bold text-center">In Progress Tasks</div>
+            </q-card-section>
+            <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">17</div>
               Decreased by 5 this week
             </q-card-section>
           </q-card-section>
         </q-card>
-        <!-- in progres -->
+      </div>
+      <!-- in progres task -->
 
-        <!-- overdue -->
-        <q-card class="my-card bg-orange-1 col q-mr-md" flat>
-          <q-item>
-            <q-item-section avatar>
-              <q-icon class="bg-orange card-icon">
-                <img src="statics/Jam.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-item-section class="text-weight-bold">
-              Overdue Tasks
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
+      <!-- overdue -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+            <q-card-section class="row items-center justify-center">
+              <div class="bg-orange q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+                <img width="35px" src="statics/Jam.svg" />
+              </div>
+              <div class="text-weight-bold text-center">Overdue Tasks</div>
+            </q-card-section>
+            <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">9</div>
               Increased by 3 this week
             </q-card-section>
           </q-card-section>
         </q-card>
-        <!-- overdue -->
+      </div>
+      <!-- overdue -->
 
-        <!-- Opened -->
-        <q-card class="my-card bg-green-1 col q-mr-md" flat>
-          <q-item>
-            <q-item-section avatar>
-              <q-icon class="bg-green card-icon">
-                <img src="statics/check.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-item-section class="text-weight-bold">
-              Opened Tasks
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
+      <!-- opened -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+            <q-card-section class="row items-center justify-center">
+              <div class="bg-green q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+                <img width="35px" src="statics/check.svg" />
+              </div>
+              <div class="text-weight-bold text-center">Opened Tasks</div>
+            </q-card-section>
+            <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">84</div>
               Increased by 8 this week
             </q-card-section>
           </q-card-section>
         </q-card>
-        <!-- Opened -->
+      </div>
+      <!-- opened -->
 
-        <!-- total -->
-        <q-card class="my-card bg-cyan-1 col q-mr-xs" flat>
-          <q-item>
-            <q-item-section avatar>
-              <q-icon class="bg-cyan card-icon">
-                <img src="statics/list.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-item-section class="text-weight-bold">
-              Total Tasks
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
+      <!-- total -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'" class="text-black">
+            <q-card-section class="row items-center justify-center">
+              <div class="bg-cyan q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+                <img width="35px" src="statics/list.svg" />
+              </div>
+              <div class="text-weight-bold text-center">Total Tasks</div>
+            </q-card-section>
+            <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">85</div>
               Completion rate: 80%
             </q-card-section>
           </q-card-section>
         </q-card>
-        <!-- total -->
       </div>
-      <!-- kartu atas -->
+      <!-- total -->
 
-      <div class="text-h6 q-pl-md">PERFORMANCE MONITORING</div>
+    </div>
+    <!-- task card  -->
 
-      <!-- title -->
-      <div class="row items-start">
-        <!-- feedback row -->
-        <div class="col items-start q-pa-md q-gutter-lg">
-          <q-card class="title-card bg-grey-3 q-mb-none" flat>
+    <div>
+      <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
+      <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-card flat>
             <q-card-section>
-              <q-card-section class="q-pa-none">
-                Feedback Review
-              </q-card-section>
+              <div class="bg-grey-3 q-pa-md text-center title-card">Feedback Review</div>
             </q-card-section>
-          </q-card>
 
-          <!-- bawah feedback -->
-          <div class="row items-start q-mt-sm">
-            <q-input class="toolbar-input bg-grey-2 under-title q-mr-xs col" dense text-color="grey-2"
-              standout="bg-grey-3 no-shadow" v-model="search" placeholder="Search...">
-              <template v-slot:prepend>
-                <q-icon v-if="search === ''" name="search" />
-                <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
-              </template>
-            </q-input>
+            <q-card-section class="row q-gutter-sm q-pt-none justify-between">
 
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
-                class="text-weight-regular under-title col">
+              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-11 under-title" dense text-color="black"
+                standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
+                <template v-slot:prepend>
+                  <q-icon v-if="search === ''" name="search" text-color="black" />
+                  <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+                </template>
+              </q-input>
+
+              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Departement" dropdown-icon="expand_more"
+                no-caps class="text-weight-regular under-title col-lg-3 col-md-3 col-sm-5 col-xs-5">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -216,11 +194,10 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
-            </div>
 
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
-                no-caps class="text-weight-regular under-title col">
+              <q-btn-dropdown unelevated text-color="dark" borderless color="grey-3" label="Person"
+                dropdown-icon="expand_more" no-caps
+                class="text-weight-regular under-title col-lg-2 col-md-2 col-sm-5 col-xs-5">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -241,11 +218,9 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
-            </div>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="From">
+              <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.date" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -254,11 +229,9 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="To">
+              <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.date" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -267,92 +240,81 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
-          </div>
-          <!-- bawah feedback -->
+            </q-card-section>
 
-          <!-- feedback chart -->
-          <div class="row q-ml-lg q-mr-none relative-position q-mb-sm">
-            <card-base class="">
-              <div class="q-mb-xl">Employee Performance Monitoring</div>
-              <div class="row">
-                <div class="col float-right">
-
-                  <!-- bad -->
-                  <div class="row q-mb-md q-mt-sm  ">
-                    <q-icon name="star" class="" size="25px" style="color: #ece9ea;"></q-icon>
-                    <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3 float-right">Bad</div>
-                  </div>
-                  <!-- bad -->
-
-                  <!-- poor -->
-                  <div class="row q-mb-md  ">
-                    <q-icon name="star" class="" size="25px" style="color: #f3c677;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #f3c677;"></q-icon>
-                    <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Poor</div>
-                  </div>
-                  <!-- poor -->
-
-                  <!-- Average -->
-                  <div class="row q-mb-md  ">
-                    <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
-                    <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Average</div>
-                  </div>
-                  <!-- Average -->
-
-                  <!-- Good -->
-                  <div class="row q-mb-md  ">
-                    <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                    <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Good</div>
-                  </div>
-                  <!-- Good -->
-
-                  <!-- Excelent -->
-                  <div class="row q-mb-md ">
-                    <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                    <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                    <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Excelent</div>
-                  </div>
-                  <!-- Excelent -->
-
-                </div>
-
-                <div class="col q-pt-xl q-px-none">
-                  <apex-half-donut></apex-half-donut>
-                </div>
-              </div>
-
-            </card-base>
-          </div>
-          <!-- feedback chart -->
-
-        </div>
-        <!-- feedback row float-right -->
-
-        <!-- Job row -->
-        <div class="col items-start q-pa-md q-gutter-lg q-mr-md">
-          <q-card class="title-card bg-grey-3 q-mb-none" flat>
             <q-card-section>
-              <q-card-section class="q-pa-none">
-                Monitoring Job Status
-              </q-card-section>
+              <card-base class="">
+                <div class="q-mb-xl">Employee Performance Monitoring</div>
+                <div class="row items-end justify-center">
+                  <div class="col-md-6 col-sm-12">
+
+                    <!-- bad -->
+                    <div class="row q-mb-md q-mt-sm  ">
+                      <q-icon name="star" class="" size="25px" style="color: #ece9ea;"></q-icon>
+                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3 float-right">Bad</div>
+                    </div>
+                    <!-- bad -->
+
+                    <!-- poor -->
+                    <div class="row q-mb-md  ">
+                      <q-icon name="star" class="" size="25px" style="color: #f3c677;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #f3c677;"></q-icon>
+                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Poor</div>
+                    </div>
+                    <!-- poor -->
+
+                    <!-- Average -->
+                    <div class="row q-mb-md  ">
+                      <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
+                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Average</div>
+                    </div>
+                    <!-- Average -->
+
+                    <!-- Good -->
+                    <div class="row q-mb-md  ">
+                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
+                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Good</div>
+                    </div>
+                    <!-- Good -->
+
+                    <!-- Excelent -->
+                    <div class="row q-mb-md ">
+                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
+                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
+                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Excelent</div>
+                    </div>
+                    <!-- Excelent -->
+
+                  </div>
+                  <q-space></q-space>
+
+                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <apex-half-donut></apex-half-donut>
+                  </div>
+                </div>
+              </card-base>
             </q-card-section>
           </q-card>
+        </div>
 
-          <!-- bawah Job -->
-          <div class="row items-start q-mt-sm">
-            <q-space></q-space>
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more" no-caps
-                class="text-weight-regular under-title col">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <q-card flat>
+            <q-card-section>
+              <div class="bg-grey-3 q-pa-md text-center title-card">Monitoring Job Status</div>
+            </q-card-section>
+
+            <q-card-section class="row q-gutter-sm q-pt-none justify-between">
+
+              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Departement" dropdown-icon="expand_more"
+                no-caps class="text-weight-regular under-title col-lg-3 col-md-3 col-sm-5 col-xs-5">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -373,11 +335,10 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
-            </div>
 
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="dark" borderless color="grey-3" label="Person" dropdown-icon="expand_more"
-                no-caps class=" no-box-shadow text-weight-regular under-title col">
+              <q-btn-dropdown unelevated text-color="dark" borderless color="grey-3" label="Person"
+                dropdown-icon="expand_more" no-caps
+                class="text-weight-regular under-title col-lg-2 col-md-2 col-sm-5 col-xs-5">
                 <q-list>
                   <q-item clickable v-close-popup @click="onItemClick">
                     <q-item-section>
@@ -398,11 +359,9 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
-            </div>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="From">
+              <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.date" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -411,11 +370,9 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="To">
+              <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.date" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -424,125 +381,121 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
-          </div>
-          <!-- bawah Job -->
 
-          <!-- job chart -->
-          <div class="row relative-position q-mb-sm">
-            <CardBase>
-              <apex-column-charts-basic></apex-column-charts-basic>
-            </CardBase>
-          </div>
+            </q-card-section>
+
+
+            <q-card-section>
+              <CardBase>
+                <div class="col-12">
+                  <apex-column-charts-basic></apex-column-charts-basic>
+                </div>
+              </CardBase>
+            </q-card-section>
+          </q-card>
         </div>
-        <!-- Job row -->
+
       </div>
-
-
     </div>
   </q-page>
 </template>
 
 <script>
-import { exportFile } from "quasar";
+import Vue from 'vue';
+import { exportFile } from 'quasar';
 import CardBase from "components/CardBase";
 
+// Vue.component('IEcharts', IEcharts);
+
 function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0 ? formatFn(val) : val;
+  let formatted = formatFn !== void 0
+    ? formatFn(val)
+    : val
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null
+    ? ''
+    : String(formatted)
 
-  formatted = formatted.split('"').join('""');
+  formatted = formatted.split('"').join('""')
 
-  return `"${formatted}"`;
+  return `"${formatted}"`
 }
 
 export default {
   data() {
     return {
+      filter: '',
+      mode: 'list',
       search: "",
       deposit: {},
-    };
+    }
   },
   setup() {
     return {
       onItemClick() {
-        // console.log('Clicked on an Item')
+        console.log('Clicked on an Item')
       },
     };
   },
   methods: {
-    exportDepositsTable() {
+    SaveImage(type) {
+      const linkSource = this.$refs[type].getDataURL();
+      const downloadLink = document.createElement('a');
+      document.body.appendChild(downloadLink);
+      downloadLink.href = linkSource;
+      downloadLink.target = '_self';
+      downloadLink.download = type + '.png';
+      downloadLink.click();
+    },
+    exportTable() {
       // naive encoding to csv format
-      const content = [this.columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          this.data.map((row) =>
-            this.columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
+      const content = [this.columns.map(col => wrapCsvValue(col.label))].concat(
+        this.data.map(row => this.columns.map(col => wrapCsvValue(
+          typeof col.field === 'function'
+            ? col.field(row)
+            : row[col.field === void 0 ? col.name : col.field],
+          col.format
+        )).join(','))
+      ).join('\r\n')
 
-      const status = exportFile("deposits.csv", content, "text/csv");
+      const status = exportFile(
+        'activity.csv',
+        content,
+        'text/csv'
+      )
 
       if (status !== true) {
         this.$q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
-        });
+          message: 'Browser denied file download...',
+          color: 'negative',
+          icon: 'warning'
+        })
       }
-    },
+    }
   },
-
   name: "PageIndex",
   components: {
     CardBase,
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
     ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
   },
-};
+}
 </script>
 
-<style>
-
+<style scoped>
 .card-icon {
-  width: 100%;
-  height: 100%;
-  max-height: 35px;
-  max-width: 35px;
   border-radius: 6px;
 }
 
+.my-card {
+  width: 175px;
+}
+
 .title-card {
-  width: 100%;
-  height: 100%;
-  max-height: 100px;
   border-radius: 20px;
-  text-align: center;
 }
 
 .under-title {
-  width: 100%;
-  height: 100%;
-  width: 113px;
-  border-radius: 8px;
-}
-
-.under-title-date {
-  width: 100%;
-  height: 100%;
-  max-height: 100px;
-  width: 100px;
   border-radius: 8px;
 }
 

@@ -1,94 +1,96 @@
 <template>
   <q-page>
 
-    <div class="q-pa-md row items-start q-gutter-md">
+    <div class="items-center row q-gutter-md justify-around q-mt-xs q-mx-xs">
       <!-- complete -->
-      <q-card class="my-card bg-cyan-1 col q-mr-md" flat>
-        <!-- <Status text="completed"/> -->
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks Completed
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-129.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">68</div>
-            Increased by 6 this week
+        <q-card class="my-card bg-cyan-1  q-mr-md" flat>
+          <!-- <Status text="completed"/> -->
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks Completed
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-129.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">68</div>
+              Increased by 6 this week
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
       <!-- complete -->
+
       <!-- in progres -->
-      <q-card class="my-card bg-purple-1 col q-mr-md" flat>
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks Stuck
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-142.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">17</div>
-            Decreased by 5 this week
+        <q-card class="my-card bg-purple-1" flat>
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks Open
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-142.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">17</div>
+              Decreased by 5 this week
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
       <!-- in progres -->
 
       <!-- overdue -->
-      <q-card class="my-card bg-orange-1 col q-mr-md" flat>
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks In Progress
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-143.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">9</div>
-            Increased by 3 this week
+        <q-card class="my-card bg-orange-1" flat>
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks In Progress
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-143.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">9</div>
+              Increased by 3 this week
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
       <!-- overdue -->
 
       <!-- total -->
-      <q-card class="my-card bg-cyan-1 col q-mr-xs" flat>
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks Delayed
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-144.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">85</div>
-            Completion rate: 80%
+        <q-card class="my-card bg-cyan-1" flat>
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks Delayed
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-144.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">85</div>
+              Completion rate: 80%
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
 
 
       <!-- total -->
     </div>
     <!-- kartu atas -->
+
 
     <div>
       <q-card-section class="text-h5 text-weight-bold text-black">
@@ -360,7 +362,7 @@ export default {
           field: "status",
           sortable: true
         },
-        
+
         {
           name: "progress",
           align: "center",
@@ -545,6 +547,10 @@ export default {
 
 </script>
 <style>
+.my-card {
+  width: 175px;
+}
+
 thead tr:first-child th {
   /* bg color is important for th; just specify one */
   background-color: #F8F9FA;
