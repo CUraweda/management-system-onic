@@ -1,6 +1,8 @@
 <template>
   <q-page>
 
+
+
     <div class="row items-start q-mt-sm q-mx-sm">
       <div class="q-mx-xs q-my-none">
         <q-input class="under-title-date col q-px-sm" outlined dense v-model="deposit.date" mask="date" label="From">
@@ -26,96 +28,97 @@
         </q-input>
       </div>
     </div>
-    <div class="q-pa-md row items-start q-gutter-md">
+
+
+    <div class="items-center row q-gutter-md justify-around q-mt-xs q-mx-xs">
       <!-- complete -->
-      <q-card class="my-card bg-cyan-1 col q-mr-md" flat>
-        <!-- <Status text="completed"/> -->
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks Completed
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-129.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">68</div>
-            Increased by 6 this week
+        <q-card class="my-card bg-cyan-1  q-mr-md" flat>
+          <!-- <Status text="completed"/> -->
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks Completed
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-129.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">68</div>
+              Increased by 6 this week
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
       <!-- complete -->
 
       <!-- in progres -->
-      <q-card class="my-card bg-purple-1 col q-mr-md" flat>
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks Open
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-142.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">17</div>
-            Decreased by 5 this week
+        <q-card class="my-card bg-purple-1" flat>
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks Open
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-142.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">17</div>
+              Decreased by 5 this week
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
       <!-- in progres -->
 
       <!-- overdue -->
-      <q-card class="my-card bg-orange-1 col q-mr-md" flat>
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks In Progress
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-143.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">9</div>
-            Increased by 3 this week
+        <q-card class="my-card bg-orange-1" flat>
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks In Progress
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-143.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">9</div>
+              Increased by 3 this week
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
       <!-- overdue -->
 
       <!-- total -->
-      <q-card class="my-card bg-cyan-1 col q-mr-xs" flat>
-        <q-item>
-          <q-item-section class="text-weight-bold">
-            Tasks Delayed
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon class="card-icon">
-              <img src="statics/Button-144.svg" />
-            </q-icon>
-          </q-item-section>
-        </q-item>
-        <q-card-section>
-          <q-card-section class="q-pa-none">
-            <div class="text-h4 text-weight-bold q-mt-none">85</div>
-            Completion rate: 80%
+        <q-card class="my-card bg-cyan-1" flat>
+          <q-item>
+            <q-item-section class="text-weight-bold">
+              Tasks Delayed
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon class="card-icon">
+                <img src="statics/Button-144.svg" />
+              </q-icon>
+            </q-item-section>
+          </q-item>
+          <q-card-section>
+            <q-card-section class="q-pa-none">
+              <div class="text-h4 text-weight-bold q-mt-none">85</div>
+              Completion rate: 80%
+            </q-card-section>
           </q-card-section>
-        </q-card-section>
-      </q-card>
+        </q-card>
 
 
       <!-- total -->
     </div>
     <!-- kartu atas -->
-
     <div>
       <q-card-section class="text-h5 text-weight-bold text-black">
         <div class="row items-start">
@@ -215,8 +218,8 @@
             </div>
 
             <div class="q-mx-xs q-my-none">
-              <q-btn class="under-title col" color="cyan" icon-right="upgrade" text-color="cyan" unelevated dense outline label="Export" no-caps
-                @click="exportTable" />
+              <q-btn class="under-title col" color="cyan" icon-right="upgrade" text-color="cyan" unelevated dense outline
+                label="Export" no-caps @click="exportTable" />
             </div>
           </div>
         </div>
@@ -227,7 +230,8 @@
     <q-page class="q-pa-sm">
       <q-card>
         <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="name"
-          :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" selection="multiple" :selected.sync="selected">
+          :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" selection="multiple"
+          :selected.sync="selected">
 
 
           <template>
@@ -236,8 +240,9 @@
           <!-- stage -->
           <template v-slot:body-cell-stage="props">
             <q-td :props="props">
-              <q-chip :color="(props.row.stage == 'High') ? 'red-2 text-red' : (props.row.stage == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
-                text-color="white" dense class="text-weight-bolder" square style="width: 85px" >{{ props.row.stage }}
+              <q-chip
+                :color="(props.row.stage == 'High') ? 'red-2 text-red' : (props.row.stage == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
+                text-color="white" dense class="text-weight-bolder" square style="width: 85px">{{ props.row.stage }}
               </q-chip>
             </q-td>
           </template>
@@ -245,12 +250,12 @@
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
               <q-chip
-                :color="(props.row.status == 'Completed') ? 'blue-2 text-blue'   : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                :color="(props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
                 dense class="text-weight-bolder" square style="width: 85px">{{ props.row.status }}
               </q-chip>
             </q-td>
           </template>
-          
+
           <!-- stage -->
           <template v-slot:body-cell-Progress="props">
             <q-td :props="props">
@@ -323,7 +328,7 @@ import { exportFile } from "quasar";
 // import Status from "components/Status"
 
 const stringOptions = [
-  'Google', 'Facebook', 'Twitter', 'Apple' , 'Apples1', 'Apples2', 'Oracle'
+  'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
 ]
 
 function wrapCsvValue(val, formatFn) {
@@ -519,7 +524,7 @@ export default {
   },
   methods: {
 
-    filterFn (val, update) {
+    filterFn(val, update) {
       if (val === '') {
         update(() => {
           this.options = stringOptions
@@ -579,6 +584,10 @@ export default {
 
 </script>
 <style>
+.my-card {
+  width: 175px;
+}
+
 .under-title-date {
   width: 100%;
   height: 100%;

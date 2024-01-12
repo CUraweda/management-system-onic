@@ -5,11 +5,12 @@
     <q-header bordered class="bg-white">
       <div class="q-gutter-y-md q-py-xs">
         <q-toolbar>
-          <q-toolbar-title class="row">
-            <div class="text-h5 text-cyan q-ma-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
+          <q-toolbar-title class="row q-gutter-x-md">
+            <div class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
               {{ $route.meta.title }}
             </div>
-            <div class="col text-black q-ml-xl q-my-xs">
+
+            <div class="text-black mobile-hide">
               <div class="text-weight-bold text-subtitle2">
                 TASK MANAGEMENT SYSTEM
               </div>
@@ -17,13 +18,13 @@
             </div>
           </q-toolbar-title>
 
-          <q-input class="toolbar-input bg-grey-2" dense standout="bg-grey-2 no-shadow" v-model="search"
+          <!-- <q-input class="toolbar-input bg-grey-2" dense standout="bg-grey-2 no-shadow" v-model="search"
             placeholder="Search...">
             <template v-slot:prepend>
               <q-icon v-if="search === ''" name="search" />
               <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
             </template>
-          </q-input>
+          </q-input> -->
           <q-btn flat round dense icon="notifications" class="q-ml-xl" color="black" size="15px" />
           <q-btn flat round dense icon="question_mark" class="q-mx-xs" color="black" size="15px" />
           <q-avatar color="cyan-3" size="30px" class="q-mx-xs">
@@ -75,6 +76,14 @@
 
     <!-- content -->
     <q-page-container>
+      <q-card class="text-center mobile-only no-shadow">
+        <div class="text-black self-end q-py-md">
+          <div class="text-weight-bold text-subtitle2">
+            TASK MANAGEMENT SYSTEM
+          </div>
+          <div class="text-caption">{{ formattedString }}</div>
+        </div>
+      </q-card>
       <router-view />
     </q-page-container>
     <!-- content -->

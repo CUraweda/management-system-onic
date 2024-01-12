@@ -1,5 +1,5 @@
 <template>
-  <apexchart type="donut" height="auto" width="100%" :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="donut" height="250" width="100%" :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
@@ -27,7 +27,7 @@ export default {
           pie: {
             startAngle: -90,
             endAngle: 90,
-            customScale: 1.3,
+            customScale: 1,
           }
         },
         grid: {

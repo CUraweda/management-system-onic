@@ -19,16 +19,8 @@
                 </q-item-section>
               </q-item>
             </div>
-            <div class="col-6">
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Status</q-item-label>
-                  <q-select dense filled outlined v-model="deposit.status" :options="statusoptions" stack-label
-                    options-dense></q-select>
-                </q-item-section>
-              </q-item>
-            </div>
-            <div class="col-6">
+
+            <div class="col-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Priority</q-item-label>
@@ -37,11 +29,12 @@
                 </q-item-section>
               </q-item>
             </div>
+
             <div class="col-6">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
-                  <q-input dense filled v-model="deposit.date" mask="date" placeholder="Deposit Date">
+                  <q-input dense filled v-model="deposit.date" mask="date" placeholder="start date">
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -57,7 +50,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input dense filled v-model="deposit.date" mask="date" placeholder="Deposit Date">
+                  <q-input dense filled v-model="deposit.date" mask="date" placeholder="due date">
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -77,14 +70,19 @@
                 </q-item-section>
               </q-item>
             </div>
+
+            <!-- pic -->
             <div class="col-12">
               <q-item>
                 <q-item-selection>
                   <q-item-label class="text-weight-bold">PIC</q-item-label>
                 </q-item-selection>
               </q-item>
-              <div class="row q-ml-md radius-5">
-                <div class="bg-blue-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px;">
+
+              <!-- pic card -->
+              <div class="row q-ml-xs q-gutter-md">
+
+                <div class="bg-blue-2 q-pa-sm" style="border-radius: 20px; width: 150px;">
                   <q-avatar size="30px" color="blue">
                     <img src="statics/worker.png">
                   </q-avatar>
@@ -92,7 +90,7 @@
                   <q-btn dense flat color="red" size="15px" icon="close" />
                 </div>
 
-                <div class="bg-purple-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px">
+                <div class="bg-purple-2 q-pa-sm" style="border-radius: 20px; width: 150px">
                   <q-avatar size="30px" color="purple">
                     <img src="statics/worker.png">
                   </q-avatar>
@@ -105,14 +103,20 @@
                   Add Person
                 </div>
               </div>
+              <!-- pic card -->
             </div>
+            <!-- pic -->
+
+            <!-- spv -->
             <div class="col-12">
               <q-item>
                 <q-item-selection>
                   <q-item-label class="text-weight-bold">Supervisor</q-item-label>
                 </q-item-selection>
               </q-item>
-              <div class="row q-ml-md radius-5 justify-between">
+
+              <!-- spv card -->
+              <div class="row q-ml-xs q-gutter-md justify-between">
                 <div class="bg-purple-2 q-pa-sm q-mr-md" style="border-radius: 20px; width: 150px">
                   <q-avatar size="30px" color="purple">
                     <img src="statics/worker.png">
@@ -121,7 +125,10 @@
                   <q-btn dense flat color="red" size="15px" icon="close" />
                 </div>
               </div>
+              <!-- spv card -->
             </div>
+            <!-- spv -->
+
           </div>
         </q-card>
 
@@ -143,36 +150,14 @@
               </q-item-section>
             </q-item>
           </div>
-          <div class="col-12">
-            <q-item>
-              <q-item-section>
-                <q-file outlined v-model="model" label="Upload File">
-                  <template v-slot:append>
-                    <q-icon name="ios_share" />
-                  </template>
-                </q-file>
-              </q-item-section>
-            </q-item>
-          </div>
-          <div class="col-12">
-            <q-item>
-              <q-item-section>
-                <q-file outlined v-model="model" class="text-primary" label-color="primary" label="Upload an attachment">
-                  <template v-slot:prepend>
-                    <q-icon name="attach_file" color="primary" class="rotate-45" />
-                  </template>
-                </q-file>
-              </q-item-section>
-            </q-item>
-          </div>
 
           <q-space></q-space>
 
-          <div class="col-12 fixed-bottom-right">
+          <div class="col-12">
             <q-item>
               <q-item-section>
                 <q-space></q-space>
-                <div class="row q-mb-xl q-mr-md">
+                <div class="row  q-mr-md">
                 <q-card-actions>
                   <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                     type="submit" v-close-popup />
@@ -226,4 +211,7 @@ export default defineComponent({
 
 <style>
 
+
+
 </style>
+

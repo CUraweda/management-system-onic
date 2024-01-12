@@ -7,7 +7,11 @@
             <q-card flat class="bg-white text-black fixed-full">
               <div class="row justify-end">
 
+<<<<<<< HEAD
                 <div class="col-md-4 col-xs-12 q-ma-xl">
+=======
+                <div class="col-md-4 col-xs-12 q-my-xl">
+>>>>>>> 21e4df5d69daea7e945a8cc329c6f079b9900697
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
                     <div class="col items-center">
