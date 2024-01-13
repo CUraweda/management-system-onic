@@ -1,23 +1,23 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
-    <q-page-container class="bg-grey-2">
-      <q-page padding class="row items-center justify-center">
-        <div class="row full-width">
-          <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
-            <q-card flat class="bg-white text-black fixed-full">
-              <div class="row justify-end">
+  <q-layout>
+    <q-page-container>
 
-                <div class="col-md-4 col-xs-12 q-my-xl">
-                  <div class="q-pa-md text-center">
-                    <!-- welcome section -->
-                    <div class="col items-center">
-                      <q-img src="/statics/logo.jpg" width="150px" class="q-ma-md"></q-img>
-                      <div class=" text-h5">
-                        Welcome Back!
-                      </div>
-                      <p class="">Enter your credentials to access your account</p>
-                    </div>
-                    <!-- welcome section -->
+      <q-page class="flex flex-center ">
+
+        <q-card class="login" v-bind:style="$q.platform.is.mobile ? { width: '80%' } : { width: '30%' }
+          ">
+
+          <q-img src="/statics/logo.jpg" class="icon"></q-img>
+
+          <q-card-section>
+            <div class="row items-center" style="margin: 0px 22%; margin-bottom: -5%;">
+              <div class="col text-h5" style="font-size: 25px;">
+                Welcome Back!
+                <p style="font-size: 13px; color:#565E6C; margin-right: -20%; margin-left: -20%;">Enter your credentials
+                  to access your account</p>
+              </div>
+            </div>
+          </q-card-section>
 
                     <!-- button section -->
                     <div class="row q-mb-xl">
