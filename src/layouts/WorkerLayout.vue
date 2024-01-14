@@ -53,6 +53,14 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
+          <q-item clickable v-ripple to="create">
+            <q-item-section avatar>
+              <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Create Task </q-item-section>
+          </q-item>
+
           <q-item clickable v-ripple to="task_list">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
@@ -136,7 +144,7 @@ export default {
 };
 </script>
 
-<style>
+<style scooped>
 .mini-slot {
   transition: background-color 0.28s;
 }

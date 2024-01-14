@@ -17,6 +17,7 @@ const routes = [
     component: () => import('src/layouts/WorkerLayout.vue'),
     children: [
       { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: () => import('pages/worker/Dashboard.vue') },
+      { path: 'create', meta: { title: 'CREATE TASK' }, component: () => import('pages/worker/Create_task.vue') },
       { path: 'task_detail', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail.vue') },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: () => import('pages/worker/Task_list.vue') },
     ],

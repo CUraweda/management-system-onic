@@ -145,7 +145,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .mini-slot {
   transition: background-color 0.28s;
 }

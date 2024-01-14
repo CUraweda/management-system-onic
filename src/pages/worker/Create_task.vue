@@ -95,53 +95,6 @@
               </q-item>
             </div>
 
-            <!-- pic -->
-            <div class="col-12">
-              <q-item>
-                <q-item-selection class="row items-center">
-                  <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
-
-                  <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0"
-                      :options="picoptions" @filter="filterFn" behavior="menu" class="col-6">
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                            No results
-                          </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
-
-                    <div class="text-cyan col-5">
-                      <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
-                    </div>
-                  </q-form>
-
-                  <!-- selected pic card -->
-                  <q-card v-if="submittedpic" flat class="col-12 q-mt-md"
-                    :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'">
-                    <template>
-                      <q-separator></q-separator>
-                      <q-card-section class="row q-gutter-sm items-center">
-                        <div v-for="(item, index) in submitResultpic" :key="index"
-                          class="q-pa-sm bg-blue-2 row items-center justify-between"
-                          style="border-radius: 23px; width: 150px;">
-                          <q-avatar size="30px" color="blue">
-                            <img src="statics/worker.png">
-                          </q-avatar>
-                          {{ item.value }}
-                          <q-btn dense flat color="red" size="15px" icon="close" />
-                        </div>
-                      </q-card-section>
-                    </template>
-                  </q-card>
-                  <!-- selected pic card -->
-                </q-item-selection>
-              </q-item>
-            </div>
-            <!-- pic -->
-
             <!-- spv -->
             <div class="col-12">
               <q-item>
@@ -252,9 +205,6 @@ export default defineComponent({
   },
   name: "Checkout",
   setup() {
-    const submittedpic = ref(false)
-    const submitEmptypic = ref(false)
-    const submitResultpic = ref([])
     const submittedspv = ref(false)
     const submitEmptyspv = ref(false)
     const submitResultspv = ref([])
@@ -267,40 +217,6 @@ export default defineComponent({
       step: ref(1),
       address_detail: ref({}),
       card_detail: ref({}),
-      pic: ref([]),
-      picoptions: [
-        {
-          label: 'Bambang',
-          value: 'Bambang'
-        },
-        {
-          label: 'Tami',
-          value: 'Tami'
-        },
-        {
-          label: 'Rani',
-          value: 'Rani'
-        }
-      ],
-      submittedpic,
-      submitEmptypic,
-      submitResultpic,
-
-      onSubmitpic(evt) {
-        const formData = new FormData(evt.target)
-        const data = []
-
-        for (const [name, value] of formData.entries()) {
-          data.push({
-            name,
-            value
-          })
-        }
-
-        submittedpic.value = true
-        submitResultpic.value = data
-        submitEmptypic.value = data.length === 0
-      },
       spv: ref([]),
       spvoptions: [
         {
@@ -341,5 +257,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 </style>
 
