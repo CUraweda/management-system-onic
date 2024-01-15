@@ -1,11 +1,13 @@
 <template>
   <q-page>
 
-    <div class="items-center row q-gutter-md justify-around q-mt-xs q-mx-xs">
-      <!-- complete -->
-        <q-card class="my-card bg-cyan-1  q-mr-md" flat>
-          <!-- <Status text="completed"/> -->
-          <q-item>
+    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
+
+      <!-- completed task -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
+
             <q-item-section class="text-weight-bold">
               Tasks Completed
             </q-item-section>
@@ -14,19 +16,23 @@
                 <img src="statics/Button-129.svg" />
               </q-icon>
             </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">68</div>
-              Increased by 6 this week
+
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">68</div>
+                Increased by 6 this week
+              </q-card-section>
             </q-card-section>
           </q-card-section>
         </q-card>
-      <!-- complete -->
+      </div>
+      <!-- completed task -->
 
-      <!-- in progres -->
-        <q-card class="my-card bg-purple-1" flat>
-          <q-item>
+      <!-- in progres task -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+
             <q-item-section class="text-weight-bold">
               Tasks Open
             </q-item-section>
@@ -35,278 +41,353 @@
                 <img src="statics/Button-142.svg" />
               </q-icon>
             </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">17</div>
-              Decreased by 5 this week
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">17</div>
+                Decreased by 5 this week
+              </q-card-section>
             </q-card-section>
           </q-card-section>
+
         </q-card>
-      <!-- in progres -->
+      </div>
+      <!-- in progres task -->
 
       <!-- overdue -->
-        <q-card class="my-card bg-orange-1" flat>
-          <q-item>
-            <q-item-section class="text-weight-bold">
-              Tasks In Progress
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-143.svg" />
-              </q-icon>
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">9</div>
-              Increased by 3 this week
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+            <q-item>
+              <q-item-section class="text-weight-bold">
+                Tasks In Progress
+              </q-item-section>
+              <q-item-section avatar>
+                <q-icon class="card-icon">
+                  <img src="statics/Button-143.svg" />
+                </q-icon>
+              </q-item-section>
+            </q-item>
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">9</div>
+                Increased by 3 this week
+              </q-card-section>
             </q-card-section>
           </q-card-section>
+
         </q-card>
+      </div>
       <!-- overdue -->
 
-      <!-- total -->
-        <q-card class="my-card bg-cyan-1" flat>
-          <q-item>
-            <q-item-section class="text-weight-bold">
-              Tasks Delayed
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-144.svg" />
-              </q-icon>
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">85</div>
-              Completion rate: 80%
+      <!-- opened -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+            <q-item>
+              <q-item-section class="text-weight-bold">
+                Tasks Delayed
+              </q-item-section>
+              <q-item-section avatar>
+                <q-icon class="card-icon">
+                  <img src="statics/Button-144.svg" />
+                </q-icon>
+              </q-item-section>
+            </q-item>
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">85</div>
+                Completion rate: 80%
+              </q-card-section>
             </q-card-section>
           </q-card-section>
         </q-card>
-
-
-      <!-- total -->
+      </div>
+      <!-- opened -->
     </div>
     <!-- kartu atas -->
 
 
-    <div>
-      <q-card-section class="text-h5 text-weight-bold text-black">
-        <div class="row items-start">
+    <q-card class="q-mt-md row justify-end items-start text-h5 text-weight-bold text-black no-shadow q-ma-none q-pa-none">
+      <div class=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <q-card-section class="row q-gutter-xs q-pt-none justify-between">
+          <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
+            standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
+            <template v-slot:prepend>
+              <q-icon v-if="search === ''" name="search" text-color="black" />
+              <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+            </template>
+          </q-input>
 
-          <q-space></q-space>
-          <div class="row items-start float-right">
-            <q-input class="toolbar-input bg-grey-2 under-title  q-mr-xs" dense text-color="grey-2"
-              standout="bg-grey-3 no-shadow" v-model="search" placeholder="Search...">
-              <template v-slot:prepend>
-                <q-icon v-if="search === ''" name="search" />
-                <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+          <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+            v-model="deposit.date" mask="date" label="From">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="deposit.date" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+
+          <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+            v-model="deposit.date" mask="date" label="To">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="deposit.date" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+
+          <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Category" dropdown-icon="expand_more" no-caps
+            class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Category 1</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Category 2</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Category 3</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+
+          <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
+            use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
+            dropdown-icon="filter_list"></q-select>
+        </q-card-section>
+      </div>
+    </q-card>
+
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" label="Task Wait Approval">
+      <div class="q-mx-md">
+        <q-card class="table-bg no-shadow" bordered>
+          <q-card-section>
+            <div class="text-h5 text-weight-bold text-blue">
+              Task Wait Approval
+            </div>
+          </q-card-section>
+
+          <q-card-section class="q-pa-none">
+            <q-table class="no-shadow q-ml-md text-body1" :data="waiting_data" :hide-header="mode === 'grid'"
+              :columns="columns" row-key="task_title" :grid="mode == 'grid'" :filter="filter"
+              :pagination.sync="pagination" separator="none">
+
+              <template v-slot:body-cell-task_title="props">
+                <q-td :props="props">
+                  <q-card class=" q-pa-md no-shadow align-left text-body1" color="black" bordered>
+                    {{ props.row.task_title }}
+                  </q-card>
+                </q-td>
               </template>
-            </q-input>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="From">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                  <div class="text-center" style="width: 100%">
+                    <q-chip
+                      :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan  ' : (props.row.status == 'Open') ? 'grey' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                      text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
+                      style="width: 150px">{{ props.row.status }}
+                    </q-chip>
+                  </div>
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-progress="props">
+                <q-td :props="props">
+                  <q-linear-progress grey color="purple" rounded size="15px" :value="props.row.progress / 100"
+                    class="q-mt-md" />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-priority="props">
+                <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
+                  <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-date="props">
+                <q-td :props="props" class=" no-shadow align-left bg-grey-3">
+                  <div class="text-body1">
+                    {{ props.row.date }}
+                  </div>
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-details="props">
+                <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
+                  <div class="q-gutter-sm">
+                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" to="task_detail">
+                      <q-icon name="img:/statics/Filesearch.svg" />
+                      View
+                    </q-btn>
+                  </div>
+                </q-td>
+              </template>
+
+            </q-table>
+          </q-card-section>
+        </q-card>
+      </div>
+    </q-expansion-item>
+
+
+
+
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" label="This Week">
+      <div class="q-mx-md">
+        <q-card class="table-bg no-shadow" bordered>
+          <q-card-section>
+            <div class="text-h5 text-weight-bold text-blue">
+              This Week
             </div>
+          </q-card-section>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="To">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
+          <q-card-section class="q-pa-none">
+            <q-table class="no-shadow q-ml-md text-body1" :data="data" :hide-header="mode === 'grid'" :columns="columns"
+              row-key="task_title" :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" separator="none">
+
+              <template v-slot:body-cell-task_title="props">
+                <q-td :props="props">
+                  <q-card class=" q-pa-md no-shadow align-left text-body1" color="black" bordered>
+                    {{ props.row.task_title }}
+                  </q-card>
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                  <div class="text-center" style="width: 100%">
+                    <q-chip
+                      :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                      text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
+                      style="width: 150px">{{ props.row.status }}
+                    </q-chip>
+                  </div>
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-progress="props">
+                <q-td :props="props">
+                  <q-linear-progress grey color="purple" rounded size="15px" :value="props.row.progress / 100"
+                    class="q-mt-md" />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-priority="props">
+                <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
+                  <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-date="props">
+                <q-td :props="props" class=" no-shadow align-left bg-grey-3">
+                  <div class="text-body1">
+                    {{ props.row.date }}
+                  </div>
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-details="props">
+                <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
+                  <div class="q-gutter-sm">
+                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" to="task_detail">
+                      <q-icon name="img:/statics/Filesearch.svg" />
+                      View
+                    </q-btn>
+                  </div>
+                </q-td>
+              </template>
+
+            </q-table>
+          </q-card-section>
+        </q-card>
+      </div>
+    </q-expansion-item>
+
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" label="Next Week">
+      <div class="q-mx-md">
+        <q-card class="table-bg no-shadow" bordered>
+          <q-card-section>
+            <div class="text-h5 text-weight-bold text-purple-3">
+              Next Week
             </div>
+          </q-card-section>
 
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Category" dropdown-icon="expand_more"
-                no-caps class="text-weight-regular under-title col">
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
+          <q-card-section class="q-pa-none">
+            <q-table class="no-shadow q-ml-md text-body1" :data="next_data" :hide-header="mode === 'grid'"
+              :columns="columns" row-key="task_title" :grid="mode == 'grid'" :filter="filter"
+              :pagination.sync="pagination" separator="none">
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
+              <template v-slot:body-cell-task_title="props">
+                <q-td :props="props">
+                  <q-card class=" q-pa-md no-shadow align-left text-body1" color="black" bordered>
+                    {{ props.row.task_title }}
+                  </q-card>
+                </q-td>
+              </template>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </div>
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                  <div class="text-center" style="width: 100%">
+                    <q-chip
+                      :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                      text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
+                      style="width: 150px">{{ props.row.status }}
+                    </q-chip>
+                  </div>
+                </q-td>
+              </template>
 
-            <div>
-              <q-select filled v-model="deposit.account" use-input multiple dense input-debounce="0" label="Filter"
-                :options="options" @filter="filterFn" style="width: 250px" dropdown-icon="filter_list"></q-select>
-            </div>
+              <template v-slot:body-cell-progress="props">
+                <q-td :props="props">
+                  <q-linear-progress grey color="purple" rounded size="15px" :value="props.row.progress / 100"
+                    class="q-mt-md" />
+                </q-td>
+              </template>
 
-          </div>
-        </div>
-      </q-card-section>
+              <template v-slot:body-cell-priority="props">
+                <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
+                  <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+                </q-td>
+              </template>
 
-    </div>
+              <template v-slot:body-cell-date="props">
+                <q-td :props="props" class=" no-shadow align-left bg-grey-3">
+                  <div class="text-body1">
+                    {{ props.row.date }}
+                  </div>
+                </q-td>
+              </template>
 
-    <div class="q-mx-md">
-      <q-card class="table-bg no-shadow" bordered>
-        <q-card-section>
-          <div class="text-h5 text-weight-bold text-blue">
-            This Week
-          </div>
-        </q-card-section>
+              <template v-slot:body-cell-details="props">
+                <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
+                  <div class="q-gutter-sm">
+                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7">
+                      <q-icon name="img:/statics/Filesearch.svg" />
+                      View
+                    </q-btn>
+                  </div>
 
-        <q-card-section class="q-pa-none">
-          <q-table class="no-shadow q-ml-md text-body1" :data="data" :hide-header="mode === 'grid'" :columns="columns"
-            row-key="task_title" :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" separator="none">
+                </q-td>
+              </template>
 
-            <template v-slot:body-cell-task_title="props">
-              <q-td :props="props">
-                <q-card class=" q-pa-md no-shadow align-left text-body1" color="black" bordered>
-                  {{ props.row.task_title }}
-                </q-card>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-status="props">
-              <q-td :props="props">
-                <div class="text-center" style="width: 100%">
-                  <q-chip
-                    :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
-                    text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
-                    style="width: 150px">{{ props.row.status }}
-                  </q-chip>
-                </div>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-progress="props">
-              <q-td :props="props">
-                <q-linear-progress grey color="purple" rounded size="15px" :value="props.row.progress / 100"
-                  class="q-mt-md" />
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-priority="props">
-              <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
-                <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-date="props">
-              <q-td :props="props" class=" no-shadow align-left bg-grey-3">
-                <div class="text-body1">
-                  {{ props.row.date }}
-                </div>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-details="props">
-              <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
-                <div class="q-gutter-sm">
-                  <q-btn dense unelevated color="indigo-2" text-color="indigo-7" to="task_detail">
-                    <q-icon name="img:/statics/Filesearch.svg" />
-                    View
-                  </q-btn>
-                </div>
-              </q-td>
-            </template>
-
-          </q-table>
-        </q-card-section>
-      </q-card>
-    </div>
-
-
-    <div class="q-mx-md">
-      <q-card class="table-bg no-shadow" bordered>
-        <q-card-section>
-          <div class="text-h5 text-weight-bold text-purple-3">
-            Next Week
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pa-none">
-          <q-table class="no-shadow q-ml-md text-body1" :data="data" :hide-header="mode === 'grid'" :columns="columns"
-            row-key="task_title" :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" separator="none">
-
-            <template v-slot:body-cell-task_title="props">
-              <q-td :props="props">
-                <q-card class=" q-pa-md no-shadow align-left text-body1" color="black" bordered>
-                  {{ props.row.task_title }}
-                </q-card>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-status="props">
-              <q-td :props="props">
-                <div class="text-center" style="width: 100%">
-                  <q-chip
-                    :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
-                    text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
-                    style="width: 150px">{{ props.row.status }}
-                  </q-chip>
-                </div>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-progress="props">
-              <q-td :props="props">
-                <q-linear-progress grey color="purple" rounded size="15px" :value="props.row.progress / 100"
-                  class="q-mt-md" />
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-priority="props">
-              <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
-                <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-date="props">
-              <q-td :props="props" class=" no-shadow align-left bg-grey-3">
-                <div class="text-body1">
-                  {{ props.row.date }}
-                </div>
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-details="props">
-              <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
-                <div class="q-gutter-sm">
-                  <q-btn dense unelevated color="indigo-2" text-color="indigo-7">
-                    <q-icon name="img:/statics/Filesearch.svg" />
-                    View
-                  </q-btn>
-                </div>
-              </q-td>
-            </template>
-
-          </q-table>
-        </q-card-section>
-      </q-card>
-    </div>
-
+            </q-table>
+          </q-card-section>
+        </q-card>
+      </div>
+    </q-expansion-item>
 
 
 
@@ -390,7 +471,9 @@ export default {
           label: "Details",
           field: "details",
           sortable: true
-        }
+        },
+
+
 
       ],
       data: [
@@ -421,7 +504,7 @@ export default {
 
           date: "12 Dec",
           priority: "5",
-          status: "in-progress",
+          status: "In-progress",
           progress: 50,
         },
         {
@@ -431,7 +514,7 @@ export default {
 
           date: "13 Dec",
           priority: "3",
-          status: "in-progress",
+          status: "In-progress",
           progress: 50,
         },
         // {
@@ -473,6 +556,52 @@ export default {
         //   progress: 80,
         // }
       ],
+      next_data: [
+        {
+          serial_no: "01",
+          task_title: "Laporan Mingguan",
+          name: "Ronie",
+
+          date: "17 Dec",
+          priority: "3",
+          status: "In-progress",
+          progress: 50,
+        },
+        {
+          serial_no: "02",
+          task_title: "Rekap Laporan Mitra",
+          name: "Deden",
+
+          date: "18 Dec",
+          priority: "3",
+          status: "In-progress",
+          progress: 25,
+        },
+        {
+          serial_no: "06",
+          task_title: "Laporan Laba Rugi",
+          name: "Johni",
+
+          date: "20 Dec",
+          priority: "3",
+          status: "In-progress",
+          progress: 30,
+        },
+      ],
+      waiting_data: [
+        {
+          serial_no: "01",
+          task_title: "Laporan Mingguan",
+          name: "Ronie",
+
+          date: "17 Dec",
+          priority: "3",
+          status: "Open",
+          progress: 0,
+        },
+
+      ],
+
       pagination: {
         rowsPerPage: 5
       }

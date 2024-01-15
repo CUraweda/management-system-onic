@@ -3,14 +3,14 @@
 
     <!-- header -->
     <q-header bordered class="bg-white">
-      <div class="q-gutter-y-md q-py-xs">
+      <div class="">
         <q-toolbar>
-          <q-toolbar-title class="row q-gutter-x-md">
+          <q-toolbar-title class="row">
             <div class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
               {{ $route.meta.title }}
             </div>
 
-            <div class="text-black mobile-hide">
+            <div class="text-black mobile-hide q-ml-lg">
               <div class="text-weight-bold text-subtitle2">
                 TASK MANAGEMENT SYSTEM
               </div>
@@ -18,14 +18,19 @@
             </div>
           </q-toolbar-title>
 
-          <div>
-            <div class="row no-wrap q-gutter-md items-center">
-              <q-btn flat round dense icon="notifications" class="" color="black" size="15px" />
-              <q-btn flat round dense icon="question_mark" class="" color="black" size="15px" />
-              <q-avatar color="cyan-3" size="30px" class="">
-                <img src="statics/propil.png" />
-              </q-avatar>
-            </div>
+          <div class="row wrap items-center justify-end">
+            <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
+              standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
+              <template v-slot:prepend>
+                <q-icon v-if="search === ''" name="search" text-color="black" />
+                <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+              </template>
+            </q-input>
+            <q-btn flat round dense icon="notifications" color="black" size="15px" />
+            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+            <q-avatar color="cyan-3" size="30px">
+              <img src="statics/propil.png" />
+            </q-avatar>
           </div>
         </q-toolbar>
       </div>

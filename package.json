@@ -16,6 +16,7 @@
     "apexcharts": "^3.44.2",
     "chart.js": "^4.4.1",
     "core-js": "^3.6.5",
+    "html2pdf.js": "^0.10.1",
     "quasar": "^1.0.0",
     "vue-apexcharts": "^1.6.2"
   },

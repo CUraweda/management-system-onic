@@ -102,7 +102,7 @@
                   <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
                     <q-select multiple dense filled v-model="spv" name="spv" use-input input-debounce="0"
-                      :options="spvoptions" @filter="filterFn" behavior="menu" class="col-6">
+                      :options="spvoptions" behavior="menu" class="col-6">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -142,14 +142,14 @@
 
       </div>
       <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-        <q-card class="no-shadow" bordered>
+        <q-card class="no-shadow fit row wrap items-start content-start" bordered>
           <q-card-section class="text-weight-bold text-h6 text-black ">
             Add to card
           </q-card-section>
-          <div class="col-12">
+          <div class="col-12 q-mb-xl">
             <q-item>
               <q-item-section>
-                <q-file outlined v-model="model" label="Upload File">
+                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl">
                   <template v-slot:append>
                     <q-icon name="ios_share" />
                   </template>
@@ -160,18 +160,15 @@
 
           <q-space></q-space>
 
-          <div class="col-12">
+          <div class="col-6 absolute-bottom-right q-mt-xl">
             <q-item>
               <q-item-section>
-                <q-space></q-space>
-                <div class="row  q-mr-md">
+                <div class="row justify-end">
                   <q-card-actions>
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
-                  </q-card-actions>
-                  <q-card-actions>
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" v-close-popup />
+                      type="submit" @click="createNotify" to="task_list"/>
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -203,7 +200,7 @@ export default defineComponent({
       ],
     }
   },
-  name: "Checkout",
+
   setup() {
     const submittedspv = ref(false)
     const submitEmptyspv = ref(false)
@@ -250,9 +247,17 @@ export default defineComponent({
         submittedspv.value = true
         submitResultspv.value = data
         submitEmptyspv.value = data.length === 0
-      }
+      },
     }
-  }
+  },
+
+  methods: {
+    createNotify() {
+      this.$q.notify({
+        message: 'Task Created',
+      })
+    }
+  },
 })
 </script>
 

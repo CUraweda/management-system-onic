@@ -1,40 +1,13 @@
 <template>
   <q-page>
 
+    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
 
+      <!-- completed task -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
 
-    <div class="row items-start q-mt-sm q-mx-sm">
-      <div class="q-mx-xs q-my-none">
-        <q-input class="under-title-date col q-px-sm" outlined dense v-model="deposit.date" mask="date" label="From">
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.date" />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div>
-
-      <div class="q-mx-xs q-my-none">
-        <q-input class="under-title-date col q-px-sm" outlined dense v-model="deposit.date" mask="date" label="To">
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.date" />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div>
-    </div>
-
-
-    <div class="items-center row q-gutter-md justify-around q-mt-xs q-mx-xs">
-      <!-- complete -->
-        <q-card class="my-card bg-cyan-1  q-mr-md" flat>
-          <!-- <Status text="completed"/> -->
-          <q-item>
             <q-item-section class="text-weight-bold">
               Tasks Completed
             </q-item-section>
@@ -43,19 +16,23 @@
                 <img src="statics/Button-129.svg" />
               </q-icon>
             </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">68</div>
-              Increased by 6 this week
+
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">68</div>
+                Increased by 6 this week
+              </q-card-section>
             </q-card-section>
           </q-card-section>
         </q-card>
-      <!-- complete -->
+      </div>
+      <!-- completed task -->
 
-      <!-- in progres -->
-        <q-card class="my-card bg-purple-1" flat>
-          <q-item>
+      <!-- in progres task -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+
             <q-item-section class="text-weight-bold">
               Tasks Open
             </q-item-section>
@@ -64,61 +41,71 @@
                 <img src="statics/Button-142.svg" />
               </q-icon>
             </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">17</div>
-              Decreased by 5 this week
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">17</div>
+                Decreased by 5 this week
+              </q-card-section>
             </q-card-section>
           </q-card-section>
+
         </q-card>
-      <!-- in progres -->
+      </div>
+      <!-- in progres task -->
 
       <!-- overdue -->
-        <q-card class="my-card bg-orange-1" flat>
-          <q-item>
-            <q-item-section class="text-weight-bold">
-              Tasks In Progress
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-143.svg" />
-              </q-icon>
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">9</div>
-              Increased by 3 this week
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+            <q-item>
+              <q-item-section class="text-weight-bold">
+                Tasks In Progress
+              </q-item-section>
+              <q-item-section avatar>
+                <q-icon class="card-icon">
+                  <img src="statics/Button-143.svg" />
+                </q-icon>
+              </q-item-section>
+            </q-item>
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">9</div>
+                Increased by 3 this week
+              </q-card-section>
             </q-card-section>
           </q-card-section>
+
         </q-card>
+      </div>
       <!-- overdue -->
 
-      <!-- total -->
-        <q-card class="my-card bg-cyan-1" flat>
-          <q-item>
-            <q-item-section class="text-weight-bold">
-              Tasks Delayed
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-144.svg" />
-              </q-icon>
-            </q-item-section>
-          </q-item>
-          <q-card-section>
-            <q-card-section class="q-pa-none">
-              <div class="text-h4 text-weight-bold q-mt-none">85</div>
-              Completion rate: 80%
+      <!-- opened -->
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow">
+          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+            <q-item>
+              <q-item-section class="text-weight-bold">
+                Tasks Delayed
+              </q-item-section>
+              <q-item-section avatar>
+                <q-icon class="card-icon">
+                  <img src="statics/Button-144.svg" />
+                </q-icon>
+              </q-item-section>
+            </q-item>
+            <q-card-section>
+              <q-card-section class="q-pa-none">
+                <div class="text-h4 text-weight-bold q-mt-none">85</div>
+                Completion rate: 80%
+              </q-card-section>
             </q-card-section>
           </q-card-section>
         </q-card>
-
-
-      <!-- total -->
+      </div>
+      <!-- opened -->
     </div>
     <!-- kartu atas -->
+
     <div>
       <q-card-section class="text-h5 text-weight-bold text-black">
         <div class="row items-start">
@@ -127,68 +114,18 @@
             <q-icon name="text_snippet" color="cyan" class="q-mb-none" />
           </div>
           <q-space></q-space>
-          <div class="row items-start float-right">
-            <q-input class="toolbar-input bg-grey-2 under-title  q-mr-xs" dense text-color="grey-2"
-              standout="bg-grey-3 no-shadow" v-model="search" placeholder="Search...">
-              <template v-slot:prepend>
-                <q-icon v-if="search === ''" name="search" />
-                <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
-              </template>
-            </q-input>
+          <div class=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <q-card-section class="row q-gutter-xs q-pt-none justify-between">
+              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
+                standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
+                <template v-slot:prepend>
+                  <q-icon v-if="search === ''" name="search" text-color="black" />
+                  <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+                </template>
+              </q-input>
 
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Department" dropdown-icon="expand_more"
-                no-caps class="text-weight-regular under-title col">
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Dep 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Dep 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Dep 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </div>
-
-            <div class="q-mx-xs">
-              <q-btn-dropdown unelevated text-color="black" borderless color="grey-3" label="Person"
-                dropdown-icon="expand_more" no-caps class="text-weight-regular under-title col">
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Per 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Per 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Per 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </div>
-
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="From">
+              <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.date" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -197,11 +134,9 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
 
-            <div class="q-mx-xs q-my-none">
-              <q-input class="under-title-date col bg-grey-3 q-px-md" borderless dense v-model="deposit.date" mask="date"
-                label="To">
+              <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.date" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -210,21 +145,43 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
 
-            <div>
-              <q-select filled v-model="deposit.account" use-input multiple dense input-debounce="0" label="Filter"
-                :options="options" @filter="filterFn" style="width: 250px" dropdown-icon="filter_list"></q-select>
-            </div>
+              <q-btn-dropdown unelevated text-color="dark" color="grey-3" label="Category" dropdown-icon="expand_more"
+                no-caps class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5">
+                <q-list>
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Category 1</q-item-label>
+                    </q-item-section>
+                  </q-item>
 
-            <div class="q-mx-xs q-my-none">
-              <q-btn class="under-title col" color="cyan" icon-right="upgrade" text-color="cyan" unelevated dense outline
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Category 2</q-item-label>
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup @click="onItemClick">
+                    <q-item-section>
+                      <q-item-label>Category 3</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+
+              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
+                use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
+                dropdown-icon="filter_list"></q-select>
+
+              <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade" text-color="cyan" unelevated dense outline
                 label="Export" no-caps @click="exportTable" />
-            </div>
-          </div>
-        </div>
-      </q-card-section>
 
+            </q-card-section>
+          </div>
+
+        </div>
+
+      </q-card-section>
     </div>
 
     <q-page class="q-pa-sm">
@@ -237,12 +194,12 @@
           <template>
 
           </template>
-          <!-- stage -->
-          <template v-slot:body-cell-stage="props">
+          <!-- priority -->
+          <template v-slot:body-cell-priority="props">
             <q-td :props="props">
               <q-chip
-                :color="(props.row.stage == 'High') ? 'red-2 text-red' : (props.row.stage == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
-                text-color="white" dense class="text-weight-bolder" square style="width: 85px">{{ props.row.stage }}
+                :color="(props.row.priority == 'High') ? 'red-2 text-red' : (props.row.priority == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
+                text-color="white" dense class="text-center under-title q-px-sm tex" rounded>{{ props.row.priority }}
               </q-chip>
             </q-td>
           </template>
@@ -250,13 +207,13 @@
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
               <q-chip
-                :color="(props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
-                dense class="text-weight-bolder" square style="width: 85px">{{ props.row.status }}
+                :color="(props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
               </q-chip>
             </q-td>
           </template>
 
-          <!-- stage -->
+          <!-- priority -->
           <template v-slot:body-cell-Progress="props">
             <q-td :props="props">
               <q-linear-progress grey :color="getColor(props.row.progress)" :value="props.row.progress / 100"
@@ -283,18 +240,28 @@
 
           <template v-slot:body-cell-feed="props">
             <q-td :props="props">
-              <div class="q-gutter-sm">
-                <q-btn dense class="under-title" no-caps unelevated rounded color="red-2" text-color="red"
+              <div class="q-gutter-sm" v-if="props.row.status === 'Wait-app'">
+                <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                  label="Cancle" />
+                <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2" text-color="yellow-9"
                   label="Revise" />
-                <q-btn dense unelevated rounded color="blue-2" text-color="blue" label="OK" />
+                <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm" rounded
+                  @click="employee_dialog = true" />
+              </div>
+              <div class="q-gutter-sm" v-else>
+                <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                  label="Revise" />
+                <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
+                  @click="employee_dialog = true" />
               </div>
             </q-td>
           </template>
 
-          <template v-slot:body-cell-report="props">
+
+          <template v-slot:body-cell-detail="props">
             <q-td :props="props">
               <div class="q-gutter-sm">
-                <q-btn dense unelevated to="report">
+                <q-btn dense unelevated to="detail">
                   <q-icon name="img:/statics/reportc.svg" />
                 </q-btn>
               </div>
@@ -305,15 +272,34 @@
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <div class="q-gutter-sm">
-                <q-btn dense round unelevated color="blue-1">
-                  <q-icon name="img:/statics/Move.svg" />
-                </q-btn>
+                <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
+                  label="Edit" />
+                <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
+                  label="Delete" />
               </div>
             </q-td>
           </template>
           <!-- action -->
         </q-table>
       </q-card>
+      <q-dialog v-model="employee_dialog">
+        <q-card class="" flat bordered>
+          <q-card-section>
+            <div class="text-h6">
+              Employee Details
+              <q-btn round flat dense icon="close" class="float-right" color="grey-8" v-close-popup></q-btn>
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <div class="q-gutter-md row items-center">
+
+              <q-rating v-model="ratingModel" size="3em" color="grey" :color-selected="yellow" @click="submit"
+                v-close-popup />
+            </div>
+          </q-card-section>
+
+        </q-card>
+      </q-dialog>
     </q-page>
 
 
@@ -324,7 +310,9 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import { exportFile } from "quasar";
+import html2pdf from "html2pdf.js";
 // import Status from "components/Status"
 
 const stringOptions = [
@@ -345,6 +333,7 @@ function wrapCsvValue(val, formatFn) {
 export default {
   data() {
     return {
+
       filter: "",
       mode: "list",
       invoice: {},
@@ -376,15 +365,15 @@ export default {
           sortable: true
         },
         {
-          name: "stage",
-          align: "left",
+          name: "priority",
+          align: "center",
           label: "Priority",
-          field: "stage",
+          field: "priority",
           sortable: true
         },
         {
           name: "status",
-          align: "left",
+          align: "center",
           label: "Status",
           field: "status",
           sortable: true
@@ -397,10 +386,10 @@ export default {
           sortable: true
         },
         {
-          name: "report",
+          name: "detail",
           align: "left",
-          label: "Report",
-          field: "report",
+          label: "Detail",
+          field: "detail",
           sortable: true
         },
         {
@@ -426,19 +415,19 @@ export default {
           name: "Leslie Tecklenburg",
 
           entry_date: "05/01/2020",
-          stage: "High",
-          status: "Completed",
-          progress: 100,
+          priority: "High",
+          status: "Wait-app",
+          progress: 0,
           avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
         },
         {
           serial_no: "02",
           task_title: "Rekap Laporan Mitra",
           name: "Lia Whitledge",
-          abeng: "stage",
+          abeng: "priority",
 
           entry_date: "15/12/2019",
-          stage: "Normal",
+          priority: "High",
           status: "Open",
           progress: 0,
           avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
@@ -447,10 +436,10 @@ export default {
           serial_no: "03",
           task_title: "Laporan Bahan",
           name: "Sam Wileman",
-          abeng: "stage",
+          abeng: "priority",
 
           entry_date: "12/11/2019",
-          stage: "High",
+          priority: "High",
           status: "In-progress",
           progress: 50,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
@@ -462,7 +451,7 @@ export default {
           abeng: "aku",
 
           entry_date: "10/11/2019",
-          stage: "Normal",
+          priority: "Normal",
           status: "In-progress",
           progress: 50,
           avatar: "https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4",
@@ -473,7 +462,7 @@ export default {
           name: "Edgar Colmer",
 
           entry_date: "11/09/2019",
-          stage: "Normal",
+          priority: "Normal",
           status: "Completed",
           progress: 100,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
@@ -484,7 +473,7 @@ export default {
           name: "Kaiden Rozelle",
 
           entry_date: "10/11/2019",
-          stage: "Normal",
+          priority: "Normal",
           status: "Completed",
           progress: 100,
           avatar: "https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
@@ -494,7 +483,7 @@ export default {
           name: "Jacob Firtado",
 
           entry_date: "09/10/2019",
-          stage: "Normal",
+          priority: "Normal",
           status: "Open",
           progress: 0,
           avatar: "https://avatars0.githubusercontent.com/u/55240045?s=400&u=cf9bffc2bd2d8e42ca6e5abf40ddd6c1a03ce2860&v=4",
@@ -504,7 +493,7 @@ export default {
           name: "John Doe",
           amount: "$ 900",
           entry_date: "12/11/2019",
-          stage: "High",
+          priority: "High",
           status: "Open",
           progress: 0,
           avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
@@ -517,12 +506,20 @@ export default {
   },
   setup() {
     return {
+      ratingModel: ref(0),
+      yellow: ['yellow'],
       onItemClick() {
         // console.log('Clicked on an Item')
       },
     };
   },
   methods: {
+
+    submit() {
+      this.$q.notify({
+        message: 'Task Done',
+      })
+    },
 
     filterFn(val, update) {
       if (val === '') {
@@ -540,7 +537,6 @@ export default {
 
 
     exportTable() {
-      // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
           this.data.map(row =>
@@ -558,15 +554,25 @@ export default {
         )
         .join("\r\n");
 
-      // const status = exportFile("quotes.csv", content, "text/csv");
+      // Create a hidden HTML element
+      const hiddenElement = document.createElement('div');
+      hiddenElement.style.visibility = 'hidden';
+      hiddenElement.innerHTML = `<pre>${content}</pre>`;
+      document.body.appendChild(hiddenElement);
 
-      // if (status !== true) {
-      //     this.$q.notify({
-      //         message: "Browser denied file download...",
-      //         color: "negative",
-      //         icon: "warning"
-      //     });
-      // }
+      // Use html2pdf to generate a PDF and download it
+      html2pdf(hiddenElement, {
+        margin: 10,
+        filename: 'Detail.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).then(() => {
+        // Clean up: remove the hidden element from the DOM
+        document.body.removeChild(hiddenElement);
+      }).catch(error => {
+        console.error("Error generating PDF:", error);
+        // Handle error if necessary
+      });
     },
 
     getColor(val) {
@@ -579,6 +585,8 @@ export default {
     }
   }
 };
+
+
 
 
 

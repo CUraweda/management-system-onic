@@ -157,8 +157,10 @@
                   <div class="q-pt-md ">
                     <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
                       label="Start" no-caps @click="startCountdown" />
+                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Send Back" no-caps to="task_detail"/>
                     <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Send To Other PIC" no-caps to="task_detail_2"/>
+                      label="Submit To Superior" no-caps to="report_2"/>
                   </div>
                 </div>
               </CardBase>

@@ -2,34 +2,38 @@
   <q-page class="q-pt-xs">
     <div class="q-ma-md">
 
-      <div class="row q-my-md shadow q-pa-md" style="border-radius: 4px;border: 1px solid rgba(0, 0, 0, 0.12);">
+      <div class="row q-my-md shadow q-pa-md items-center"
+        style="border-radius: 4px;border: 1px solid rgba(0, 0, 0, 0.12);">
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_1">
           <q-card class="no-shadow q-pa-sm">
-            <div class="row">
+            <div class="row items-center">
               <div class="text-h8 text-weight-bold q-mr-md q-mt-noe">LAPORAN MINGGUAN</div>
-              <div class="bg-grey-3  q-mr-md tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-md align-left tulisan q-my-xs">Finish</div>
+              <div class="bg-grey-3  q-mr-sm tulisan border1">
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">Finish</div>
               </div>
-              <div class="bg-grey-3  q-mr-md tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-md align-left tulisan q-my-xs">On Schedule</div>
+              <div class="bg-grey-3  q-mr-sm tulisan border1">
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">On Schedule</div>
               </div>
             </div>
             <q-card-section>
               <div class="col float-left">
                 <div class="row">
                   <div class="col-4">
-                    <div class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
+                    <div
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
                     <div class="q-mr-lg"><q-input readonly label="RIAN SPV" /></div>
                   </div>
                   <div class="col-4">
-                    <div class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
+                    <div
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       TASK TITLE</div>
                     <div class="q-mr-lg"><q-input readonly label="Laporan Mingguan" /></div>
                   </div>
                   <div class="col-4">
-                    <div class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
+                    <div
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
                     <div class="q-mr-lg"><q-input readonly label="08-DEC-2023, 09.00AM" />
                     </div>
@@ -96,15 +100,10 @@
                             <div class="">Progress</div>
                           </div>
                           <div class="col">
-                            <div class="">100%</div>
-                            <div class="">100%</div>
-                            <q-item class="q-py-xs" style="min-height: unset">
-                              <q-item-section>
-                                <div class="progress-base q-my-sm">
-                                  <div class="progress-bar-2" style="width:100%"></div>
-                                </div>
-                              </q-item-section>
-                            </q-item>
+                            <div class="">100 %</div>
+                            <div class="">{{ slide }} %</div>
+                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1"
+                              inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
                       </q-card-section>
@@ -149,36 +148,57 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Description
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
-            <q-card-section class="row">
-              <CardBase class="">
+            <q-card-section class="row justify-center">
+              <CardBase class="col-12">
                 <div class="q-ml-lg">Laporan Request :</div>
                 <div class="q-ml-md">1. Pencatatan Penjualan selama 1 minggu terakhir</div>
                 <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
                 <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
                 <div class="q-ml-lg">.</div>
               </CardBase>
+              <CardBase class="col-6">
+                <q-scroll-area style="height: 200px; max-width: 400px;">
+                <div class="q-pa-md row justify-center">
+                  <div style="width: 100%; max-width: 400px">
+                    <q-chat-message name="me" :text="['tolong dikerjakan']" sent />
+                    <q-chat-message name="Roni" :text="['siap pa']" />
+                    <q-chat-message name="me" :text="['sudah berapa persen']" sent />
+                    <q-chat-message name="Roni" :text="['80 pa kira kira']" />
+                    <q-chat-message name="me" :text="['revisi ya']" sent />
+                    <q-chat-message name="Roni" :text="['ok pa']" />
+                  </div>
+                </div>
+                </q-scroll-area>
+                    <q-input class="bg-grey-3 border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                      <template v-slot:after>
+                        <q-btn round dense flat icon="send" />
+                      </template>
+                    </q-input>
+              </CardBase>
             </q-card-section>
           </q-card>
 
-          <q-card flat bordered class="q-mt-md no-shadow">
+          <q-card flat bordered class="q-mt-md no-shadow col-12">
             Attachment Download
-            <q-card-section class="row">
-              <CardBase class="  ">
-                <div class="q-pa-md">
-                  <q-uploader url="http://localhost:4444/download" label="File" color="grey" square flat bordered
-                    style="max-width: 300px" />
+            <q-card-section class="">
+              <CardBase class="col-12">
+                <div class="q-pa-md col-12">
+                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader style="max-width: 300px" url="http://localhost:4444/download" label="Screenchot" multiple
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Screnshoot" multiple
                     color="grey" />
-                  <div class="q-pt-md ">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'red' }" color="red-1" text-color="red"
+                  <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
+                    <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps />
+                      no-caps class="col-5" to="task_monitoring" @click="Notifydone" />
                   </div>
-                  <div class="q-pt-md">Beri Rating untuk Pekerja!</div>
-                  <div class="q-gutter-y-md column">
-                    <q-rating v-model="ratingModel" size="2em" color="grey" :color-selected="ratingColors" />
+                  <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
+                  <div class="q-gutter-md row items-center">
+                    <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
+                      Feedback
+                    </div>
+                    <q-rating v-model="ratingModel" size="3em" color="grey" :color-selected="ratingColors" />
                   </div>
                 </div>
               </CardBase>
@@ -191,6 +211,7 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import Vue from 'vue';
 import { exportFile } from 'quasar';
 
@@ -209,17 +230,47 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  setup() {
+    return {
+      slide: ref(15),
+      ratingModel: ref(0),
+      ratingColors: ['yellow'],
+      pic: ref([]),
+      options: [
+        {
+          label: 'Bambang',
+          value: 'Bambang'
+        },
+        {
+          label: 'Tami',
+          value: 'Tami'
+        },
+        {
+          label: 'Rani',
+          value: 'Rani'
+        }
+      ],
+    }
+  },
+
   data() {
     return {
       filter: '',
       mode: 'list',
     }
   },
+
+  methods: {
+    Notifydone() {
+      this.$q.notify({
+        message: 'Task Done',
+      })
+    }
+  },
 }
 </script>
 
 <style scoped>
-
 .progress-bar-2 {
   height: 8px;
   border-radius: 3px;
@@ -231,6 +282,7 @@ export default {
 .border1 {
   border-radius: 28px;
 }
+
 .border2 {
   border-radius: 8px;
 }

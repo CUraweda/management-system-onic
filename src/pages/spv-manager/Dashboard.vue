@@ -164,7 +164,7 @@
 
             <q-card-section class="row q-gutter-sm q-pt-none justify-between">
 
-              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-11 under-title" dense text-color="black"
+              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
                 standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
                 <template v-slot:prepend>
                   <q-icon v-if="search === ''" name="search" text-color="black" />

@@ -46,12 +46,25 @@
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
           <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
-            <div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="time.max" show-value track-color="light-blue-2" class="text-black q-ma-md"
-                :value="time.value" size="100px" color="light-blue" />
-              <div v-if="time.labelPosition === 'bottom'" class="vertical-bottom text-center text-black">{{ time.label }}
-              </div>
-              <div v-else class="text-center text-black">{{ time.label }}</div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="30" show-value track-color="light-blue-2" class="text-black q-ma-md" value="1"
+                size="100px" color="light-blue" />
+              <div class="vertical-bottom text-center text-black">Days</div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="24" show-value track-color="light-blue-2" class="text-black q-ma-md" value="4"
+                size="100px" color="light-blue" />
+              <div class="text-center text-black">Hours</div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="60" show-value track-color="light-blue-2" class="text-black q-ma-md" value="45"
+                size="100px" color="light-blue" />
+              <div class="vertical-bottom text-center text-black">Miunites</div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="60" show-value track-color="light-blue-2" class="text-black q-ma-md" value="55"
+                size="100px" color="light-blue" />
+              <div class="vertical-bottom text-center text-black">Second</div>
             </div>
           </q-card>
         </div>
@@ -89,7 +102,7 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ slide }} %</div>
-                            <q-slider v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
+                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
                               :max="100" />
                           </div>
                         </div>
@@ -143,22 +156,43 @@
                 <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
                 <div class="q-ml-lg">.</div>
               </CardBase>
+              <CardBase class="col-6">
+                <q-scroll-area style="height: 200px; max-width: 400px;">
+                <div class="q-pa-md row justify-center">
+                  <div style="width: 100%; max-width: 400px">
+                    <q-chat-message name="me" :text="['tolong dikerjakan']" sent />
+                    <q-chat-message name="Roni" :text="['siap pa']" />
+                    <q-chat-message name="me" :text="['sudah berapa persen']" sent />
+                    <q-chat-message name="Roni" :text="['80 pa kira kira']" />
+                    <q-chat-message name="me" :text="['revisi ya']" sent />
+                    <q-chat-message name="Roni" :text="['ok pa']" />
+                  </div>
+                </div>
+                </q-scroll-area>
+                    <q-input class="bg-grey-3 border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                      <template v-slot:after>
+                        <q-btn round dense flat icon="send" />
+                      </template>
+                    </q-input>
+              </CardBase>
             </q-card-section>
           </q-card>
 
-          <q-card flat bordered class="q-mt-md no-shadow">
+          <q-card flat bordered class="q-mt-md no-shadow col-12">
             Attachment Download
-            <q-card-section class="row">
-              <CardBase class="  ">
-                <div class="q-pa-md">
-                  <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
+            <q-card-section class="">
+              <CardBase class="col-12">
+                <div class="q-pa-md col-12">
+                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader style="max-width: 300px" url="" label="Screenchot" multiple color="grey" />
-                  <div class="q-pt-md ">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
-                      label="Start" no-caps @click="startCountdown" />
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Send To Other PIC" no-caps to="task_detail_2"/>
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Screnshoot" multiple color="grey" />
+                  <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
+                    <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
+                      label="Cancle" no-caps />
+                    <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
+                      no-caps class="col-3" to="task_monitoring" @click="Notifydone" />
+                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
+                      no-caps class="col-3" to="task_monitoring" @click="Notifydone" />
                   </div>
                 </div>
               </CardBase>
@@ -192,7 +226,24 @@ function wrapCsvValue(val, formatFn) {
 export default {
   setup() {
     return {
-      slide: ref(15)
+      slide: ref(15),
+      ratingModel: ref(0),
+      ratingColors: ['yellow'],
+      pic: ref([]),
+      options: [
+        {
+          label: 'Bambang',
+          value: 'Bambang'
+        },
+        {
+          label: 'Tami',
+          value: 'Tami'
+        },
+        {
+          label: 'Rani',
+          value: 'Rani'
+        }
+      ],
     }
   },
 
@@ -200,41 +251,15 @@ export default {
     return {
       filter: '',
       mode: 'list',
-      timerData: [
-        { label: 'Days', labelPosition: 'bottom', max: 30, value: 1 },
-        { label: 'Hours', labelPosition: 'top', max: 24, value: 4 },
-        { label: 'Minutes', labelPosition: 'bottom', max: 60, value: 45 },
-        { label: 'Seconds', labelPosition: 'bottom', max: 60, value: 55 },
-      ],
-      countdown: null,
     }
   },
-  methods: {
-    startCountdown() {
-      this.countdown = setInterval(() => {
-        // Calculate seconds
-        let totalSeconds = this.timerData[0].value * 24 * 60 * 60 +
-          this.timerData[1].value * 60 * 60 +
-          this.timerData[2].value * 60 +
-          this.timerData[3].value;
 
-        if (totalSeconds > 0) {
-          totalSeconds--;
-          this.timerData[0].value = Math.floor(totalSeconds / (24 * 60 * 60));
-          this.timerData[1].value = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
-          this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
-          this.timerData[3].value = totalSeconds % 60;
-        } else {
-          this.stopCountdown();
-        }
-      }, 1000);
-    },
-    stopCountdown() {
-      clearInterval(this.countdown);
-    },
-  },
-  beforeDestroy() {
-    this.stopCountdown();
+  methods: {
+    Notifydone() {
+      this.$q.notify({
+        message: 'Task Done',
+      })
+    }
   },
 }
 </script>
