@@ -206,7 +206,7 @@
 
           <q-space></q-space>
 
-          <div class="col-6 absolute-bottom-right q-mt-xl">
+          <div class="col-12 absolute-bottom-right q-mt-xl">
             <q-item>
               <q-item-section>
                 <div class="row justify-end">

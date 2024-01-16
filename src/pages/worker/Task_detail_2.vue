@@ -60,7 +60,7 @@
       <div class="row q-col-gutter-md q-pt-md">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Details
-          <q-card flat bordered class="shadow q-pa-none q-ma-none">
+          <q-card flat bordered class="shadow q-pa-none q-ma-none fit">
             <q-card-section class="row">
               <div class="col q-ml-lg">
                 <div class="">Job</div>
@@ -135,32 +135,53 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Description
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
-            <q-card-section class="row">
-              <CardBase class="">
+            <q-card-section class="row justify-center">
+              <CardBase class="col-12">
                 <div class="q-ml-lg">Laporan Request :</div>
                 <div class="q-ml-md">1. Pencatatan Penjualan selama 1 minggu terakhir</div>
                 <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
                 <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
                 <div class="q-ml-lg">.</div>
               </CardBase>
+              <CardBase class="col-6">
+                <q-scroll-area style="height: 200px; max-width: 400px;">
+                  <div class="q-pa-md row justify-center">
+                    <div style="width: 100%; max-width: 400px">
+                      <q-chat-message name="Rian" :text="['tolong dikerjakan']" />
+                      <q-chat-message name="me" :text="['siap pa']" sent />
+                      <q-chat-message name="Rian" :text="['sudah berapa persen']" />
+                      <q-chat-message name="me" :text="['80 pa kira kira']" sent />
+                      <q-chat-message name="Rian" :text="['revisi ya']" />
+                      <q-chat-message name="me" :text="['ok pa']" sent />
+                    </div>
+                  </div>
+                </q-scroll-area>
+                <q-input class="bg-grey-3 border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                  <template v-slot:after>
+                    <q-btn round dense flat icon="send" />
+                  </template>
+                </q-input>
+              </CardBase>
             </q-card-section>
           </q-card>
 
-          <q-card flat bordered class="q-mt-md no-shadow">
+          <div class="q-mt-md">
             Attachment Download
+          </div>
+          <q-card flat bordered class="no-shadow col-12">
             <q-card-section class="row">
-              <CardBase class="  ">
+              <CardBase class="">
                 <div class="q-pa-md">
                   <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
                   <div class="q-pt-md"></div>
                   <q-uploader style="max-width: 300px" url="" label="Screenchot" multiple color="grey" />
-                  <div class="q-pt-md ">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
+                  <div class="q-pt-md row justify-between q-gutter-sm">
+                    <q-btn unelevated dense class=" col-2" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
                       label="Start" no-caps @click="startCountdown" />
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Send Back" no-caps to="task_detail"/>
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Submit To Superior" no-caps to="report_2"/>
+                    <q-btn unelevated dense class=" col-3" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Send Back" no-caps to="task_detail" />
+                    <q-btn unelevated dense class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Submit To Superior" no-caps />
                   </div>
                 </div>
               </CardBase>

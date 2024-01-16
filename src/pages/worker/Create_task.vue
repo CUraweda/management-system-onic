@@ -31,7 +31,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
-                  <q-input dense autogrow filled class="full-width" placeholder="Type name" />
+                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="title"/>
                 </q-item-section>
               </q-item>
             </div>
@@ -160,7 +160,7 @@
 
           <q-space></q-space>
 
-          <div class="col-6 absolute-bottom-right q-mt-xl">
+          <div class="col-12 absolute-bottom-right q-mt-xl">
             <q-item>
               <q-item-section>
                 <div class="row justify-end">
@@ -206,6 +206,7 @@ export default defineComponent({
     const submitEmptyspv = ref(false)
     const submitResultspv = ref([])
     return {
+      title: ref(''),
       startdate: ref(''),
       duedate: ref(''),
       model: ref(null),

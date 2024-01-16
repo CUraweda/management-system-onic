@@ -73,7 +73,7 @@
       <div class="row q-col-gutter-md q-pt-md">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Details
-          <q-card flat bordered class="shadow q-pa-none q-ma-none">
+          <q-card flat bordered class="shadow q-pa-none q-ma-none fit">
             <q-card-section class="row">
               <div class="col q-ml-lg">
                 <div class="">Job</div>
@@ -178,14 +178,16 @@
             </q-card-section>
           </q-card>
 
-          <q-card flat bordered class="q-mt-md no-shadow col-12">
+          <div class="q-mt-md">
             Attachment Download
+          </div>
+          <q-card flat bordered class="no-shadow col-12">
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
                   <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Screnshoot" multiple
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Screenshot" multiple
                     color="grey" />
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"

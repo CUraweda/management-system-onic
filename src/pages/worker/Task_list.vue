@@ -108,7 +108,7 @@
 
 
     <q-card class="q-mt-md row justify-end items-start text-h5 text-weight-bold text-black no-shadow q-ma-none q-pa-none">
-      <div class=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
+      <div class=" col-lg-6 col-md-7 col-sm-12 col-xs-12">
         <q-card-section class="row q-gutter-xs q-pt-none justify-between">
           <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
             standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">

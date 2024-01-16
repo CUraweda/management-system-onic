@@ -1,7 +1,7 @@
 
 const routes = [
   { path: '/', component: () => import('src/pages/sign-in.vue') },
-  // { path: '/sign-in', component: () => import('src/pages/sign-in.vue') },
+  { path: '/sign-up', component: () => import('src/pages/sign-up.vue') },
   {
     path: '/manager',
     component: () => import('src/layouts/ManagerSpvLayout.vue'),
@@ -22,6 +22,7 @@ const routes = [
       { path: 'create', meta: { title: 'CREATE TASK' }, component: () => import('pages/worker/Create_task.vue') },
       { path: 'task_detail', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail.vue') },
       { path: 'task_detail_2', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail_2.vue') },
+      { path: 'task_detail_3', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail_3.vue') },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: () => import('pages/worker/Task_list.vue') },
     ],
  },
