@@ -46,15 +46,15 @@
               </q-item>
             </div>
 
-            <div class="col-6">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
-                  <q-input dense filled v-model="startdate" mask="date" :rules="['date']">
-                    <template v-slot:append>
+                  <q-input filled dense v-model="startdate">
+                    <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="startdate">
+                          <q-date v-model="startdate" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -62,19 +62,32 @@
                         </q-popup-proxy>
                       </q-icon>
                     </template>
+
+                    <template v-slot:append>
+                      <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-time v-model="startdate" mask="YYYY-MM-DD HH:mm" format24h>
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-time>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
                   </q-input>
                 </q-item-section>
               </q-item>
             </div>
-            <div class="col-6">
+
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input dense filled v-model="duedate" mask="date" :rules="['date']">
-                    <template v-slot:append>
+                  <q-input filled dense v-model="duedate">
+                    <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="duedate">
+                          <q-date v-model="duedate" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -82,10 +95,23 @@
                         </q-popup-proxy>
                       </q-icon>
                     </template>
+
+                    <template v-slot:append>
+                      <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-time v-model="duedate" mask="YYYY-MM-DD HH:mm" format24h>
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-time>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
                   </q-input>
                 </q-item-section>
               </q-item>
             </div>
+
             <div class="col-12">
               <q-item>
                 <q-item-section>
@@ -116,22 +142,24 @@
                     </div>
                   </q-form>
 
+
                   <q-card v-if="submittedspv" flat class="col-12 q-mt-md"
                     :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'">
                     <template>
                       <q-card-section class="row q-gutter-sm items-center">
                         <div v-for="(item, index) in submitResultspv" :key="index"
                           class="q-pa-sm bg-blue-2 row items-center justify-between"
-                          style="border-radius: 23px; width: 150px;">
+                          style="border-radius: 23px; width: 150px;" flat borderd>
                           <q-avatar size="30px" color="blue">
                             <img src="statics/worker.png">
                           </q-avatar>
                           {{ item.value }}
-                          <q-btn dense flat color="red" size="15px" icon="close" />
+                          <q-btn dense flat color="red" size="15px" icon="close" v-close />
                         </div>
                       </q-card-section>
                     </template>
                   </q-card>
+
                 </q-item-selection>
               </q-item>
             </div>

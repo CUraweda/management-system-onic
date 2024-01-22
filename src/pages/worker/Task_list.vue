@@ -6,7 +6,7 @@
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
 
             <q-item-section class="text-weight-bold">
               Tasks Completed
@@ -31,7 +31,7 @@
       <!-- in progres task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
 
             <q-item-section class="text-weight-bold">
               Tasks Open
@@ -56,7 +56,7 @@
       <!-- overdue -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
             <q-item>
               <q-item-section class="text-weight-bold">
                 Tasks In Progress
@@ -82,7 +82,7 @@
       <!-- opened -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
             <q-item>
               <q-item-section class="text-weight-bold">
                 Tasks Delayed

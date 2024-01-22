@@ -6,7 +6,8 @@
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
+            class="text-black">
 
             <q-item-section class="text-weight-bold">
               Tasks Completed
@@ -31,7 +32,7 @@
       <!-- in progres task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
 
             <q-item-section class="text-weight-bold">
               Tasks Open
@@ -56,7 +57,8 @@
       <!-- overdue -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'"
+            class="text-black">
             <q-item>
               <q-item-section class="text-weight-bold">
                 Tasks In Progress
@@ -82,7 +84,7 @@
       <!-- opened -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
             <q-item>
               <q-item-section class="text-weight-bold">
                 Tasks Delayed
@@ -173,8 +175,8 @@
                 use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
                 dropdown-icon="filter_list"></q-select>
 
-              <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade" text-color="cyan" unelevated dense outline
-                label="Export" no-caps @click="exportTable" />
+              <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
+                text-color="cyan" unelevated dense outline label="Export" no-caps @click="exportTable" />
 
             </q-card-section>
           </div>
@@ -187,114 +189,110 @@
     <q-page class="q-pa-sm">
       <q-card>
         <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="name"
-          :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination" selection="multiple"
-          :selected.sync="selected">
+          :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination">
+
+          <template v-slot:body="props">
+            <q-tr :props="props" :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
+
+              <q-td key="task_title" :props="props">
+                <div>{{ props.row.task_title }}</div>
+              </q-td>
+
+              <q-td key="name" :props="props">
+                <q-item style="max-width: 420px">
+                  <q-item-section avatar>
+                    <q-avatar>
+                      <img :src="props.row.avatar">
+                    </q-avatar>
+                  </q-item-section>
+
+                  <q-item-section>
+                    <q-item-label>{{ props.row.name }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-td>
+
+              <q-td key="due_date" :props="props">
+                <div>{{ props.row.due_date }}</div>
+              </q-td>
+
+              <!-- priority -->
+
+              <q-td key="priority" :props="props">
+                <q-chip
+                  :color="(props.row.priority == 'High') ? 'red-2 text-red' : (props.row.priority == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
+                  text-color="white" dense class="text-center under-title q-px-sm tex" rounded>{{ props.row.priority }}
+                </q-chip>
+              </q-td>
+
+              <q-td key="status" :props="props">
+                <q-chip
+                  :color="(props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                  dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
+                </q-chip>
+              </q-td>
+
+              <!-- priority -->
+              <q-td key="Progress" :props="props">
+                <q-linear-progress grey :color="getColor(props.row.progress)" :value="props.row.progress / 100"
+                  class="q-mt-md" />
+              </q-td>
+
+              <q-td key="detail" :props="props">
+                <div class="q-gutter-sm">
+                  <q-btn dense unelevated to="detail">
+                    <q-icon name="img:/statics/reportc.svg" />
+                  </q-btn>
+                </div>
+              </q-td>
+
+              <q-td key="feed" :props="props">
+                <div class="q-gutter-sm" v-if="props.row.status === 'Wait-app'">
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                    label="Cancle" />
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2"
+                    text-color="yellow-9" label="Revise" />
+                  <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm"
+                    rounded @click="acc"/>
+                </div>
+                <div class="q-gutter-sm" v-else>
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                    label="Revise" />
+                  <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
+                    @click="employee_dialog = true" />
+                </div>
+              </q-td>
 
 
-          <template>
 
+              <!-- action -->
+              <q-td key="action" :props="props">
+                <div class="q-gutter-sm">
+                  <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
+                    label="Edit" />
+                  <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
+                    label="Delete" />
+                </div>
+              </q-td>
+              <!-- action -->
+            </q-tr>
           </template>
-          <!-- priority -->
-          <template v-slot:body-cell-priority="props">
-            <q-td :props="props">
-              <q-chip
-                :color="(props.row.priority == 'High') ? 'red-2 text-red' : (props.row.priority == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
-                text-color="white" dense class="text-center under-title q-px-sm tex" rounded>{{ props.row.priority }}
-              </q-chip>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-status="props">
-            <q-td :props="props">
-              <q-chip
-                :color="(props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
-                dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
-              </q-chip>
-            </q-td>
-          </template>
-
-          <!-- priority -->
-          <template v-slot:body-cell-Progress="props">
-            <q-td :props="props">
-              <q-linear-progress grey :color="getColor(props.row.progress)" :value="props.row.progress / 100"
-                class="q-mt-md" />
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-name="props">
-            <q-td :props="props">
-              <q-item style="max-width: 420px">
-                <q-item-section avatar>
-                  <q-avatar>
-                    <img :src="props.row.avatar">
-                  </q-avatar>
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label>{{ props.row.name }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-td>
-          </template>
-
-
-          <template v-slot:body-cell-feed="props">
-            <q-td :props="props">
-              <div class="q-gutter-sm" v-if="props.row.status === 'Wait-app'">
-                <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                  label="Cancle" />
-                <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2" text-color="yellow-9"
-                  label="Revise" />
-                <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm" rounded
-                  @click="employee_dialog = true" />
-              </div>
-              <div class="q-gutter-sm" v-else>
-                <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                  label="Revise" />
-                <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
-                  @click="employee_dialog = true" />
-              </div>
-            </q-td>
-          </template>
-
-
-          <template v-slot:body-cell-detail="props">
-            <q-td :props="props">
-              <div class="q-gutter-sm">
-                <q-btn dense unelevated to="detail">
-                  <q-icon name="img:/statics/reportc.svg" />
-                </q-btn>
-              </div>
-            </q-td>
-          </template>
-
-          <!-- action -->
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <div class="q-gutter-sm">
-                <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
-                  label="Edit" />
-                <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
-                  label="Delete" />
-              </div>
-            </q-td>
-          </template>
-          <!-- action -->
         </q-table>
       </q-card>
       <q-dialog v-model="employee_dialog">
         <q-card class="" flat bordered>
           <q-card-section>
             <div class="text-h6">
-              Employee Details
-              <q-btn round flat dense icon="close" class="float-right" color="grey-8" v-close-popup></q-btn>
+              Beri Rating untuk Pekerja!
+              <q-btn round flat dense icon="close" class="q-ml-sm float-right" color="grey-8" v-close-popup></q-btn>
             </div>
           </q-card-section>
           <q-card-section>
             <div class="q-gutter-md row items-center">
 
-              <q-rating v-model="ratingModel" size="3em" color="grey" :color-selected="yellow" @click="submit"
-                v-close-popup />
+              <q-slider class="" v-model="model" color="orange" :min="0" :max="5" markers :marker-labels="model"
+                label-always :label-value="model" />
+              <q-btn class="q-px-sm bg-yellow-2 text-yellow-9" v-close-popup unelevated @click="submit">Submit</q-btn>
             </div>
           </q-card-section>
 
@@ -343,62 +341,14 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
-        {
-          name: "task_title",
-          align: "left",
-          label: "Task Title",
-          field: "task_title",
-          sortable: true
-        },
-        {
-          name: "name",
-          align: "left",
-          label: "PIC",
-          field: "name",
-          sortable: true
-        },
-        {
-          name: "entry_date",
-          align: "left",
-          label: "Due Date",
-          field: "entry_date",
-          sortable: true
-        },
-        {
-          name: "priority",
-          align: "center",
-          label: "Priority",
-          field: "priority",
-          sortable: true
-        },
-        {
-          name: "status",
-          align: "center",
-          label: "Status",
-          field: "status",
-          sortable: true
-        },
-        {
-          name: "Progress",
-          align: "left",
-          label: "Progress bar",
-          field: "Progress",
-          sortable: true
-        },
-        {
-          name: "detail",
-          align: "left",
-          label: "Detail",
-          field: "detail",
-          sortable: true
-        },
-        {
-          name: "feed",
-          align: "left",
-          label: "Feedback",
-          field: "feed",
-          sortable: true
-        },
+        { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
+        { name: "name", align: "left", label: "PIC", field: "name", sortable: true },
+        { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
+        { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
+        { name: "status", align: "center", label: "Status", field: "status", sortable: true },
+        { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
+        { name: "detail", align: "left", label: "Detail", field: "detail", sortable: true },
+        { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: true },
         {
           name: "action",
           align: "left",
@@ -414,7 +364,7 @@ export default {
           task_title: "Laporan Mingguan",
           name: "Leslie Tecklenburg",
 
-          entry_date: "05/01/2020",
+          due_date: "05/01/2020",
           priority: "High",
           status: "Wait-app",
           progress: 0,
@@ -426,7 +376,7 @@ export default {
           name: "Lia Whitledge",
           abeng: "priority",
 
-          entry_date: "15/12/2019",
+          due_date: "15/12/2019",
           priority: "High",
           status: "Open",
           progress: 0,
@@ -438,9 +388,9 @@ export default {
           name: "Sam Wileman",
           abeng: "priority",
 
-          entry_date: "12/11/2019",
+          due_date: "12/11/2019",
           priority: "High",
-          status: "In-progress",
+          status: "Idle",
           progress: 50,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
         },
@@ -450,7 +400,7 @@ export default {
           name: "John Rozelle",
           abeng: "aku",
 
-          entry_date: "10/11/2019",
+          due_date: "10/11/2019",
           priority: "Normal",
           status: "In-progress",
           progress: 50,
@@ -461,7 +411,7 @@ export default {
           task_title: "Mapping Market",
           name: "Edgar Colmer",
 
-          entry_date: "11/09/2019",
+          due_date: "11/09/2019",
           priority: "Normal",
           status: "Completed",
           progress: 100,
@@ -472,7 +422,7 @@ export default {
           task_title: "Data Summary Mitra",
           name: "Kaiden Rozelle",
 
-          entry_date: "10/11/2019",
+          due_date: "10/11/2019",
           priority: "Normal",
           status: "Completed",
           progress: 100,
@@ -482,7 +432,7 @@ export default {
           serial_no: "07",
           name: "Jacob Firtado",
 
-          entry_date: "09/10/2019",
+          due_date: "09/10/2019",
           priority: "Normal",
           status: "Open",
           progress: 0,
@@ -492,7 +442,7 @@ export default {
           serial_no: "05",
           name: "John Doe",
           amount: "$ 900",
-          entry_date: "12/11/2019",
+          due_date: "12/11/2019",
           priority: "High",
           status: "Open",
           progress: 0,
@@ -506,7 +456,7 @@ export default {
   },
   setup() {
     return {
-      ratingModel: ref(0),
+      model: ref(0),
       yellow: ['yellow'],
       onItemClick() {
         // console.log('Clicked on an Item')
@@ -514,6 +464,19 @@ export default {
     };
   },
   methods: {
+
+    getRowColor(status) {
+      if (status === 'Open') {
+        return 'bg-blue-3'; // Change it to your desired color class
+      }
+      return ''; // No background color for other statuses
+    },
+
+    acc() {
+      this.$q.notify({
+        message: 'Task Accepted',
+      })
+    },
 
     submit() {
       this.$q.notify({

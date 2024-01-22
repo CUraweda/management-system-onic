@@ -30,7 +30,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
-                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="title"/>
+                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="title" />
                 </q-item-section>
               </q-item>
             </div>
@@ -45,15 +45,15 @@
               </q-item>
             </div>
 
-            <div class="col-6">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
-                  <q-input dense filled v-model="startdate" mask="date" :rules="['date']">
-                    <template v-slot:append>
+                  <q-input filled dense v-model="startdate">
+                    <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="startdate">
+                          <q-date v-model="startdate" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -61,11 +61,57 @@
                         </q-popup-proxy>
                       </q-icon>
                     </template>
+
+                    <template v-slot:append>
+                      <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-time v-model="startdate" mask="YYYY-MM-DD HH:mm" format24h>
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-time>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
                   </q-input>
                 </q-item-section>
               </q-item>
             </div>
-            <div class="col-6">
+
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <q-item>
+                <q-item-section>
+                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
+                  <q-input filled dense v-model="duedate">
+                    <template v-slot:prepend>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-date v-model="duedate" mask="YYYY-MM-DD HH:mm">
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+
+                    <template v-slot:append>
+                      <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                          <q-time v-model="duedate" mask="YYYY-MM-DD HH:mm" format24h>
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-time>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </q-item-section>
+              </q-item>
+            </div>
+
+            <!-- <div class="col-6">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
@@ -84,7 +130,7 @@
                   </q-input>
                 </q-item-section>
               </q-item>
-            </div>
+            </div> -->
             <div class="col-12">
               <q-item>
                 <q-item-section>
@@ -130,12 +176,12 @@
                             <img src="statics/worker.png">
                           </q-avatar>
                           {{ item.value }}
-                          <q-btn dense flat color="red" size="15px" icon="close" />
+                          <q-btn round flat dense icon="close" class="float-right" color="grey-8" v-close-popup />
                         </div>
                       </q-card-section>
                     </template>
                   </q-card>
-                  <!-- selected pic card -->
+                  <!-- selected  card -->
                 </q-item-selection>
               </q-item>
             </div>
@@ -214,7 +260,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="createNotify" to="task_monitoring"/>
+                      type="submit" @click="createNotify" to="task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -257,7 +303,7 @@ export default defineComponent({
     return {
       title: ref(''),
       startdate: ref(''),
-      duedate: ref(''),
+      duedate:  ref(''),
       model: ref(null),
       btnmodel: ref('single'),
       text: ref(''),

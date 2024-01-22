@@ -157,23 +157,12 @@
                 <div class="q-ml-lg">.</div>
               </CardBase>
               <CardBase class="col-6">
-                <!-- <q-scroll-area style="height: 200px; max-width: 400px;">
-                <div class="q-pa-md row justify-center">
-                  <div style="width: 100%; max-width: 400px">
-                    <q-chat-message name="me" :text="['tolong dikerjakan']" sent />
-                    <q-chat-message name="Roni" :text="['siap pa']" />
-                    <q-chat-message name="me" :text="['sudah berapa persen']" sent />
-                    <q-chat-message name="Roni" :text="['80 pa kira kira']" />
-                    <q-chat-message name="me" :text="['revisi ya']" sent />
-                    <q-chat-message name="Roni" :text="['ok pa']" />
-                  </div>
-                </div>
-                </q-scroll-area>
-                    <q-input class="bg-grey-3 border2 col-6" bottom-slots v-model="text" label="Text" dense>
+
+                    <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
                       <template v-slot:after>
                         <q-btn round dense flat icon="send" />
                       </template>
-                    </q-input> -->
+                    </q-input>
               </CardBase>
             </q-card-section>
           </q-card>

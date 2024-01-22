@@ -155,25 +155,15 @@
                 <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
                 <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
                 <div class="q-ml-lg">.</div>
+
+                <div>{{ text }}</div>
               </CardBase>
               <CardBase class="col-6">
-                <q-scroll-area style="height: 200px; max-width: 400px;">
-                <div class="q-pa-md row justify-center">
-                  <div style="width: 100%; max-width: 400px">
-                    <q-chat-message name="me" :text="['tolong dikerjakan']" sent />
-                    <q-chat-message name="Roni" :text="['siap pa']" />
-                    <q-chat-message name="me" :text="['sudah berapa persen']" sent />
-                    <q-chat-message name="Roni" :text="['80 pa kira kira']" />
-                    <q-chat-message name="me" :text="['revisi ya']" sent />
-                    <q-chat-message name="Roni" :text="['ok pa']" />
-                  </div>
-                </div>
-                </q-scroll-area>
-                    <q-input class="bg-grey-3 border2 col-6" bottom-slots v-model="text" label="Text" dense>
-                      <template v-slot:after>
-                        <q-btn round dense flat icon="send" />
-                      </template>
-                    </q-input>
+                <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                  <template v-slot:after>
+                    <q-btn round dense flat icon="send" />
+                  </template>
+                </q-input>
               </CardBase>
             </q-card-section>
           </q-card>
@@ -200,7 +190,8 @@
                     <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
                       Feedback
                     </div>
-                    <q-rating v-model="ratingModel" size="3em" color="grey" :color-selected="ratingColors" />
+                    <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange" :min="0" :max="5" markers
+                      :marker-labels="model" label-always :label-value="model"/>
                   </div>
                 </div>
               </CardBase>
@@ -234,7 +225,9 @@ function wrapCsvValue(val, formatFn) {
 export default {
   setup() {
     return {
+      model: ref(0),
       slide: ref(15),
+      text: ref(''),
       ratingModel: ref(0),
       ratingColors: ['yellow'],
       pic: ref([]),
