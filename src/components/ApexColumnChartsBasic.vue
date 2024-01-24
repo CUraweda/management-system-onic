@@ -1,23 +1,24 @@
 <template>
-  <apexchart type="bar" height="230" :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="bar" height="321"   :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
 export default {
   name: 'ApexColumnChartsBasic',
-  data () {
+  data() {
     return {
       series: [{
-        name: 'Net Profit',
-        data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+        name: 'Completed',
+        data: [90, 55, 57, 56]
       }, {
-        name: 'Revenue',
-        data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
+        name: 'On-Going',
+        data: [76, 85, 101, 98]
       }, {
-        name: 'Free Cash Flow',
-        data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
+        name: 'Delayed',
+        data: [35, 41, 36, 26]
       }],
       chartOptions: {
+        colors: ['#00BDD6', '#8353E2', '#BCC1CA'],
         animations: {
           enabled: true,
           easing: 'easeinout',
@@ -27,22 +28,24 @@ export default {
           text: 'Column Charts Basic',
           align: 'left',
           style: {
-            color: '#FFF'
+            color: '#fff'
           }
         },
         legend: {
+          position: "top",
+          offsetY: -20,
           labels: {
-            colors: '#FFF'
+            colors: '#000'
           }
         },
         chart: {
           type: 'bar',
-          height: 350
+          height: 450
         },
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '55%',
+            columnWidth: '40%',
             endingShape: 'rounded'
           }
         },
@@ -55,23 +58,17 @@ export default {
           colors: ['transparent']
         },
         xaxis: {
-          categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          categories: ['Q1', 'Q2', 'Q3', 'Q4'],
           labels: {
             style: {
-              colors: '#fff'
+              colors: '#000'
             }
           }
         },
         yaxis: {
-          title: {
-            text: '$ (thousands)',
-            style: {
-              color: '#FFF'
-            }
-          },
           labels: {
             style: {
-              colors: '#fff'
+              colors: '#000'
             }
           }
         },

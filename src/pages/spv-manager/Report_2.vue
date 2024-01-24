@@ -148,17 +148,16 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Description
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
-            <q-card-section class="row justify-center">
-              <CardBase class="col-12">
+            <q-card-section class="row">
+              <CardBase class="">
                 <div class="q-ml-lg">Laporan Request :</div>
                 <div class="q-ml-md">1. Pencatatan Penjualan selama 1 minggu terakhir</div>
                 <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
                 <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
                 <div class="q-ml-lg">.</div>
-
-                <div>{{ text }}</div>
               </CardBase>
               <CardBase class="col-6">
+
                 <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
                   <template v-slot:after>
                     <q-btn round dense flat icon="send" />
@@ -167,6 +166,7 @@
               </CardBase>
             </q-card-section>
           </q-card>
+
 
           <div class="q-mt-md">
             Attachment Download
@@ -179,6 +179,16 @@
                   <div class="q-pt-md"></div>
                   <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
                     color="grey" />
+                  <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0" :options="options"
+                    behavior="menu" class="col-6">
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No results
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps />
@@ -225,10 +235,8 @@ function wrapCsvValue(val, formatFn) {
 export default {
   setup() {
     return {
-      model: ref(0),
       slide: ref(15),
-      text: ref(''),
-      ratingModel: ref(0),
+      model: ref(0),
       ratingColors: ['yellow'],
       pic: ref([]),
       options: [

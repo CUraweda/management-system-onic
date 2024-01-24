@@ -1,150 +1,162 @@
 <template>
-  <q-layout>
-    <q-page-container>
+  <q-layout view="hHh Lpr lFf">
+    <q-page-container class="bg-grey-2">
+      <q-page padding class="row items-center justify-center">
+        <div class="row full-width">
+          <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
+            <q-card flat class="bg-white text-black fixed-full">
+              <div class="row justify-end">
 
-      <q-page class="flex flex-center ">
+                <div class="col-md-4 col-xs-12 q-my-xl">
+                  <div class="q-pa-md text-center">
+                    <!-- welcome section -->
+                    <div class="col items-center q-mt-md">
+                      <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
+                      <div class=" text-h5">
+                        Welcome!
+                      </div>
+                      <p class="">Enter your credentials to access your account</p>
+                    </div>
+                    <!-- welcome section -->
 
-        <q-card
-          class="login"
-          v-bind:style="
-            $q.platform.is.mobile ? { width: '80%' } : { width: '30%' }
-          "
-        >
+                    <!-- button section -->
+                    <div class="row q-mb-xl">
+                      <q-btn unelevated class="q-qy-md icon q-mr-md col bg-red-2"><q-img src="statics/Google1.svg"
+                          width="17px"></q-img></q-btn>
+                      <q-btn unelevated class="q-qy-md icon q-mr-md col bg-blue-2"><q-img src="statics/facebook.svg"
+                          width="17px"></q-img></q-btn>
+                      <q-btn unelevated class="q-qy-md icon col bg-grey-2"><q-img src="statics/Apple.svg"
+                          width="17px"></q-img></q-btn>
+                    </div>
+                    <!-- button section -->
 
-        <q-img src="/statics/logo.jpg" class="icon"></q-img>
+                    <!-- form section -->
+                    <q-form class="q-gutter-md">
+                      <div class="row q-mb-md">
+                        <q-input class="col q-mr-md" v-model="firstname" filled :type="isPwd ? 'firstname' : 'text'"
+                          label="First Name" placeholder="Name" :dense="dense"></q-input>
 
-          <q-card-section>
-            <div class="row items-center" style="margin: 0px 30%; margin-bottom: -7%;">
-              <div class="col text-h5" style="font-size: 25px;">
-                Welcome!
-                <p style="font-size: 13px; color:#565E6C; margin-right: -100%; margin-left: -50%;">Enter your credentials to access your account</p>
+                        <q-input class="col" v-model="lastname" filled :type="isPwd ? 'lastname' : 'text'"
+                          label="Last Name" placeholder="Name" :dense="dense"></q-input>
+                      </div>
+
+                      <q-input filled v-model="Email" label="Email" lazy-rules />
+
+                      <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
+                        placeholder="Enter at least 8+ characters" :dense="dense">
+                        <template v-slot:append>
+                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                        </template>
+                      </q-input>
+
+                      <div class="items-center justify-center row">
+                        <q-checkbox v-model="right" color="blue" label="Keep me logged in" />
+                        <q-space></q-space>
+                        <a href="" style=" color:#00BDD6;"> forgot password?</a>
+                      </div>
+
+                      <div>
+                        <q-btn class="full-width" label="Sign Up" type="button" color="cyan"
+                          @click="signUp" />
+                      </div>
+                    </q-form>
+                    <!-- form section -->
+                  </div>
+                </div>
+
+                <q-section></q-section>
+
+                <!-- gambar makanan -->
+                <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
+                  <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
+                </div>
+                <!-- gambar makanan -->
+
               </div>
-            </div>
-          </q-card-section>
-
-          <q-card-section class="">
-            <div class="row">
-                <q-btn style="background-color: #FEF1F1;" class="icons col"><q-img src="statics/google.svg" class="icons-app"></q-img></q-btn>
-                <q-btn style="background-color: #F3F6FB;" class="icons col"><q-img src="statics/facebook.svg" class="icons-app"></q-img></q-btn>
-                <q-btn style="background-color: #F3F4F6;" class="icons col"><q-img src="statics/Apple.svg" class="icons-app"></q-img></q-btn>
-              </div>
-          </q-card-section>
-
-          <q-card-section>
-            <q-form class="q-gutter-md" style="margin-bottom: 5px;">
-              <div class="row">
-              <q-input class="col " style="margin-right: 12px;" v-model="firstname" filled :type="isPwd ? 'firstname' : 'text'" label="First Name" placeholder="Name" :dense="dense"></q-input>
-              <q-input class="col" v-model="lastname" filled :type="isPwd ? 'lastname' : 'text'" label="Last Name" placeholder="Name" :dense="dense"></q-input>
-              </div>
-              <q-input filled v-model="Email" label="Email" lazy-rules />
-              <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password" placeholder="Enter at least 8+ characters" :dense="dense">
-              <template v-slot:append>
-          <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            @click="isPwd = !isPwd"
-          />
-        </template>
-      </q-input>
-
-              <div class="row items-baseline">
-                <q-checkbox v-model="right" color="blue" label="Keep me logged in" class="col" style="margin-left: -3%;" />
-                <p class="col" style="margin: auto; text-align: right;"> <a href="" style=" color:#00BDD6;"> forgot password?</a> </p>
-              </div>
-
-              <div>
-                <q-btn
-                  class="full-width"
-                  label="Sign Up"
-                  to="/sign-in"
-                  type="button"
-                  color="cyan"
-                  @click="loginNotify"
-                />
-              </div>
-
-              <!-- <div class="column flex flex-center">
-                <p style="background-color: #F3F4F6; color: #323842; border-radius: 4px;">powered by</p>
-                <img src="statics/IPS.png">
-              </div> -->
-              
-            </q-form>
-          </q-card-section>
-        </q-card>
-
+            </q-card>
+          </div>
+        </div>
       </q-page>
-      <q-img src="statics/makanan.png" class="makanan mobile-hide"></q-img>
     </q-page-container>
   </q-layout>
 </template>
 
-<script type="text/javascript"></script>
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import axios from 'axios';
 
-    export default {
-        data() {
-            return {
-                Email: 'example.email@gmail.com',
-                password: '',
-                firstname: '',
-                lastname: '',
-            }
-        },
+export default {
+  data() {
+    return {
+      Email: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+    };
+  },
 
-        setup() {
-          return {
-            right: ref(false),
-            isPwd: ref(false),
-            dense: ref(false),
-          }
-        },
+  setup() {
+    return {
+      right: ref(false),
+      isPwd: ref(false),
+      dense: ref(false),
+    };
+  },
 
-methods: {
-           loginNotify(){
-             this.$q.notify({
-        message: 'Login Successful',
-      })
-           }
-         },
-    }
+  methods: {
+    async signUp() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/user/signup', {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          u_email: this.Email,
+          u_password: this.password,
+          // Tambahkan properti lain sesuai kebutuhan
+        });
+
+        // Dapatkan token dari respons
+        const token = response.data.token;
+
+        // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+        localStorage.setItem('token', token);
+
+        // Redirect ke halaman lain jika sign-up berhasil
+        this.$router.push('/');
+
+        this.$q.notify({
+          message: 'Sign Up Successful',
+        });
+      } catch (error) {
+        console.error('Error signing up:', error);
+
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Error signing up',
+        });
+      }
+    },
+  },
+};
 </script>
+
 
 <style>
 
-.makanan{
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+.makanan {
+  justify-items: end;
   border-radius: 45% 0% 0% 0%;
-  width:50%;
   height: 100%;
-  position: absolute;
-  top:0px;
-  right:0px;
+  left: 0;
+  bottom: 0;
 }
 
-.login{
-  position: relative;
-  height: auto;
-  box-shadow: none;
-  margin-right:50%;
-}
-
-.icon{
-  width:30%;
-  margin-top:5%;
-  margin-left: 35%;
-  margin-right: 40%;
-  margin-bottom:5%;
-}
-
-.icons{
-  margin-right: 5%;
+.icon {
   border-radius: 18px;
-  width: 3px;
 }
-
-.icons-app{
-  width:25%;
-  margin: 7px;
-}
-
 </style>
