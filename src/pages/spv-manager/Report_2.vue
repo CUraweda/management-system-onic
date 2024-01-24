@@ -177,7 +177,7 @@
                 <div class="q-pa-md col-12">
                   <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Screenshoot" multiple
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
                     color="grey" />
                   <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0" :options="options"
                     behavior="menu" class="col-6">

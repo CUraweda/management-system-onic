@@ -1,3 +1,7 @@
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+
+Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: () => import('src/pages/sign-in.vue') },
@@ -8,6 +12,7 @@ const routes = [
     children: [
       { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: () => import('pages/spv-manager/Dashboard.vue') },
       { path: 'create', meta: { title: 'CREATE TASK' }, component: () => import('pages/spv-manager/Create.vue') },
+      { path: 'edit', meta: { title: 'EDIT TASK' }, component: () => import('pages/spv-manager/Edit.vue') },
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: () => import('pages/spv-manager/task_monitoring.vue') },
       { path: 'report', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report.vue') },
       { path: 'report_2', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report_2.vue') },
@@ -50,6 +55,20 @@ const routes = [
   },
 
 ]
+
+const router = new VueRouter({
+  routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
+
+  if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
+      next('/');
+  } else {
+      next();
+  }
+});
 
 
 export default routes

@@ -45,6 +45,19 @@
               </q-item>
             </div>
 
+            <div class="col-12">
+              <q-item>
+                <q-item-section>
+                  <q-item-label class="q-pb-xs text-weight-bold"></q-item-label>
+                  <div class="q-gutter-sm">
+                    <q-radio v-model="shape" val="daily" label="Daily" />
+                    <q-radio v-model="shape" val="weekly" label="Weekly" />
+                    <q-radio v-model="shape" val="monthly" label="Monthly" />
+                  </div>
+                </q-item-section>
+              </q-item>
+            </div>
+
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
@@ -290,6 +303,11 @@ export default defineComponent({
         "High",
         "Normal",
       ],
+      shape: [
+        "Daily",
+        "Weekly",
+        "Monthly",
+      ],
     }
   },
 
@@ -303,7 +321,7 @@ export default defineComponent({
     return {
       title: ref(''),
       startdate: ref(''),
-      duedate:  ref(''),
+      duedate: ref(''),
       model: ref(null),
       btnmodel: ref('single'),
       text: ref(''),

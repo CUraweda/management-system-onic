@@ -8,10 +8,10 @@
               <div class="row justify-end">
 
                 <div class="col-md-4 col-xs-12 q-my-xl">
-                  <div class="q-pa-md text-center">
+                  <div class="q-pa-md text-center q-mt-md">
                     <!-- welcome section -->
                     <div class="col items-center">
-                      <q-img src="/statics/logo.jpg" width="150px" class="q-ma-md"></q-img>
+                      <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class=" text-h5">
                         Welcome Back!
                       </div>
@@ -38,7 +38,8 @@
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
                         placeholder="Enter at least 8+ characters" :dense="dense">
                         <template v-slot:append>
-                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                            @click="isPwd = !isPwd" />
                         </template>
                       </q-input>
 
@@ -49,8 +50,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign In" to="/manager/Dashboard" type="button" color="cyan"
-                          @click="loginNotify" />
+                        <q-btn class="full-width" label="Sign In" type="button" color="cyan" to="manager/dashboard" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -75,16 +75,17 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import axios from 'axios';
 
 export default {
+  name: 'sign-in',
+
   data() {
     return {
       Email: '',
       password: '',
-      firstname: '',
-      lastname: '',
-    }
+    };
   },
 
   setup() {
@@ -92,21 +93,45 @@ export default {
       right: ref(false),
       isPwd: ref(false),
       dense: ref(false),
-    }
+    };
   },
 
-  methods: {
-    loginNotify() {
-      this.$q.notify({
-        message: 'Login Successful',
-      })
-    }
-  },
-}
+  // methods: {
+  //   async signIn() {
+  //     try {
+  //       const response = await axios.post('http://localhost:3000/api/user/signin', {
+  //         u_email: this.Email,
+  //         u_password: this.password,
+  //       });
+
+  //       // Dapatkan token dari respons
+  //       // const token = response.data.token;
+
+  //       // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+  //       // localStorage.setItem('token', token);
+
+  //       // Redirect ke halaman lain jika login berhasil
+  //       this.$router.push('/worker/Dashboard');
+
+  //       this.$q.notify({
+  //         message: 'Login Successful',
+  //       });
+  //     } catch (error) {
+  //       console.error('Error signing in:', error);
+
+  //       this.$q.notify({
+  //         color: 'negative',
+  //         position: 'top',
+  //         message: 'Invalid email or password',
+  //       });
+  //     }
+  //   },
+  // },
+};
 </script>
 
-<style>
 
+<style>
 * {
   margin: 0px;
   padding: 0px;

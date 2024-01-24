@@ -269,7 +269,7 @@
               <q-td key="action" :props="props">
                 <div class="q-gutter-sm">
                   <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
-                    label="Edit" />
+                    label="Edit" to="Edit" />
                   <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
                     label="Delete" />
                 </div>

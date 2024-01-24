@@ -176,7 +176,7 @@
                 <div class="q-pa-md col-12">
                   <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Screenshoot" multiple color="grey" />
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple color="grey" />
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Cancle" no-caps />

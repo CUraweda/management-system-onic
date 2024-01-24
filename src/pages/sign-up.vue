@@ -10,8 +10,8 @@
                 <div class="col-md-4 col-xs-12 q-my-xl">
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
-                    <div class="col items-center">
-                      <q-img src="/statics/logo.jpg" width="150px" class="q-ma-md"></q-img>
+                    <div class="col items-center q-mt-md">
+                      <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class=" text-h5">
                         Welcome!
                       </div>
@@ -56,8 +56,8 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign Up" to="/sign-in" type="button" color="cyan"
-                          @click="loginNotify" />
+                        <q-btn class="full-width" label="Sign Up" type="button" color="cyan"
+                          @click="signUp" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -82,16 +82,17 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      Email: 'example.email@gmail.com',
+      Email: '',
       password: '',
       firstname: '',
       lastname: '',
-    }
+    };
   },
 
   setup() {
@@ -99,18 +100,46 @@ export default {
       right: ref(false),
       isPwd: ref(false),
       dense: ref(false),
-    }
+    };
   },
 
   methods: {
-    loginNotify() {
-      this.$q.notify({
-        message: 'Sign Up Successful',
-      })
-    }
+    async signUp() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/user/signup', {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          u_email: this.Email,
+          u_password: this.password,
+          // Tambahkan properti lain sesuai kebutuhan
+        });
+
+        // Dapatkan token dari respons
+        const token = response.data.token;
+
+        // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+        localStorage.setItem('token', token);
+
+        // Redirect ke halaman lain jika sign-up berhasil
+        this.$router.push('/');
+
+        this.$q.notify({
+          message: 'Sign Up Successful',
+        });
+      } catch (error) {
+        console.error('Error signing up:', error);
+
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Error signing up',
+        });
+      }
+    },
   },
-}
+};
 </script>
+
 
 <style>
 

@@ -163,7 +163,7 @@
                 <div class="q-pa-md">
                   <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
                   <div class="q-pt-md"></div>
-                  <q-uploader style="max-width: 300px" url="" label="Screenshot" multiple color="grey" />
+                  <q-uploader style="max-width: 300px" url="" label="Dokumen Hasil" multiple color="grey" />
                   <div class="q-pt-md row justify-between">
                     <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
                       label="Start" no-caps @click="startCountdown" />
