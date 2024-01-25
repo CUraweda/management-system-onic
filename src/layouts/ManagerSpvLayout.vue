@@ -72,6 +72,14 @@
             <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
+          <q-item clickable v-ripple to="task_monitoring_2">
+            <q-item-section avatar>
+              <q-icon name="view_list" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Task Approval</q-item-section>
+          </q-item>
+
           <q-item clickable v-ripple to="report">
             <q-item-section avatar>
               <q-icon name="assignment" color="grey-7" size="30px" />

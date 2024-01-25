@@ -54,6 +54,7 @@
                     <q-radio v-model="shape" val="daily" label="Daily" />
                     <q-radio v-model="shape" val="weekly" label="Weekly" />
                     <q-radio v-model="shape" val="monthly" label="Monthly" />
+                    <q-radio v-model="shape" val="insidental" label="Insidental" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -243,6 +244,7 @@ export default defineComponent({
         "Daily",
         "Weekly",
         "Monthly",
+        "Insidental",
       ],
     }
   },

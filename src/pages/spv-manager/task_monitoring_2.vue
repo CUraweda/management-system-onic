@@ -238,43 +238,16 @@
                   class="q-mt-md" />
               </q-td>
 
-              <q-td key="detail" :props="props">
+              <q-td key="Review" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated to="report">
+                  <q-btn dense unelevated to="report_3">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
               </q-td>
 
-              <q-td key="feed" :props="props">
-                <div class="q-gutter-sm" v-if="props.row.status === 'Wait-app'">
-                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                    label="Cancel" />
-                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2"
-                    text-color="yellow-9" label="Revise" />
-                  <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm"
-                    rounded @click="acc"/>
-                </div>
-                <div class="q-gutter-sm" v-else>
-                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                    label="Revise" />
-                  <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
-                    @click="employee_dialog = true" />
-                </div>
-              </q-td>
 
 
-
-              <!-- action -->
-              <q-td key="action" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
-                    label="Edit" to="Edit" />
-                  <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
-                    label="Delete" />
-                </div>
-              </q-td>
-              <!-- action -->
             </q-tr>
           </template>
         </q-table>
@@ -347,104 +320,63 @@ export default {
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
         { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
-        { name: "detail", align: "left", label: "Detail", field: "detail", sortable: true },
-        { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: true },
-        {
-          name: "action",
-          align: "left",
-          label: "Action",
-          field: "action",
-          sortable: true
-        }
+        { name: "Review", align: "left", label: "Review", field: "Review", sortable: true },
+
 
       ],
       data: [
         {
           serial_no: "01",
-          task_title: "Laporan Mingguan",
-          name: "Leslie Tecklenburg",
+          task_title: "Hitung Laba",
+          name: "Syahrini",
 
           due_date: "05/01/2020",
           priority: "High",
-          status: "Open",
+          status: "Wait-app",
           progress: 0,
           avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
         },
         {
           serial_no: "02",
-          task_title: "Rekap Laporan Mitra",
-          name: "Lia Whitledge",
-          abeng: "priority",
+          task_title: "Rekap Pendapatan",
+          name: "Agus",
 
           due_date: "15/12/2019",
           priority: "High",
-          status: "Open",
+          status: "Wait-app",
           progress: 0,
           avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
         },
         {
           serial_no: "03",
-          task_title: "Laporan Bahan",
-          name: "Sam Wileman",
-          abeng: "priority",
-
-          due_date: "12/11/2019",
-          priority: "High",
-          status: "Idle",
-          progress: 50,
-          avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
-        },
-        {
-          serial_no: "06",
-          task_title: "Laporan Laba Rugi",
-          name: "John Rozelle",
-          abeng: "aku",
-
-          due_date: "10/11/2019",
-          priority: "Normal",
-          status: "In-progress",
-          progress: 50,
-          avatar: "https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4",
-        },
-        {
-          serial_no: "04",
-          task_title: "Mapping Market",
-          name: "Edgar Colmer",
+          task_title: "Merekap Nota",
+          name: "Kaesang",
 
           due_date: "11/09/2019",
           priority: "Normal",
-          status: "Completed",
-          progress: 100,
+          status: "Wait-app",
+          progress: 0,
           avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
         },
         {
-          serial_no: "05",
-          task_title: "Data Summary Mitra",
-          name: "Kaiden Rozelle",
-
-          due_date: "10/11/2019",
-          priority: "Normal",
-          status: "Completed",
-          progress: 100,
-          avatar: "https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
-        },
-        {
-          serial_no: "07",
-          name: "Jacob Firtado",
-
-          due_date: "09/10/2019",
-          priority: "Normal",
-          status: "Open",
-          progress: 0,
-          avatar: "https://avatars0.githubusercontent.com/u/55240045?s=400&u=cf9bffc2bd2d8e42ca6e5abf40ddd6c1a03ce2860&v=4",
-        },
-        {
-          serial_no: "05",
-          name: "John Doe",
+          serial_no: "04",
+          task_title: "Merekap Data",
+          name: "Jajang",
           amount: "$ 900",
           due_date: "12/11/2019",
-          priority: "High",
-          status: "Open",
+          priority: "Important",
+          status: "Wait-app",
+          progress: 0,
+          avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
+        },
+        {
+          serial_no: "05",
+          task_title: "Riset Pasar",
+          name: "Junaedi",
+          amount: "$ 900",
+          due_date: "12/11/2019",
+          priority: "Normal",
+          status: "Wait-app",
           progress: 0,
           avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
         }

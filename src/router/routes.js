@@ -14,6 +14,7 @@ const routes = [
       { path: 'create', meta: { title: 'CREATE TASK' }, component: () => import('pages/spv-manager/Create.vue') },
       { path: 'edit', meta: { title: 'EDIT TASK' }, component: () => import('pages/spv-manager/Edit.vue') },
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: () => import('pages/spv-manager/task_monitoring.vue') },
+      { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: () => import('pages/spv-manager/task_monitoring_2.vue') },
       { path: 'report', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report.vue') },
       { path: 'report_2', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report_2.vue') },
       { path: 'report_3', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report_3.vue') },

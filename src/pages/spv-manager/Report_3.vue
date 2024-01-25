@@ -181,9 +181,9 @@
                     <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Cancle" no-caps />
                     <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
-                      no-caps class="col-3" to="task_monitoring" @click="Notifydone" />
+                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyrev" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
-                      no-caps class="col-3" to="task_monitoring" @click="Notifydone" />
+                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyapp" />
                   </div>
                 </div>
               </CardBase>
@@ -246,9 +246,14 @@ export default {
   },
 
   methods: {
-    Notifydone() {
+    Notifyapp() {
       this.$q.notify({
         message: 'Task Done',
+      })
+    },
+    Notifyrev() {
+      this.$q.notify({
+        message: 'Task Revised',
       })
     }
   },
