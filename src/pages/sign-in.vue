@@ -50,7 +50,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign In" type="button" color="cyan" to="manager/dashboard" />
+                        <q-btn class="full-width" label="Sign In" type="button" color="cyan" @click="signIn" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -96,37 +96,39 @@ export default {
     };
   },
 
-  // methods: {
-  //   async signIn() {
-  //     try {
-  //       const response = await axios.post('http://localhost:3000/api/user/signin', {
-  //         u_email: this.Email,
-  //         u_password: this.password,
-  //       });
+  methods: {
+    async signIn() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/signin', {
+          u_email: this.Email,
+          u_password: this.password,
+        });
 
-  //       // Dapatkan token dari respons
-  //       // const token = response.data.token;
+        const { token, message, redirect, user_id } = response.data;
 
-  //       // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
-  //       // localStorage.setItem('token', token);
+        // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+        localStorage.setItem('token', token);
 
-  //       // Redirect ke halaman lain jika login berhasil
-  //       this.$router.push('/worker/Dashboard');
+        // Redirect ke halaman profil dan kirimkan ID pengguna sebagai parameter
+        this.$router.push({
+          name: 'profile',
+          params: { userId: user_id },
+        });
 
-  //       this.$q.notify({
-  //         message: 'Login Successful',
-  //       });
-  //     } catch (error) {
-  //       console.error('Error signing in:', error);
+        this.$q.notify({
+          message: `Login Successful. ${message}`,
+        });
+      } catch (error) {
+        console.error('Error signing in:', error);
 
-  //       this.$q.notify({
-  //         color: 'negative',
-  //         position: 'top',
-  //         message: 'Invalid email or password',
-  //       });
-  //     }
-  //   },
-  // },
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Invalid email or password',
+        });
+      }
+    },
+  },
 };
 </script>
 

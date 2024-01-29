@@ -288,7 +288,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="createNotify" to="task_monitoring" />
+                      type="submit" @click="create" to="task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -420,6 +420,30 @@ export default defineComponent({
 
   methods: {
 
+    async create() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/task/tasks', {
+          id: this.id,
+          task_title: this.task_title,
+          priority: this.priority,
+          start_date: this.start_date,
+          due_date: this.due_date,
+          description: this.description,
+          pic: this.pic,
+          spv: this.spv,
+          status: this.status,
+        });
+        const token = response.data.token;
+
+        localStorage.setItem('token', token);
+
+        this.$router.push('/');
+      } catch (error) {
+        console.error('Error signing up:', error);
+      }
+    },
+
+
     createNotify() {
       this.$q.notify({
         message: 'Task Created',
@@ -427,64 +451,67 @@ export default defineComponent({
     },
 
     handleFileUpload(event) {
-    const file = event.target.files[0];
+      const file = event.target.files[0];
 
-    if (file) {
-      const reader = new FileReader();
+      if (file) {
+        const reader = new FileReader();
 
-      reader.onload = (e) => {
-        const content = e.target.result;
+        reader.onload = (e) => {
+          const content = e.target.result;
 
-        // Determine if the file is XLSX or CSV
-        if (file.name.endsWith('.xlsx')) {
-          this.parseXLSX(content);
-        } else if (file.name.endsWith('.csv')) {
-          this.parseCSV(content);
-        }
-      };
+          // Determine if the file is XLSX or CSV
+          if (file.name.endsWith('.xlsx')) {
+            this.parseXLSX(content);
+          } else if (file.name.endsWith('.csv')) {
+            this.parseCSV(content);
+          }
+        };
 
-      reader.readAsBinaryString(file);
-    }
-  },
+        reader.readAsBinaryString(file);
+      }
 
-  parseXLSX(content) {
-    const workbook = XLSX.read(content, { type: 'binary' });
-    const firstSheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[firstSheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    },
 
-    // Assuming data is a 2D array where each row represents a record
-    // Update your form fields accordingly
-    this.title = data[0][0]; // Example: Assuming the title is in the first cell of the first row
-    // Repeat for other fields
+    parseXLSX(content) {
+      const workbook = XLSX.read(content, { type: 'binary' });
+      const firstSheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[firstSheetName];
+      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    this.$q.notify({
-      message: 'Data from XLSX file has been loaded',
-    });
-  },
+      // Assuming data is a 2D array where each row represents a record
+      // Update your form fields accordingly
+      this.title = data[0][0]; // Example: Assuming the title is in the first cell of the first row
+      // Repeat for other fields
 
-  parseCSV(content) {
-    Papa.parse(content, {
-      header: true,
-      complete: (result) => {
-        const data = result.data;
+      this.$q.notify({
+        message: 'Data from XLSX file has been loaded',
+      });
+    },
 
-        // Assuming data is an array of objects with header as keys
-        // Update your form fields accordingly
-        if (data.length > 0) {
-          this.title = data[0].TaskTitle; // Example: Assuming TaskTitle is a header in the CSV
-          // Repeat for other fields
-        }
+    parseCSV(content) {
+      Papa.parse(content, {
+        header: true,
+        complete: (result) => {
+          const data = result.data;
 
-        this.$q.notify({
-          message: 'Data from CSV file has been loaded',
-        });
-      },
-    });
-  },
+          // Assuming data is an array of objects with header as keys
+          // Update your form fields accordingly
+          if (data.length > 0) {
+            this.title = data[0].TaskTitle; // Example: Assuming TaskTitle is a header in the CSV
+            // Repeat for other fields
+          }
+
+          this.$q.notify({
+            message: 'Data from CSV file has been loaded',
+          });
+        },
+      });
+    },
 
   },
 })
+
+
 </script>
 
 <style scoped></style>

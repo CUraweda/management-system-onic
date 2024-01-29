@@ -18,7 +18,7 @@
             </div>
           </q-toolbar-title>
 
-          <div class="row wrap items-center justify-end">
+          <div class="row wrap items-center justify-end q-gutter-sm">
             <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
               standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
               <template v-slot:prepend>
@@ -26,11 +26,29 @@
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
             </q-input>
-            <q-btn flat round dense icon="notifications" color="black" size="15px" />
+            <q-btn round dense flat color="black" icon="notifications">
+              <q-badge color="red" text-color="white" floating>
+                5
+              </q-badge>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <notification></notification>
+                </q-list>
+              </q-menu>
+            </q-btn>
+
             <q-btn flat round dense icon="question_mark" color="black" size="15px" />
-            <q-avatar color="cyan-3" size="30px">
-              <img src="statics/propil.png" />
-            </q-avatar>
+
+            <q-btn round dense flat>
+              <q-avatar color="cyan-3" size="30px">
+                <img src="statics/propil.png" />
+              </q-avatar>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <profile></profile>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </div>
         </q-toolbar>
       </div>
@@ -115,10 +133,17 @@
 
 <script>
 import { ref } from "vue";
+import notification from "./Notification.vue";
+import profile from "./Profile.vue";
 import { date } from "quasar";
 
 export default {
   name: 'ManagerLayout',
+
+  components: {
+    notification,
+    profile,
+  },
 
   data() {
     return {
