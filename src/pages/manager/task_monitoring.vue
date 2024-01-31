@@ -188,17 +188,21 @@
 
     <q-page class="q-pa-sm">
       <q-card>
-        <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="name"
+        <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="pic"
           :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination">
 
           <template v-slot:body="props">
             <q-tr :props="props" :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
 
+              <q-td key="id" :props="props">
+                <div>{{ props.row.id }}</div>
+              </q-td>
+
               <q-td key="task_title" :props="props">
                 <div>{{ props.row.task_title }}</div>
               </q-td>
 
-              <q-td key="name" :props="props">
+              <q-td key="pic" :props="props">
                 <q-item style="max-width: 420px">
                   <q-item-section avatar>
                     <q-avatar>
@@ -207,7 +211,7 @@
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label>{{ props.row.name }}</q-item-label>
+                    <q-item-label>{{ props.row.pic }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-td>
@@ -238,16 +242,43 @@
                   class="q-mt-md" />
               </q-td>
 
-              <q-td key="Review" :props="props">
+              <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated to="report_3">
+                  <q-btn dense unelevated @click="Report(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
               </q-td>
 
+              <q-td key="feed" :props="props">
+                <div class="q-gutter-sm" v-if="props.row.status === 'Wait-app'">
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                    label="Cancel" />
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2"
+                    text-color="yellow-9" label="Revise" />
+                  <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm" rounded
+                    @click="acc" />
+                </div>
+                <div class="q-gutter-sm" v-else>
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                    label="Revise" />
+                  <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
+                    @click="employee_dialog = true" />
+                </div>
+              </q-td>
 
 
+
+              <!-- action -->
+              <q-td key="action" :props="props">
+                <div class="q-gutter-sm">
+                  <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
+                    label="Edit" @click="Edit(props.row.id)" />
+                  <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
+                    label="Delete" @click="Delete(props.row.id)"/>
+                </div>
+              </q-td>
+              <!-- action -->
             </q-tr>
           </template>
         </q-table>
@@ -281,9 +312,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
+import axios from 'axios';
 import html2pdf from "html2pdf.js";
 // import Status from "components/Status"
 
@@ -303,6 +334,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'TaskMonitoring',
   data() {
     return {
 
@@ -315,69 +347,111 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
+        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
         { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
-        { name: "name", align: "left", label: "PIC", field: "name", sortable: true },
+        { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
         { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
         { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
-        { name: "Review", align: "left", label: "Review", field: "Review", sortable: true },
-
+        { name: "detail", align: "left", label: "Detail", field: "detail", sortable: true },
+        { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: true },
+        {
+          name: "action",
+          align: "left",
+          label: "Action",
+          field: "action",
+          sortable: true
+        }
 
       ],
       data: [
         // {
         //   serial_no: "01",
-        //   task_title: "Hitung Laba",
-        //   name: "Syahrini",
+        //   task_title: "Laporan Mingguan",
+        //   name: "Leslie Tecklenburg",
 
         //   due_date: "05/01/2020",
         //   priority: "High",
-        //   status: "Wait-app",
+        //   status: "Open",
         //   progress: 0,
         //   avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
         // },
         // {
         //   serial_no: "02",
-        //   task_title: "Rekap Pendapatan",
-        //   name: "Agus",
+        //   task_title: "Rekap Laporan Mitra",
+        //   name: "Lia Whitledge",
+        //   abeng: "priority",
 
         //   due_date: "15/12/2019",
         //   priority: "High",
-        //   status: "Wait-app",
+        //   status: "Open",
         //   progress: 0,
         //   avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
         // },
         // {
         //   serial_no: "03",
-        //   task_title: "Merekap Nota",
-        //   name: "Kaesang",
+        //   task_title: "Laporan Bahan",
+        //   name: "Sam Wileman",
+        //   abeng: "priority",
 
-        //   due_date: "11/09/2019",
+        //   due_date: "12/11/2019",
+        //   priority: "High",
+        //   status: "Idle",
+        //   progress: 50,
+        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
+        // },
+        // {
+        //   serial_no: "06",
+        //   task_title: "Laporan Laba Rugi",
+        //   name: "John Rozelle",
+        //   abeng: "aku",
+
+        //   due_date: "10/11/2019",
         //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
+        //   status: "In-progress",
+        //   progress: 50,
+        //   avatar: "https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4",
         // },
         // {
         //   serial_no: "04",
-        //   task_title: "Merekap Data",
-        //   name: "Jajang",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Important",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
+        //   task_title: "Mapping Market",
+        //   name: "Edgar Colmer",
+
+        //   due_date: "11/09/2019",
+        //   priority: "Normal",
+        //   status: "Completed",
+        //   progress: 100,
+        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
         // },
         // {
         //   serial_no: "05",
-        //   task_title: "Riset Pasar",
-        //   name: "Junaedi",
+        //   task_title: "Data Summary Mitra",
+        //   name: "Kaiden Rozelle",
+
+        //   due_date: "10/11/2019",
+        //   priority: "Normal",
+        //   status: "Completed",
+        //   progress: 100,
+        //   avatar: "https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
+        // },
+        // {
+        //   serial_no: "07",
+        //   name: "Jacob Firtado",
+
+        //   due_date: "09/10/2019",
+        //   priority: "Normal",
+        //   status: "Open",
+        //   progress: 0,
+        //   avatar: "https://avatars0.githubusercontent.com/u/55240045?s=400&u=cf9bffc2bd2d8e42ca6e5abf40ddd6c1a03ce2860&v=4",
+        // },
+        // {
+        //   serial_no: "05",
+        //   name: "John Doe",
         //   amount: "$ 900",
         //   due_date: "12/11/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
+        //   priority: "High",
+        //   status: "Open",
         //   progress: 0,
         //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
         // }
@@ -387,7 +461,6 @@ export default {
       }
     };
   },
-
   mounted() {
     this.fetchData();
   },
@@ -401,11 +474,52 @@ export default {
       },
     };
   },
+
   methods: {
+
+    Edit(id) {
+      this.$router.push('edit/' + id)
+      // console.log(id);
+    },
+
+    Report(id) {
+      this.$router.push('report/' + id)
+    },
+
+    async Delete(id) {
+      const data = {
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/tasks/' + id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Deleted',
+          });
+          this.$router.push('/manager/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Deleted Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      window.location.reload();
+    },
+
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/api/waittasks');
+        const response = await axios.get('http://localhost:3000/api/tasks');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -456,7 +570,7 @@ export default {
                 wrapCsvValue(
                   typeof col.field === "function"
                     ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
+                    : row[col.field === void 0 ? col.pic : col.field],
                   col.format
                 )
               )

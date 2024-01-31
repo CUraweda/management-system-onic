@@ -46,12 +46,25 @@
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
           <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
-            <div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="time.max" show-value track-color="light-blue-2" class="text-black q-ma-md"
-                :value="time.value" size="100px" color="light-blue" />
-              <div v-if="time.labelPosition === 'bottom'" class="vertical-bottom text-center text-black">{{ time.label }}
-              </div>
-              <div v-else class="text-center text-black">{{ time.label }}</div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="30" show-value track-color="light-blue-2" class="text-black q-ma-md" value="1"
+                size="100px" color="light-blue" />
+              <div class="vertical-bottom text-center text-black">Days</div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="24" show-value track-color="light-blue-2" class="text-black q-ma-md" value="4"
+                size="100px" color="light-blue" />
+              <div class="text-center text-black">Hours</div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="60" show-value track-color="light-blue-2" class="text-black q-ma-md" value="45"
+                size="100px" color="light-blue" />
+              <div class="vertical-bottom text-center text-black">Miunites</div>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="60" show-value track-color="light-blue-2" class="text-black q-ma-md" value="55"
+                size="100px" color="light-blue" />
+              <div class="vertical-bottom text-center text-black">Second</div>
             </div>
           </q-card>
         </div>
@@ -89,7 +102,7 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ slide }} %</div>
-                            <q-slider v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
+                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
                               :max="100" />
                           </div>
                         </div>
@@ -135,8 +148,8 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Description
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
-            <q-card-section class="row justify-center">
-              <CardBase class="col-12">
+            <q-card-section class="row">
+              <CardBase class="">
                 <div class="q-ml-lg">Laporan Request :</div>
                 <div class="q-ml-md">1. Pencatatan Penjualan selama 1 minggu terakhir</div>
                 <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
@@ -157,18 +170,20 @@
           <div class="q-mt-md">
             Attachment Download
           </div>
-          <q-card flat bordered class="no-shadow">
-            <q-card-section class="row">
-              <CardBase class="">
-                <div class="q-pa-md">
-                  <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
+          <q-card flat bordered class="no-shadow col-12">
+            <q-card-section class="">
+              <CardBase class="col-12">
+                <div class="q-pa-md col-12">
+                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader style="max-width: 300px" url="" label="Screenchot" multiple color="grey" />
-                  <div class="q-pt-md row justify-between q-gutter-sm">
-                    <q-btn unelevated disable class=" col-2" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
-                      label="Start" no-caps @click="startCountdown" />
-                    <q-btn unelevated disable class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Submit To Superior" no-caps/>
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple color="grey" />
+                  <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
+                    <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
+                      label="Cancle" no-caps />
+                    <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
+                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyrev" />
+                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
+                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyapp" />
                   </div>
                 </div>
               </CardBase>
@@ -200,10 +215,27 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'TaskDetail3',
+  name: 'Report3',
   setup() {
     return {
-      slide: ref(15)
+      slide: ref(15),
+      ratingModel: ref(0),
+      ratingColors: ['yellow'],
+      pic: ref([]),
+      options: [
+        {
+          label: 'Bambang',
+          value: 'Bambang'
+        },
+        {
+          label: 'Tami',
+          value: 'Tami'
+        },
+        {
+          label: 'Rani',
+          value: 'Rani'
+        }
+      ],
     }
   },
 
@@ -211,41 +243,20 @@ export default {
     return {
       filter: '',
       mode: 'list',
-      timerData: [
-        { label: 'Days', labelPosition: 'bottom', max: 30, value: 1 },
-        { label: 'Hours', labelPosition: 'top', max: 24, value: 4 },
-        { label: 'Minutes', labelPosition: 'bottom', max: 60, value: 45 },
-        { label: 'Seconds', labelPosition: 'bottom', max: 60, value: 55 },
-      ],
-      countdown: null,
     }
   },
-  methods: {
-    startCountdown() {
-      this.countdown = setInterval(() => {
-        // Calculate seconds
-        let totalSeconds = this.timerData[0].value * 24 * 60 * 60 +
-          this.timerData[1].value * 60 * 60 +
-          this.timerData[2].value * 60 +
-          this.timerData[3].value;
 
-        if (totalSeconds > 0) {
-          totalSeconds--;
-          this.timerData[0].value = Math.floor(totalSeconds / (24 * 60 * 60));
-          this.timerData[1].value = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
-          this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
-          this.timerData[3].value = totalSeconds % 60;
-        } else {
-          this.stopCountdown();
-        }
-      }, 1000);
+  methods: {
+    Notifyapp() {
+      this.$q.notify({
+        message: 'Task Done',
+      })
     },
-    stopCountdown() {
-      clearInterval(this.countdown);
-    },
-  },
-  beforeDestroy() {
-    this.stopCountdown();
+    Notifyrev() {
+      this.$q.notify({
+        message: 'Task Revised',
+      })
+    }
   },
 }
 </script>

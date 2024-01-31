@@ -201,6 +201,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'TaskDetail2',
   setup() {
     return {
       slide: ref(15)

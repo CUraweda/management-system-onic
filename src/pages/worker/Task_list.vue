@@ -418,6 +418,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'TaskList',
   data() {
     return {
       filter: "",

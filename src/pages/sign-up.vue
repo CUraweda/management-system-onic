@@ -34,18 +34,19 @@
                     <q-form class="q-gutter-md">
                       <div class="row q-mb-md">
                         <q-input class="col q-mr-md" v-model="firstname" filled :type="isPwd ? 'firstname' : 'text'"
-                          label="First Name" placeholder="Name" :dense="dense"></q-input>
+                          label="First Name" placeholder="Name" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']"></q-input>
 
                         <q-input class="col" v-model="lastname" filled :type="isPwd ? 'lastname' : 'text'"
-                          label="Last Name" placeholder="Name" :dense="dense"></q-input>
+                          label="Last Name" placeholder="Name" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']"></q-input>
                       </div>
 
-                      <q-input filled v-model="Email" label="Email" lazy-rules />
+                      <q-input filled v-model="Email" label="Email" lazy-rules  :rules="[ val => val !== null && val !== '' || 'Required']"/>
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
-                        placeholder="Enter at least 8+ characters" :dense="dense">
+                        placeholder="Enter at least 8+ characters" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']">
                         <template v-slot:append>
-                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                            @click="togglePwdVisibility" />
                         </template>
                       </q-input>
 
@@ -56,8 +57,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign Up" type="button" color="cyan"
-                          @click="signUp" />
+                        <q-btn class="full-width" label="Sign Up" type="button" color="cyan" @click="signUp" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -86,6 +86,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 
 export default {
+  name: 'SignUp',
   data() {
     return {
       Email: '',
@@ -104,6 +105,9 @@ export default {
   },
 
   methods: {
+    togglePwdVisibility() {
+      this.isPwd = !this.isPwd;
+    },
     async signUp() {
       try {
         const response = await axios.post('http://localhost:3000/api/signup', {
@@ -142,7 +146,6 @@ export default {
 
 
 <style>
-
 * {
   margin: 0px;
   padding: 0px;

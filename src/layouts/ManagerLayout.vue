@@ -17,6 +17,7 @@
               <div class="text-caption">{{ formattedString }}</div>
             </div>
           </q-toolbar-title>
+
           <div class="row wrap items-center justify-end q-gutter-sm">
             <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
               standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
@@ -32,9 +33,6 @@
               <q-menu>
                 <q-list style="min-width: 100px">
                   <notification></notification>
-                  <q-card class="text-center no-shadow no-border">
-                    <q-btn label="View All" style="max-width: 120px !important;" flat dense class="text-indigo-8"></q-btn>
-                  </q-card>
                 </q-list>
               </q-menu>
             </q-btn>
@@ -55,6 +53,7 @@
         </q-toolbar>
       </div>
     </q-header>
+
     <!-- header -->
 
     <!-- sidebar -->
@@ -67,7 +66,7 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-          <q-item clickable v-ripple to="dashboard">
+          <q-item clickable v-ripple to="/manager/dashboard">
             <q-item-section avatar>
               <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
@@ -75,7 +74,7 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="create">
+          <q-item clickable v-ripple to="/manager/create">
             <q-item-section avatar>
               <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
             </q-item-section>
@@ -83,22 +82,41 @@
             <q-item-section> Create Task </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_list">
+          <q-item clickable v-ripple to="/manager/task_monitoring">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
 
-            <q-item-section> Task List </q-item-section>
+            <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_detail">
+          <q-item clickable v-ripple to="/manager/task_monitoring_2">
             <q-item-section avatar>
-              <q-icon name="list_alt" color="grey-7" size="30px" />
+              <q-icon name="task" color="grey-7" size="30px" />
             </q-item-section>
 
-            <q-item-section> Task Detail </q-item-section>
+            <q-item-section> Task Approval</q-item-section>
           </q-item>
 
+          <q-item clickable v-ripple to="/manager/task_monitoring_3">
+            <q-item-section avatar>
+              <q-icon name="recycling" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Deleted Task</q-item-section>
+          </q-item>
+
+          <q-item disable>
+            <q-item-section avatar>
+              <q-icon name="assignment" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Reports </q-item-section>
+
+            <q-item-section>
+              <q-avatar class="q-ml-md" color="red" text-color="white" size="22px">N</q-avatar>
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -123,14 +141,14 @@
 
 <script>
 import { ref } from "vue";
-import { date } from "quasar";
 import notification from "./Notification.vue";
 import profile from "./Profile.vue";
+import { date } from "quasar";
 
 export default {
-  name: 'WorkerLayout',
+  name: 'ManagerLayout',
 
-    components: {
+  components: {
     notification,
     profile,
   },
@@ -173,7 +191,7 @@ export default {
 };
 </script>
 
-<style scooped>
+<style scoped>
 .mini-slot {
   transition: background-color 0.28s;
 }

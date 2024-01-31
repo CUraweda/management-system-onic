@@ -45,20 +45,6 @@
               </q-item>
             </div>
 
-            <div class="col-12">
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"></q-item-label>
-                  <div class="q-gutter-sm">
-                    <q-radio v-model="shape" val="daily" label="Daily" />
-                    <q-radio v-model="shape" val="weekly" label="Weekly" />
-                    <q-radio v-model="shape" val="monthly" label="Monthly" />
-                    <q-radio v-model="shape" val="insidental" label="Insidental" />
-                  </div>
-                </q-item-section>
-              </q-item>
-            </div>
-
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
@@ -264,20 +250,6 @@
             </q-item>
           </div>
 
-          <!-- <div class="col-12">
-            <q-item>
-              <q-item-section>
-                <q-item-label class="q-pb-xs text-weight-bold">Upload Excel File</q-item-label>
-                <q-file outlined  label="Upload File" class="q-mb-xl" accept=".xlsx, .csv" @change="handleFileUpload">
-                  <template v-slot:append>
-                    <q-icon name="ios_share" />
-                  </template>
-                </q-file>
-                <q-input filled dense v-model="excelFile" type="file" @change="onFileChange" />
-              </q-item-section>
-            </q-item>
-          </div> -->
-
           <q-space></q-space>
 
           <div class="col-12 absolute-bottom-right q-mt-xl">
@@ -288,7 +260,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="create" to="task_monitoring" />
+                      type="submit" @click="createNotify" to="task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -305,10 +277,8 @@
 import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
-import * as XLSX from 'xlsx';
-import Papa from 'papaparse';
 
-export default defineComponent({
+export default {
   data() {
     return {
       deposit: {},
@@ -320,12 +290,6 @@ export default defineComponent({
         "High",
         "Normal",
       ],
-      shape: [
-        "Daily",
-        "Weekly",
-        "Monthly",
-        "Insidental",
-      ],
     }
   },
 
@@ -336,11 +300,10 @@ export default defineComponent({
     const submittedspv = ref(false)
     const submitEmptyspv = ref(false)
     const submitResultspv = ref([])
-
     return {
       title: ref(''),
       startdate: ref(''),
-      duedate: ref(''),
+      duedate:  ref(''),
       model: ref(null),
       btnmodel: ref('single'),
       text: ref(''),
@@ -419,99 +382,14 @@ export default defineComponent({
   },
 
   methods: {
-
-    async create() {
-      try {
-        const response = await axios.post('http://localhost:3000/api/task/tasks', {
-          id: this.id,
-          task_title: this.task_title,
-          priority: this.priority,
-          start_date: this.start_date,
-          due_date: this.due_date,
-          description: this.description,
-          pic: this.pic,
-          spv: this.spv,
-          status: this.status,
-        });
-        const token = response.data.token;
-
-        localStorage.setItem('token', token);
-
-        this.$router.push('/');
-      } catch (error) {
-        console.error('Error signing up:', error);
-      }
-    },
-
-
     createNotify() {
       this.$q.notify({
         message: 'Task Created',
       })
-    },
-
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-          const content = e.target.result;
-
-          // Determine if the file is XLSX or CSV
-          if (file.name.endsWith('.xlsx')) {
-            this.parseXLSX(content);
-          } else if (file.name.endsWith('.csv')) {
-            this.parseCSV(content);
-          }
-        };
-
-        reader.readAsBinaryString(file);
-      }
-
-    },
-
-    parseXLSX(content) {
-      const workbook = XLSX.read(content, { type: 'binary' });
-      const firstSheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[firstSheetName];
-      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-      // Assuming data is a 2D array where each row represents a record
-      // Update your form fields accordingly
-      this.title = data[0][0]; // Example: Assuming the title is in the first cell of the first row
-      // Repeat for other fields
-
-      this.$q.notify({
-        message: 'Data from XLSX file has been loaded',
-      });
-    },
-
-    parseCSV(content) {
-      Papa.parse(content, {
-        header: true,
-        complete: (result) => {
-          const data = result.data;
-
-          // Assuming data is an array of objects with header as keys
-          // Update your form fields accordingly
-          if (data.length > 0) {
-            this.title = data[0].TaskTitle; // Example: Assuming TaskTitle is a header in the CSV
-            // Repeat for other fields
-          }
-
-          this.$q.notify({
-            message: 'Data from CSV file has been loaded',
-          });
-        },
-      });
-    },
-
+    }
   },
-})
-
-
+}
 </script>
 
 <style scoped></style>
+

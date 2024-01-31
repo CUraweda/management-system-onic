@@ -102,8 +102,8 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ slide }} %</div>
-                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1"
-                              inner-track-color="blue-3" :max="100" />
+                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
+                              :max="100" />
                           </div>
                         </div>
                       </q-card-section>
@@ -158,15 +158,14 @@
               </CardBase>
               <CardBase class="col-6">
 
-                <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
-                  <template v-slot:after>
-                    <q-btn round dense flat icon="send" />
-                  </template>
-                </q-input>
+                    <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                      <template v-slot:after>
+                        <q-btn round dense flat icon="send" />
+                      </template>
+                    </q-input>
               </CardBase>
             </q-card-section>
           </q-card>
-
 
           <div class="q-mt-md">
             Attachment Download
@@ -177,31 +176,14 @@
                 <div class="q-pa-md col-12">
                   <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
-                    color="grey" />
-                  <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0" :options="options"
-                    behavior="menu" class="col-6">
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No results
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple color="grey" />
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Revise" no-caps />
-                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" to="task_monitoring" @click="Notifydone" />
-                  </div>
-                  <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
-                  <div class="q-gutter-md row items-center">
-                    <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
-                      Feedback
-                    </div>
-                    <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange" :min="0" :max="5" markers
-                      :marker-labels="model" label-always :label-value="model"/>
+                    <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
+                      label="Cancle" no-caps />
+                    <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
+                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyrev" />
+                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
+                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyapp" />
                   </div>
                 </div>
               </CardBase>
@@ -233,10 +215,11 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'Report3',
   setup() {
     return {
       slide: ref(15),
-      model: ref(0),
+      ratingModel: ref(0),
       ratingColors: ['yellow'],
       pic: ref([]),
       options: [
@@ -264,9 +247,14 @@ export default {
   },
 
   methods: {
-    Notifydone() {
+    Notifyapp() {
       this.$q.notify({
         message: 'Task Done',
+      })
+    },
+    Notifyrev() {
+      this.$q.notify({
+        message: 'Task Revised',
       })
     }
   },

@@ -1,75 +1,133 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-Vue.use(VueRouter);
+// sign in & up (if needed)
+import SignIn from 'src/pages/sign-in.vue';
+import SignUp from 'src/pages/sign-up.vue';
+
+// layout
+import DirectorLayout from 'src/layouts/DirectorLayout.vue';
+import ManagerLayout from 'src/layouts/ManagerLayout.vue';
+import SupervisorLayout from 'src/layouts/SupervisorLayout.vue';
+import WorkerLayout from 'src/layouts/WorkerLayout.vue';
+
+// Director
+import DirectorDashboard from 'pages/director/Dashboard.vue';
+import DirectorCreateTask from 'pages/director/Create.vue';
+import DirectorEditTask from 'pages/director/Edit.vue';
+import DirectorTaskMonitoring from 'pages/director/task_monitoring.vue';
+import DirectorTaskMonitoring2 from 'pages/director/task_monitoring_2.vue';
+import DirectorReport from 'pages/director/Report.vue';
+import DirectorReport2 from 'pages/director/Report_2.vue';
+import DirectorReport3 from 'pages/director/Report_3.vue';
+
+// manager
+import ManagerDashboard from 'pages/manager/Dashboard.vue';
+import ManagerCreateTask from 'pages/manager/Create.vue';
+import ManagerEditTask from 'pages/manager/Edit.vue';
+import ManagerTaskMonitoring from 'pages/manager/task_monitoring.vue';
+import ManagerTaskMonitoring2 from 'pages/manager/task_monitoring_2.vue';
+import ManagerTaskMonitoring3 from 'pages/manager/task_monitoring_3.vue';
+import ManagerReport from 'pages/manager/Report.vue';
+import ManagerReport2 from 'pages/manager/Report_2.vue';
+import ManagerReport3 from 'pages/manager/Report_3.vue';
+
+// supervisor
+import SupervisorDashboard from 'pages/supervisor/Dashboard.vue';
+import SupervisorCreateTask from 'pages/supervisor/Create.vue';
+import SupervisorEditTask from 'pages/supervisor/Edit.vue';
+import SupervisorTaskMonitoring from 'pages/supervisor/task_monitoring.vue';
+import SupervisorTaskMonitoring2 from 'pages/supervisor/task_monitoring_2.vue';
+import SupervisorReport from 'pages/supervisor/Report.vue';
+import SupervisorReport2 from 'pages/supervisor/Report_2.vue';
+import SupervisorReport3 from 'pages/supervisor/Report_3.vue';
+
+// worker
+import WorkerDashboard from 'pages/worker/Dashboard.vue';
+import WorkerCreateTask from 'pages/worker/Create_task.vue';
+import WorkerTaskDetail from 'pages/worker/Task_detail.vue';
+import WorkerTaskDetail2 from 'pages/worker/Task_detail_2.vue';
+import WorkerTaskDetail3 from 'pages/worker/Task_detail_3.vue';
+import WorkerTaskList from 'pages/worker/Task_list.vue';
+import Error404 from 'pages/Error404.vue';
 
 const routes = [
-  { path: '/', component: () => import('src/pages/sign-in.vue') },
-  { path: '/sign-up', component: () => import('src/pages/sign-up.vue') },
+  { path: '/', component: SignIn },
+  { path: '/sign-up', component: SignUp },
+  {
+    path: '/director',
+    component: DirectorLayout,
+    children: [
+      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: DirectorDashboard },
+      { path: 'create', meta: { title: 'CREATE TASK' }, component: DirectorCreateTask },
+      { path: 'edit', meta: { title: 'EDIT TASK' }, component: DirectorEditTask },
+      { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: DirectorTaskMonitoring },
+      { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: DirectorTaskMonitoring2 },
+      { path: 'report/:id', meta: { title: 'REPORTS' }, component: DirectorReport },
+      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: DirectorReport2 , props: true },
+      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: DirectorReport3 , props: true },
+    ],
+  },
   {
     path: '/manager',
-    component: () => import('src/layouts/ManagerSpvLayout.vue'),
+    component: ManagerLayout,
     children: [
-      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: () => import('pages/spv-manager/Dashboard.vue') },
-      { path: 'create', meta: { title: 'CREATE TASK' }, component: () => import('pages/spv-manager/Create.vue') },
-      { path: 'edit', meta: { title: 'EDIT TASK' }, component: () => import('pages/spv-manager/Edit.vue') },
-      { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: () => import('pages/spv-manager/task_monitoring.vue') },
-      { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: () => import('pages/spv-manager/task_monitoring_2.vue') },
-      { path: 'report', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report.vue') },
-      { path: 'report_2', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report_2.vue') },
-      { path: 'report_3', meta: { title: 'REPORTS' }, component: () => import('pages/spv-manager/Report_3.vue') },
+      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: ManagerDashboard },
+      { path: 'create', meta: { title: 'CREATE TASK' }, component: ManagerCreateTask },
+      { path: 'edit/:id', meta: { title: 'EDIT TASK' }, component: ManagerEditTask, props: true },
+      { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: ManagerTaskMonitoring },
+      { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: ManagerTaskMonitoring2 },
+      { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: ManagerTaskMonitoring3 },
+      { path: 'report/:id', meta: { title: 'REPORTS' }, component: ManagerReport , props: true },
+      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: ManagerReport2 , props: true },
+      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: ManagerReport3 , props: true },
     ],
- },
+  },
+  {
+    path: '/supervisor',
+    component: SupervisorLayout,
+    children: [
+      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: SupervisorDashboard },
+      { path: 'create', meta: { title: 'CREATE TASK' }, component: SupervisorCreateTask },
+      { path: 'edit/:id', meta: { title: 'EDIT TASK' }, component: SupervisorEditTask },
+      { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: SupervisorTaskMonitoring },
+      { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: SupervisorTaskMonitoring2 },
+      { path: 'report', meta: { title: 'REPORTS' }, component: SupervisorReport , props: true },
+      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: SupervisorReport2 , props: true },
+      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: SupervisorReport3 , props: true },
+    ],
+  },
   {
     path: '/worker',
-    component: () => import('src/layouts/WorkerLayout.vue'),
+    component: WorkerLayout,
     children: [
-      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: () => import('pages/worker/Dashboard.vue') },
-      { path: 'create', meta: { title: 'CREATE TASK' }, component: () => import('pages/worker/Create_task.vue') },
-      { path: 'task_detail', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail.vue') },
-      { path: 'task_detail_2', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail_2.vue') },
-      { path: 'task_detail_3', meta: { title: 'TASK DETAIL' }, component: () => import('pages/worker/Task_detail_3.vue') },
-      { path: 'task_list',  meta: { title: 'TASK LIST' }, component: () => import('pages/worker/Task_list.vue') },
+      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: WorkerDashboard },
+      { path: 'create', meta: { title: 'CREATE TASK' }, component: WorkerCreateTask },
+      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: WorkerTaskDetail, props: true },
+      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: WorkerTaskDetail2, props: true },
+      { path: 'task_detail_3/:id', meta: { title: 'TASK DETAIL' }, component: WorkerTaskDetail3, props: true },
+      { path: 'task_list',  meta: { title: 'TASK LIST' }, component: WorkerTaskList },
     ],
- },
-
-  // { path: '/', component: () => import('src/pages/sign-up.vue') },
-  // { path: '/sign-in', component: () => import('src/pages/sign-in.vue') },
-  // {
-  //   path: "/",
-  //   component: () => import('layouts/MainLayout.vue'),
-  //   children: [
-  //     { path: '/index', component: () => import('pages/Index.vue') },
-  //     { path: '/Create', component: () => import('pages/spv-manager/Create.vue') },
-  //     { path: '/task_monitoring', component: () => import('pages/spv-manager/task_monitoring.vue') },
-  //     { path: '/task_list', component: () => import('pages/worker/Task_list.vue') },
-  //     { path: '/Task_detail', component: () => import('pages/worker/Task_detail.vue') },
-  //     { path: '/Report', component: () => import('pages/spv-manager/Report.vue') },
-  //   ]
-  // },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  },
+  // ... other routes ...
   {
     path: '*',
-    component: () => import('pages/Error404.vue')
+    component: Error404,
   },
+];
 
-]
+// const router = new VueRouter({
+//   routes,
+// });
 
-const router = new VueRouter({
-  routes,
-});
+// router.beforeEach((to, from, next) => {
+//   const token = localStorage.getItem('token');
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token');
+//   if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
+//     next('/');
+//   } else {
+//     next();
+//   }
+// });
 
-  if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
-      next('/');
-  } else {
-      next();
-  }
-});
-
-
-export default routes
+export default routes;

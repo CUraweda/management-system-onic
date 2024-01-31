@@ -278,7 +278,7 @@ import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
 
-export default defineComponent({
+export default {
   data() {
     return {
       deposit: {},
@@ -388,7 +388,7 @@ export default defineComponent({
       })
     }
   },
-})
+}
 </script>
 
 <style scoped></style>

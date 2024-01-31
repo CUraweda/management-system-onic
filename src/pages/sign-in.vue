@@ -33,13 +33,13 @@
                     <!-- form section -->
                     <q-form class="q-gutter-md">
 
-                      <q-input filled v-model="Email" label="Email" lazy-rules />
+                      <q-input filled v-model="Email" label="Email" lazy-rules :rules="[ val => val !== null && val !== '' || 'Required']"/>
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
-                        placeholder="Enter at least 8+ characters" :dense="dense">
+                        placeholder="Enter at least 8+ characters" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']">
                         <template v-slot:append>
                           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                            @click="isPwd = !isPwd" />
+                            @click="togglePwdVisibility" />
                         </template>
                       </q-input>
 
@@ -79,7 +79,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 
 export default {
-  name: 'sign-in',
+  name: 'SignIn',
 
   data() {
     return {
@@ -91,12 +91,16 @@ export default {
   setup() {
     return {
       right: ref(false),
-      isPwd: ref(false),
+      isPwd: ref(true),
       dense: ref(false),
     };
   },
 
   methods: {
+    togglePwdVisibility() {
+      this.isPwd = !this.isPwd;
+    },
+
     async signIn() {
       try {
         const response = await axios.post('http://localhost:3000/api/signin', {
@@ -111,9 +115,11 @@ export default {
 
         // Redirect ke halaman profil dan kirimkan ID pengguna sebagai parameter
         this.$router.push({
-          name: 'profile',
+          name: { redirect },
           params: { userId: user_id },
         });
+
+        this.$router.push(redirect);
 
         this.$q.notify({
           message: `Login Successful. ${message}`,

@@ -22,7 +22,7 @@
 <script>
 import {defineComponent} from 'vue'
 
-export default defineComponent({
+export default {
   name: "Notification",
   setup() {
     return {
@@ -66,7 +66,7 @@ export default defineComponent({
       ],
     }
   }
-})
+}
 </script>
 
 <style scoped>
