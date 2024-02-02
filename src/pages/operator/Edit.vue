@@ -16,8 +16,8 @@
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Type</q-item-label>
                   <div class="no-shadow">
-                    <q-btn-toggle v-model="task_type" spread no-caps toggle-color="cyan-6" class="no-shadow"
-                      color="grey-3" text-color="black" :options="task_type_options"  />
+                    <q-btn-toggle v-model="form.task_type" spread no-caps toggle-color="cyan-6" class="no-shadow"
+                      color="grey-3" text-color="black" :options="task_type_options" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -27,7 +27,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
-                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="task_title" :rules="[ val => val !== null && val !== '' || 'Required']" />
+                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="form.task_title" />
                 </q-item-section>
               </q-item>
             </div>
@@ -36,7 +36,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Priority</q-item-label>
-                  <q-select dense filled outlined v-model="priority" :options="opsipriority" stack-label :rules="[ val => val !== null && val !== '' || 'Required']"
+                  <q-select dense filled outlined v-model="form.priority" :options="opsipriority" stack-label
                     options-dense></q-select>
                 </q-item-section>
               </q-item>
@@ -47,10 +47,10 @@
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold"></q-item-label>
                   <div class="q-gutter-sm">
-                    <q-radio v-model="iteration" val="daily" label="Daily" />
-                    <q-radio v-model="iteration" val="weekly" label="Weekly" />
-                    <q-radio v-model="iteration" val="monthly" label="Monthly" />
-                    <q-radio v-model="iteration" val="insidental" label="Insidental" />
+                    <q-radio v-model="form.iteration" label="Daily" val="daily" />
+                    <q-radio v-model="form.iteration" label="Weekly" val="weekly" />
+                    <q-radio v-model="form.iteration" label="Monthly" val="monthly" />
+                    <q-radio v-model="form.iteration" label="Insidental" val="insidental" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -60,11 +60,11 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
-                  <q-input filled dense v-model="start_date" :rules="[ val => val !== null && val !== '' || 'Required']">
+                  <q-input filled dense v-model="form.start_date">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="start_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date v-model="form.start_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -76,7 +76,7 @@
                     <template v-slot:append>
                       <q-icon name="access_time" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-time v-model="start_date" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time v-model="form.start_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -93,11 +93,11 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input filled dense v-model="due_date" :rules="[ val => val !== null && val !== '' || 'Required']">
+                  <q-input filled dense v-model="form.due_date">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="due_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date v-model="form.due_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -109,7 +109,7 @@
                     <template v-slot:append>
                       <q-icon name="access_time" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-time v-model="due_date" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time v-model="form.due_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -122,31 +122,11 @@
               </q-item>
             </div>
 
-            <!-- <div class="col-6">
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input dense filled v-model="duedate" mask="date" :rules="['date']">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="duedate">
-                            <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </q-item-section>
-              </q-item>
-            </div> -->
             <div class="col-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Description</q-item-label>
-                  <q-input v-model="description" filled type="textarea" placeholder="Give some example" :rules="[ val => val !== null && val !== '' || 'Required']"/>
+                  <q-input v-model="form.description" filled type="textarea" placeholder="Give some example" />
                 </q-item-section>
               </q-item>
             </div>
@@ -158,8 +138,8 @@
                   <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
 
                   <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0"
-                      :options="picoptions" behavior="menu" class="col-6" :rules="[ val => val !== null && val !== '' || 'Required']">
+                    <q-select readonly multiple dense filled v-model="form.pic" name="pic" use-input input-debounce="0"
+                      :options="picoptions" behavior="menu" class="col-6">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -170,7 +150,7 @@
                     </q-select>
 
                     <div class="text-cyan col-5">
-                      <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
+                      <q-btn disable dense flat color="cyan" icon="add" type="submit" label="Add Person" />
                     </div>
                   </q-form>
 
@@ -204,8 +184,8 @@
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="spv" name="spv" use-input input-debounce="0"
-                      :options="spvoptions" behavior="menu" class="col-6" :rules="[ val => val !== null && val !== '' || 'Required']">
+                    <q-select readonly multiple dense filled v-model="form.spv" name="spv" use-input input-debounce="0"
+                      :options="spvoptions" behavior="menu" class="col-6">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -215,7 +195,7 @@
                       </template>
                     </q-select>
                     <div class="text-cyan col-5">
-                      <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
+                      <q-btn disable dense flat color="cyan" icon="add" type="submit" label="Add Person" />
                     </div>
                   </q-form>
 
@@ -252,7 +232,7 @@
           <div class="col-12">
             <q-item>
               <q-item-section class="q-mb-xl">
-                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl">
+                <q-file outlined v-model="form.model" label="Upload File" class="q-mb-xl">
                   <template v-slot:append>
                     <q-icon name="ios_share" />
                   </template>
@@ -285,7 +265,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="create" to="task_monitoring" />
+                      type="submit" @click="edit" to="task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -307,12 +287,24 @@ import Papa from 'papaparse';
 import axios from 'axios';
 
 export default {
-  name: 'ManagerCreate',
+  name: 'ManagerEdit',
+  props: ['id'],
   data() {
     return {
-      iteration: ''
-    }
+      form: {
+        task_type: '',
+        task_title: '',
+        priority: '',
+        iteration: '',
+        start_date: null,
+        due_date: null,
+        description: '',
+        pic: '',
+        spv: '',
+      },
+    };
   },
+
 
   setup() {
     const submittedpic = ref(false)
@@ -323,7 +315,7 @@ export default {
     const submitResultspv = ref([])
 
     return {
-      task_type: ref([]),
+      iteration: ref(''),
       task_type_options: [
         {
           label: 'Single Task',
@@ -334,7 +326,6 @@ export default {
           value: 'Multi'
         }
       ],
-      task_title: ref(''),
       priority: ref([]),
       opsipriority: [
         {
@@ -352,7 +343,6 @@ export default {
       ],
       start_date: ref(null),
       due_date: ref(null),
-      description: ref(''),
       pic: ref([]),
       picoptions: [
         {
@@ -428,25 +418,45 @@ export default {
     }
   },
 
-  methods: {
+  mounted() {
+    this.fetchData();
+  },
 
-    async create() {
-      // Using Axios to make a POST request
+  methods: {
+    async fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/tasks/' + this.id);
+        this.form.task_type = response.data.taskData.task_type;
+        this.form.task_title = response.data.taskData.task_title;
+        this.form.priority = response.data.taskData.priority;
+        this.form.iteration = response.data.taskData.Iteration;
+        this.form.start_date = response.data.taskData.start_date;
+        this.form.due_date = response.data.taskData.due_date;
+        this.form.description = response.data.taskData.description;
+        this.form.pic = response.data.taskData.pic;
+        this.form.spv = response.data.taskData.spv;
+
+        console.log(response.data.taskData.start_date)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+
+    async edit() {
       const data = {
-        task_type: this.task_type,
-        task_title: this.task_title,
-        priority: this.priority.value,
-        status: "wait-app",
-        start_date: this.start_date,
-        due_date: this.due_date,
-        description: this.description,
-        pic: this.pic.map(item => item.value),
-        spv: this.spv.map(item => item.value),
+        task_type: this.form.task_type,
+        task_title: this.form.task_title,
+        priority: this.form.priority.value,
+        start_date: this.form.start_date,
+        due_date: this.form.due_date,
+        description: this.form.description,
+        // pic: this.pic.map(item => item.value),
+        // spv: this.spv.map(item => item.value),
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/new', {
-          method: 'POST',
+        const response = await fetch('http://localhost:3000/api/tasks/' + this.id, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -455,22 +465,17 @@ export default {
 
         if (response.ok) {
           this.$q.notify({
-            message: 'Task Created',
+            message: 'Task Edited',
           });
+          this.$router.push('/manager/task_monitoring')
         } else {
           this.$q.notify({
-            message: 'Failed Creating task',
+            message: 'Failed Edited task',
           });
         }
       } catch (error) {
-        console.error('Fa:', error);
+        console.error('EROR:', error);
       }
-    },
-
-    createNotify() {
-      this.$q.notify({
-        message: 'Task Created',
-      })
     },
 
     handleFileUpload(event) {
@@ -533,8 +538,6 @@ export default {
 
   },
 }
-
-
 </script>
 
 <style scoped></style>

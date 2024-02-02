@@ -66,7 +66,7 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-          <q-item clickable v-ripple to="/supervisor/dashboard">
+          <q-item clickable v-ripple to="/operator/dashboard">
             <q-item-section avatar>
               <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
@@ -74,7 +74,7 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/supervisor/create">
+          <q-item clickable v-ripple to="/operator/create">
             <q-item-section avatar>
               <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
             </q-item-section>
@@ -82,7 +82,7 @@
             <q-item-section> Create Task </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/supervisor/task_monitoring">
+          <q-item clickable v-ripple to="/operator/task_monitoring">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
@@ -90,12 +90,20 @@
             <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/supervisor/task_monitoring_2">
+          <q-item clickable v-ripple to="/operator/task_monitoring_2">
             <q-item-section avatar>
-              <q-icon name="view_list" color="grey-7" size="30px" />
+              <q-icon name="task" color="grey-7" size="30px" />
             </q-item-section>
 
             <q-item-section> Task Approval</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/operator/task_monitoring_3">
+            <q-item-section avatar>
+              <q-icon name="recycling" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Deleted Task</q-item-section>
           </q-item>
 
           <q-item disable>
@@ -138,7 +146,7 @@ import profile from "./Profile.vue";
 import { date } from "quasar";
 
 export default {
-  name: 'SupervisorLayout',
+  name: 'ManagerLayout',
 
   components: {
     notification,

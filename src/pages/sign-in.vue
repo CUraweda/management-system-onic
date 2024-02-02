@@ -33,10 +33,12 @@
                     <!-- form section -->
                     <q-form class="q-gutter-md">
 
-                      <q-input filled v-model="Email" label="Email" lazy-rules :rules="[ val => val !== null && val !== '' || 'Required']"/>
+                      <q-input filled v-model="Email" label="Email" lazy-rules
+                        :rules="[val => val !== null && val !== '' || 'Required']" />
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
-                        placeholder="Enter at least 8+ characters" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']">
+                        placeholder="Enter at least 8+ characters" :dense="dense"
+                        :rules="[val => val !== null && val !== '' || 'Required']">
                         <template v-slot:append>
                           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
                             @click="togglePwdVisibility" />
@@ -103,26 +105,21 @@ export default {
 
     async signIn() {
       try {
-        const response = await axios.post('http://localhost:3000/api/signin', {
-          u_email: this.Email,
-          u_password: this.password,
+        const response = await axios.post('http://localhost:3000/user/login', {
+          email: this.Email,
+          password: this.password,
         });
 
-        const { token, message, redirect, user_id } = response.data;
+        const { token, user_id } = response.data;
 
         // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
         localStorage.setItem('token', token);
 
-        // Redirect ke halaman profil dan kirimkan ID pengguna sebagai parameter
-        this.$router.push({
-          name: { redirect },
-          params: { userId: user_id },
-        });
-
-        this.$router.push(redirect);
+        // Redirect berdasarkan email
+        this.redirectUser(this.Email);
 
         this.$q.notify({
-          message: `Login Successful. ${message}`,
+          message: 'Login Successful.',
         });
       } catch (error) {
         console.error('Error signing in:', error);
@@ -134,6 +131,29 @@ export default {
         });
       }
     },
+
+    redirectUser(email) {
+      switch (email) {
+        case 'bubur@gmail.com':
+          this.$router.push('manager/dashboard');
+          break;
+        case 'manager@gmail.com':
+          this.$router.push('manager/dashboard');
+          break;
+        case 'operator@gmail.com':
+          this.$router.push('operator/dashboard');
+          break;
+        case 'supervisor@gmail.com':
+          this.$router.push('supervisor/dashboard');
+          break;
+        case 'worker@gmail.com':
+          this.$router.push('worker/dashboard');
+          break;
+        default:
+          console.log('Email tidak dikenali');
+      }
+    },
+
   },
 };
 </script>

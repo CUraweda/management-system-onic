@@ -66,7 +66,7 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-          <q-item clickable v-ripple to="dashboard">
+          <q-item clickable v-ripple to="/director/dashboard">
             <q-item-section avatar>
               <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
@@ -74,7 +74,7 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="create">
+          <q-item clickable v-ripple to="/director/create">
             <q-item-section avatar>
               <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
             </q-item-section>
@@ -82,7 +82,7 @@
             <q-item-section> Create Task </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_monitoring">
+          <q-item clickable v-ripple to="/director/task_monitoring">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
@@ -90,7 +90,7 @@
             <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_monitoring_2">
+          <q-item clickable v-ripple to="/director/task_monitoring_2">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>

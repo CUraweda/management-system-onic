@@ -13,7 +13,8 @@
                 <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ status }}</div>
               </div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}
+                </div>
               </div>
             </div>
             <q-card-section>
@@ -81,9 +82,9 @@
                 <div class="">Due Date</div>
               </div>
               <div class="col">
-                <div class=""> {{  task_title  }} </div>
+                <div class=""> {{ task_title }} </div>
                 <div class=""> {{ pic }} </div>
-                <div class=""> {{  due_date  }} </div>
+                <div class=""> {{ due_date }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -119,7 +120,7 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{  created_at  }}</div>
+                            <div class="">{{ created_at }}</div>
                             <div class="">RIAN</div>
                           </div>
                         </div>
@@ -176,18 +177,12 @@
                   <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
                     color="grey" />
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Revise" no-caps @click="Revise()"/>
-                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Done()" />
-                  </div>
-                  <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
-                  <div class="q-gutter-md row items-center">
-                    <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
-                      Feedback
-                    </div>
-                    <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange" :min="0"
-                      :max="5" markers :marker-labels="model" label-always :label-value="model" />
+                    <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
+                      label="Cancle" @click="Cancle()" no-caps />
+                    <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
+                      no-caps class="col-3" @click="Revise()" />
+                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
+                      no-caps class="col-3" @click="Approve()" />
                   </div>
                 </div>
               </CardBase>
@@ -220,7 +215,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'ManagerReport',
+  name: 'Report3',
   props: ['id'],
   setup() {
     return {
@@ -258,37 +253,67 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
-        this.task_type = response.data.task_type;
-        this.task_title = response.data.task_title;
-        this.priority = response.data.priority;
-        this.progress = response.data.progress;
-        this.status = response.data.status;
-        this.iteration = response.data.Iteration;
-        this.start_date = response.data.start_date;
-        this.due_date = response.data.due_date;
-        this.created_at = response.data.created_at;
-        this.description = response.data.description;
-        this.pic = response.data.pic;
-        this.spv = response.data.spv;
+        const response = await axios.get('http://localhost:3000/api/tasks/' + this.id);
+        this.task_type = response.data.taskData.task_type;
+        this.task_title = response.data.taskData.task_title;
+        this.priority = response.data.taskData.priority;
+        this.progress = response.data.taskData.progress;
+        this.status = response.data.taskData.status;
+        this.iteration = response.data.taskData.Iteration;
+        this.start_date = response.data.taskData.start_date;
+        this.due_date = response.data.taskData.due_date;
+        this.created_at = response.data.taskData.created_at;
+        this.description = response.data.taskData.description;
+        this.pic = response.data.taskData.pic;
+        this.spv = response.data.taskData.spv;
 
-        console.log(response.data.start_date)
+        console.log(response.data.taskData.start_date)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     },
 
-    Revise() {
+    Cancle() {
       this.$q.notify({
         color: 'negative',
-        message: 'Task Revised',
+        message: 'Task Canceled',
       })
     },
 
-    Done() {
+    async Approve() {
+      const data = {
+        status: "Open",
+        approved_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/api/tasks/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Approved',
+          });
+          this.$router.push('/manager/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Approving Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
+    Revise() {
       this.$q.notify({
-        color: 'positive',
-        message: 'Task Done',
+        color: 'warning',
+        message: 'Task Revised',
       })
     }
   },

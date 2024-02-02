@@ -110,11 +110,11 @@ export default {
     },
     async signUp() {
       try {
-        const response = await axios.post('http://localhost:3000/api/signup', {
+        const response = await axios.post('http://localhost:3000/user/register', {
           firstname: this.firstname,
           lastname: this.lastname,
-          u_email: this.Email,
-          u_password: this.password,
+          email: this.Email,
+          password: this.password,
           // Tambahkan properti lain sesuai kebutuhan
         });
 
