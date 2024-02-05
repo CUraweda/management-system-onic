@@ -92,10 +92,18 @@
 
           <q-item clickable v-ripple to="/supervisor/task_monitoring_2">
             <q-item-section avatar>
-              <q-icon name="view_list" color="grey-7" size="30px" />
+              <q-icon name="task" color="grey-7" size="30px" />
             </q-item-section>
 
             <q-item-section> Task Approval</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/supervisor/task_monitoring_3">
+            <q-item-section avatar>
+              <q-icon name="recycling" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Deleted Task</q-item-section>
           </q-item>
 
           <q-item disable>
@@ -138,7 +146,7 @@ import profile from "./Profile.vue";
 import { date } from "quasar";
 
 export default {
-  name: 'SupervisorLayout',
+  name: 'ManagerLayout',
 
   components: {
     notification,

@@ -409,7 +409,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/deleted');
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/api/tasks3');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

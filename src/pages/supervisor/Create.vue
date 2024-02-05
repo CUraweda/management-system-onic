@@ -447,7 +447,7 @@ export default defineComponent({
       };
 
       try {
-        const response = await fetch('http://localhost:3000/api/create', {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/api/create', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

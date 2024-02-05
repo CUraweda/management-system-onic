@@ -8,12 +8,13 @@
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_1">
           <q-card class="no-shadow q-pa-sm">
             <div class="row items-center">
-              <div class="text-h8 text-weight-bold q-mr-md q-mt-noe">LAPORAN MINGGUAN</div>
+              <div class="text-h6 text-weight-bold q-mr-md q-mt-noe">{{ task_title }}</div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">Finish</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ status }}</div>
               </div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">On Schedule</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}
+                </div>
               </div>
             </div>
             <q-card-section>
@@ -23,19 +24,19 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
-                    <div class="q-mr-lg"><q-input readonly label="RIAN SPV" /></div>
+                    <div class="q-mr-lg"> {{ pic }} </div>
                   </div>
                   <div class="col-4">
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       TASK TITLE</div>
-                    <div class="q-mr-lg"><q-input readonly label="Laporan Mingguan" /></div>
+                    <div class="q-mr-lg"> {{ task_title }} </div>
                   </div>
                   <div class="col-4">
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
-                    <div class="q-mr-lg"><q-input readonly label="08-DEC-2023, 09.00AM" />
+                    <div class="q-mr-lg"> {{ due_date }}
                     </div>
                   </div>
                 </div>
@@ -81,9 +82,9 @@
                 <div class="">Due Date</div>
               </div>
               <div class="col">
-                <div class="">Laporan Mingguan</div>
-                <div class="">Bambang</div>
-                <div class="">08-DEC-2023, 09.00AM</div>
+                <div class=""> {{ task_title }} </div>
+                <div class=""> {{ pic }} </div>
+                <div class=""> {{ due_date }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -101,9 +102,9 @@
                           </div>
                           <div class="col">
                             <div class="">100 %</div>
-                            <div class="">{{ slide }} %</div>
-                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
-                              :max="100" />
+                            <div class="">{{ progress }} %</div>
+                            <q-slider readonly v-model="progress" color="blue" track-color="light-blue-1"
+                              inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
                       </q-card-section>
@@ -119,8 +120,8 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">04-DEC-2023, 09.15 AM</div>
-                            <div class="">RIAN SPV</div>
+                            <div class="">{{ created_at }}</div>
+                            <div class="">RIAN</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -148,21 +149,18 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           Description
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
-            <q-card-section class="row">
-              <CardBase class="">
-                <div class="q-ml-lg">Laporan Request :</div>
-                <div class="q-ml-md">1. Pencatatan Penjualan selama 1 minggu terakhir</div>
-                <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
-                <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
-                <div class="q-ml-lg">.</div>
+            <q-card-section class="row justify-center">
+              <CardBase class="col-12">
+                <div class="q-ml-lg"> {{ description }} </div>
+
+                <div class="q-ml-lg"> {{ text }} </div>
               </CardBase>
               <CardBase class="col-6">
-
-                    <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
-                      <template v-slot:after>
-                        <q-btn round dense flat icon="send" />
-                      </template>
-                    </q-input>
+                <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                  <template v-slot:after>
+                    <q-btn round dense flat icon="send" />
+                  </template>
+                </q-input>
               </CardBase>
             </q-card-section>
           </q-card>
@@ -176,14 +174,15 @@
                 <div class="q-pa-md col-12">
                   <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple color="grey" />
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
+                    color="grey" />
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Cancle" no-caps />
+                      label="Cancle" @click="Cancle()" no-caps />
                     <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
-                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyrev" />
+                      no-caps class="col-3" @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
-                      no-caps class="col-3" to="task_monitoring_2" @click="Notifyapp" />
+                      no-caps class="col-3" @click="Approve()" />
                   </div>
                 </div>
               </CardBase>
@@ -199,6 +198,7 @@
 import { ref } from 'vue';
 import Vue from 'vue';
 import { exportFile } from 'quasar';
+import axios from 'axios';
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0
@@ -216,46 +216,151 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: 'Report3',
+  props: ['id'],
   setup() {
     return {
-      slide: ref(15),
+      model: ref(0),
+      text: ref(''),
       ratingModel: ref(0),
       ratingColors: ['yellow'],
-      pic: ref([]),
-      options: [
-        {
-          label: 'Bambang',
-          value: 'Bambang'
-        },
-        {
-          label: 'Tami',
-          value: 'Tami'
-        },
-        {
-          label: 'Rani',
-          value: 'Rani'
-        }
-      ],
-    }
+      // pic: ref(''),
+    };
   },
+
 
   data() {
     return {
-      filter: '',
+      task_title: '',
+      status: '',
+      priority: '',
+      pic: '',
+      due_date: '',
+      progress: 0,
+      create_on: '',
+      create_by: '',
+      history: '',
+      description: '',
+      created_at: '',
+      // Add other properties with default values
       mode: 'list',
     }
   },
 
+  mounted() {
+    this.fetchData();
+  },
+
   methods: {
-    Notifyapp() {
-      this.$q.notify({
-        message: 'Task Done',
-      })
+    async fetchData() {
+      try {
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
+        this.task_type = response.data.task_type;
+        this.task_title = response.data.task_title;
+        this.priority = response.data.priority;
+        this.progress = response.data.progress;
+        this.status = response.data.status;
+        this.iteration = response.data.Iteration;
+        this.start_date = response.data.start_date;
+        this.due_date = response.data.due_date;
+        this.created_at = response.data.created_at;
+        this.description = response.data.description;
+        this.pic = response.data.pic;
+        this.spv = response.data.spv;
+
+        console.log(response.data.start_date)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     },
-    Notifyrev() {
-      this.$q.notify({
-        message: 'Task Revised',
-      })
+
+    async Approve() {
+      const data = {
+        status: "Open",
+        approved_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Approved',
+          });
+          this.$router.push('/supervisor/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Approving Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
+    async Cancle() {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Canceled',
+          });
+          this.$router.push('/supervisor/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Canceling Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
+    async Revise() {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Revised',
+          });
+          this.$router.push('/supervisor/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Revising Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
   },
 }

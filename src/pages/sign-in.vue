@@ -105,7 +105,7 @@ export default {
 
     async signIn() {
       try {
-        const response = await axios.post('http://localhost:3000/user/login', {
+        const response = await axios.post('https://api-prmn.curaweda.com:3000/user/login', {
           email: this.Email,
           password: this.password,
         });

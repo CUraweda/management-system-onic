@@ -231,7 +231,7 @@
 
               <q-td key="status" :props="props">
                 <q-chip
-                  :color="(props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                  :color="(props.row.status == 'Deleted') ? 'red-2 text-red' : (props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
                   dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
                 </q-chip>
               </q-td>
@@ -411,7 +411,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/api/tasks2');
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/waited');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -253,31 +253,24 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/api/tasks/' + this.id);
-        this.task_type = response.data.taskData.task_type;
-        this.task_title = response.data.taskData.task_title;
-        this.priority = response.data.taskData.priority;
-        this.progress = response.data.taskData.progress;
-        this.status = response.data.taskData.status;
-        this.iteration = response.data.taskData.Iteration;
-        this.start_date = response.data.taskData.start_date;
-        this.due_date = response.data.taskData.due_date;
-        this.created_at = response.data.taskData.created_at;
-        this.description = response.data.taskData.description;
-        this.pic = response.data.taskData.pic;
-        this.spv = response.data.taskData.spv;
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
+        this.task_type = response.data.task_type;
+        this.task_title = response.data.task_title;
+        this.priority = response.data.priority;
+        this.progress = response.data.progress;
+        this.status = response.data.status;
+        this.iteration = response.data.Iteration;
+        this.start_date = response.data.start_date;
+        this.due_date = response.data.due_date;
+        this.created_at = response.data.created_at;
+        this.description = response.data.description;
+        this.pic = response.data.pic;
+        this.spv = response.data.spv;
 
-        console.log(response.data.taskData.start_date)
+        console.log(response.data.start_date)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-    },
-
-    Cancle() {
-      this.$q.notify({
-        color: 'negative',
-        message: 'Task Canceled',
-      })
     },
 
     async Approve() {
@@ -287,7 +280,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/api/tasks/' + this.id, {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -299,7 +292,7 @@ export default {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.$router.push('/director/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -310,11 +303,64 @@ export default {
       }
     },
 
-    Revise() {
-      this.$q.notify({
-        color: 'warning',
-        message: 'Task Revised',
-      })
+    async Cancle() {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Canceled',
+          });
+          this.$router.push('/director/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Canceling Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
+    async Revise() {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Revised',
+          });
+          this.$router.push('/director/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Revising Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
   },
 }

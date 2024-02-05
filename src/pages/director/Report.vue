@@ -8,12 +8,12 @@
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_1">
           <q-card class="no-shadow q-pa-sm">
             <div class="row items-center">
-              <div class="text-h8 text-weight-bold q-mr-md q-mt-noe">LAPORAN MINGGUAN</div>
+              <div class="text-h6 text-weight-bold q-mr-md q-mt-noe">{{ task_title }}</div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">Finish</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ status }}</div>
               </div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">On Schedule</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}</div>
               </div>
             </div>
             <q-card-section>
@@ -23,19 +23,19 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
-                    <div class="q-mr-lg"><q-input readonly label="RIAN SPV" /></div>
+                    <div class="q-mr-lg"> {{ pic }} </div>
                   </div>
                   <div class="col-4">
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       TASK TITLE</div>
-                    <div class="q-mr-lg"><q-input readonly label="Laporan Mingguan" /></div>
+                    <div class="q-mr-lg"> {{ task_title }} </div>
                   </div>
                   <div class="col-4">
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
-                    <div class="q-mr-lg"><q-input readonly label="08-DEC-2023, 09.00AM" />
+                    <div class="q-mr-lg"> {{ due_date }}
                     </div>
                   </div>
                 </div>
@@ -81,9 +81,9 @@
                 <div class="">Due Date</div>
               </div>
               <div class="col">
-                <div class="">Laporan Mingguan</div>
-                <div class="">Bambang</div>
-                <div class="">08-DEC-2023, 09.00AM</div>
+                <div class=""> {{  task_title  }} </div>
+                <div class=""> {{ pic }} </div>
+                <div class=""> {{  due_date  }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -101,8 +101,8 @@
                           </div>
                           <div class="col">
                             <div class="">100 %</div>
-                            <div class="">{{ slide }} %</div>
-                            <q-slider readonly v-model="slide" color="blue" track-color="light-blue-1"
+                            <div class="">{{ progress }} %</div>
+                            <q-slider readonly v-model="progress" color="blue" track-color="light-blue-1"
                               inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
@@ -119,8 +119,8 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">04-DEC-2023, 09.15 AM</div>
-                            <div class="">RIAN SPV</div>
+                            <div class="">{{  created_at  }}</div>
+                            <div class="">RIAN</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -150,13 +150,9 @@
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
             <q-card-section class="row justify-center">
               <CardBase class="col-12">
-                <div class="q-ml-lg">Laporan Request :</div>
-                <div class="q-ml-md">1. Pencatatan Penjualan selama 1 minggu terakhir</div>
-                <div class="q-ml-md">2. Berisi data dari seluruh mitra</div>
-                <div class="q-ml-md">3. Termasuk dengan perhitungan bahan </div>
-                <div class="q-ml-lg">.</div>
+                <div class="q-ml-lg"> {{ description }} </div>
 
-                <div>{{ text }}</div>
+                <div class="q-ml-lg"> {{ text }} </div>
               </CardBase>
               <CardBase class="col-6">
                 <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
@@ -181,17 +177,17 @@
                     color="grey" />
                   <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Revise" no-caps />
+                      label="Revise" no-caps @click="Revise()"/>
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" to="task_monitoring" @click="Notifydone" />
+                      no-caps class="col-5" @click="Done()" />
                   </div>
                   <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                   <div class="q-gutter-md row items-center">
                     <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
                       Feedback
                     </div>
-                    <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange" :min="0" :max="5" markers
-                      :marker-labels="model" label-always :label-value="model"/>
+                    <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange" :min="0"
+                      :max="5" markers :marker-labels="model" label-always :label-value="model" />
                   </div>
                 </div>
               </CardBase>
@@ -207,6 +203,7 @@
 import { ref } from 'vue';
 import Vue from 'vue';
 import { exportFile } from 'quasar';
+import axios from 'axios';
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0
@@ -223,42 +220,97 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'Report',
+  name: 'ManagerReport',
+  props: ['id'],
   setup() {
     return {
       model: ref(0),
-      slide: ref(15),
       text: ref(''),
       ratingModel: ref(0),
       ratingColors: ['yellow'],
-      pic: ref([]),
-      options: [
-        {
-          label: 'Bambang',
-          value: 'Bambang'
-        },
-        {
-          label: 'Tami',
-          value: 'Tami'
-        },
-        {
-          label: 'Rani',
-          value: 'Rani'
-        }
-      ],
-    }
+      // pic: ref(''),
+    };
   },
+
 
   data() {
     return {
-      filter: '',
+      task_title: '',
+      status: '',
+      priority: '',
+      pic: '',
+      due_date: '',
+      progress: 0,
+      create_on: '',
+      create_by: '',
+      history: '',
+      description: '',
+      created_at: '',
+      // Add other properties with default values
       mode: 'list',
     }
   },
 
+  mounted() {
+    this.fetchData();
+  },
+
   methods: {
-    Notifydone() {
+    async fetchData() {
+      try {
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
+        this.task_type = response.data.task_type;
+        this.task_title = response.data.task_title;
+        this.priority = response.data.priority;
+        this.progress = response.data.progress;
+        this.status = response.data.status;
+        this.iteration = response.data.Iteration;
+        this.start_date = response.data.start_date;
+        this.due_date = response.data.due_date;
+        this.created_at = response.data.created_at;
+        this.description = response.data.description;
+        this.pic = response.data.pic;
+        this.spv = response.data.spv;
+
+        console.log(response.data.start_date)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+
+    async Revise() {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Revised',
+          });
+          this.$router.push('/director/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Revising Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
+    Done() {
       this.$q.notify({
+        color: 'positive',
         message: 'Task Done',
       })
     }

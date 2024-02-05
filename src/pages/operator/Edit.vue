@@ -425,18 +425,18 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/api/tasks/' + this.id);
-        this.form.task_type = response.data.taskData.task_type;
-        this.form.task_title = response.data.taskData.task_title;
-        this.form.priority = response.data.taskData.priority;
-        this.form.iteration = response.data.taskData.Iteration;
-        this.form.start_date = response.data.taskData.start_date;
-        this.form.due_date = response.data.taskData.due_date;
-        this.form.description = response.data.taskData.description;
-        this.form.pic = response.data.taskData.pic;
-        this.form.spv = response.data.taskData.spv;
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/all/' + this.id);
+        this.form.task_type = response.data.task_type;
+        this.form.task_title = response.data.task_title;
+        this.form.priority = response.data.priority;
+        this.form.iteration = response.data.Iteration;
+        this.form.start_date = response.data.start_date;
+        this.form.due_date = response.data.due_date;
+        this.form.description = response.data.description;
+        this.form.pic = response.data.pic;
+        this.form.spv = response.data.spv;
 
-        console.log(response.data.taskData.start_date)
+        console.log(response.data.start_date)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -455,7 +455,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/api/tasks/' + this.id, {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -467,7 +467,7 @@ export default {
           this.$q.notify({
             message: 'Task Edited',
           });
-          this.$router.push('/manager/task_monitoring')
+          this.$router.push('/operator/task_monitoring')
         } else {
           this.$q.notify({
             message: 'Failed Edited task',

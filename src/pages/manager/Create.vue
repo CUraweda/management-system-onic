@@ -436,16 +436,16 @@ export default {
         task_type: this.task_type,
         task_title: this.task_title,
         priority: this.priority.value,
-        status: "wait-app",
-        start_date: this.start_date,
-        due_date: this.due_date,
+        status: "Wait-app",
+        start_date: new Date(this.start_date).toISOString(),
+        due_date: new Date(this.due_date).toISOString(),
         description: this.description,
-        pic: this.pic.map(item => item.value),
-        spv: this.spv.map(item => item.value),
+        // pic: this.pic.map(item => item.value),
+        // spv: this.spv.map(item => item.value),
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/new', {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

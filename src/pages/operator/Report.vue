@@ -258,7 +258,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -278,11 +278,34 @@ export default {
       }
     },
 
-    Revise() {
-      this.$q.notify({
-        color: 'negative',
-        message: 'Task Revised',
-      })
+    async Revise() {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Revised',
+          });
+          this.$router.push('/operator/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Revising Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     },
 
     Done() {

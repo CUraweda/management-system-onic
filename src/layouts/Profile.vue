@@ -66,7 +66,7 @@ export default {
   //       const userId = props.route.params.userId;
 
   //       // Permintaan ke server untuk mendapatkan informasi profil berdasarkan ID pengguna
-  //       const response = await axios.get(`http://localhost:3000/api/user/${userId}`);
+  //       const response = await axios.get(`https://api-prmn.curaweda.com:3000/api/user/${userId}`);
 
   //       // Mengisi data profil
   //       email.value = response.data.email;

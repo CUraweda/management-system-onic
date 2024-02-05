@@ -231,7 +231,7 @@
 
               <q-td key="status" :props="props">
                 <q-chip
-                  :color="(props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                  :color="(props.row.status == 'Deleted') ? 'red-2 text-red' : (props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
                   dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
                 </q-chip>
               </q-td>
@@ -255,13 +255,13 @@
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
                     label="Cancel" />
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2"
-                    text-color="yellow-9" label="Revise" />
+                    text-color="yellow-9" label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm" rounded
                     @click="acc" />
                 </div>
                 <div class="q-gutter-sm" v-else>
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                    label="Revise" />
+                    label="Revise" @click="Revise(props.row.id)"/>
                   <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
                     @click="employee_dialog = true" />
                 </div>
@@ -488,11 +488,12 @@ export default {
 
     async Delete(id) {
       const data = {
+        status:  "deleted",
         deleted_at: new Date().toISOString(),
       };
 
       try {
-        const response = await fetch('http://localhost:3000/api/tasks/' + id, {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -516,10 +517,41 @@ export default {
       window.location.reload();
     },
 
+    async Revise(id) {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Revised',
+          });
+          this.$router.push('/manager/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Revising Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      window.location.reload();
+    },
+
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/all');
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/all');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -544,6 +576,7 @@ export default {
         message: 'Task Done',
       })
     },
+
 
     filterFn(val, update) {
       if (val === '') {
