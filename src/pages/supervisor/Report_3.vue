@@ -24,7 +24,7 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
-                    <div class="q-mr-lg"> {{ pic }} </div>
+                    <div class="q-mr-lg"> {{ spv }} </div>
                   </div>
                   <div class="col-4">
                     <div
@@ -292,7 +292,7 @@ export default {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -322,7 +322,7 @@ export default {
           this.$q.notify({
             message: 'Task Canceled',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Canceling Task',
@@ -352,7 +352,7 @@ export default {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',

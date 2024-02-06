@@ -196,7 +196,7 @@
                 <q-td :props="props">
                   <div class="text-center" style="width: 100%">
                     <q-chip
-                      :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan  ' : (props.row.status == 'Open') ? 'grey' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                      :color="(props.row.status == 'Wait-app') ? 'blue' : (props.row.status == 'Completed') ? 'cyan  ' : (props.row.status == 'In-progres') ? 'orange' : (props.row.status == 'Open') ? 'green' : (props.row.status == 'Overdue' ? 'yellow' : 'secondary')"
                       text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
                       style="width: 150px">{{ props.row.status }}
                     </q-chip>
@@ -228,7 +228,7 @@
               <template v-slot:body-cell-details="props">
                 <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
                   <div class="q-gutter-sm">
-                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" to="task_detail">
+                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" @click="Detail(props.row.id)">
                       <q-icon name="img:/statics/Filesearch.svg" />
                       View
                     </q-btn>
@@ -270,7 +270,7 @@
                 <q-td :props="props">
                   <div class="text-center" style="width: 100%">
                     <q-chip
-                      :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                      :color="(props.row.status == 'Wait-app') ? 'blue' : (props.row.status == 'Completed') ? 'cyan  ' : (props.row.status == 'In-progres') ? 'orange' : (props.row.status == 'Open') ? 'green' : (props.row.status == 'Overdue' ? 'yellow' : 'secondary')"
                       text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
                       style="width: 150px">{{ props.row.status }}
                     </q-chip>
@@ -302,7 +302,7 @@
               <template v-slot:body-cell-details="props">
                 <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
                   <div class="q-gutter-sm">
-                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" to="task_detail">
+                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" @click="Detail(props.row.id)">
                       <q-icon name="img:/statics/Filesearch.svg" />
                       View
                     </q-btn>
@@ -342,7 +342,7 @@
                 <q-td :props="props">
                   <div class="text-center" style="width: 100%">
                     <q-chip
-                      :color="(props.row.status == 'Done') ? 'orange  ' : (props.row.status == 'In-progres') ? 'cyan' : (props.row.status == 'Stuck' ? 'purple' : 'secondary')"
+                      :color="(props.row.status == 'Wait-app') ? 'blue' : (props.row.status == 'Completed') ? 'cyan  ' : (props.row.status == 'In-progres') ? 'orange' : (props.row.status == 'Open') ? 'green' : (props.row.status == 'Overdue' ? 'yellow' : 'secondary')"
                       text-color="white" dense class="text-weight-bolder q-py-md q-px-lg" text-center round
                       style="width: 150px">{{ props.row.status }}
                     </q-chip>
@@ -374,7 +374,7 @@
               <template v-slot:body-cell-details="props">
                 <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-3">
                   <div class="q-gutter-sm">
-                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7">
+                    <q-btn dense unelevated color="indigo-2" text-color="indigo-7" @click="Detail(props.row.id)">
                       <q-icon name="img:/statics/Filesearch.svg" />
                       View
                     </q-btn>
@@ -397,7 +397,8 @@
 
 <script>
 import { exportFile } from "quasar";
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue';
+import axios from 'axios';
 // import Status from "components/Status"
 
 
@@ -430,6 +431,7 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
+        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
         {
           name: "task_title",
           align: "left",
@@ -478,129 +480,9 @@ export default {
 
       ],
       data: [
-        {
-          serial_no: "01",
-          task_title: "Laporan Mingguan",
-          name: "Leslie Tecklenburg",
 
-          date: "10 Dec",
-          priority: "3",
-          status: "Done",
-          progress: 100,
-        },
-        {
-          serial_no: "02",
-          task_title: "Rekap Laporan Mitra",
-          name: "Lia Whitledge",
-
-          date: "11 Dec",
-          priority: "3",
-          status: "Stuck",
-          progress: 75,
-        },
-        {
-          serial_no: "03",
-          task_title: "Laporan Bahan",
-          name: "Sam Wileman",
-
-          date: "12 Dec",
-          priority: "5",
-          status: "In-progress",
-          progress: 50,
-        },
-        {
-          serial_no: "06",
-          task_title: "Laporan Laba Rugi",
-          name: "John Rozelle",
-
-          date: "13 Dec",
-          priority: "3",
-          status: "In-progress",
-          progress: 50,
-        },
-        // {
-        //   serial_no: "04",
-        //   task_title: "Mapping Market",
-        //   name: "Edgar Colmer",
-
-        //   date: "11/09/2019",
-        //   priority: "3",
-        //   status: "Done",
-        //   progress: 100,
-        // },
-        // {
-        //   serial_no: "05",
-        //   task_title: "Data Summary Mitra",
-        //   name: "Kaiden Rozelle",
-
-        //   date: "10/11/2019",
-        //   priority: "3",
-        //   status: "Done",
-        //   progress: 30,
-        // },
-        // {
-        //   serial_no: "07",
-        //   name: "Jacob Firtado",
-
-        //   date: "09/10/2019",
-        //   priority: "3",
-        //   status: "Stuck",
-        //   progress: 70,
-        // },
-        // {
-        //   serial_no: "05",
-        //   name: "John Doe",
-        //   amount: "$ 900",
-        //   date: "12/11/2019",
-        //   priority: "5",
-        //   status: "Stuck",
-        //   progress: 80,
-        // }
-      ],
-      next_data: [
-        {
-          serial_no: "01",
-          task_title: "Laporan Mingguan",
-          name: "Ronie",
-
-          date: "17 Dec",
-          priority: "3",
-          status: "In-progress",
-          progress: 50,
-        },
-        {
-          serial_no: "02",
-          task_title: "Rekap Laporan Mitra",
-          name: "Deden",
-
-          date: "18 Dec",
-          priority: "3",
-          status: "In-progress",
-          progress: 25,
-        },
-        {
-          serial_no: "06",
-          task_title: "Laporan Laba Rugi",
-          name: "Johni",
-
-          date: "20 Dec",
-          priority: "3",
-          status: "In-progress",
-          progress: 30,
-        },
       ],
       waiting_data: [
-        {
-          serial_no: "01",
-          task_title: "Laporan Mingguan",
-          name: "Ronie",
-
-          date: "17 Dec",
-          priority: "3",
-          status: "Open",
-          progress: 0,
-        },
-
       ],
 
       pagination: {
@@ -615,7 +497,30 @@ export default {
       },
     };
   },
+
+  mounted() {
+    this.fetchData();
+    this.fetchWaitedData();
+  },
+
   methods: {
+    async fetchData() {
+      try {
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/all');
+        this.data = response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+
+    async fetchWaitedData() {
+      try {
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/waited');
+        this.waiting_data = response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
 
     filterFn(val, update) {
       if (val === '') {
@@ -629,6 +534,10 @@ export default {
         const needle = val.toLowerCase()
         this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
+    },
+
+    Detail(id) {
+      this.$router.push('task_detail/' + id)
     },
 
 

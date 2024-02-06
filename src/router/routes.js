@@ -10,18 +10,6 @@ import DirectorLayout from 'src/layouts/DirectorLayout.vue';
 import OperatorLayout from 'src/layouts/OperatorLayout.vue';
 import ManagerLayout from 'src/layouts/ManagerLayout.vue';
 import SupervisorLayout from 'src/layouts/SupervisorLayout.vue';
-import WorkerLayout from 'src/layouts/WorkerLayout.vue';
-
-// Operator
-import OperatorDashboard from 'pages/operator/Dashboard.vue';
-import OperatorCreateTask from 'pages/operator/Create.vue';
-import OperatorEditTask from 'pages/operator/Edit.vue';
-import OperatorTaskMonitoring from 'pages/operator/task_monitoring.vue';
-import OperatorTaskMonitoring2 from 'pages/operator/task_monitoring_2.vue';
-import OperatorTaskMonitoring3 from 'pages/operator/task_monitoring_3.vue';
-import OperatorReport from 'pages/operator/Report.vue';
-import OperatorReport2 from 'pages/operator/Report_2.vue';
-import OperatorReport3 from 'pages/operator/Report_3.vue';
 
 // Director
 import DirectorDashboard from 'pages/director/Dashboard.vue';
@@ -56,33 +44,19 @@ import SupervisorReport from 'pages/supervisor/Report.vue';
 import SupervisorReport2 from 'pages/supervisor/Report_2.vue';
 import SupervisorReport3 from 'pages/supervisor/Report_3.vue';
 
-// worker
-import WorkerDashboard from 'pages/worker/Dashboard.vue';
-import WorkerCreateTask from 'pages/worker/Create_task.vue';
-import WorkerTaskDetail from 'pages/worker/Task_detail.vue';
-import WorkerTaskDetail2 from 'pages/worker/Task_detail_2.vue';
-import WorkerTaskDetail3 from 'pages/worker/Task_detail_3.vue';
-import WorkerTaskList from 'pages/worker/Task_list.vue';
+// operator
+import OperatorDashboard from 'pages/operator/Dashboard.vue';
+import OperatorCreateTask from 'pages/operator/Create_task.vue';
+import OperatorTaskDetail from 'pages/operator/Task_detail.vue';
+import OperatorTaskDetail2 from 'pages/operator/Task_detail_2.vue';
+import OperatorTaskDetail3 from 'pages/operator/Task_detail_3.vue';
+import OperatorTaskList from 'pages/operator/Task_list.vue';
+
 import Error404 from 'pages/Error404.vue';
 
 const routes = [
   { path: '/', component: SignIn },
   { path: '/sign-up', component: SignUp },
-  {
-    path: '/operator',
-    component: OperatorLayout,
-    children: [
-      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: OperatorDashboard },
-      { path: 'create', meta: { title: 'CREATE TASK' }, component: OperatorCreateTask },
-      { path: 'edit', meta: { title: 'EDIT TASK' }, component: OperatorEditTask },
-      { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: OperatorTaskMonitoring },
-      { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: OperatorTaskMonitoring2 },
-      { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: OperatorTaskMonitoring3 },
-      { path: 'report/:id', meta: { title: 'REPORTS' }, component: OperatorReport },
-      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: OperatorReport2 , props: true },
-      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: OperatorReport3 , props: true },
-    ],
-  },
   {
     path: '/director',
     component: DirectorLayout,
@@ -129,15 +103,15 @@ const routes = [
     ],
   },
   {
-    path: '/worker',
-    component: WorkerLayout,
+    path: '/operator',
+    component: OperatorLayout,
     children: [
-      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: WorkerDashboard },
-      { path: 'create', meta: { title: 'CREATE TASK' }, component: WorkerCreateTask },
-      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: WorkerTaskDetail, props: true },
-      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: WorkerTaskDetail2, props: true },
-      { path: 'task_detail_3/:id', meta: { title: 'TASK DETAIL' }, component: WorkerTaskDetail3, props: true },
-      { path: 'task_list',  meta: { title: 'TASK LIST' }, component: WorkerTaskList },
+      { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: OperatorDashboard },
+      { path: 'create', meta: { title: 'CREATE TASK' }, component: OperatorCreateTask },
+      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: OperatorTaskDetail, props: true },
+      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: OperatorTaskDetail2, props: true },
+      { path: 'task_detail_3/:id', meta: { title: 'TASK DETAIL' }, component: OperatorTaskDetail3, props: true },
+      { path: 'task_list',  meta: { title: 'TASK LIST' }, component: OperatorTaskList },
     ],
   },
   // ... other routes ...

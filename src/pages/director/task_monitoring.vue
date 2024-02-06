@@ -257,7 +257,7 @@
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2"
                     text-color="yellow-9" label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm" rounded
-                    @click="Acc()" />
+                    @click="acc" />
                 </div>
                 <div class="q-gutter-sm" v-else>
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
@@ -315,7 +315,6 @@
 import { ref } from 'vue';
 import { exportFile } from "quasar";
 import axios from 'axios';
-import html2pdf from "html2pdf.js";
 // import Status from "components/Status"
 
 const stringOptions = [
@@ -366,95 +365,7 @@ export default {
 
       ],
       data: [
-        // {
-        //   serial_no: "01",
-        //   task_title: "Laporan Mingguan",
-        //   name: "Leslie Tecklenburg",
 
-        //   due_date: "05/01/2020",
-        //   priority: "High",
-        //   status: "Open",
-        //   progress: 0,
-        //   avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
-        // },
-        // {
-        //   serial_no: "02",
-        //   task_title: "Rekap Laporan Mitra",
-        //   name: "Lia Whitledge",
-        //   abeng: "priority",
-
-        //   due_date: "15/12/2019",
-        //   priority: "High",
-        //   status: "Open",
-        //   progress: 0,
-        //   avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
-        // },
-        // {
-        //   serial_no: "03",
-        //   task_title: "Laporan Bahan",
-        //   name: "Sam Wileman",
-        //   abeng: "priority",
-
-        //   due_date: "12/11/2019",
-        //   priority: "High",
-        //   status: "Idle",
-        //   progress: 50,
-        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/3fc2caf6-118c-457d-8a28-8868c1753fda.jpeg?w=600&q=90",
-        // },
-        // {
-        //   serial_no: "06",
-        //   task_title: "Laporan Laba Rugi",
-        //   name: "John Rozelle",
-        //   abeng: "aku",
-
-        //   due_date: "10/11/2019",
-        //   priority: "Normal",
-        //   status: "In-progress",
-        //   progress: 50,
-        //   avatar: "https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4",
-        // },
-        // {
-        //   serial_no: "04",
-        //   task_title: "Mapping Market",
-        //   name: "Edgar Colmer",
-
-        //   due_date: "11/09/2019",
-        //   priority: "Normal",
-        //   status: "Completed",
-        //   progress: 100,
-        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
-        // },
-        // {
-        //   serial_no: "05",
-        //   task_title: "Data Summary Mitra",
-        //   name: "Kaiden Rozelle",
-
-        //   due_date: "10/11/2019",
-        //   priority: "Normal",
-        //   status: "Completed",
-        //   progress: 100,
-        //   avatar: "https://avatars2.githubusercontent.com/u/27857088?s=400&u=a898efbc753d93cf4c2070a7cf3b05544b50deea&v=4",
-        // },
-        // {
-        //   serial_no: "07",
-        //   name: "Jacob Firtado",
-
-        //   due_date: "09/10/2019",
-        //   priority: "Normal",
-        //   status: "Open",
-        //   progress: 0,
-        //   avatar: "https://avatars0.githubusercontent.com/u/55240045?s=400&u=cf9bffc2bd2d8e42ca6e5abf40ddd6c1a03ce2860&v=4",
-        // },
-        // {
-        //   serial_no: "05",
-        //   name: "John Doe",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "High",
-        //   status: "Open",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // }
       ],
       pagination: {
         rowsPerPage: 5
@@ -486,36 +397,6 @@ export default {
       this.$router.push('report/' + id)
     },
 
-    async Acc(id) {
-      const data = {
-        status:  "Done",
-      };
-
-      try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + id, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          this.$q.notify({
-            message: 'Task Deleted',
-          });
-          this.$router.push('/director/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Deleted Task',
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-      window.location.reload();
-    },
-
     async Delete(id) {
       const data = {
         status:  "deleted",
@@ -535,7 +416,7 @@ export default {
           this.$q.notify({
             message: 'Task Deleted',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -566,7 +447,7 @@ export default {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',

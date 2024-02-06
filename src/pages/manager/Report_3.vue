@@ -24,7 +24,7 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
-                    <div class="q-mr-lg"> {{ pic }} </div>
+                    <div class="q-mr-lg"> {{ spv }} </div>
                   </div>
                   <div class="col-4">
                     <div

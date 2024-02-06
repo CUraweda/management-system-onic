@@ -17,7 +17,7 @@
                   <q-item-label class="q-pb-xs text-weight-bold">Task Type</q-item-label>
                   <div class="no-shadow">
                     <q-btn-toggle v-model="task_type" spread no-caps toggle-color="cyan-6" class="no-shadow"
-                      color="grey-3" text-color="black" :options="task_type_options"  />
+                      color="grey-3" text-color="black" :options="task_type_options" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -27,7 +27,8 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
-                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="task_title" :rules="[ val => val !== null && val !== '' || 'Required']" />
+                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="task_title"
+                    :rules="[val => val !== null && val !== '' || 'Required']" />
                 </q-item-section>
               </q-item>
             </div>
@@ -36,8 +37,8 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Priority</q-item-label>
-                  <q-select dense filled outlined v-model="priority" :options="opsipriority" stack-label :rules="[ val => val !== null && val !== '' || 'Required']"
-                    options-dense></q-select>
+                  <q-select dense filled outlined v-model="priority" :options="opsipriority" stack-label
+                    :rules="[val => val !== null && val !== '' || 'Required']" options-dense></q-select>
                 </q-item-section>
               </q-item>
             </div>
@@ -60,7 +61,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
-                  <q-input filled dense v-model="start_date" :rules="[ val => val !== null && val !== '' || 'Required']">
+                  <q-input filled dense v-model="start_date" :rules="[val => val !== null && val !== '' || 'Required']">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -93,7 +94,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input filled dense v-model="due_date" :rules="[ val => val !== null && val !== '' || 'Required']">
+                  <q-input filled dense v-model="due_date" :rules="[val => val !== null && val !== '' || 'Required']">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -146,7 +147,8 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Description</q-item-label>
-                  <q-input v-model="description" filled type="textarea" placeholder="Give some example" :rules="[ val => val !== null && val !== '' || 'Required']"/>
+                  <q-input v-model="description" filled type="textarea" placeholder="Give some example"
+                    :rules="[val => val !== null && val !== '' || 'Required']" />
                 </q-item-section>
               </q-item>
             </div>
@@ -159,7 +161,8 @@
 
                   <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
                     <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0"
-                      :options="picoptions" behavior="menu" class="col-6" :rules="[ val => val !== null && val !== '' || 'Required']">
+                      :options="picoptions" behavior="menu" class="col-6"
+                      :rules="[val => val !== null && val !== '' || 'Required']">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -187,7 +190,8 @@
                             <img src="statics/worker.png">
                           </q-avatar>
                           {{ item.value }}
-                          <q-btn round flat dense icon="close" class="float-right" color="grey-8" v-close-popup />
+                          <q-btn removeable dense flat color="red" size="15px" icon="close"
+                            @click="removeItempic(index)" />
                         </div>
                       </q-card-section>
                     </template>
@@ -197,15 +201,14 @@
               </q-item>
             </div>
             <!-- pic -->
-
-            <!-- spv -->
             <div class="col-12">
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
                     <q-select multiple dense filled v-model="spv" name="spv" use-input input-debounce="0"
-                      :options="spvoptions" behavior="menu" class="col-6" :rules="[ val => val !== null && val !== '' || 'Required']">
+                      :options="spvoptions" behavior="menu" class="col-6"
+                      :rules="[val => val !== null && val !== '' || 'Required']">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -230,7 +233,8 @@
                             <img src="statics/worker.png">
                           </q-avatar>
                           {{ item.value }}
-                          <q-btn removeable dense flat color="red" size="15px" icon="close" />
+                          <!-- Tambahkan event click untuk memanggil fungsi removeItem dengan indeks item -->
+                          <q-btn removeable dense flat color="red" size="15px" icon="close" @click="removeItem(index)" />
                         </div>
                       </q-card-section>
                     </template>
@@ -238,7 +242,7 @@
                 </q-item-selection>
               </q-item>
             </div>
-            <!-- spv -->
+
           </div>
         </q-card>
 
@@ -249,17 +253,19 @@
           <q-card-section class="text-weight-bold text-h6 text-black ">
             Add to card
           </q-card-section>
-          <div class="col-12">
-            <q-item>
-              <q-item-section class="q-mb-xl">
-                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl">
-                  <template v-slot:append>
+ <!-- frontend.html -->
+<div class="col-12">
+    <q-item>
+        <q-item-section class="q-mb-xl">
+            <q-file outlined v-model="model" label="Upload File" class="q-mb-xl" @change="handleFileUpload">
+                <template v-slot:append>
                     <q-icon name="ios_share" />
-                  </template>
-                </q-file>
-              </q-item-section>
-            </q-item>
-          </div>
+                </template>
+            </q-file>
+        </q-item-section>
+    </q-item>
+</div>
+
 
           <!-- <div class="col-12">
             <q-item>
@@ -420,6 +426,7 @@ export default {
         submittedspv.value = true
         submitResultspv.value = data
         submitEmptyspv.value = data.length === 0
+
       },
       model: ref(null),
       text: ref(''),
@@ -428,7 +435,21 @@ export default {
     }
   },
 
+  mounted() {
+    console.log('submitResultspv:', this.submitResultspv);
+  },
+
   methods: {
+
+
+
+    removeItem(index) {
+      this.submitResultspv.splice(index, 1);
+    },
+
+    removeItempic(index) {
+      this.submitResultpic.splice(index, 1);
+    },
 
     async create() {
       // Using Axios to make a POST request
@@ -440,8 +461,9 @@ export default {
         start_date: new Date(this.start_date).toISOString(),
         due_date: new Date(this.due_date).toISOString(),
         description: this.description,
-        // pic: this.pic.map(item => item.value),
-        // spv: this.spv.map(item => item.value),
+        pic_title: "manager" ,
+        pic: this.submitResultpic.map(item => item.value).join(','),
+        spv: this.submitResultspv.map(item => item.value).join(','),
       };
 
       try {

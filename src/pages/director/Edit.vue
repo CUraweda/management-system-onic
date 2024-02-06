@@ -424,8 +424,9 @@ export default {
 
   methods: {
     async fetchData() {
+      console.log(this.id)
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/all/' + this.id);
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
@@ -436,7 +437,6 @@ export default {
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
 
-        console.log(response.data.start_date)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -450,8 +450,8 @@ export default {
         start_date: this.form.start_date,
         due_date: this.form.due_date,
         description: this.form.description,
-        // pic: this.pic.map(item => item.value),
-        // spv: this.spv.map(item => item.value),
+        pic: this.submitResultpic.map(item => item.value).join(','),
+        spv: this.submitResultspv.map(item => item.value).join(','),
       };
 
       try {
@@ -467,7 +467,7 @@ export default {
           this.$q.notify({
             message: 'Task Edited',
           });
-          this.$router.push('/director/task_monitoring')
+          this.$router.push('/manager/task_monitoring')
         } else {
           this.$q.notify({
             message: 'Failed Edited task',

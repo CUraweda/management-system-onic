@@ -13,7 +13,8 @@
                 <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ status }}</div>
               </div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}
+                </div>
               </div>
             </div>
             <q-card-section>
@@ -23,7 +24,7 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
-                    <div class="q-mr-lg"> {{ pic }} </div>
+                    <div class="q-mr-lg"> {{ spv }} </div>
                   </div>
                   <div class="col-4">
                     <div
@@ -46,25 +47,12 @@
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
           <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
-            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="30" show-value track-color="light-blue-2" class="text-black q-ma-md" value="1"
-                size="100px" color="light-blue" />
-              <div class="vertical-bottom text-center text-black">Days</div>
+<div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+              <q-circular-progress :max="time.max" show-value track-color="light-blue-2" class="text-black q-ma-md"
+                :value="time.value" size="100px" color="light-blue" />
+              <div v-if="time.labelPosition === 'bottom'" class="vertical-bottom text-center text-black">{{ time.label }}
             </div>
-            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="24" show-value track-color="light-blue-2" class="text-black q-ma-md" value="4"
-                size="100px" color="light-blue" />
-              <div class="text-center text-black">Hours</div>
-            </div>
-            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="60" show-value track-color="light-blue-2" class="text-black q-ma-md" value="45"
-                size="100px" color="light-blue" />
-              <div class="vertical-bottom text-center text-black">Miunites</div>
-            </div>
-            <div class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="60" show-value track-color="light-blue-2" class="text-black q-ma-md" value="55"
-                size="100px" color="light-blue" />
-              <div class="vertical-bottom text-center text-black">Second</div>
+            <div v-else class="text-center text-black">{{ time.label }}</div>
             </div>
           </q-card>
         </div>
@@ -81,9 +69,9 @@
                 <div class="">Due Date</div>
               </div>
               <div class="col">
-                <div class=""> {{  task_title  }} </div>
+                <div class=""> {{ task_title }} </div>
                 <div class=""> {{ pic }} </div>
-                <div class=""> {{  due_date  }} </div>
+                <div class=""> {{ due_date }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -102,7 +90,7 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
-                            <q-slider readonly v-model="progress" color="blue" track-color="light-blue-1"
+                            <q-slider v-model="progress" color="blue" track-color="light-blue-1"
                               inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
@@ -119,7 +107,7 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{  created_at  }}</div>
+                            <div class="">{{ created_at }}</div>
                             <div class="">RIAN</div>
                           </div>
                         </div>
@@ -168,26 +156,17 @@
             Attachment Download
           </div>
           <q-card flat bordered class="no-shadow col-12">
-            <q-card-section class="">
-              <CardBase class="col-12">
-                <div class="q-pa-md col-12">
-                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
+            <q-card-section class="row">
+              <CardBase class="  ">
+                <div class="q-pa-md">
+                  <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
-                    color="grey" />
-                  <div class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Revise" no-caps @click="Revise()"/>
-                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Done()" />
-                  </div>
-                  <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
-                  <div class="q-gutter-md row items-center">
-                    <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
-                      Feedback
-                    </div>
-                    <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange" :min="0"
-                      :max="5" markers :marker-labels="model" label-always :label-value="model" />
+                  <q-uploader style="max-width: 300px" url="" label="Dokumen Hasil" multiple color="grey" />
+                  <div class="q-pt-md row justify-between">
+                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
+                      label="Start" no-caps @click="startCountdown" />
+                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Send To Other PIC" no-caps @click="send"/>
                   </div>
                 </div>
               </CardBase>
@@ -206,13 +185,13 @@ import { exportFile } from 'quasar';
 import axios from 'axios';
 
 function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val)
-    : val
+  let formatted = formatFn !== void 0 ?
+    formatFn(val) :
+    val
 
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
+  formatted = formatted === void 0 || formatted === null ?
+    '' :
+    String(formatted)
 
   formatted = formatted.split('"').join('""')
 
@@ -220,7 +199,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'ManagerReport',
+  name: 'TaskDetail',
   props: ['id'],
   setup() {
     return {
@@ -235,6 +214,15 @@ export default {
 
   data() {
     return {
+filter: '',
+      mode: 'list',
+      timerData: [
+        { label: 'Days', labelPosition: 'bottom', max: 30, value: 0 },
+        { label: 'Hours', labelPosition: 'top', max: 24, value: 0 },
+        { label: 'Minutes', labelPosition: 'bottom', max: 60, value: 0 },
+        { label: 'Seconds', labelPosition: 'bottom', max: 60, value: 0 },
+      ],
+      countdown: null,
       task_title: '',
       status: '',
       priority: '',
@@ -246,10 +234,11 @@ export default {
       history: '',
       description: '',
       created_at: '',
+      task_type: '', // Add this line
       // Add other properties with default values
-      mode: 'list',
     }
   },
+
 
   mounted() {
     this.fetchData();
@@ -272,49 +261,56 @@ export default {
         this.pic = response.data.pic;
         this.spv = response.data.spv;
 
-        console.log(response.data.start_date)
+        const dueDate = new Date(this.due_date);
+        const now = new Date();
+        const timeDifference = dueDate.getTime() - now.getTime();
+        // console.log("Deadline:", dueDate)
+        // console.log("Jam:",now)
+        // console.log("Perbedaan Jam:", timeDifference)
+
+
+
+        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+        this.timerData[1].value = Math.floor((timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        this.timerData[2].value = Math.floor((timeDifference % (60 * 60 * 1000)) / (60 * 1000));
+        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
+
+        // Start the countdown
+        this.startCountdown();
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     },
 
-    async Revise() {
-      const data = {
-        status: "Deleted",
-        deleted_at: new Date().toISOString(),
-      };
+    startCountdown() {
+      this.countdown = setInterval(() => {
+        // Calculate seconds
+        let totalSeconds = this.timerData[0].value * 24 * 60 * 60 +
+          this.timerData[1].value * 60 * 60 +
+          this.timerData[2].value * 60 +
+          this.timerData[3].value;
 
-      try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          this.$q.notify({
-            message: 'Task Revised',
-          });
-          this.$router.push('/operator/task_monitoring');
+        if (totalSeconds > 0) {
+          totalSeconds--;
+          this.timerData[0].value = Math.floor(totalSeconds / (24 * 60 * 60));
+          this.timerData[1].value = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+          this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
+          this.timerData[3].value = totalSeconds % 60;
         } else {
-          this.$q.notify({
-            message: 'Failed Revising Task',
-          });
+          this.stopCountdown();
         }
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      }, 1000);
     },
 
-    Done() {
-      this.$q.notify({
-        color: 'positive',
-        message: 'Task Done',
-      })
-    }
-  },
+    stopCountdown() {
+      clearInterval(this.countdown);
+    },
+
+    send() {
+      this.$router.push('/inworker/task_detail_2/' + this.id)
+      // console.log(id);
+    },
+  }
 }
 </script>
 

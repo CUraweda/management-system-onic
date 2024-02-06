@@ -188,17 +188,21 @@
 
     <q-page class="q-pa-sm">
       <q-card>
-        <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="name"
+        <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="pic"
           :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination">
 
           <template v-slot:body="props">
             <q-tr :props="props" :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
 
+              <q-td key="id" :props="props">
+                <div>{{ props.row.id }}</div>
+              </q-td>
+
               <q-td key="task_title" :props="props">
                 <div>{{ props.row.task_title }}</div>
               </q-td>
 
-              <q-td key="name" :props="props">
+              <q-td key="pic" :props="props">
                 <q-item style="max-width: 420px">
                   <q-item-section avatar>
                     <q-avatar>
@@ -207,7 +211,7 @@
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label>{{ props.row.name }}</q-item-label>
+                    <q-item-label>{{ props.row.pic }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-td>
@@ -240,7 +244,7 @@
 
               <q-td key="Review" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated to="report_3">
+                  <q-btn dense unelevated @click="Report(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -316,8 +320,9 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
+        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
         { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
-        { name: "name", align: "left", label: "PIC", field: "name", sortable: true },
+        { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
         { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
@@ -413,11 +418,17 @@ export default {
       }
     },
 
+
+
     getRowColor(status) {
       if (status === 'Open') {
         return 'bg-blue-3'; // Change it to your desired color class
       }
       return ''; // No background color for other statuses
+    },
+
+    Report(id) {
+      this.$router.push('report_3/' + id)
     },
 
     acc() {
@@ -457,7 +468,7 @@ export default {
                 wrapCsvValue(
                   typeof col.field === "function"
                     ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
+                    : row[col.field === void 0 ? col.pic : col.field],
                   col.format
                 )
               )

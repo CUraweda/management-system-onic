@@ -19,13 +19,13 @@
           </q-toolbar-title>
 
           <div class="row wrap items-center justify-end q-gutter-sm">
-            <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
+            <!-- <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
               standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
               <template v-slot:prepend>
                 <q-icon v-if="search === ''" name="search" text-color="black" />
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
-            </q-input>
+            </q-input> -->
             <q-btn round dense flat color="black" icon="notifications">
               <q-badge color="red" text-color="white" floating>
                 5

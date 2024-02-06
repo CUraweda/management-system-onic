@@ -411,7 +411,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/waited');
+        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/supervisor');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

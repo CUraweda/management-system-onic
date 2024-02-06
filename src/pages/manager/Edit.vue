@@ -450,8 +450,8 @@ export default {
         start_date: this.form.start_date,
         due_date: this.form.due_date,
         description: this.form.description,
-        // pic: this.pic.map(item => item.value),
-        // spv: this.spv.map(item => item.value),
+        pic: this.submitResultpic.map(item => item.value).join(','),
+        spv: this.submitResultspv.map(item => item.value).join(','),
       };
 
       try {

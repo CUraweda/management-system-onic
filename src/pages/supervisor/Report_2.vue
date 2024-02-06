@@ -234,6 +234,7 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: 'Report2',
+
   setup() {
     return {
       slide: ref(15),
