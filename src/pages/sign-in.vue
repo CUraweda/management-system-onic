@@ -6,16 +6,11 @@
           <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
             <q-card flat class="bg-white text-black fixed-full">
               <div class="row justify-end">
-
-<<<<<<< HEAD
                 <div class="col-md-4 col-xs-12 q-ma-xl">
-=======
-                <div class="col-md-4 col-xs-12 q-my-xl">
->>>>>>> 21e4df5d69daea7e945a8cc329c6f079b9900697
-                  <div class="q-pa-md text-center">
+                  <div class="q-pa-md text-center q-mt-md">
                     <!-- welcome section -->
                     <div class="col items-center">
-                      <q-img src="/statics/logo.jpg" width="150px" class="q-ma-md"></q-img>
+                      <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class=" text-h5">
                         Welcome Back!
                       </div>
@@ -36,13 +31,15 @@
 
                     <!-- form section -->
                     <q-form class="q-gutter-md">
-
-                      <q-input filled v-model="Email" label="Email" lazy-rules />
+                      <q-input filled v-model="Email" label="Email" lazy-rules
+                        :rules="[val => val !== null && val !== '' || 'Required']" />
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
-                        placeholder="Enter at least 8+ characters" :dense="dense">
+                        placeholder="Enter at least 8+ characters" :dense="dense"
+                        :rules="[val => val !== null && val !== '' || 'Required']">
                         <template v-slot:append>
-                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                            @click="togglePwdVisibility" />
                         </template>
                       </q-input>
 
@@ -53,8 +50,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign In" to="/manager/Dashboard" type="button" color="cyan"
-                          @click="loginNotify" />
+                        <q-btn class="full-width" label="Sign In" type="button" color="cyan" @click="signIn" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -79,38 +75,91 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import axios from 'axios';
 
 export default {
+  name: 'SignIn',
+
   data() {
     return {
       Email: '',
       password: '',
-      firstname: '',
-      lastname: '',
-    }
+    };
   },
 
   setup() {
-    return {
-      right: ref(false),
-      isPwd: ref(false),
-      dense: ref(false),
-    }
-  },
+    const right = ref(false);
+    const isPwd = ref(true);
+    const dense = ref(false);
 
-  methods: {
-    loginNotify() {
-      this.$q.notify({
-        message: 'Login Successful',
-      })
-    }
+    const togglePwdVisibility = () => {
+      isPwd.value = !isPwd.value;
+    };
+
+    const signIn = async () => {
+      try {
+        const response = await axios.post('https://api-prmn.curaweda.com:3000/user/login', {
+          email: Email,
+          password: password,
+        });
+
+        const { token, user_id } = response.data;
+
+        // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+        localStorage.setItem('token', token);
+
+        // Redirect berdasarkan email
+        redirectUser(Email);
+
+        this.$q.notify({
+          message: 'Login Successful.',
+        });
+      } catch (error) {
+        console.error('Error signing in:', error);
+
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Invalid email or password',
+        });
+      }
+    };
+
+    const redirectUser = (email) => {
+      switch (email) {
+        case 'bubur@gmail.com':
+          this.$router.push('manager/dashboard');
+          break;
+        case 'manager@gmail.com':
+          this.$router.push('manager/dashboard');
+          break;
+        case 'operator@gmail.com':
+          this.$router.push('operator/dashboard');
+          break;
+        case 'supervisor@gmail.com':
+          this.$router.push('supervisor/dashboard');
+          break;
+        case 'worker@gmail.com':
+          this.$router.push('worker/dashboard');
+          break;
+        default:
+          console.log('Email tidak dikenali');
+      }
+    };
+
+    return {
+      right,
+      isPwd,
+      dense,
+      togglePwdVisibility,
+      signIn
+    };
   },
-}
+};
 </script>
 
-<style >
-
+<style>
 * {
   margin: 0px;
   padding: 0px;

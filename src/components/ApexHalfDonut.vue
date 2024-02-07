@@ -1,5 +1,5 @@
 <template>
-  <apexchart type="donut" height="250" width="100%" :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="donut" height="300" width="650" :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
@@ -13,7 +13,7 @@ export default {
         legend: {
           show: true,
           position: "bottom",
-          fontSize: '6.4px',
+          fontSize: '13px',
         },
         colors: ['#ECE9EA', '#F3C677', '#64C6C3', '#5876E0', '#2ED0A2'],
         labels: ['Bad', 'Poor', 'Average', 'Good', 'Excelent'],
@@ -46,7 +46,7 @@ export default {
           breakpoint: 480,
           options: {
             chart: {
-              width: 200
+              width: 350
             },
             legend: {
               position: 'bottom'

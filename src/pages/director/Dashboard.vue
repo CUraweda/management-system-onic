@@ -56,15 +56,17 @@
     <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
 
       <!-- completed task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
-        <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
-            <q-card-section class="row items-center justify-center">
-              <div class="bg-purple q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
+          <span class="q-focus-helper"></span>
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
+            <q-card-section class="row items-center justify-center q-gutter-md">
+              <div class="bg-purple q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/check.svg" />
               </div>
               <div class="text-weight-bold text-center">Completed Tasks</div>
             </q-card-section>
+            <q-space></q-space>
             <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">68</div>
               Increased by 6 this week
@@ -75,15 +77,16 @@
       <!-- completed task -->
 
       <!-- in progres task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
-        <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
-            <q-card-section class="row items-center justify-center">
-              <div class="bg-blue q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+            <q-card-section class="row items-center justify-center q-gutter-md">
+              <div class="bg-blue q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/Load.svg" />
               </div>
               <div class="text-weight-bold text-center">In Progress Tasks</div>
             </q-card-section>
+            <q-space></q-space>
             <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">17</div>
               Decreased by 5 this week
@@ -94,15 +97,16 @@
       <!-- in progres task -->
 
       <!-- overdue -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
-        <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
-            <q-card-section class="row items-center justify-center">
-              <div class="bg-orange q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+            <q-card-section class="row items-center justify-center q-gutter-md">
+              <div class="bg-orange q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/Jam.svg" />
               </div>
               <div class="text-weight-bold text-center">Overdue Tasks</div>
             </q-card-section>
+            <q-space></q-space>
             <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">9</div>
               Increased by 3 this week
@@ -113,15 +117,16 @@
       <!-- overdue -->
 
       <!-- opened -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
-        <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
-            <q-card-section class="row items-center justify-center">
-              <div class="bg-green q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+            <q-card-section class="row items-center justify-center q-gutter-md">
+              <div class="bg-green q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/check.svg" />
               </div>
               <div class="text-weight-bold text-center">Opened Tasks</div>
             </q-card-section>
+            <q-space></q-space>
             <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">84</div>
               Increased by 8 this week
@@ -132,15 +137,16 @@
       <!-- opened -->
 
       <!-- total -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" >
-        <q-card class="no-shadow">
-          <q-card-section :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'" class="text-black">
-            <q-card-section class="row items-center justify-center">
-              <div class="bg-cyan q-px-sm q-pt-xs q-mr-md card-icon q-mb-sm">
+      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'" class="text-black">
+            <q-card-section class="row items-center justify-center q-gutter-md">
+              <div class="bg-cyan q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/list.svg" />
               </div>
               <div class="text-weight-bold text-center">Total Tasks</div>
             </q-card-section>
+            <q-space></q-space>
             <q-card-section class="text-center">
               <div class="text-h4 text-weight-bold q-mt-none">85</div>
               Completion rate: 80%
@@ -164,7 +170,7 @@
 
             <q-card-section class="row q-gutter-sm q-pt-none justify-between">
 
-              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-11 under-title" dense text-color="black"
+              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
                 standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
                 <template v-slot:prepend>
                   <q-icon v-if="search === ''" name="search" text-color="black" />
@@ -245,58 +251,8 @@
             <q-card-section>
               <card-base class="">
                 <div class="q-mb-xl">Employee Performance Monitoring</div>
-                <div class="row items-end justify-center">
-                  <div class="col-md-6 col-sm-12">
-
-                    <!-- bad -->
-                    <div class="row q-mb-md q-mt-sm  ">
-                      <q-icon name="star" class="" size="25px" style="color: #ece9ea;"></q-icon>
-                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3 float-right">Bad</div>
-                    </div>
-                    <!-- bad -->
-
-                    <!-- poor -->
-                    <div class="row q-mb-md  ">
-                      <q-icon name="star" class="" size="25px" style="color: #f3c677;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #f3c677;"></q-icon>
-                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Poor</div>
-                    </div>
-                    <!-- poor -->
-
-                    <!-- Average -->
-                    <div class="row q-mb-md  ">
-                      <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #64c6c3;"></q-icon>
-                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Average</div>
-                    </div>
-                    <!-- Average -->
-
-                    <!-- Good -->
-                    <div class="row q-mb-md  ">
-                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #5876e0;"></q-icon>
-                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Good</div>
-                    </div>
-                    <!-- Good -->
-
-                    <!-- Excelent -->
-                    <div class="row q-mb-md ">
-                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                      <q-icon name="star" class="" size="25px" style="color: #2ed0a2;"></q-icon>
-                      <div class=" bintang q-ml-md q-px-md q-py-xs bg-grey-3">Excelent</div>
-                    </div>
-                    <!-- Excelent -->
-
-                  </div>
-                  <q-space></q-space>
-
-                  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <div class="row justify-center">
+                  <div class="col-12">
                     <apex-half-donut></apex-half-donut>
                   </div>
                 </div>
@@ -422,6 +378,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'Dashboard',
   data() {
     return {
       filter: '',

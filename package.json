@@ -14,10 +14,14 @@
   "dependencies": {
     "@quasar/extras": "^1.16.9",
     "apexcharts": "^3.44.2",
+    "axios": "^1.6.5",
     "chart.js": "^4.4.1",
     "core-js": "^3.6.5",
+    "html2pdf.js": "^0.10.1",
+    "papaparse": "^5.4.1",
     "quasar": "^1.0.0",
-    "vue-apexcharts": "^1.6.2"
+    "vue-apexcharts": "^1.6.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.13.14",

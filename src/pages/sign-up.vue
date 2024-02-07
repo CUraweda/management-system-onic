@@ -10,8 +10,8 @@
                 <div class="col-md-4 col-xs-12 q-my-xl">
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
-                    <div class="col items-center">
-                      <q-img src="/statics/logo.jpg" width="150px" class="q-ma-md"></q-img>
+                    <div class="col items-center q-mt-md">
+                      <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class=" text-h5">
                         Welcome!
                       </div>
@@ -34,18 +34,19 @@
                     <q-form class="q-gutter-md">
                       <div class="row q-mb-md">
                         <q-input class="col q-mr-md" v-model="firstname" filled :type="isPwd ? 'firstname' : 'text'"
-                          label="First Name" placeholder="Name" :dense="dense"></q-input>
+                          label="First Name" placeholder="Name" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']"></q-input>
 
                         <q-input class="col" v-model="lastname" filled :type="isPwd ? 'lastname' : 'text'"
-                          label="Last Name" placeholder="Name" :dense="dense"></q-input>
+                          label="Last Name" placeholder="Name" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']"></q-input>
                       </div>
 
-                      <q-input filled v-model="Email" label="Email" lazy-rules />
+                      <q-input filled v-model="Email" label="Email" lazy-rules  :rules="[ val => val !== null && val !== '' || 'Required']"/>
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
-                        placeholder="Enter at least 8+ characters" :dense="dense">
+                        placeholder="Enter at least 8+ characters" :dense="dense" :rules="[ val => val !== null && val !== '' || 'Required']">
                         <template v-slot:append>
-                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+                          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                            @click="togglePwdVisibility" />
                         </template>
                       </q-input>
 
@@ -56,8 +57,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign Up" to="/sign-in" type="button" color="cyan"
-                          @click="loginNotify" />
+                        <q-btn class="full-width" label="Sign Up" type="button" color="cyan" @click="signUp" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -82,16 +82,18 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import axios from 'axios';
 
 export default {
+  name: 'SignUp',
   data() {
     return {
-      Email: 'example.email@gmail.com',
+      Email: '',
       password: '',
       firstname: '',
       lastname: '',
-    }
+    };
   },
 
   setup() {
@@ -99,21 +101,51 @@ export default {
       right: ref(false),
       isPwd: ref(false),
       dense: ref(false),
-    }
+    };
   },
 
   methods: {
-    loginNotify() {
-      this.$q.notify({
-        message: 'Sign Up Successful',
-      })
-    }
+    togglePwdVisibility() {
+      this.isPwd = !this.isPwd;
+    },
+    async signUp() {
+      try {
+        const response = await axios.post('https://api-prmn.curaweda.com:3000/user/register', {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          email: this.Email,
+          password: this.password,
+          // Tambahkan properti lain sesuai kebutuhan
+        });
+
+        // Dapatkan token dari respons
+        const token = response.data.token;
+
+        // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+        localStorage.setItem('token', token);
+
+        // Redirect ke halaman lain jika sign-up berhasil
+        this.$router.push('/');
+
+        this.$q.notify({
+          message: 'Sign Up Successful',
+        });
+      } catch (error) {
+        console.error('Error signing up:', error);
+
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Error signing up',
+        });
+      }
+    },
   },
-}
+};
 </script>
 
-<style >
 
+<style>
 * {
   margin: 0px;
   padding: 0px;

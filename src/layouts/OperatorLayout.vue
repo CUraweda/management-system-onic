@@ -3,33 +3,55 @@
 
     <!-- header -->
     <q-header bordered class="bg-white">
-      <div class="q-gutter-y-md q-py-xs">
+      <div class="">
         <q-toolbar>
-          <q-toolbar-title class="row q-gutter-x-md">
+          <q-toolbar-title class="row">
             <div class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
               {{ $route.meta.title }}
             </div>
 
-            <div class="text-black mobile-hide">
+            <div class="text-black mobile-hide q-ml-lg">
               <div class="text-weight-bold text-subtitle2">
                 TASK MANAGEMENT SYSTEM
               </div>
               <div class="text-caption">{{ formattedString }}</div>
             </div>
           </q-toolbar-title>
+          <div class="row wrap items-center justify-end q-gutter-sm">
+            <!-- <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
+              standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
+              <template v-slot:prepend>
+                <q-icon v-if="search === ''" name="search" text-color="black" />
+                <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+              </template>
+            </q-input> -->
+            <q-btn round dense flat color="black" icon="notifications">
+              <q-badge color="red" text-color="white" floating>
+                5
+              </q-badge>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <notification></notification>
+                  <q-card class="text-center no-shadow no-border">
+                    <q-btn label="View All" style="max-width: 120px !important;" flat dense class="text-indigo-8"></q-btn>
+                  </q-card>
+                </q-list>
+              </q-menu>
+            </q-btn>
 
-          <!-- <q-input class="toolbar-input bg-grey-2" dense standout="bg-grey-2 no-shadow" v-model="search"
-            placeholder="Search...">
-            <template v-slot:prepend>
-              <q-icon v-if="search === ''" name="search" />
-              <q-icon v-else name="clear" class="cursor-pointer" @click="search = ''" />
-            </template>
-          </q-input> -->
-          <q-btn flat round dense icon="notifications" class="q-ml-xl" color="black" size="15px" />
-          <q-btn flat round dense icon="question_mark" class="q-mx-xs" color="black" size="15px" />
-          <q-avatar color="cyan-3" size="30px" class="q-mx-xs">
-            <img src="statics/worker.png" />
-          </q-avatar>
+            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+
+            <q-btn round dense flat>
+              <q-avatar color="cyan-3" size="30px">
+                <img src="statics/propil.png" />
+              </q-avatar>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <profile></profile>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
         </q-toolbar>
       </div>
     </q-header>
@@ -42,10 +64,10 @@
         <q-list padding>
 
           <q-item>
-            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg" ></q-img>
+            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-          <q-item clickable v-ripple to="dashboard">
+          <q-item clickable v-ripple to="/operator/dashboard">
             <q-item-section avatar>
               <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
@@ -53,7 +75,15 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_list">
+          <q-item clickable v-ripple to="/operator/create">
+            <q-item-section avatar>
+              <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Create Task </q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/operator/task_list">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
@@ -61,7 +91,7 @@
             <q-item-section> Task List </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_detail">
+          <q-item v-ripple to="/operator/task_detail" disable>
             <q-item-section avatar>
               <q-icon name="list_alt" color="grey-7" size="30px" />
             </q-item-section>
@@ -94,9 +124,16 @@
 <script>
 import { ref } from "vue";
 import { date } from "quasar";
+import notification from "./Notification.vue";
+import profile from "./Profile.vue";
 
 export default {
-  name: 'ManagerLayout',
+  name: 'WorkerLayout',
+
+    components: {
+    notification,
+    profile,
+  },
 
   data() {
     return {
@@ -136,7 +173,7 @@ export default {
 };
 </script>
 
-<style>
+<style scooped>
 .mini-slot {
   transition: background-color 0.28s;
 }
@@ -144,5 +181,4 @@ export default {
 .mini-slot:hover {
   background-color: rgba(0, 0, 0, 0.04);
 }
-
 </style>
