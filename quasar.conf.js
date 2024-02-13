@@ -49,7 +49,7 @@ module.exports = function (/* ctx */) {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
       // env: {
-      //   API_HOST: 'http://localhost:3000',
+      //   API_HOST: 'http://localhost:3000 ',
       // },
 
       // transpile: false,

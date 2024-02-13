@@ -217,7 +217,7 @@
               </q-td>
 
               <q-td key="due_date" :props="props">
-                <div>{{ props.row.due_date }}</div>
+                <div>{{ formatLocalTime(props.row.due_date) }}</div>
               </q-td>
 
               <!-- priority -->
@@ -231,7 +231,7 @@
 
               <q-td key="status" :props="props">
                 <q-chip
-                  :color="(props.row.status == 'Deleted') ? 'red-2 text-red' : (props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                  :color="(props.row.status == 'Close') ? 'deep-orange-2 text-deep-orange' : (props.row.status == 'Deleted') ? 'red-2 text-red' : (props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
                   dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
                 </q-chip>
               </q-td>
@@ -251,17 +251,9 @@
               </q-td>
 
               <q-td key="feed" :props="props">
-                <div class="q-gutter-sm" v-if="props.row.status === 'Wait-app'">
+                <div class="q-gutter-sm">
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                    label="Cancel" />
-                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="yellow-2"
-                    text-color="yellow-9" label="Revise" @click="Revise(props.row.id)" />
-                  <q-btn dense unelevated color="blue-2" text-color="blue" label="OK" class="under-title q-px-sm" rounded
-                    @click="acc" />
-                </div>
-                <div class="q-gutter-sm" v-else>
-                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
-                    label="Revise" @click="Revise(props.row.id)"/>
+                    label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
                     @click="employee_dialog = true" />
                 </div>
@@ -275,7 +267,7 @@
                   <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
                     label="Edit" @click="Edit(props.row.id)" />
                   <q-btn dense class="under-title q-px-sm text-red " no-caps unelevated color="red-2" rounded
-                    label="Delete" @click="Delete(props.row.id)"/>
+                    label="Delete" @click="Delete(props.row.id)" />
                 </div>
               </q-td>
               <!-- action -->
@@ -296,10 +288,9 @@
 
               <q-slider class="" v-model="model" color="orange" :min="0" :max="5" markers :marker-labels="model"
                 label-always :label-value="model" />
-              <q-btn class="q-px-sm bg-yellow-2 text-yellow-9" v-close-popup unelevated @click="submit">Submit</q-btn>
+              <q-btn class="q-px-sm bg-yellow-2 text-yellow-9" v-close-popup unelevated @click="submit()">Submit</q-btn>
             </div>
           </q-card-section>
-
         </q-card>
       </q-dialog>
     </q-page>
@@ -388,6 +379,11 @@ export default {
 
   methods: {
 
+    formatLocalTime(utcTime) {
+      const localTime = new Date(utcTime).toLocaleString();
+      return localTime;
+    },
+
     Edit(id) {
       this.$router.push('edit/' + id)
       // console.log(id);
@@ -399,12 +395,12 @@ export default {
 
     async Delete(id) {
       const data = {
-        status:  "deleted",
+        status: "Deleted",
         deleted_at: new Date().toISOString(),
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + id, {
+        const response = await fetch('http://localhost:3000 /task/edit/' + id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -416,7 +412,7 @@ export default {
           this.$q.notify({
             message: 'Task Deleted',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.$router.push('/director/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -429,25 +425,66 @@ export default {
     },
 
     async Revise(id) {
-      const data = {
-        status: "Deleted",
-        deleted_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + id, {
+        // 1. Ambil data dari tugas yang akan direvisi
+        const fetchTaskResponse = await fetch('http://localhost:3000 /task/get-by-id/' + id);
+        const taskToRevise = await fetchTaskResponse.json();
+
+        // 2. Buat objek baru dengan status "open" dan progress 0
+        const revisedTaskData = {
+          task_type: taskToRevise.task_type,
+          task_title: taskToRevise.task_title,
+          priority: taskToRevise.priority,
+          iteration: taskToRevise.iteration,
+          start_date: new Date(taskToRevise.start_date).toISOString(),
+          due_date: new Date(taskToRevise.due_date).toISOString(),
+          description: taskToRevise.description,
+          pic_title: taskToRevise.pic_title,
+          pic: taskToRevise.pic,
+          spv: taskToRevise.spv,
+          approved_at: null,
+          approved_by: null,
+          started_at: null,
+          started_by: null,
+          finished_at: null,
+          finished_by: null,
+          status: "Open",
+          progress: 0,
+          fileName: taskToRevise.fileName,
+          filePath: taskToRevise.filePath,
+          fileSize: taskToRevise.fileSize,
+        };
+
+        // 3. Kirim permintaan untuk membuat tugas baru
+        const createTaskResponse = await fetch('http://localhost:3000 /task/new', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(revisedTaskData),
+        });
+
+        if (!createTaskResponse.ok) {
+          throw new Error('Failed to create revised task');
+        }
+
+        // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
+        const updateTaskResponse = await fetch('http://localhost:3000 /task/edit/' + id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({
+            status: "Deleted",
+            deleted_at: new Date().toISOString(),
+          }),
         });
 
-        if (response.ok) {
+        if (updateTaskResponse.ok) {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.$router.push('/director/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -456,13 +493,12 @@ export default {
       } catch (error) {
         console.error('Error:', error);
       }
-      window.location.reload();
+      // window.location.reload();
     },
-
 
     async fetchData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/all');
+        const response = await axios.get('http://localhost:3000 /task/all');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -474,12 +510,6 @@ export default {
         return 'bg-blue-3'; // Change it to your desired color class
       }
       return ''; // No background color for other statuses
-    },
-
-    acc() {
-      this.$q.notify({
-        message: 'Task Accepted',
-      })
     },
 
     submit() {

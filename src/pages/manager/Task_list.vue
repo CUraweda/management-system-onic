@@ -170,7 +170,7 @@
       </div>
     </q-card>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" label="Task Wait Approval">
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -213,7 +213,19 @@
 
               <template v-slot:body-cell-priority="props">
                 <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
-                  <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+                  <template v-if="props.row.priority === 'Normal'">
+                    <q-rating :value="2" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else-if="props.row.priority === 'High'">
+                    <q-rating :value="3" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else-if="props.row.priority === 'Important'">
+                    <q-rating :value="5" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else>
+                    <!-- Default case, for any other priority values -->
+                    <q-rating :value="0" size="2em" color="orange" readonly />
+                  </template>
                 </q-td>
               </template>
 
@@ -245,11 +257,11 @@
 
 
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" label="This Week">
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
-            <div class="text-h5 text-weight-bold text-blue">
+            <div class="text-h5 text-weight-bold text-green">
               This Week
             </div>
           </q-card-section>
@@ -287,7 +299,19 @@
 
               <template v-slot:body-cell-priority="props">
                 <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
-                  <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+                  <template v-if="props.row.priority === 'Normal'">
+                    <q-rating :value="2" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else-if="props.row.priority === 'High'">
+                    <q-rating :value="3" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else-if="props.row.priority === 'Important'">
+                    <q-rating :value="5" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else>
+                    <!-- Default case, for any other priority values -->
+                    <q-rating :value="0" size="2em" color="orange" readonly />
+                  </template>
                 </q-td>
               </template>
 
@@ -316,17 +340,17 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="" label="Next Week">
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
-            <div class="text-h5 text-weight-bold text-purple-3">
-              Next Week
+            <div class="text-h5 text-weight-bold text-red">
+              Deleted Task
             </div>
           </q-card-section>
 
           <q-card-section class="q-pa-none">
-            <q-table class="no-shadow q-ml-md text-body1" :data="next_data" :hide-header="mode === 'grid'"
+            <q-table class="no-shadow q-ml-md text-body1" :data="deleted_data" :hide-header="mode === 'grid'"
               :columns="columns" row-key="task_title" :grid="mode == 'grid'" :filter="filter"
               :pagination.sync="pagination" separator="none">
 
@@ -359,7 +383,19 @@
 
               <template v-slot:body-cell-priority="props">
                 <q-td :props="props" class="q-py-md  no-shadow align-left bg-grey-1" outlined bordered>
-                  <q-rating :value="props.row.priority" size="2em" color="orange" readonly />
+                  <template v-if="props.row.priority === 'Normal'">
+                    <q-rating :value="2" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else-if="props.row.priority === 'High'">
+                    <q-rating :value="3" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else-if="props.row.priority === 'Important'">
+                    <q-rating :value="5" size="2em" color="orange" readonly />
+                  </template>
+                  <template v-else>
+                    <!-- Default case, for any other priority values -->
+                    <q-rating :value="0" size="2em" color="orange" readonly />
+                  </template>
                 </q-td>
               </template>
 
@@ -482,7 +518,13 @@ export default {
       data: [
 
       ],
+
       waiting_data: [
+
+      ],
+
+      deleted_data: [
+
       ],
 
       pagination: {
@@ -499,6 +541,7 @@ export default {
   },
 
   mounted() {
+    this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
   },
@@ -506,7 +549,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/all');
+        const response = await axios.get('http://localhost:3000 /task/all/manager');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -515,8 +558,17 @@ export default {
 
     async fetchWaitedData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/waited');
+        const response = await axios.get('http://localhost:3000 /task/waited/manager');
         this.waiting_data = response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+
+    async fetchDeletedData() {
+      try {
+        const response = await axios.get('http://localhost:3000 /task/deleted/manager');
+        this.deleted_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -559,16 +611,6 @@ export default {
           )
         )
         .join("\r\n");
-
-      // const status = exportFile("quotes.csv", content, "text/csv");
-
-      // if (status !== true) {
-      //     this.$q.notify({
-      //         message: "Browser denied file download...",
-      //         color: "negative",
-      //         icon: "warning"
-      //     });
-      // }
     },
 
     getColor(val) {

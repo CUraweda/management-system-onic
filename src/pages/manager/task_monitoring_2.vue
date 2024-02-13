@@ -217,7 +217,7 @@
               </q-td>
 
               <q-td key="due_date" :props="props">
-                <div>{{ props.row.due_date }}</div>
+                 <div>{{ formatLocalTime(props.row.due_date) }}</div>
               </q-td>
 
               <!-- priority -->
@@ -288,7 +288,6 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
-import html2pdf from "html2pdf.js";
 // import Status from "components/Status"
 
 const stringOptions = [
@@ -409,9 +408,14 @@ export default {
   },
   methods: {
 
+    formatLocalTime(utcTime) {
+      const localTime = new Date(utcTime).toLocaleString();
+      return localTime;
+    },
+
     async fetchData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/manager');
+        const response = await axios.get('http://localhost:3000 /task/waited/supervisor');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -428,7 +432,7 @@ export default {
     },
 
     Report(id) {
-      this.$router.push('report_3/' + id)
+      this.$router.push('report/' + id)
     },
 
     acc() {

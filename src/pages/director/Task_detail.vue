@@ -90,7 +90,7 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
-                            <q-slider readonly v-model="progress" color="blue" track-color="light-blue-1"
+                            <q-slider :disable="status === 'Wait-app' || status === 'Deleted'" v-model="progress" color="blue" track-color="light-blue-1"
                               inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
@@ -103,12 +103,12 @@
                       <q-card-section>
                         <div class="row">
                           <div class="col">
-                            <div class="">Created On</div>
-                            <div class="">Created By</div>
+                            <div class="">Create On</div>
+                            <div class="">Create By</div>
                           </div>
                           <div class="col">
                             <div class="">{{ created_at }}</div>
-                            <div class="">{{ created_by }}</div>
+                            <div class="">RIAN</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -146,14 +146,14 @@
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
             <q-card-section class="row justify-center">
               <CardBase class="col-12">
-                <div class="q-ml-lg" style="white-space: pre-line;"> {{ description }} </div>
+                <p class="q-ml-lg" style="white-space: pre-line;"> {{ description }} </p>
 
                 <div class="q-ml-lg"> {{ chat }} </div>
               </CardBase>
               <CardBase class="col-6">
                 <q-input class=" border2 col-6" bottom-slots v-model="chat" label="Text" dense>
                   <template v-slot:after>
-                    <q-btn round dense flat icon="send" @click="SendUpdate()" />
+                    <q-btn round dense flat icon="send" @click="SendUpdate()" :disable="status === 'Wait-app' || status === 'Deleted'"/>
                   </template>
                 </q-input>
               </CardBase>
@@ -164,63 +164,23 @@
             Attachment Download
           </div>
           <q-card flat bordered class="no-shadow col-12">
-            <q-card-section class="">
-              <CardBase class="col-12">
-                <div class="q-pa-md col-12">
-                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
+            <q-card-section class="row">
+              <CardBase class="  ">
+                <div class="q-pa-md">
+                  <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
-                    color="grey" />
+                  <q-uploader style="max-width: 300px" url="" label="Dokumen Hasil" multiple color="grey" />
+                  <div class="q-pt-md row justify-between">
+                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" :color="started_at ? 'red-1' : 'blue-1'"
+                      :text-color="started_at ? 'red' : 'blue'" :label="started_at ? 'Finish' : 'Start'"
+                      @click="started_at ? FinishTask() : StartTask()" :disable="status === 'Wait-app' || status === 'Deleted'" />
+                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Send To Other PIC" no-caps @click="send"
+                      v-if="task_type === 'Multi'" />
 
-                  <div v-if="task_type === 'Multi'" class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-select multiple dense v-model="picrate" filled use-input input-debounce="0"
-                      :options="picoptions" behavior="menu" class="col-12">
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                            No results
-                          </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
-                    <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Revise" no-caps @click="Revise()" />
-                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Approve()" />
-                    <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
-                    <div class="q-gutter-md row col-12 items-center">
-                      <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
-                        Feedback
-                      </div>
-                      <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange"
-                        :min="0" :max="5" markers :marker-labels="model" label-always :label-value="model" />
-                    </div>
-                  </div>
-
-                  <div v-if="status === 'Wait-app' && task_type === 'Single'"
-                    class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Cancle" @click="Cancle()" no-caps />
-                    <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
-                      no-caps class="col-3" @click="Revise()" />
-                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
-                      no-caps class="col-3" @click="Approve()" />
-                  </div>
-                  
-                  <div v-if="status !== 'Wait-app' && task_type === 'Single'"
-                    class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Revise" no-caps @click="Revise()" />
-                    <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Approve()" />
-                    <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
-                    <div class="q-gutter-md row col-12 items-center">
-                      <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
-                        Feedback
-                      </div>
-                      <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange"
-                        :min="0" :max="5" markers :marker-labels="model" label-always :label-value="model" />
-                    </div>
+                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Submit To Superior" no-caps @click="submitToSuperior"
+                      v-else-if="task_type === 'Single'" />
                   </div>
                 </div>
               </CardBase>
@@ -233,20 +193,19 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import { ref } from 'vue';
 import Vue from 'vue';
 import { exportFile } from 'quasar';
 import axios from 'axios';
 
 function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val)
-    : val
+  let formatted = formatFn !== void 0 ?
+    formatFn(val) :
+    val
 
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
+  formatted = formatted === void 0 || formatted === null ?
+    '' :
+    String(formatted)
 
   formatted = formatted.split('"').join('""')
 
@@ -254,8 +213,19 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'DirectorReport',
+  name: 'TaskDetail',
   props: ['id'],
+  setup() {
+    return {
+      model: ref(0),
+      text: ref(''),
+      ratingModel: ref(0),
+      ratingColors: ['yellow'],
+      // pic: ref(''),
+    };
+  },
+
+
   data() {
     return {
       chat: '',
@@ -271,12 +241,11 @@ export default {
       task_title: '',
       status: '',
       priority: '',
+      pic: '',
       due_date: '',
       progress: 0,
       started_at: '',
       started_by: '',
-      finished_at: '',
-      finished_by: '',
       created_at: '',
       created_by: '',
       history: '',
@@ -286,23 +255,72 @@ export default {
     }
   },
 
-  setup() {
-    return {
-      model: ref(0),
-      text: ref(''),
-      ratingModel: ref(0),
-      ratingColors: ['yellow'],
-      picrate: ref([]),
-    };
-  },
-
-
 
   mounted() {
     this.fetchData();
   },
 
   methods: {
+
+    async StartTask() {
+      const data = {
+        status: "In-progress",
+        started_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Progress Updated',
+          });
+        } else {
+          this.$q.notify({
+            message: 'Failed Updating task',
+          });
+        }
+      } catch (error) {
+        console.error('EROR:', error);
+      }
+      window.location.reload();
+    },
+
+    async FinishTask() {
+      const data = {
+        finished_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Progress Updated',
+          });
+        } else {
+          this.$q.notify({
+            message: 'Failed Updating task',
+          });
+        }
+      } catch (error) {
+        console.error('EROR:', error);
+      }
+      window.location.reload();
+    },
+
     async SendUpdate() {
       const updatedDescription = `${this.description} \n Director: ${this.chat}`;
 
@@ -344,7 +362,6 @@ export default {
         this.progress = response.data.progress;
         this.status = response.data.status;
         this.iteration = response.data.Iteration;
-        this.created_by = response.data.created_by;
         if (response.data.start_date !== null) {
           this.start_date = new Date(response.data.start_date).toLocaleString();
         } else {
@@ -420,7 +437,7 @@ export default {
 
     async UpdateStatus() {
 
-      if (this.status === "Wait-app") {
+      if (this.status === "Idle") {
         this.$q.notify({
           color: 'warning',
           message: 'Task Idle',
@@ -449,148 +466,9 @@ export default {
     },
 
     send() {
-      this.$router.push('/supervisor/task_detail_2/' + this.id)
+      this.$router.push('/director/task_detail_2/' + this.id)
     },
-
-    async Revise() {
-      try {
-        // 1. Ambil data dari tugas yang akan direvisi
-        const fetchTaskResponse = await fetch('http://localhost:3000 /task/get-by-id/' + this.id);
-        const taskToRevise = await fetchTaskResponse.json();
-
-        // 2. Buat objek baru dengan status "open" dan progress 0
-        const revisedTaskData = {
-          task_type: taskToRevise.task_type,
-          task_title: taskToRevise.task_title,
-          priority: taskToRevise.priority,
-          iteration: taskToRevise.iteration,
-          start_date: new Date(taskToRevise.start_date).toISOString(),
-          due_date: new Date(taskToRevise.due_date).toISOString(),
-          description: taskToRevise.description,
-          pic_title: taskToRevise.pic_title,
-          pic: taskToRevise.pic,
-          spv: taskToRevise.spv,
-          approved_at: null,
-          approved_by: null,
-          started_at: null,
-          started_by: null,
-          finished_at: null,
-          finished_by: null,
-          status: "Open",
-          progress: 0,
-          fileName: taskToRevise.fileName,
-          filePath: taskToRevise.filePath,
-          fileSize: taskToRevise.fileSize,
-        };
-
-        // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await fetch('http://localhost:3000 /task/new', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(revisedTaskData),
-        });
-
-        if (!createTaskResponse.ok) {
-          throw new Error('Failed to create revised task');
-        }
-
-        // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await fetch('http://localhost:3000 /task/edit/' + this.id, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
-        });
-
-        if (updateTaskResponse.ok) {
-          this.$q.notify({
-            message: 'Task Revised',
-          });
-          this.$router.push('/supervisor/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Revising Task',
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-      // window.location.reload();
-    },
-
-    async Approve() {
-      const data = {
-        status: "Close",
-        approved_at: new Date().toISOString(),
-      };
-
-      try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          this.$q.notify({
-            message: 'Task Approved',
-          });
-          this.$router.push('/supervisor/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Approving Task',
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    },
-
-    async Cancle() {
-      const data = {
-        status: "Deleted",
-        deleted_at: new Date().toISOString(),
-      };
-
-      try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (response.ok) {
-          this.$q.notify({
-            message: 'Task Canceled',
-          });
-          this.$router.push('/supervisor/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Canceling Task',
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    },
-
-    Done() {
-      this.$q.notify({
-        color: 'positive',
-        message: 'Task Done',
-      })
-    }
-  },
+  }
 }
 </script>
 
@@ -609,5 +487,4 @@ export default {
 
 .border2 {
   border-radius: 8px;
-}
-</style>
+}</style>

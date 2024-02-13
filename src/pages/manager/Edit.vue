@@ -241,19 +241,6 @@
             </q-item>
           </div>
 
-          <!-- <div class="col-12">
-            <q-item>
-              <q-item-section>
-                <q-item-label class="q-pb-xs text-weight-bold">Upload Excel File</q-item-label>
-                <q-file outlined  label="Upload File" class="q-mb-xl" accept=".xlsx, .csv" @change="handleFileUpload">
-                  <template v-slot:append>
-                    <q-icon name="ios_share" />
-                  </template>
-                </q-file>
-                <q-input filled dense v-model="excelFile" type="file" @change="onFileChange" />
-              </q-item-section>
-            </q-item>
-          </div> -->
 
           <q-space></q-space>
 
@@ -282,8 +269,6 @@
 import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
-import * as XLSX from 'xlsx';
-import Papa from 'papaparse';
 import axios from 'axios';
 
 export default {
@@ -426,13 +411,13 @@ export default {
     async fetchData() {
       console.log(this.id)
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
+        const response = await axios.get('http://localhost:3000 /task/get-by-id/' + this.id);
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
         this.form.iteration = response.data.Iteration;
-        this.form.start_date = response.data.start_date;
-        this.form.due_date = response.data.due_date;
+        this.form.start_date = new Date(response.data.start_date).toLocaleString();
+        this.form.due_date = new Date(response.data.due_date).toLocaleString();
         this.form.description = response.data.description;
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
@@ -455,7 +440,7 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -478,63 +463,29 @@ export default {
       }
     },
 
-    handleFileUpload(event) {
-      const file = event.target.files[0];
+// handleFileUpload(event) {
+    //   const file = event.target.files[0];
 
-      if (file) {
-        const reader = new FileReader();
+    //   if (file) {
+    //     const reader = new FileReader();
 
-        reader.onload = (e) => {
-          const content = e.target.result;
+    //     reader.onload = (e) => {
+    //       const content = e.target.result;
 
-          // Determine if the file is XLSX or CSV
-          if (file.name.endsWith('.xlsx')) {
-            this.parseXLSX(content);
-          } else if (file.name.endsWith('.csv')) {
-            this.parseCSV(content);
-          }
-        };
+    //       // Determine if the file is XLSX or CSV
+    //       if (file.name.endsWith('.xlsx')) {
+    //         this.parseXLSX(content);
+    //       } else if (file.name.endsWith('.csv')) {
+    //         this.parseCSV(content);
+    //       }
+    //     };
 
-        reader.readAsBinaryString(file);
-      }
+    //     reader.readAsBinaryString(file);
+    //   }
 
-    },
+    // },
 
-    parseXLSX(content) {
-      const workbook = XLSX.read(content, { type: 'binary' });
-      const firstSheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[firstSheetName];
-      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-      // Assuming data is a 2D array where each row represents a record
-      // Update your form fields accordingly
-      this.title = data[0][0]; // Example: Assuming the title is in the first cell of the first row
-      // Repeat for other fields
-
-      this.$q.notify({
-        message: 'Data from XLSX file has been loaded',
-      });
-    },
-
-    parseCSV(content) {
-      Papa.parse(content, {
-        header: true,
-        complete: (result) => {
-          const data = result.data;
-
-          // Assuming data is an array of objects with header as keys
-          // Update your form fields accordingly
-          if (data.length > 0) {
-            this.title = data[0].TaskTitle; // Example: Assuming TaskTitle is a header in the CSV
-            // Repeat for other fields
-          }
-
-          this.$q.notify({
-            message: 'Data from CSV file has been loaded',
-          });
-        },
-      });
-    },
 
   },
 }

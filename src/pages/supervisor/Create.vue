@@ -11,6 +11,17 @@
             </q-card-section>
 
 
+            <!-- <div class="col-12">
+              <q-item>
+                <q-item-section>
+                  <div class="no-shadow">
+                    <q-checkbox v-model="SpvApp" color="blue" class="q-pl-none q-ml-none"
+                      label="Need to be approved by spv?" />
+                  </div>
+                </q-item-section>
+              </q-item>
+            </div> -->
+
             <div class="col-12">
               <q-item>
                 <q-item-section>
@@ -160,8 +171,8 @@
                   <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
 
                   <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0"
-                      :options="picoptions" behavior="menu" class="col-6"
+                    <q-select multiple dense filled v-model="selectedpic" name="pic" use-input input-debounce="0"
+                      :options="picOptions" behavior="menu" class="col-6"
                       :rules="[val => val !== null && val !== '' || 'Required']">
                       <template v-slot:no-option>
                         <q-item>
@@ -206,8 +217,8 @@
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="spv" name="spv" use-input input-debounce="0"
-                      :options="spvoptions" behavior="menu" class="col-6"
+                    <q-select multiple dense filled v-model="selectedspv" name="spv" use-input input-debounce="0"
+                      :options="spvOptions" behavior="menu" class="col-6"
                       :rules="[val => val !== null && val !== '' || 'Required']">
                       <template v-slot:no-option>
                         <q-item>
@@ -253,33 +264,20 @@
           <q-card-section class="text-weight-bold text-h6 text-black ">
             Add to card
           </q-card-section>
- <!-- frontend.html -->
-<div class="col-12">
-    <q-item>
-        <q-item-section class="q-mb-xl">
-            <q-file outlined v-model="model" label="Upload File" class="q-mb-xl" @change="handleFileUpload">
-                <template v-slot:append>
-                    <q-icon name="ios_share" />
-                </template>
-            </q-file>
-        </q-item-section>
-    </q-item>
-</div>
-
-
-          <!-- <div class="col-12">
+          <!-- frontend.html -->
+          <div class="col-12">
             <q-item>
-              <q-item-section>
-                <q-item-label class="q-pb-xs text-weight-bold">Upload Excel File</q-item-label>
-                <q-file outlined  label="Upload File" class="q-mb-xl" accept=".xlsx, .csv" @change="handleFileUpload">
+              <q-item-section class="q-mb-xl">
+                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl" @change="handleFileUpload">
                   <template v-slot:append>
                     <q-icon name="ios_share" />
                   </template>
                 </q-file>
-                <q-input filled dense v-model="excelFile" type="file" @change="onFileChange" />
               </q-item-section>
             </q-item>
-          </div> -->
+          </div>
+
+
 
           <q-space></q-space>
 
@@ -308,19 +306,24 @@
 import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
-import * as XLSX from 'xlsx';
-import Papa from 'papaparse';
 import axios from 'axios';
 
 export default {
   name: 'ManagerCreate',
   data() {
     return {
-      iteration: ''
+      spv_id: '',
+      pic_id: '',
+      pic: [],
+      selectedpic: null,
+      spv: [],
+      selectedspv: { label: localStorage.getItem('username'), value: localStorage.getItem('email') },
+      iteration: '',
     }
   },
 
   setup() {
+    const SpvApp = ref(false);
     const submittedpic = ref(false)
     const submitEmptypic = ref(false)
     const submitResultpic = ref([])
@@ -329,6 +332,7 @@ export default {
     const submitResultspv = ref([])
 
     return {
+      SpvApp,
       task_type: ref([]),
       task_type_options: [
         {
@@ -359,21 +363,7 @@ export default {
       start_date: ref(null),
       due_date: ref(null),
       description: ref(''),
-      pic: ref([]),
-      picoptions: [
-        {
-          label: 'Bambang',
-          value: 'Bambang'
-        },
-        {
-          label: 'Tami',
-          value: 'Tami'
-        },
-        {
-          label: 'Rani',
-          value: 'Rani'
-        }
-      ],
+
       submittedpic,
       submitEmptypic,
       submitResultpic,
@@ -393,21 +383,7 @@ export default {
         submitResultpic.value = data
         submitEmptypic.value = data.length === 0
       },
-      spv: ref([]),
-      spvoptions: [
-        {
-          label: 'Rian',
-          value: 'Rian'
-        },
-        {
-          label: 'Kusuma',
-          value: 'Kusuma'
-        },
-        {
-          label: 'Didit',
-          value: 'Didit'
-        }
-      ],
+
       submittedspv,
       submitEmptyspv,
       submitResultspv,
@@ -436,12 +412,55 @@ export default {
   },
 
   mounted() {
-    console.log('submitResultspv:', this.submitResultspv);
+    this.fetchData()
+  },
+
+  computed: {
+    picOptions() {
+      return this.pic.map(pic => ({ label: pic.u_name, value: pic.u_email }));
+    },
+    spvOptions() {
+      return this.spv.map(spv => ({ label: spv.u_name, value: spv.u_email }));
+    },
+  },
+
+  watch: {
+    // Menyebabkan pemanggilan metode getSelectedPicId() setiap kali selectedPic berubah
+    selectedPic: 'getSelectedPicId',
+    // Menyebabkan pemanggilan metode getSelectedSpvId() setiap kali selectedSpv berubah
+    selectedSpv: 'getSelectedSpvId',
   },
 
   methods: {
+    async fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3000 /user/all');
+        this.pic = response.data;
+        this.spv = response.data;
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    },
 
+    // Metode untuk mengambil pic_id dari opsi pic yang dipilih
+    getSelectedPicId() {
+      if (this.selectedPic) {
+        const selectedPic = this.pic.find(pic => pic.u_id === this.selectedPic.value);
+        if (selectedPic) {
+          this.pic_id = selectedPic.u_id;
+        }
+      }
+    },
 
+    // Metode untuk mengambil spv_id dari opsi spv yang dipilih
+    getSelectedSpvId() {
+      if (this.selectedSpv) {
+        const selectedSpv = this.spv.find(spv => spv.u_id === this.selectedSpv.value);
+        if (selectedSpv) {
+          this.spv_id = selectedSpv.u_id;
+        }
+      }
+    },
 
     removeItem(index) {
       this.submitResultspv.splice(index, 1);
@@ -452,22 +471,24 @@ export default {
     },
 
     async create() {
-      // Using Axios to make a POST request
       const data = {
+        pic_id: this.pic_id,
+        spv_id: this.spv_id,
         task_type: this.task_type,
         task_title: this.task_title,
         priority: this.priority.value,
         status: "Wait-app",
         start_date: new Date(this.start_date).toISOString(),
         due_date: new Date(this.due_date).toISOString(),
-        description: this.description,
+        description: `${this.description} \n`,
         pic_title: "supervisor",
         pic: this.submitResultpic.map(item => item.value).join(','),
         spv: this.submitResultspv.map(item => item.value).join(','),
+        created_by: localStorage.getItem('email')
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/new', {
+        const response = await fetch('http://localhost:3000 /task/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -495,63 +516,29 @@ export default {
       })
     },
 
-    handleFileUpload(event) {
-      const file = event.target.files[0];
+    // handleFileUpload(event) {
+    //   const file = event.target.files[0];
 
-      if (file) {
-        const reader = new FileReader();
+    //   if (file) {
+    //     const reader = new FileReader();
 
-        reader.onload = (e) => {
-          const content = e.target.result;
+    //     reader.onload = (e) => {
+    //       const content = e.target.result;
 
-          // Determine if the file is XLSX or CSV
-          if (file.name.endsWith('.xlsx')) {
-            this.parseXLSX(content);
-          } else if (file.name.endsWith('.csv')) {
-            this.parseCSV(content);
-          }
-        };
+    //       // Determine if the file is XLSX or CSV
+    //       if (file.name.endsWith('.xlsx')) {
+    //         this.parseXLSX(content);
+    //       } else if (file.name.endsWith('.csv')) {
+    //         this.parseCSV(content);
+    //       }
+    //     };
 
-        reader.readAsBinaryString(file);
-      }
+    //     reader.readAsBinaryString(file);
+    //   }
 
-    },
+    // },
 
-    parseXLSX(content) {
-      const workbook = XLSX.read(content, { type: 'binary' });
-      const firstSheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[firstSheetName];
-      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-      // Assuming data is a 2D array where each row represents a record
-      // Update your form fields accordingly
-      this.title = data[0][0]; // Example: Assuming the title is in the first cell of the first row
-      // Repeat for other fields
-
-      this.$q.notify({
-        message: 'Data from XLSX file has been loaded',
-      });
-    },
-
-    parseCSV(content) {
-      Papa.parse(content, {
-        header: true,
-        complete: (result) => {
-          const data = result.data;
-
-          // Assuming data is an array of objects with header as keys
-          // Update your form fields accordingly
-          if (data.length > 0) {
-            this.title = data[0].TaskTitle; // Example: Assuming TaskTitle is a header in the CSV
-            // Repeat for other fields
-          }
-
-          this.$q.notify({
-            message: 'Data from CSV file has been loaded',
-          });
-        },
-      });
-    },
 
   },
 }

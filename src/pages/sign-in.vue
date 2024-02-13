@@ -6,10 +6,10 @@
           <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
             <q-card flat class="bg-white text-black fixed-full">
               <div class="row justify-end">
-                <div class="col-md-4 col-xs-12 q-ma-xl">
-                  <div class="q-pa-md text-center q-mt-md">
+                <div class="col-md-4 col-xs-12">
+                  <div class="q-pa-md text-center">
                     <!-- welcome section -->
-                    <div class="col items-center">
+                    <div class="col items-center q-mt-md">
                       <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class=" text-h5">
                         Welcome Back!
@@ -30,8 +30,8 @@
                     <!-- button section -->
 
                     <!-- form section -->
-                    <q-form class="q-gutter-md">
-                      <q-input filled v-model="Email" label="Email" lazy-rules
+                    <q-form class="q-gutter-md" @submit="SignIn()">
+                      <q-input filled v-model="email" label="Email" lazy-rules
                         :rules="[val => val !== null && val !== '' || 'Required']" />
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
@@ -50,7 +50,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign In" type="button" color="cyan" @click="signIn" />
+                        <q-btn class="full-width" label="Sign In" color="cyan" type="submit" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -83,7 +83,7 @@ export default {
 
   data() {
     return {
-      Email: '',
+      email: '',
       password: '',
     };
   },
@@ -93,28 +93,52 @@ export default {
     const isPwd = ref(true);
     const dense = ref(false);
 
-    const togglePwdVisibility = () => {
+    const togglePwdVisibility = function () {
       isPwd.value = !isPwd.value;
     };
 
-    const signIn = async () => {
+    return {
+      right,
+      isPwd,
+      dense,
+      togglePwdVisibility,
+    }
+  },
+
+
+  methods: {
+    async SignIn() {
+      const data = {
+        email: this.email,
+        password: this.password,
+      };
+
       try {
-        const response = await axios.post('https://api-prmn.curaweda.com:3000/user/login', {
-          email: Email,
-          password: password,
+        const response = await fetch('http://localhost:3000 /user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
         });
 
-        const { token, user_id } = response.data;
+        if (response.ok) {
+          const { accessToken, email, name } = await response.json();
 
-        // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
-        localStorage.setItem('token', token);
+          // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+          localStorage.setItem('token', accessToken);
+          localStorage.setItem('email', email);
+          localStorage.setItem('username', name);
 
-        // Redirect berdasarkan email
-        redirectUser(Email);
+          this.redirectUser(this.email);
 
-        this.$q.notify({
-          message: 'Login Successful.',
-        });
+          this.$q.notify({
+            message: 'Login Successful.',
+          });
+        } else {
+          // Handle non-OK responses (e.g., 401 Unauthorized)
+          throw new Error('Invalid email or password');
+        }
       } catch (error) {
         console.error('Error signing in:', error);
 
@@ -124,12 +148,13 @@ export default {
           message: 'Invalid email or password',
         });
       }
-    };
+    },
 
-    const redirectUser = (email) => {
+    redirectUser: function (email) {
       switch (email) {
         case 'bubur@gmail.com':
           this.$router.push('manager/dashboard');
+          this.$q.localStorage.set('datauser', res.data.data);
           break;
         case 'manager@gmail.com':
           this.$router.push('manager/dashboard');
@@ -140,21 +165,16 @@ export default {
         case 'supervisor@gmail.com':
           this.$router.push('supervisor/dashboard');
           break;
-        case 'worker@gmail.com':
-          this.$router.push('worker/dashboard');
+        case 'director@gmail.com':
+          this.$router.push('director/dashboard');
           break;
         default:
-          console.log('Email tidak dikenali');
+          this.$q.notify({
+            message: 'Wrong Email or Password',
+          });
       }
-    };
 
-    return {
-      right,
-      isPwd,
-      dense,
-      togglePwdVisibility,
-      signIn
-    };
+    }
   },
 };
 </script>

@@ -100,7 +100,7 @@
 
           <q-item clickable v-ripple to="/manager/task_list">
             <q-item-section avatar>
-              <q-icon name="view_list" color="grey-7" size="30px" />
+              <q-icon name="description" color="grey-7" size="30px" />
             </q-item-section>
 
             <q-item-section> Task List </q-item-section>

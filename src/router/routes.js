@@ -18,10 +18,10 @@ import DirectorEditTask from 'pages/director/Edit.vue';
 import DirectorTaskMonitoring from 'pages/director/task_monitoring.vue';
 import DirectorTaskMonitoring2 from 'pages/director/task_monitoring_2.vue';
 import DirectorTaskMonitoring3 from 'pages/director/task_monitoring_3.vue';
-import DirectorTaskList from 'pages/manager/Task_list.vue';
+import DirectorTaskList from 'pages/director/Task_list.vue';
+import DirectorTaskDetail from 'pages/director/Task_detail.vue';
+import DirectorTaskDetail2 from 'pages/director/Task_detail_2.vue';
 import DirectorReport from 'pages/director/Report.vue';
-import DirectorReport2 from 'pages/director/Report_2.vue';
-import DirectorReport3 from 'pages/director/Report_3.vue';
 
 // manager
 import ManagerDashboard from 'pages/manager/Dashboard.vue';
@@ -32,8 +32,8 @@ import ManagerTaskMonitoring2 from 'pages/manager/task_monitoring_2.vue';
 import ManagerTaskMonitoring3 from 'pages/manager/task_monitoring_3.vue';
 import ManagerReport from 'pages/manager/Report.vue';
 import ManagerTaskList from 'pages/manager/Task_list.vue';
-import ManagerReport2 from 'pages/manager/Report_2.vue';
-import ManagerReport3 from 'pages/manager/Report_3.vue';
+import ManagerTaskDetail from 'pages/manager/Task_detail.vue';
+import ManagerTaskDetail2 from 'pages/manager/Task_detail_2.vue';
 
 // supervisor
 import SupervisorDashboard from 'pages/supervisor/Dashboard.vue';
@@ -43,16 +43,15 @@ import SupervisorTaskMonitoring from 'pages/supervisor/task_monitoring.vue';
 import SupervisorTaskMonitoring2 from 'pages/supervisor/task_monitoring_2.vue';
 import SupervisorTaskMonitoring3 from 'pages/supervisor/task_monitoring_3.vue';
 import SupervisorTaskList from 'pages/supervisor/Task_list.vue';
+import SupervisorTaskDetail from 'pages/supervisor/Task_detail.vue';
+import SupervisorTaskDetail2 from 'pages/supervisor/Task_detail_2.vue';
 import SupervisorReport from 'pages/supervisor/Report.vue';
-import SupervisorReport2 from 'pages/supervisor/Report_2.vue';
-import SupervisorReport3 from 'pages/supervisor/Report_3.vue';
 
 // operator
 import OperatorDashboard from 'pages/operator/Dashboard.vue';
 import OperatorCreateTask from 'pages/operator/Create_task.vue';
 import OperatorTaskDetail from 'pages/operator/Task_detail.vue';
 import OperatorTaskDetail2 from 'pages/operator/Task_detail_2.vue';
-import OperatorTaskDetail3 from 'pages/operator/Task_detail_3.vue';
 import OperatorTaskList from 'pages/operator/Task_list.vue';
 
 import Error404 from 'pages/Error404.vue';
@@ -66,14 +65,14 @@ const routes = [
     children: [
       { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: DirectorDashboard },
       { path: 'create', meta: { title: 'CREATE TASK' }, component: DirectorCreateTask },
-      { path: 'edit', meta: { title: 'EDIT TASK' }, component: DirectorEditTask },
+      { path: 'edit/:id', meta: { title: 'EDIT TASK' }, component: DirectorEditTask, props: true },
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: DirectorTaskMonitoring },
       { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: DirectorTaskMonitoring2 },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: DirectorTaskList },
+      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: DirectorTaskDetail, props: true },
+      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: DirectorTaskDetail2, props: true },
       { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: DirectorTaskMonitoring3 },
-      { path: 'report/:id', meta: { title: 'REPORTS' }, component: DirectorReport },
-      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: DirectorReport2 , props: true },
-      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: DirectorReport3 , props: true },
+      { path: 'report/:id', meta: { title: 'REPORTS' }, component: DirectorReport, props: true},
     ],
   },
   {
@@ -86,10 +85,10 @@ const routes = [
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: ManagerTaskMonitoring },
       { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: ManagerTaskMonitoring2 },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: ManagerTaskList },
+      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: ManagerTaskDetail, props: true },
+      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: ManagerTaskDetail2, props: true },
       { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: ManagerTaskMonitoring3 },
       { path: 'report/:id', meta: { title: 'REPORTS' }, component: ManagerReport , props: true },
-      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: ManagerReport2 , props: true },
-      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: ManagerReport3 , props: true },
     ],
   },
   {
@@ -98,14 +97,14 @@ const routes = [
     children: [
       { path: 'dashboard', meta: { title: 'DASHBOARD' }, component: SupervisorDashboard },
       { path: 'create', meta: { title: 'CREATE TASK' }, component: SupervisorCreateTask },
-      { path: 'edit/:id', meta: { title: 'EDIT TASK' }, component: SupervisorEditTask },
+      { path: 'edit/:id', meta: { title: 'EDIT TASK' }, component: SupervisorEditTask, props: true },
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: SupervisorTaskMonitoring },
       { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: SupervisorTaskMonitoring2 },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: SupervisorTaskList },
+      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: SupervisorTaskDetail, props: true },
+      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: SupervisorTaskDetail2, props: true },
       { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: SupervisorTaskMonitoring3 },
-      { path: 'report', meta: { title: 'REPORTS' }, component: SupervisorReport , props: true },
-      { path: 'report_2/:id', meta: { title: 'REPORTS' }, component: SupervisorReport2 , props: true },
-      { path: 'report_3/:id', meta: { title: 'REPORTS' }, component: SupervisorReport3 , props: true },
+      { path: 'report/:id', meta: { title: 'REPORTS' }, component: SupervisorReport , props: true },
     ],
   },
   {
@@ -116,7 +115,6 @@ const routes = [
       { path: 'create', meta: { title: 'CREATE TASK' }, component: OperatorCreateTask },
       { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: OperatorTaskDetail, props: true },
       { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: OperatorTaskDetail2, props: true },
-      { path: 'task_detail_3/:id', meta: { title: 'TASK DETAIL' }, component: OperatorTaskDetail3, props: true },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: OperatorTaskList },
     ],
   },

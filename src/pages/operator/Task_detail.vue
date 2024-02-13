@@ -47,12 +47,12 @@
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
           <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
-<div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
+            <div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
               <q-circular-progress :max="time.max" show-value track-color="light-blue-2" class="text-black q-ma-md"
                 :value="time.value" size="100px" color="light-blue" />
               <div v-if="time.labelPosition === 'bottom'" class="vertical-bottom text-center text-black">{{ time.label }}
-            </div>
-            <div v-else class="text-center text-black">{{ time.label }}</div>
+              </div>
+              <div v-else class="text-center text-black">{{ time.label }}</div>
             </div>
           </q-card>
         </div>
@@ -90,7 +90,7 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
-                            <q-slider v-model="progress" color="blue" track-color="light-blue-1"
+                            <q-slider :disable="status === 'Wait-app' || status === 'Deleted'" v-model="progress" color="blue" track-color="light-blue-1"
                               inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
@@ -121,8 +121,16 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Bambang logged 1 Days, 4 Hours, 45 Minutes, 55 Seconds.</div>
-                        <div class="q-pt-md">Finished on 05 Dec 2023, 15:45</div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="">Started On</div>
+                            <div class="">Finished On</div>
+                          </div>
+                          <div class="col">
+                            <div class="">{{ started_at }}</div>
+                            <div class="">{{ finished_at }}</div>
+                          </div>
+                        </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -138,14 +146,14 @@
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
             <q-card-section class="row justify-center">
               <CardBase class="col-12">
-                <div class="q-ml-lg"> {{ description }} </div>
+                <p class="q-ml-lg" style="white-space: pre-line;"> {{ description }} </p>
 
-                <div class="q-ml-lg"> {{ text }} </div>
+                <div class="q-ml-lg"> {{ chat }} </div>
               </CardBase>
               <CardBase class="col-6">
-                <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                <q-input class=" border2 col-6" bottom-slots v-model="chat" label="Text" dense>
                   <template v-slot:after>
-                    <q-btn round dense flat icon="send" />
+                    <q-btn round dense flat icon="send" @click="SendUpdate()" :disable="status === 'Wait-app' || status === 'Deleted'"/>
                   </template>
                 </q-input>
               </CardBase>
@@ -163,10 +171,16 @@
                   <div class="q-pt-md"></div>
                   <q-uploader style="max-width: 300px" url="" label="Dokumen Hasil" multiple color="grey" />
                   <div class="q-pt-md row justify-between">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
-                      label="Start" no-caps @click="startCountdown" />
+                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" :color="started_at ? 'red-1' : 'blue-1'"
+                      :text-color="started_at ? 'red' : 'blue'" :label="started_at ? 'Finish' : 'Start'"
+                      @click="started_at ? FinishTask() : StartTask()" :disable="status === 'Wait-app' || status === 'Deleted'" />
                     <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Send To Other PIC" no-caps @click="send"/>
+                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Send To Other PIC" no-caps @click="send"
+                      v-if="task_type === 'Multi'" />
+
+                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Submit To Superior" no-caps @click="submitToSuperior"
+                      v-else-if="task_type === 'Single'" />
                   </div>
                 </div>
               </CardBase>
@@ -214,7 +228,8 @@ export default {
 
   data() {
     return {
-filter: '',
+      chat: '',
+      filter: '',
       mode: 'list',
       timerData: [
         { label: 'Days', labelPosition: 'bottom', max: 30, value: 0 },
@@ -229,12 +244,13 @@ filter: '',
       pic: '',
       due_date: '',
       progress: 0,
-      create_on: '',
-      create_by: '',
+      started_at: '',
+      started_by: '',
+      created_at: '',
+      created_by: '',
       history: '',
       description: '',
-      created_at: '',
-      task_type: '', // Add this line
+      task_type: '',
       // Add other properties with default values
     }
   },
@@ -245,18 +261,136 @@ filter: '',
   },
 
   methods: {
+
+    async StartTask() {
+      const data = {
+        status: "In-progress",
+        started_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Progress Updated',
+          });
+        } else {
+          this.$q.notify({
+            message: 'Failed Updating task',
+          });
+        }
+      } catch (error) {
+        console.error('EROR:', error);
+      }
+      window.location.reload();
+    },
+
+    async FinishTask() {
+      const data = {
+        finished_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Progress Updated',
+          });
+        } else {
+          this.$q.notify({
+            message: 'Failed Updating task',
+          });
+        }
+      } catch (error) {
+        console.error('EROR:', error);
+      }
+      window.location.reload();
+    },
+
+    async SendUpdate() {
+      const updatedDescription = `${this.description} \n Director: ${this.chat}`;
+
+      const data = {
+        progress: this.progress,
+        description: updatedDescription,
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Progress Updated',
+          });
+        } else {
+          this.$q.notify({
+            message: 'Failed Updating task',
+          });
+        }
+      } catch (error) {
+        console.error('EROR:', error);
+      }
+      window.location.reload();
+    },
+
     async fetchData() {
       try {
-        const response = await axios.get('https://api-prmn.curaweda.com:3000/task/get-by-id/' + this.id);
+        const response = await axios.get('http://localhost:3000 /task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
         this.progress = response.data.progress;
         this.status = response.data.status;
         this.iteration = response.data.Iteration;
-        this.start_date = response.data.start_date;
-        this.due_date = response.data.due_date;
-        this.created_at = response.data.created_at;
+        if (response.data.start_date !== null) {
+          this.start_date = new Date(response.data.start_date).toLocaleString();
+        } else {
+          this.start_date = "Not specified"; // atau nilai default lainnya
+        }
+
+        if (response.data.due_date !== null) {
+          this.due_date = new Date(response.data.due_date).toLocaleString();
+        } else {
+          this.due_date = "Not specified"; // atau nilai default lainnya
+        }
+        if (response.data.started_at !== null) {
+          this.started_at = new Date(response.data.started_at).toLocaleString();
+        } else {
+          this.started_at = response.data.started_at; // atau nilai default lainnya
+        }
+
+        if (response.data.finished_at !== null) {
+          this.finished_at = new Date(response.data.finished_at).toLocaleString();
+        } else {
+          this.finished_at = response.data.finished_at;
+        }
+
+        if (response.data.created_at !== null) {
+          this.created_at = new Date(response.data.created_at).toLocaleString();
+        } else {
+          this.created_at = "Not available"; // atau nilai default lainnya
+        }
+
         this.description = response.data.description;
         this.pic = response.data.pic;
         this.spv = response.data.spv;
@@ -264,11 +398,6 @@ filter: '',
         const dueDate = new Date(this.due_date);
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
-        // console.log("Deadline:", dueDate)
-        // console.log("Jam:",now)
-        // console.log("Perbedaan Jam:", timeDifference)
-
-
 
         this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
         this.timerData[1].value = Math.floor((timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
@@ -281,6 +410,7 @@ filter: '',
         console.error('Error fetching data:', error);
       }
     },
+
 
     startCountdown() {
       this.countdown = setInterval(() => {
@@ -297,9 +427,38 @@ filter: '',
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
+          console.log(totalSeconds);
+          console.log("Countdown reached 0");
           this.stopCountdown();
+          this.UpdateStatus();
         }
       }, 1000);
+    },
+
+    async UpdateStatus() {
+
+      if (this.status === "Idle") {
+        this.$q.notify({
+          color: 'warning',
+          message: 'Task Idle',
+        });
+      } else {
+        const data = {
+          status: "Idle",
+        };
+
+        try {
+          await fetch('http://localhost:3000 /task/edit/' + this.id, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+        } catch (error) {
+          console.error('EROR:', error);
+        }
+      }
     },
 
     stopCountdown() {
@@ -307,8 +466,7 @@ filter: '',
     },
 
     send() {
-      this.$router.push('/inworker/task_detail_2/' + this.id)
-      // console.log(id);
+      this.$router.push('/operator/task_detail_2/' + this.id)
     },
   }
 }
@@ -329,5 +487,4 @@ filter: '',
 
 .border2 {
   border-radius: 8px;
-}
-</style>
+}</style>
