@@ -415,7 +415,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/waited/supervisor');
+        const response = await axios.get('http://localhost:3000/task/waited/supervisor');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

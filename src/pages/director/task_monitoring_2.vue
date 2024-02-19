@@ -306,7 +306,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'TaskMonitoring2',
+  name: 'DirectorTaskMonitoring2',
   data() {
     return {
 
@@ -360,7 +360,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/waited');
+        const response = await axios.get('http://localhost:3000/task/waited');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

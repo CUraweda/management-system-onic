@@ -434,7 +434,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /user/all');
+        const response = await axios.get('http://localhost:3000/user/all');
         this.pic = response.data;
         this.spv = response.data;
       } catch (error) {
@@ -488,7 +488,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/new', {
+        const response = await fetch('http://localhost:3000/task/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

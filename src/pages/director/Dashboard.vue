@@ -378,7 +378,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'Dashboard',
+  name: 'DirectorDashboard',
   data() {
     return {
       filter: '',

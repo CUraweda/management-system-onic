@@ -440,7 +440,7 @@ import axios from 'axios';
 
 
 const stringOptions = [
-  'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
+  // 'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
 ]
 
 function wrapCsvValue(val, formatFn) {
@@ -549,7 +549,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/all/supervisor');
+        const response = await axios.get('http://localhost:3000/task/all/supervisor');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -558,7 +558,7 @@ export default {
 
     async fetchWaitedData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/waited/supervisor');
+        const response = await axios.get('http://localhost:3000/task/waited/supervisor');
         this.waiting_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -567,26 +567,26 @@ export default {
 
     async fetchDeletedData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/deleted/supervisor');
+        const response = await axios.get('http://localhost:3000/task/deleted/supervisor');
         this.deleted_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     },
 
-    filterFn(val, update) {
-      if (val === '') {
-        update(() => {
-          this.options = stringOptions
-        })
-        return
-      }
+    // filterFn(val, update) {
+    //   if (val === '') {
+    //     update(() => {
+    //       this.options = stringOptions
+    //     })
+    //     return
+    //   }
 
-      update(() => {
-        const needle = val.toLowerCase()
-        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
-    },
+    //   update(() => {
+    //     const needle = val.toLowerCase()
+    //     this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+    //   })
+    // },
 
     Detail(id) {
       this.$router.push('task_detail/' + id)

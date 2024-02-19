@@ -400,7 +400,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -427,7 +427,7 @@ export default {
     async Revise(id) {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
-        const fetchTaskResponse = await fetch('http://localhost:3000 /task/get-by-id/' + id);
+        const fetchTaskResponse = await fetch('http://localhost:3000/task/get-by-id/' + id);
         const taskToRevise = await fetchTaskResponse.json();
 
         // 2. Buat objek baru dengan status "open" dan progress 0
@@ -456,7 +456,7 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await fetch('http://localhost:3000 /task/new', {
+        const createTaskResponse = await fetch('http://localhost:3000/task/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -469,7 +469,7 @@ export default {
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await fetch('http://localhost:3000 /task/edit/' + id, {
+        const updateTaskResponse = await fetch('http://localhost:3000/task/edit/' + id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -498,7 +498,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/all/supervisor');
+        const response = await axios.get('http://localhost:3000/task/all/supervisor');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

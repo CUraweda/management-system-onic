@@ -15,8 +15,7 @@
               <q-item>
                 <q-item-section>
                   <div class="no-shadow">
-                    <q-checkbox v-model="SpvApp" color="blue" class="q-pl-none q-ml-none"
-                      label="Need to be approved by spv?" />
+                    <q-checkbox v-model="SpvApp" color="blue" class="q-pl-none q-ml-none" label="Requesting approval" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -134,26 +133,6 @@
               </q-item>
             </div>
 
-            <!-- <div class="col-6">
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input dense filled v-model="duedate" mask="date" :rules="['date']">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="duedate">
-                            <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </q-item-section>
-              </q-item>
-            </div> -->
             <div class="col-12">
               <q-item>
                 <q-item-section>
@@ -183,8 +162,8 @@
                       </template>
                     </q-select>
 
-                    <div class="text-cyan col-5">
-                      <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
+                    <div class="text-cyan col-5 q-mb-lg q-mt-md">
+                      <q-btn dense flat color="cyan" class="text-center" icon="add" type="submit" label="Add Person" />
                     </div>
                   </q-form>
 
@@ -228,7 +207,7 @@
                         </q-item>
                       </template>
                     </q-select>
-                    <div class="text-cyan col-5">
+                    <div class="text-cyan col-5 q-mb-lg q-mt-md">
                       <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
                     </div>
                   </q-form>
@@ -284,8 +263,9 @@
           <div class="col-12 absolute-bottom-right q-mt-xl">
             <q-item>
               <q-item-section>
-                <div class="row justify-end">
+                <div class="row justify-end q-gutter-sm">
                   <q-card-actions>
+                    <q-checkbox v-model="SpvApp" color="blue" class="q-mr-lg" label="Requesting approval" />
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
@@ -422,6 +402,9 @@ export default {
     spvOptions() {
       return this.spv.map(spv => ({ label: spv.u_name, value: spv.u_email }));
     },
+    pic_title() {
+      return this.SpvApp ? "manager" : "worker";
+    },
   },
 
   watch: {
@@ -432,9 +415,14 @@ export default {
   },
 
   methods: {
+
+    handleFileUpload(file) {
+      this.file = file;
+    },
+
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /user/all');
+        const response = await axios.get('http://localhost:3000/user/all');
         this.pic = response.data;
         this.spv = response.data;
       } catch (error) {
@@ -471,6 +459,9 @@ export default {
     },
 
     async create() {
+      const formData = new FormData();
+      formData.append('file', this.file);
+
       const data = {
         pic_id: this.pic_id,
         spv_id: this.spv_id,
@@ -481,67 +472,39 @@ export default {
         start_date: new Date(this.start_date).toISOString(),
         due_date: new Date(this.due_date).toISOString(),
         description: `${this.description} \n`,
-        pic_title: "manager",
+        pic_title: this.pic_title,
         pic: this.submitResultpic.map(item => item.value).join(','),
         spv: this.submitResultspv.map(item => item.value).join(','),
         created_by: localStorage.getItem('email')
       };
 
-      try {
-        const response = await fetch('http://localhost:3000 /task/new', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
+      formData.append('data', JSON.stringify(data));
 
-        if (response.ok) {
-          this.$q.notify({
-            message: 'Task Created',
+        try {
+          const response = await fetch('http://localhost:3000/task/new', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
           });
-        } else {
-          this.$q.notify({
-            message: 'Failed Creating task',
-          });
+
+          if (response.ok) {
+            this.$q.notify({
+              message: 'Task Created',
+            });
+          } else {
+            this.$q.notify({
+              message: 'Failed Creating task',
+            });
+          }
+        } catch (error) {
+          console.error('Fa:', error);
         }
-      } catch (error) {
-        console.error('Fa:', error);
-      }
+      },
+
     },
-
-    createNotify() {
-      this.$q.notify({
-        message: 'Task Created',
-      })
-    },
-
-    // handleFileUpload(event) {
-    //   const file = event.target.files[0];
-
-    //   if (file) {
-    //     const reader = new FileReader();
-
-    //     reader.onload = (e) => {
-    //       const content = e.target.result;
-
-    //       // Determine if the file is XLSX or CSV
-    //       if (file.name.endsWith('.xlsx')) {
-    //         this.parseXLSX(content);
-    //       } else if (file.name.endsWith('.csv')) {
-    //         this.parseCSV(content);
-    //       }
-    //     };
-
-    //     reader.readAsBinaryString(file);
-    //   }
-
-    // },
-
-
-
-  },
-}
+  }
 
 
 </script>

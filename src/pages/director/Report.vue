@@ -186,7 +186,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Approve()" />
+                      no-caps class="col-5" @click="Ok()" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -206,13 +206,13 @@
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
                       no-caps class="col-3" @click="Approve()" />
                   </div>
-                  
+
                   <div v-if="status !== 'Wait-app' && task_type === 'Single'"
                     class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Approve()" />
+                      no-caps class="col-5" @click="Ok()" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -312,7 +312,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -337,7 +337,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/get-by-id/' + this.id);
+        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -381,6 +381,9 @@ export default {
         const dueDate = new Date(this.due_date);
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
+        console.log(dueDate);
+        console.log(now);
+        console.log(timeDifference);
 
         this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
         this.timerData[1].value = Math.floor((timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
@@ -388,7 +391,7 @@ export default {
         this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
 
         // Start the countdown
-        this.startCountdown();
+        // this.startCountdown();
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -410,6 +413,7 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
+          console.log("Now:", new Date());
           console.log(totalSeconds);
           console.log("Countdown reached 0");
           this.stopCountdown();
@@ -431,7 +435,7 @@ export default {
         };
 
         try {
-          await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          await fetch('http://localhost:3000/task/edit/' + this.id, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -455,7 +459,7 @@ export default {
     async Revise() {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
-        const fetchTaskResponse = await fetch('http://localhost:3000 /task/get-by-id/' + this.id);
+        const fetchTaskResponse = await fetch('http://localhost:3000/task/get-by-id/' + this.id);
         const taskToRevise = await fetchTaskResponse.json();
 
         // 2. Buat objek baru dengan status "open" dan progress 0
@@ -484,7 +488,7 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await fetch('http://localhost:3000 /task/new', {
+        const createTaskResponse = await fetch('http://localhost:3000/task/new', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -497,7 +501,7 @@ export default {
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const updateTaskResponse = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -526,12 +530,12 @@ export default {
 
     async Approve() {
       const data = {
-        status: "Close",
+        status: "Open",
         approved_at: new Date().toISOString(),
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -554,6 +558,36 @@ export default {
       }
     },
 
+    async Ok() {
+      const data = {
+        status: "Close",
+        approved_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          this.$q.notify({
+            message: 'Task Closed',
+          });
+          this.$router.push('/director/task_monitoring');
+        } else {
+          this.$q.notify({
+            message: 'Failed Approving Task',
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+
     async Cancle() {
       const data = {
         status: "Deleted",
@@ -561,7 +595,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

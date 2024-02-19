@@ -455,7 +455,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'TaskList',
+  name: 'DirectorTaskList',
   data() {
     return {
       filter: "",
@@ -549,7 +549,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/all/director');
+        const response = await axios.get('http://localhost:3000/task/all/director');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -558,7 +558,7 @@ export default {
 
     async fetchWaitedData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/waited/director');
+        const response = await axios.get('http://localhost:3000/task/waited/director');
         this.waiting_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -567,7 +567,7 @@ export default {
 
     async fetchDeletedData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/deleted/director');
+        const response = await axios.get('http://localhost:3000/task/deleted/director');
         this.deleted_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -269,7 +269,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -298,7 +298,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -330,7 +330,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000 /task/edit/' + this.id, {
+        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -355,7 +355,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000 /task/get-by-id/' + this.id);
+        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -448,7 +448,7 @@ export default {
         };
 
         try {
-          await fetch('http://localhost:3000 /task/edit/' + this.id, {
+          await fetch('http://localhost:3000/task/edit/' + this.id, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
