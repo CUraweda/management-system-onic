@@ -82,6 +82,15 @@
             <q-item-section> Create Task </q-item-section>
           </q-item>
 
+
+          <q-item clickable v-ripple to="/supervisor/task_list">
+            <q-item-section avatar>
+              <q-icon name="description" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Task List </q-item-section>
+          </q-item>
+
           <q-item clickable v-ripple to="/supervisor/task_monitoring">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
@@ -98,13 +107,6 @@
             <q-item-section> Task Approval</q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/supervisor/task_list">
-            <q-item-section avatar>
-              <q-icon name="description" color="grey-7" size="30px" />
-            </q-item-section>
-
-            <q-item-section> Task List </q-item-section>
-          </q-item>
 
           <q-item clickable v-ripple to="/supervisor/task_monitoring_3">
             <q-item-section avatar>

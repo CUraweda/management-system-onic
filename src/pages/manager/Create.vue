@@ -481,12 +481,10 @@ export default {
       formData.append('data', JSON.stringify(data));
 
         try {
-          const response = await fetch('https://api-prmn.curaweda.com:3000/task/new', {
-            method: 'POST',
+          const response = await this.$axios.post('/task/new', formData, {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: formData,
           });
 
           if (response.ok) {

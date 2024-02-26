@@ -351,6 +351,26 @@ export default {
   },
   methods: {
 
+    formatLocalTime(utcTime) {
+      if (utcTime === null) {
+        return ''; // Jika utcTime null, kembalikan string kosong
+      }
+
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        timeZone: 'UTC'  // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString('id-ID', options);
+      return localTime;
+    },
+
     async fetchData() {
       try {
         const response = await this.$axios.get('/task/deleted/supervisor');

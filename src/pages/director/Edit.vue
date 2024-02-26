@@ -440,12 +440,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {

@@ -491,7 +491,6 @@ export default {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.status === 200) {

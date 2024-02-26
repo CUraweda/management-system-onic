@@ -114,15 +114,17 @@ export default {
       };
 
       try {
-        const response = await this.$axios.post('/user/login', {
+        const response = await this.$axios.post('/user/login', data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
-          const { accessToken, email, name, title } = await response.json();
+        if (response.status === 200) {
+          const accessToken = response.data.accessToken;
+          const email = response.data.email;
+          const name = response.data.name;
+          const title = response.data.title;
 
           // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
           localStorage.setItem('token', accessToken);

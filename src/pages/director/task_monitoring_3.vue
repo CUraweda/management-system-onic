@@ -329,61 +329,6 @@ export default {
 
       ],
       data: [
-        // {
-        //   serial_no: "01",
-        //   task_title: "Hitung Laba",
-        //   name: "Syahrini",
-
-        //   due_date: "05/01/2020",
-        //   priority: "High",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
-        // },
-        // {
-        //   serial_no: "02",
-        //   task_title: "Rekap Pendapatan",
-        //   name: "Agus",
-
-        //   due_date: "15/12/2019",
-        //   priority: "High",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
-        // },
-        // {
-        //   serial_no: "03",
-        //   task_title: "Merekap Nota",
-        //   name: "Kaesang",
-
-        //   due_date: "11/09/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
-        // },
-        // {
-        //   serial_no: "04",
-        //   task_title: "Merekap Data",
-        //   name: "Jajang",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Important",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // },
-        // {
-        //   serial_no: "05",
-        //   task_title: "Riset Pasar",
-        //   name: "Junaedi",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // }
       ],
       pagination: {
         rowsPerPage: 5

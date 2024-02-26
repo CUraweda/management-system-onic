@@ -332,12 +332,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -374,7 +372,7 @@ export default {
         this.pic = response.data.pic;
         this.spv = response.data.spv;
 
-        const dueDate = this.due_date;
+        const dueDate = new Date(this.due_date);
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
         console.log(dueDate);
@@ -431,12 +429,10 @@ export default {
         };
 
         try {
-          await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-            method: 'PUT',
+          await this.$axios.put('/task/edit/' + this.id, data, {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error('EROR:', error);
@@ -526,12 +522,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -556,12 +550,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -586,12 +578,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {

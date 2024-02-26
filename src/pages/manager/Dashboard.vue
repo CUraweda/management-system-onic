@@ -395,6 +395,12 @@ export default {
     };
   },
   methods: {
+
+    redirectToTaskMonitoring() {
+      // Menggunakan Vue Router untuk navigasi ke halaman task_monitoring
+      this.$router.push('/supervisor/task_monitoring');
+    },
+
     SaveImage(type) {
       const linkSource = this.$refs[type].getDataURL();
       const downloadLink = document.createElement('a');

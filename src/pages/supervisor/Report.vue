@@ -434,8 +434,9 @@ export default {
 
     async Revise() {
       try {
+        const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
-        const response = await this.$axios.get('/task/get-by-id/' + this.id);
+        const response = await this.$axios.get('/task/get-by-id/' + id);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {

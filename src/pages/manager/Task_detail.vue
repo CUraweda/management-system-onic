@@ -36,7 +36,7 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
-                    <div class="q-mr-lg"> {{ due_date }}
+                    <div class="q-mr-lg"> {{ formatLocalTime(due_date) }}
                     </div>
                   </div>
                 </div>
@@ -71,7 +71,7 @@
               <div class="col">
                 <div class=""> {{ task_title }} </div>
                 <div class=""> {{ pic }} </div>
-                <div class=""> {{ due_date }} </div>
+                <div class=""> {{ formatLocalTime(due_date) }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -107,7 +107,7 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ created_at }}</div>
+                            <div class="">{{ formatLocalTime(created_at) }}</div>
                             <div class="">RIAN</div>
                           </div>
                         </div>
@@ -127,8 +127,8 @@
                             <div class="">Finished On</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ started_at }}</div>
-                            <div class="">{{ finished_at }}</div>
+                            <div class="">{{ formatLocalTime(started_at) }}</div>
+                            <div class="">{{ formatLocalTime(finished_at) }}</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -260,7 +260,27 @@ export default {
     this.fetchData();
   },
 
-  methods: {
+  methods: { 
+
+    formatLocalTime(utcTime) {
+      if (utcTime === null) {
+        return ''; // Jika utcTime null, kembalikan string kosong
+      }
+
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        timeZone: 'UTC'  // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString('id-ID', options);
+      return localTime;
+    },
 
     async StartTask() {
       const data = {
@@ -269,12 +289,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -298,12 +316,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -330,12 +346,10 @@ export default {
       };
 
       try {
-        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -362,34 +376,11 @@ export default {
         this.progress = response.data.progress;
         this.status = response.data.status;
         this.iteration = response.data.Iteration;
-        if (response.data.start_date !== null) {
-          this.start_date = new Date(response.data.start_date).toLocaleString();
-        } else {
-          this.start_date = "Not specified"; // atau nilai default lainnya
-        }
-
-        if (response.data.due_date !== null) {
-          this.due_date = new Date(response.data.due_date).toLocaleString();
-        } else {
-          this.due_date = "Not specified"; // atau nilai default lainnya
-        }
-        if (response.data.started_at !== null) {
-          this.started_at = new Date(response.data.started_at).toLocaleString();
-        } else {
-          this.started_at = response.data.started_at; // atau nilai default lainnya
-        }
-
-        if (response.data.finished_at !== null) {
-          this.finished_at = new Date(response.data.finished_at).toLocaleString();
-        } else {
-          this.finished_at = response.data.finished_at;
-        }
-
-        if (response.data.created_at !== null) {
-          this.created_at = new Date(response.data.created_at).toLocaleString();
-        } else {
-          this.created_at = "Not available"; // atau nilai default lainnya
-        }
+        this.created_by = response.data.created_by;
+        this.started_at = response.data.started_at;
+        this.created_at = response.data.created_at;
+        this.due_date = response.data.due_date;
+        this.finished_at = response.data.finished_at;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -448,8 +439,7 @@ export default {
         };
 
         try {
-          await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
-            method: 'PUT',
+          await this.$axios.put('/task/edit/' + this.id, data, {
             headers: {
               'Content-Type': 'application/json',
             },

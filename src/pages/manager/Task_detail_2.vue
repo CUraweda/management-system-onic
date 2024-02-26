@@ -222,6 +222,7 @@ export default {
     }
   },
   methods: {
+    
     startCountdown() {
       this.countdown = setInterval(() => {
         // Calculate seconds

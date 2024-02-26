@@ -57,28 +57,29 @@
 
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
-          <span class="q-focus-helper"></span>
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
-            <q-card-section class="row items-center justify-center q-gutter-md">
-              <div class="bg-purple q-px-sm q-pt-xs card-icon q-mb-sm">
-                <img width="35px" src="statics/check.svg" />
-              </div>
-              <div class="text-weight-bold text-center">Completed Tasks</div>
+          <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
+            <span class="q-focus-helper"></span>
+            <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
+              class="text-black">
+              <q-card-section class="row items-center justify-center q-gutter-md">
+                <div class="bg-purple q-px-sm q-pt-xs card-icon q-mb-sm">
+                  <img width="35px" src="statics/check.svg" />
+                </div>
+                <div class="text-weight-bold text-center">Completed Tasks</div>
+              </q-card-section>
+              <q-space></q-space>
+              <q-card-section class="text-center">
+                <div class="text-h4 text-weight-bold q-mt-none">68</div>
+                Increased by 6 this week
+              </q-card-section>
             </q-card-section>
-            <q-space></q-space>
-            <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">68</div>
-              Increased by 6 this week
-            </q-card-section>
-          </q-card-section>
-        </q-card>
+          </q-card>
       </div>
       <!-- completed task -->
 
       <!-- in progres task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-blue q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -98,8 +99,9 @@
 
       <!-- overdue -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'"
+            class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-orange q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/Jam.svg" />
@@ -118,7 +120,7 @@
 
       <!-- opened -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-green q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -138,7 +140,7 @@
 
       <!-- total -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring" >
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-cyan q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -395,6 +397,11 @@ export default {
     };
   },
   methods: {
+    redirectToTaskMonitoring() {
+      // Menggunakan Vue Router untuk navigasi ke halaman task_monitoring
+      this.$router.push('/supervisor/task_monitoring');
+    },
+
     SaveImage(type) {
       const linkSource = this.$refs[type].getDataURL();
       const downloadLink = document.createElement('a');
