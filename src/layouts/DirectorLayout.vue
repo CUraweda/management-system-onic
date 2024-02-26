@@ -98,13 +98,6 @@
             <q-item-section> Task Approval</q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/director/task_list">
-            <q-item-section avatar>
-              <q-icon name="description" color="grey-7" size="30px" />
-            </q-item-section>
-
-            <q-item-section> Task List </q-item-section>
-          </q-item>
 
           <q-item clickable v-ripple to="/director/task_monitoring_3">
             <q-item-section avatar>

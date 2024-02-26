@@ -36,7 +36,7 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
-                    <div class="q-mr-lg"> {{ due_date }}
+                    <div class="q-mr-lg"> {{formatLocalTime(due_date) }}
                     </div>
                   </div>
                 </div>
@@ -71,7 +71,7 @@
               <div class="col">
                 <div class=""> {{ task_title }} </div>
                 <div class=""> {{ pic }} </div>
-                <div class=""> {{ due_date }} </div>
+                <div class="">  {{ formatLocalTime(due_date) }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -107,7 +107,7 @@
                             <div class="">Created By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ created_at }}</div>
+                            <div class="">{{ formatLocalTime(created_at) }}</div>
                             <div class="">{{ created_by }}</div>
                           </div>
                         </div>
@@ -127,8 +127,8 @@
                             <div class="">Finished On</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ started_at }}</div>
-                            <div class="">{{ finished_at }}</div>
+                            <div class="">{{ formatLocalTime(started_at) }}</div>
+                            <div class=""> {{ formatLocalTime(finished_at) }}</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -173,8 +173,8 @@
                     color="grey" />
 
                   <div v-if="task_type === 'Multi'" class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-select multiple dense v-model="picrate" filled use-input input-debounce="0"
-                      :options="picoptions" behavior="menu" class="col-12">
+                    <q-select multiple dense v-model="picrate" filled use-input input-debounce="0" :options="picoptions"
+                      behavior="menu" class="col-12">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -186,7 +186,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Ok()" />
+                    :disable="status === 'Close'" no-caps class="col-5" @click="Ok()" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -212,7 +212,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Ok()" />
+                    :disable="status === 'Close'" no-caps class="col-5" @click="Ok()" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -239,22 +239,8 @@ import Vue from 'vue';
 import { exportFile } from 'quasar';
 import axios from 'axios';
 
-function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val)
-    : val
-
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
-
-  formatted = formatted.split('"').join('""')
-
-  return `"${formatted}"`
-}
-
 export default {
-  name: 'DirectorReport',
+  name: 'SupervisorReport',
   props: ['id'],
   data() {
     return {
@@ -271,6 +257,7 @@ export default {
       task_title: '',
       status: '',
       priority: '',
+      start_date: '',
       due_date: '',
       progress: 0,
       started_at: '',
@@ -303,8 +290,29 @@ export default {
   },
 
   methods: {
+
+    formatLocalTime(utcTime) {
+      if (utcTime === null) {
+        return ''; // Jika utcTime null, kembalikan string kosong
+      }
+
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        timeZone: 'UTC'  // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString('id-ID', options);
+      return localTime;
+    },
+
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Director: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Supervisor: ${this.chat}`;
 
       const data = {
         progress: this.progress,
@@ -312,15 +320,13 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -337,7 +343,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -345,34 +351,10 @@ export default {
         this.status = response.data.status;
         this.iteration = response.data.Iteration;
         this.created_by = response.data.created_by;
-        if (response.data.start_date !== null) {
-          this.start_date = new Date(response.data.start_date).toLocaleString();
-        } else {
-          this.start_date = "Not specified"; // atau nilai default lainnya
-        }
-
-        if (response.data.due_date !== null) {
-          this.due_date = new Date(response.data.due_date).toLocaleString();
-        } else {
-          this.due_date = "Not specified"; // atau nilai default lainnya
-        }
-        if (response.data.started_at !== null) {
-          this.started_at = new Date(response.data.started_at).toLocaleString();
-        } else {
-          this.started_at = response.data.started_at; // atau nilai default lainnya
-        }
-
-        if (response.data.finished_at !== null) {
-          this.finished_at = new Date(response.data.finished_at).toLocaleString();
-        } else {
-          this.finished_at = response.data.finished_at;
-        }
-
-        if (response.data.created_at !== null) {
-          this.created_at = new Date(response.data.created_at).toLocaleString();
-        } else {
-          this.created_at = "Not available"; // atau nilai default lainnya
-        }
+        this.started_at = response.data.started_at;
+        this.created_at = response.data.created_at;
+        this.due_date = response.data.due_date;
+        this.finished_at = response.data.finished_at;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -431,12 +413,10 @@ export default {
         };
 
         try {
-          await fetch('http://localhost:3000/task/edit/' + this.id, {
-            method: 'PUT',
+          await this.$axios.put('/task/edit/' + this.id, data, {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error('EROR:', error);
@@ -449,27 +429,26 @@ export default {
     },
 
     send() {
-      this.$router.push('/director/task_detail_2/' + this.id)
+      this.$router.push('/supervisor/task_detail_2/' + this.id)
     },
 
     async Revise() {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
-        const fetchTaskResponse = await fetch('http://localhost:3000/task/get-by-id/' + this.id);
-        const taskToRevise = await fetchTaskResponse.json();
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
-          task_type: taskToRevise.task_type,
-          task_title: taskToRevise.task_title,
-          priority: taskToRevise.priority,
-          iteration: taskToRevise.iteration,
-          start_date: new Date(taskToRevise.start_date).toISOString(),
-          due_date: new Date(taskToRevise.due_date).toISOString(),
-          description: taskToRevise.description,
-          pic_title: taskToRevise.pic_title,
-          pic: taskToRevise.pic,
-          spv: taskToRevise.spv,
+          task_type: response.data.task_type,
+          task_title: response.data.task_title,
+          priority: response.data.priority,
+          iteration: response.data.iteration,
+          start_date: new Date(response.data.start_date).toISOString(),
+          due_date: new Date(response.data.due_date).toISOString(),
+          description: response.data.description,
+          pic_title: response.data.pic_title,
+          pic: response.data.pic,
+          spv: response.data.spv,
           approved_at: null,
           approved_by: null,
           started_at: null,
@@ -478,41 +457,37 @@ export default {
           finished_by: null,
           status: "Open",
           progress: 0,
-          fileName: taskToRevise.fileName,
-          filePath: taskToRevise.filePath,
-          fileSize: taskToRevise.fileSize,
+          fileName: response.data.fileName,
+          filePath: response.data.filePath,
+          fileSize: response.data.fileSize,
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await fetch('http://localhost:3000/task/new', {
-          method: 'POST',
+        const createTaskResponse = await this.$axios.post('/task/new', revisedTaskData, {
           headers: {
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(revisedTaskData),
+          }
         });
 
-        if (!createTaskResponse.ok) {
+        if (createTaskResponse.status !== 200) {
           throw new Error('Failed to create revised task');
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
+          status: "Deleted",
+          deleted_at: new Date().toISOString(),
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
         });
 
-        if (updateTaskResponse.ok) {
+        if (updateTaskResponse.status === 200) {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/supervisor/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -524,6 +499,7 @@ export default {
       // window.location.reload();
     },
 
+
     async Approve() {
       const data = {
         status: "Open",
@@ -531,19 +507,17 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/supervisor/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -561,19 +535,17 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/supervisor/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -591,19 +563,17 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Canceled',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/supervisor/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Canceling Task',

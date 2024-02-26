@@ -18,9 +18,6 @@ import DirectorEditTask from 'pages/director/Edit.vue';
 import DirectorTaskMonitoring from 'pages/director/task_monitoring.vue';
 import DirectorTaskMonitoring2 from 'pages/director/task_monitoring_2.vue';
 import DirectorTaskMonitoring3 from 'pages/director/task_monitoring_3.vue';
-import DirectorTaskList from 'pages/director/Task_list.vue';
-import DirectorTaskDetail from 'pages/director/Task_detail.vue';
-import DirectorTaskDetail2 from 'pages/director/Task_detail_2.vue';
 import DirectorReport from 'pages/director/Report.vue';
 
 // manager
@@ -68,9 +65,6 @@ const routes = [
       { path: 'edit/:id', meta: { title: 'EDIT TASK' }, component: DirectorEditTask, props: true },
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: DirectorTaskMonitoring },
       { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: DirectorTaskMonitoring2 },
-      { path: 'task_list',  meta: { title: 'TASK LIST' }, component: DirectorTaskList },
-      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: DirectorTaskDetail, props: true },
-      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: DirectorTaskDetail2, props: true },
       { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: DirectorTaskMonitoring3 },
       { path: 'report/:id', meta: { title: 'REPORTS' }, component: DirectorReport, props: true},
     ],

@@ -422,7 +422,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/user/all');
+        const response = await this.$axios.get('/user/all');
         this.pic = response.data;
         this.spv = response.data;
       } catch (error) {
@@ -459,8 +459,8 @@ export default {
     },
 
     async create() {
-      const formData = new FormData();
-      formData.append('file', this.file);
+      // const formData = new FormData();
+      // formData.append('file', this.file);
 
       const data = {
         pic_id: this.pic_id,
@@ -481,10 +481,10 @@ export default {
       formData.append('data', JSON.stringify(data));
 
         try {
-          const response = await fetch('http://localhost:3000/task/new', {
+          const response = await fetch('https://api-prmn.curaweda.com:3000/task/new', {
             method: 'POST',
             headers: {
-              'Content-Type': 'multipart/form-data',
+              'Content-Type': 'application/json',
             },
             body: formData,
           });

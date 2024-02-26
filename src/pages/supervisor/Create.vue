@@ -434,7 +434,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/user/all');
+        const response = await this.$axios.get('/user/all');
         this.pic = response.data;
         this.spv = response.data;
       } catch (error) {
@@ -488,12 +488,25 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/new', {
-          method: 'POST',
+        const response = await this.$axios.post('/task/new',
+          {
+            pic_id: this.pic_id,
+            spv_id: this.spv_id,
+            task_type: this.task_type,
+            task_title: this.task_title,
+            priority: this.priority.value,
+            status: "Wait-app",
+            start_date: new Date(this.start_date).toISOString(),
+            due_date: new Date(this.due_date).toISOString(),
+            description: `${this.description} \n`,
+            pic_title: "supervisor",
+            pic: this.submitResultpic.map(item => item.value).join(','),
+            spv: this.submitResultspv.map(item => item.value).join(','),
+            created_by: localStorage.getItem('email')
+          }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {

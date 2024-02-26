@@ -114,8 +114,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/user/login', {
-          method: 'POST',
+        const response = await this.$axios.post('/user/login', {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -123,14 +122,15 @@ export default {
         });
 
         if (response.ok) {
-          const { accessToken, email, name } = await response.json();
+          const { accessToken, email, name, title } = await response.json();
 
           // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
           localStorage.setItem('token', accessToken);
           localStorage.setItem('email', email);
           localStorage.setItem('username', name);
+          localStorage.setItem('title', title);
 
-          this.redirectUser(this.email);
+          this.redirectUser(title);
 
           this.$q.notify({
             message: 'Login Successful.',
@@ -150,22 +150,18 @@ export default {
       }
     },
 
-    redirectUser: function (email) {
-      switch (email) {
-        case 'bubur@gmail.com':
-          this.$router.push('manager/dashboard');
-          this.$q.localStorage.set('datauser', res.data.data);
-          break;
-        case 'manager@gmail.com':
+    redirectUser: function (title) {
+      switch (title) {
+        case 'manager':
           this.$router.push('manager/dashboard');
           break;
-        case 'operator@gmail.com':
+        case 'operator':
           this.$router.push('operator/dashboard');
           break;
-        case 'supervisor@gmail.com':
+        case 'supervisor':
           this.$router.push('supervisor/dashboard');
           break;
-        case 'director@gmail.com':
+        case 'director':
           this.$router.push('director/dashboard');
           break;
         default:

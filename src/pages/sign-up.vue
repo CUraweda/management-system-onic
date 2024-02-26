@@ -110,7 +110,7 @@ export default {
     },
     async signUp() {
       try {
-        const response = await axios.post('http://localhost:3000/user/register', {
+        const response = await this.$axios.post('/user/register', {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.Email,

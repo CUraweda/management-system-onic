@@ -411,7 +411,7 @@ export default {
     async fetchData() {
       console.log(this.id)
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
@@ -440,7 +440,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
+        const response = await fetch('https://api-prmn.curaweda.com:3000/task/edit/' + this.id, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

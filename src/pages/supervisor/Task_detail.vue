@@ -269,15 +269,13 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -298,15 +296,14 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -322,7 +319,7 @@ export default {
     },
 
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Director: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Supervisor: ${this.chat}`;
 
       const data = {
         progress: this.progress,
@@ -330,15 +327,13 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -355,7 +350,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -448,12 +443,10 @@ export default {
         };
 
         try {
-          await fetch('http://localhost:3000/task/edit/' + this.id, {
-            method: 'PUT',
+          await this.$axios.put('/task/edit/' + this.id, data, {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error('EROR:', error);

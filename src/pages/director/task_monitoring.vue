@@ -127,22 +127,22 @@
               </q-input>
 
               <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="FromDate" mask="date" label="From">
+                v-model="deposit.date" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="FromDate" />
+                      <q-date v-model="deposit.date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
               <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="ToDate" mask="date" label="To">
+                v-model="deposit.date" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="ToDate" />
+                      <q-date v-model="deposit.date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -171,8 +171,8 @@
                 </q-list>
               </q-btn-dropdown>
 
-              <q-select class="bg-grey-2 col-lg-2 col-md-3 col-sm-5 col-xs-5 under-title" filled v-model="selectedpic"
-                use-input dense input-debounce="0" label="PIC Filter" :options="Optionpics"
+              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
+                use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
                 dropdown-icon="filter_list"></q-select>
 
               <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
@@ -306,6 +306,11 @@
 import { ref } from 'vue';
 import { exportFile } from "quasar";
 import axios from 'axios';
+// import Status from "components/Status"
+
+const stringOptions = [
+  'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
+]
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -319,7 +324,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'DirectorTaskMonitoring',
+  name: 'TaskMonitoring',
   data() {
     return {
 
@@ -329,8 +334,7 @@ export default {
       selected: [],
       search: "",
       deposit: {},
-      picoptions: [],
-      selectedpic: null,
+      options: stringOptions,
       employee_dialog: false,
       columns: [
         { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
@@ -340,14 +344,14 @@ export default {
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
         { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
-        { name: "detail", align: "left", label: "Detail", field: "detail", sortable: false },
-        { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: false },
+        { name: "detail", align: "left", label: "Detail", field: "detail", sortable: true },
+        { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: true },
         {
           name: "action",
           align: "left",
           label: "Action",
           field: "action",
-          sortable: false
+          sortable: true
         }
 
       ],
@@ -361,7 +365,6 @@ export default {
   },
   mounted() {
     this.fetchData();
-    this.fetchDataPic();
   },
 
   setup() {
@@ -374,26 +377,7 @@ export default {
     };
   },
 
-  computed: {
-    Optionpics() {
-      return this.picoptions.map(picoptions => ({ label: picoptions.u_name, value: picoptions.u_name }));
-    },
-  },
-
-  watch: {
-    // Menyebabkan pemanggilan metode getSelectedPicId() setiap kali selectedPic berubah
-    selectedPic: 'getSelectedPicId',
-  },
-
   methods: {
-    async fetchDataPic() {
-      try {
-        const response = await axios.get('http://localhost:3000/user/all');
-        this.picoptions = response.data;
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    },
 
     formatLocalTime(utcTime) {
       const localTime = new Date(utcTime).toLocaleString();
@@ -416,8 +400,7 @@ export default {
       };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + id, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -440,11 +423,20 @@ export default {
       window.location.reload();
     },
 
-    async Revise(id) {
+    async fetchTaskById(id) {
+      try {
+        const response = await this.$axios.get('/task/get-by-id/' + id);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching task by ID:', error);
+        throw error; // lemparkan kembali kesalahan untuk ditangani di luar
+      }
+    },
+
+    async Revise() {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
-        const fetchTaskResponse = await fetch('http://localhost:3000/task/get-by-id/' + id);
-        const taskToRevise = await fetchTaskResponse.json();
+        const taskToRevise = await this.fetchTaskById(id);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
@@ -472,8 +464,7 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await fetch('http://localhost:3000/task/new', {
-          method: 'POST',
+        const createTaskResponse = await this.$axios.post('/task/new', {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -485,8 +476,7 @@ export default {
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await fetch('http://localhost:3000/task/edit/' + id, {
-          method: 'PUT',
+        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -514,7 +504,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/all');
+        const response = await this.$axios.get('/task/all');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -528,16 +518,26 @@ export default {
       return ''; // No background color for other statuses
     },
 
-    // submit() {
-    //   this.$q.notify({
-    //     message: 'Task PIC Done',
-    //   }),
+    submit() {
+      this.$q.notify({
+        message: 'Task Done',
+      })
+    },
 
-    //   update(() => {
-    //     const needle = val.toLowerCase()
-    //     this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-    //   })
-    // },
+
+    filterFn(val, update) {
+      if (val === '') {
+        update(() => {
+          this.options = stringOptions
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
+    },
 
 
     exportTable() {

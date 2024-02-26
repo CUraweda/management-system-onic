@@ -171,8 +171,8 @@
                 </q-list>
               </q-btn-dropdown>
 
-              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
-                use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
+              <q-select class="bg-grey-2 col-lg-2 col-md-3 col-sm-5 col-xs-5 under-title" filled v-model="selectedpic"
+                use-input dense input-debounce="0" label="PIC Filter" :options="Optionpics"
                 dropdown-icon="filter_list"></q-select>
 
               <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
@@ -306,11 +306,6 @@
 import { ref } from 'vue';
 import { exportFile } from "quasar";
 import axios from 'axios';
-// import Status from "components/Status"
-
-const stringOptions = [
-  'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
-]
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -334,7 +329,8 @@ export default {
       selected: [],
       search: "",
       deposit: {},
-      options: stringOptions,
+      picoptions: [],
+      selectedpic: null,
       employee_dialog: false,
       columns: [
         { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
@@ -363,8 +359,10 @@ export default {
       }
     };
   },
+  
   mounted() {
     this.fetchData();
+    this.fetchDataPic();
   },
 
   setup() {
@@ -377,10 +375,40 @@ export default {
     };
   },
 
+  computed: {
+    Optionpics() {
+      return this.picoptions.map(picoptions => ({ label: picoptions.u_name, value: picoptions.u_name }));
+    },
+  },
+
+  watch: {
+    // Menyebabkan pemanggilan metode getSelectedPicId() setiap kali selectedPic berubah
+    selectedPic: 'getSelectedPicId',
+  },
+
   methods: {
+    async fetchDataPic() {
+      try {
+        const response = await this.$axios.get('/user/all');
+        this.picoptions = response.data;
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    },
 
     formatLocalTime(utcTime) {
-      const localTime = new Date(utcTime).toLocaleString();
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        timeZone: 'UTC'  // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString('id-ID', options);
       return localTime;
     },
 
@@ -392,27 +420,23 @@ export default {
     Report(id) {
       this.$router.push('report/' + id)
     },
-
+ 
     async Delete(id) {
-      const data = {
-        status: "Deleted",
-        deleted_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + id, {
+          status: "Deleted",
+          deleted_at: new Date().toISOString(),
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Deleted',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -424,24 +448,33 @@ export default {
       window.location.reload();
     },
 
+    async fetchTaskById(id) {
+      try {
+        const response = await this.$axios.get('/task/get-by-id/' + id);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching task by ID:', error);
+        throw error; // lemparkan kembali kesalahan untuk ditangani di luar
+      }
+    },
+
     async Revise(id) {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
-        const fetchTaskResponse = await fetch('http://localhost:3000/task/get-by-id/' + id);
-        const taskToRevise = await fetchTaskResponse.json();
+        const response = await this.$axios.get('/task/get-by-id/' + id);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
-          task_type: taskToRevise.task_type,
-          task_title: taskToRevise.task_title,
-          priority: taskToRevise.priority,
-          iteration: taskToRevise.iteration,
-          start_date: new Date(taskToRevise.start_date).toISOString(),
-          due_date: new Date(taskToRevise.due_date).toISOString(),
-          description: taskToRevise.description,
-          pic_title: taskToRevise.pic_title,
-          pic: taskToRevise.pic,
-          spv: taskToRevise.spv,
+          task_type: response.data.task_type,
+          task_title: response.data.task_title,
+          priority: response.data.priority,
+          iteration: response.data.iteration,
+          start_date: new Date(response.data.start_date).toISOString(),
+          due_date: new Date(response.data.due_date).toISOString(),
+          description: response.data.description,
+          pic_title: response.data.pic_title,
+          pic: response.data.pic,
+          spv: response.data.spv,
           approved_at: null,
           approved_by: null,
           started_at: null,
@@ -450,41 +483,37 @@ export default {
           finished_by: null,
           status: "Open",
           progress: 0,
-          fileName: taskToRevise.fileName,
-          filePath: taskToRevise.filePath,
-          fileSize: taskToRevise.fileSize,
+          fileName: response.data.fileName,
+          filePath: response.data.filePath,
+          fileSize: response.data.fileSize,
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await fetch('http://localhost:3000/task/new', {
-          method: 'POST',
+        const createTaskResponse = await this.$axios.post('/task/new', revisedTaskData, {
           headers: {
             'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(revisedTaskData),
+          }
         });
 
-        if (!createTaskResponse.ok) {
+        if (createTaskResponse.status !== 200) {
           throw new Error('Failed to create revised task');
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await fetch('http://localhost:3000/task/edit/' + id, {
-          method: 'PUT',
+        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
+          status: "Deleted",
+          deleted_at: new Date().toISOString(),
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
         });
 
-        if (updateTaskResponse.ok) {
+        if (updateTaskResponse.status === 200) {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -498,7 +527,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/all/supervisor');
+        const response = await this.$axios.get('/task/all/supervisor');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -510,27 +539,6 @@ export default {
         return 'bg-blue-3'; // Change it to your desired color class
       }
       return ''; // No background color for other statuses
-    },
-
-    submit() {
-      this.$q.notify({
-        message: 'Task Done',
-      })
-    },
-
-
-    filterFn(val, update) {
-      if (val === '') {
-        update(() => {
-          this.options = stringOptions
-        })
-        return
-      }
-
-      update(() => {
-        const needle = val.toLowerCase()
-        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
     },
 
 

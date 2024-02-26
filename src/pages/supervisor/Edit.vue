@@ -250,9 +250,9 @@
                 <div class="row justify-end">
                   <q-card-actions>
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
-                      type="submit" v-close-popup />
-                    <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="edit" to="task_monitoring" />
+                      type="submit" v-close-popup to="/supervisor/task_monitoring" />
+                    <q-btn unelevated class="no-shadow" label="Edit" color="grey-3" text-color="primary" filled
+                      type="submit" @click="edit()"  />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -409,9 +409,8 @@ export default {
 
   methods: {
     async fetchData() {
-      console.log(this.id)
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
@@ -428,24 +427,22 @@ export default {
     },
 
     async edit() {
-      const data = {
-        task_type: this.form.task_type,
-        task_title: this.form.task_title,
-        priority: this.form.priority.value,
-        start_date: this.form.start_date,
-        due_date: this.form.due_date,
-        description: this.form.description,
-        pic: this.submitResultpic.map(item => item.value).join(','),
-        spv: this.submitResultspv.map(item => item.value).join(','),
-      };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, {
+          task_type: this.form.task_type,
+          task_title: this.form.task_title,
+          priority: this.form.priority.value,
+          start_date: this.form.start_date.toISOString(),
+          due_date: this.form.due_date.toISOString(),
+          description: this.form.description,
+          pic: this.form.pic,
+          spv: this.form.spv
+        }, {
+          // method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.ok) {
@@ -463,7 +460,7 @@ export default {
       }
     },
 
-// handleFileUpload(event) {
+    // handleFileUpload(event) {
     //   const file = event.target.files[0];
 
     //   if (file) {

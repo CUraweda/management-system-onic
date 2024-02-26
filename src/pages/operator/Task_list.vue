@@ -549,7 +549,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/all/operator');
+        const response = await this.$axios.get('/task/all/operator');
         this.data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -558,7 +558,7 @@ export default {
 
     async fetchWaitedData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/waited/operator');
+        const response = await this.$axios.get('/task/waited/operator');
         this.waiting_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -567,7 +567,7 @@ export default {
 
     async fetchDeletedData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/deleted/operator');
+        const response = await this.$axios.get('/task/deleted/operator');
         this.deleted_data = response.data;
       } catch (error) {
         console.error('Error fetching data:', error);

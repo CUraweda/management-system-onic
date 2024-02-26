@@ -90,8 +90,8 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
-                            <q-slider :disable="status === 'Wait-app' || status === 'Deleted'" v-model="progress" color="blue" track-color="light-blue-1"
-                              inner-track-color="blue-3" :max="100" />
+                            <q-slider :disable="status === 'Wait-app' || status === 'Deleted'" v-model="progress"
+                              color="blue" track-color="light-blue-1" inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
                       </q-card-section>
@@ -153,7 +153,8 @@
               <CardBase class="col-6">
                 <q-input class=" border2 col-6" bottom-slots v-model="chat" label="Text" dense>
                   <template v-slot:after>
-                    <q-btn round dense flat icon="send" @click="SendUpdate()" :disable="status === 'Wait-app' || status === 'Deleted'"/>
+                    <q-btn round dense flat icon="send" @click="SendUpdate()"
+                      :disable="status === 'Wait-app' || status === 'Deleted'" />
                   </template>
                 </q-input>
               </CardBase>
@@ -173,14 +174,15 @@
                   <div class="q-pt-md row justify-between">
                     <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" :color="started_at ? 'red-1' : 'blue-1'"
                       :text-color="started_at ? 'red' : 'blue'" :label="started_at ? 'Finish' : 'Start'"
-                      @click="started_at ? FinishTask() : StartTask()" :disable="status === 'Wait-app' || status === 'Deleted'" />
+                      @click="started_at ? FinishTask() : StartTask()"
+                      :disable="status === 'Wait-app' || status === 'Deleted'" />
                     <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Send To Other PIC" no-caps @click="send"
-                      v-if="task_type === 'Multi'" />
+                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Send To Other PIC" no-caps
+                      @click="send" v-if="task_type === 'Multi'" />
 
                     <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Submit To Superior" no-caps @click="submitToSuperior"
-                      v-else-if="task_type === 'Single'" />
+                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Submit To Superior" no-caps
+                      @click="submitToSuperior" v-else-if="task_type === 'Single'" />
                   </div>
                 </div>
               </CardBase>
@@ -263,21 +265,17 @@ export default {
   methods: {
 
     async StartTask() {
-      const data = {
-        status: "In-progress",
-        started_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, {
+          status: "In-progress",
+          started_at: new Date().toISOString(),
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -293,20 +291,19 @@ export default {
     },
 
     async FinishTask() {
-      const data = {
-        finished_at: new Date().toISOString(),
-      };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id,
+          {
+            finished_at: new Date().toISOString(),
+          }, {
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -324,21 +321,18 @@ export default {
     async SendUpdate() {
       const updatedDescription = `${this.description} \n Director: ${this.chat}`;
 
-      const data = {
-        progress: this.progress,
-        description: updatedDescription,
-      };
 
       try {
-        const response = await fetch('http://localhost:3000/task/edit/' + this.id, {
-          method: 'PUT',
+        const response = await this.$axios.put('/task/edit/' + this.id, {
+          progress: this.progress,
+          description: updatedDescription,
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -355,7 +349,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await axios.get('http://localhost:3000/task/get-by-id/' + this.id);
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -443,17 +437,15 @@ export default {
           message: 'Task Idle',
         });
       } else {
-        const data = {
-          status: "Idle",
-        };
 
         try {
-          await fetch('http://localhost:3000/task/edit/' + this.id, {
-            method: 'PUT',
+          await this.$axios.put('/task/edit/' + this.id,
+            {
+              status: "Idle",
+            }, {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error('EROR:', error);
@@ -487,4 +479,5 @@ export default {
 
 .border2 {
   border-radius: 8px;
-}</style>
+}
+</style>
