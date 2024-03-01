@@ -127,8 +127,8 @@
                             <div class="">Finished On</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(started_at)}}</div>
-                            <div class="">{{ formatLocalTime(finished_at)}}</div>
+                            <div class="">{{ formatLocalTime(started_at) }}</div>
+                            <div class="">{{ formatLocalTime(finished_at) }}</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -167,14 +167,20 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
+                  <q-btn @click="downloadFile()">
+                    Download File
+                  </q-btn>
+                  <q-btn @click="downloadFile()">
+                    Download Dokumen Hasil
+                  </q-btn>
+                  <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
                   <div class="q-pt-md"></div>
                   <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
                     color="grey" />
 
                   <div v-if="task_type === 'Multi'" class="q-pt-md row q-gutter-md justify-between col-12 items-center">
-                    <q-select multiple dense v-model="picrate" filled use-input input-debounce="0"
-                      :options="picoptions" behavior="menu" class="col-12">
+                    <q-select multiple dense v-model="picrate" filled use-input input-debounce="0" :options="picoptions"
+                      behavior="menu" class="col-12">
                       <template v-slot:no-option>
                         <q-item>
                           <q-item-section class="text-grey">
@@ -254,7 +260,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'DirectorReport',
+  name: 'ManagerReport',
   props: ['id'],
   data() {
     return {
@@ -282,6 +288,7 @@ export default {
       history: '',
       description: '',
       task_type: '',
+      fileName: ''
       // Add other properties with default values
     }
   },
@@ -303,6 +310,33 @@ export default {
   },
 
   methods: {
+  async downloadFile() {
+    try {
+      // Mengganti URL dengan endpoint yang sesuai
+      const response = await this.$axios.get('/image/' + this.fileName, {
+        responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
+      });
+
+      // Membuat objek URL dari blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Membuat elemen <a> untuk tautan unduhan
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = this.fileName; // Set nama berkas yang diinginkan
+      document.body.appendChild(link);
+
+      // Simulasi klik pada elemen <a> untuk memulai unduhan
+      link.click();
+
+      // Membersihkan objek URL dan menghapus elemen <a>
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  },
+
     formatLocalTime(utcTime) {
       if (utcTime === null) {
         return ''; // Jika utcTime null, kembalikan string kosong
@@ -322,9 +356,9 @@ export default {
       const localTime = new Date(utcTime).toLocaleString('id-ID', options);
       return localTime;
     },
-    
+
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Director: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Manager: ${this.chat}`;
 
       const data = {
         progress: this.progress,
@@ -369,6 +403,7 @@ export default {
         this.created_at = response.data.created_at;
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
+        this.fileName = response.data.fileName;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -446,7 +481,7 @@ export default {
 
     send() {
       const id = this.id;
-      this.$router.push('/director/task_detail_2/' + id)
+      this.$router.push('/manager/task_detail_2/' + id)
     },
 
     async Revise() {
@@ -473,7 +508,7 @@ export default {
           started_by: null,
           finished_at: null,
           finished_by: null,
-          status: "Open",
+          status: "Wait-app",
           progress: 0,
           fileName: response.data.fileName,
           filePath: response.data.filePath,
@@ -505,7 +540,7 @@ export default {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -534,7 +569,7 @@ export default {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -562,7 +597,7 @@ export default {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -590,7 +625,7 @@ export default {
           this.$q.notify({
             message: 'Task Canceled',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Canceling Task',

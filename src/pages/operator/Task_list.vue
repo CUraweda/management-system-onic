@@ -458,6 +458,7 @@ export default {
   name: 'TaskList',
   data() {
     return {
+      statusFilter: "",
       filter: "",
       mode: "list",
       invoice: {},
@@ -541,6 +542,8 @@ export default {
   },
 
   mounted() {
+    this.statusFilter = this.$route.query.status;
+    console.log(`Menggunakan filter status: ${statusFilter}`);
     this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
@@ -550,7 +553,7 @@ export default {
     async fetchData() {
       try {
         const response = await this.$axios.get('/task/all/operator');
-        this.data = response.data;
+        this.data = response.data.sort((a, b) => new Date(b.update_at) - new Date(a.update_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -559,7 +562,7 @@ export default {
     async fetchWaitedData() {
       try {
         const response = await this.$axios.get('/task/waited/operator');
-        this.waiting_data = response.data;
+        this.waiting_data = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -568,7 +571,7 @@ export default {
     async fetchDeletedData() {
       try {
         const response = await this.$axios.get('/task/deleted/operator');
-        this.deleted_data = response.data;
+        this.deleted_data = response.data.sort((a, b) => new Date(b.update_at) - new Date(a.update_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }

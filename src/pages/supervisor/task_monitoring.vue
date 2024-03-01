@@ -1,118 +1,13 @@
 <template>
   <q-page>
 
-    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
 
-      <!-- completed task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
-            class="text-black">
-
-            <q-item-section class="text-weight-bold">
-              Tasks Completed
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-129.svg" />
-              </q-icon>
-            </q-item-section>
-
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">68</div>
-                Increased by 6 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- completed task -->
-
-      <!-- in progres task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
-
-            <q-item-section class="text-weight-bold">
-              Tasks Open
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-142.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">17</div>
-                Decreased by 5 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-
-        </q-card>
-      </div>
-      <!-- in progres task -->
-
-      <!-- overdue -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'"
-            class="text-black">
-            <q-item>
-              <q-item-section class="text-weight-bold">
-                Tasks In Progress
-              </q-item-section>
-              <q-item-section avatar>
-                <q-icon class="card-icon">
-                  <img src="statics/Button-143.svg" />
-                </q-icon>
-              </q-item-section>
-            </q-item>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">9</div>
-                Increased by 3 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-
-        </q-card>
-      </div>
-      <!-- overdue -->
-
-      <!-- opened -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
-            <q-item>
-              <q-item-section class="text-weight-bold">
-                Tasks Delayed
-              </q-item-section>
-              <q-item-section avatar>
-                <q-icon class="card-icon">
-                  <img src="statics/Button-144.svg" />
-                </q-icon>
-              </q-item-section>
-            </q-item>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">85</div>
-                Completion rate: 80%
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- opened -->
-    </div>
-    <!-- kartu atas -->
 
     <div>
       <q-card-section class="text-h5 text-weight-bold text-black">
         <div class="row items-start">
           <div class="">
-            Detail Task
+            {{ statusFilter ? statusFilter + " Task" : "Detail Task" }}
             <q-icon name="text_snippet" color="cyan" class="q-mb-none" />
           </div>
           <q-space></q-space>
@@ -171,8 +66,8 @@
                 </q-list>
               </q-btn-dropdown>
 
-              <q-select class="bg-grey-2 col-lg-2 col-md-3 col-sm-5 col-xs-5 under-title" filled v-model="selectedpic"
-                use-input dense input-debounce="0" label="PIC Filter" :options="Optionpics"
+              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
+                use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
                 dropdown-icon="filter_list"></q-select>
 
               <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
@@ -203,17 +98,11 @@
               </q-td>
 
               <q-td key="pic" :props="props">
-                <q-item style="max-width: 420px">
-                  <q-item-section avatar>
-                    <q-avatar>
-                      <img :src="props.row.avatar">
-                    </q-avatar>
-                  </q-item-section>
+                <div>{{ props.row.pic }}</div>
+              </q-td>
 
-                  <q-item-section>
-                    <q-item-label>{{ props.row.pic }}</q-item-label>
-                  </q-item-section>
-                </q-item>
+              <q-td key="pic_title" :props="props">
+                <div>{{ props.row.pic_title }}</div>
               </q-td>
 
               <q-td key="due_date" :props="props">
@@ -224,14 +113,14 @@
 
               <q-td key="priority" :props="props">
                 <q-chip
-                  :color="(props.row.priority == 'Important') ? 'red-2 text-red' : (props.row.priority == 'High') ? 'orange-2 text-orange' : (props.row.priority == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
+                  :color="(props.row.priority == 'Important') ? 'white text-red' : (props.row.priority == 'High') ? 'white text-orange' : (props.row.priority == 'Normal' ? 'white text-blue' : 'secondary')"
                   text-color="white" dense class="text-center under-title q-px-sm tex" rounded>{{ props.row.priority }}
                 </q-chip>
               </q-td>
 
               <q-td key="status" :props="props">
                 <q-chip
-                  :color="(props.row.status == 'Close') ? 'deep-orange-2 text-deep-orange' : (props.row.status == 'Deleted') ? 'red-2 text-red' : (props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                  :color="(props.row.status == 'Close') ? 'white text-deep-orange' : (props.row.status == 'Deleted') ? 'white text-red' : (props.row.status == 'Idle') ? 'white text-orange' : (props.row.status == 'Wait-app') ? 'white text-blue' : (props.row.status == 'Completed') ? 'white text-blue' : (props.row.status == 'In-progress') ? 'white text-orange' : (props.row.status == 'Open' ? 'white text-green' : 'secondary')"
                   dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
                 </q-chip>
               </q-td>
@@ -306,6 +195,11 @@
 import { ref } from 'vue';
 import { exportFile } from "quasar";
 import axios from 'axios';
+// import Status from "components/Status"
+
+const stringOptions = [
+  'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
+]
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -323,19 +217,21 @@ export default {
   data() {
     return {
 
+      statusFilter: "",
       filter: "",
       mode: "list",
       invoice: {},
       selected: [],
       search: "",
       deposit: {},
-      picoptions: [],
-      selectedpic: null,
+      options: stringOptions,
       employee_dialog: false,
       columns: [
         { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
         { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
         { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
+        { name: "pic_title", align: "left", label: "Title", field: "pic_title", sortable: true },
+
         { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
@@ -359,10 +255,9 @@ export default {
       }
     };
   },
-  
   mounted() {
     this.fetchData();
-    this.fetchDataPic();
+    this.statusFilter = this.$route.query.status;
   },
 
   setup() {
@@ -375,28 +270,14 @@ export default {
     };
   },
 
-  computed: {
-    Optionpics() {
-      return this.picoptions.map(picoptions => ({ label: picoptions.u_name, value: picoptions.u_name }));
-    },
-  },
-
-  watch: {
-    // Menyebabkan pemanggilan metode getSelectedPicId() setiap kali selectedPic berubah
-    selectedPic: 'getSelectedPicId',
-  },
-
   methods: {
-    async fetchDataPic() {
-      try {
-        const response = await this.$axios.get('/user/all');
-        this.picoptions = response.data;
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    },
+
 
     formatLocalTime(utcTime) {
+      if (utcTime === null) {
+        return ''; // Jika utcTime null, kembalikan string kosong
+      }
+
       const options = {
         year: 'numeric',
         month: 'numeric',
@@ -420,16 +301,19 @@ export default {
     Report(id) {
       this.$router.push('report/' + id)
     },
- 
+
     async Delete(id) {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
       try {
         const response = await this.$axios.put('/task/edit/' + id, {
-          status: "Deleted",
-          deleted_at: new Date().toISOString(),
-        }, {
           headers: {
             'Content-Type': 'application/json',
           },
+          body: JSON.stringify(data),
         });
 
         if (response.status === 200) {
@@ -458,23 +342,23 @@ export default {
       }
     },
 
-    async Revise(id) {
+    async Revise() {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
-        const response = await this.$axios.get('/task/get-by-id/' + id);
+        const taskToRevise = await this.fetchTaskById(id);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
-          task_type: response.data.task_type,
-          task_title: response.data.task_title,
-          priority: response.data.priority,
-          iteration: response.data.iteration,
-          start_date: new Date(response.data.start_date).toISOString(),
-          due_date: new Date(response.data.due_date).toISOString(),
-          description: response.data.description,
-          pic_title: response.data.pic_title,
-          pic: response.data.pic,
-          spv: response.data.spv,
+          task_type: taskToRevise.task_type,
+          task_title: taskToRevise.task_title,
+          priority: taskToRevise.priority,
+          iteration: taskToRevise.iteration,
+          start_date: new Date(taskToRevise.start_date).toISOString(),
+          due_date: new Date(taskToRevise.due_date).toISOString(),
+          description: taskToRevise.description,
+          pic_title: taskToRevise.pic_title,
+          pic: taskToRevise.pic,
+          spv: taskToRevise.spv,
           approved_at: null,
           approved_by: null,
           started_at: null,
@@ -483,30 +367,32 @@ export default {
           finished_by: null,
           status: "Open",
           progress: 0,
-          fileName: response.data.fileName,
-          filePath: response.data.filePath,
-          fileSize: response.data.fileSize,
+          fileName: taskToRevise.fileName,
+          filePath: taskToRevise.filePath,
+          fileSize: taskToRevise.fileSize,
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post('/task/new', revisedTaskData, {
+        const createTaskResponse = await this.$axios.post('/task/new', {
           headers: {
             'Content-Type': 'application/json',
-          }
+          },
+          body: JSON.stringify(revisedTaskData),
         });
 
-        if (createTaskResponse.status !== 200) {
+        if (!createTaskResponse.status === 200) {
           throw new Error('Failed to create revised task');
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
         const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
-          status: "Deleted",
-          deleted_at: new Date().toISOString(),
-        }, {
           headers: {
             'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            status: "Deleted",
+            deleted_at: new Date().toISOString(),
+          }),
         });
 
         if (updateTaskResponse.status === 200) {
@@ -527,8 +413,12 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get('/task/all/operator');
-        this.data = response.data;
+        const statusFilter = this.$route.query.status;
+        console.log(statusFilter);
+        const response = await this.$axios.get('/task/all/operator', {
+          params: { status: statusFilter }
+        });
+        this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -539,6 +429,27 @@ export default {
         return 'bg-blue-3'; // Change it to your desired color class
       }
       return ''; // No background color for other statuses
+    },
+
+    submit() {
+      this.$q.notify({
+        message: 'Task Done',
+      })
+    },
+
+
+    filterFn(val, update) {
+      if (val === '') {
+        update(() => {
+          this.options = stringOptions
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
     },
 
 

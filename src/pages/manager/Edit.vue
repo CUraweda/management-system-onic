@@ -252,7 +252,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="edit" to="task_monitoring" />
+                      type="submit" @click="edit" to="/manager/task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -446,7 +446,7 @@ export default {
           },
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Edited',
           });

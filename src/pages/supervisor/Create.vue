@@ -268,7 +268,7 @@
           <div class="col-12">
             <q-item>
               <q-item-section class="q-mb-xl">
-                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl" @change="handleFileUpload">
+                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl">
                   <template v-slot:append>
                     <q-icon name="ios_share" />
                   </template>
@@ -286,10 +286,11 @@
               <q-item-section>
                 <div class="row justify-end">
                   <q-card-actions>
+                    <q-checkbox v-model="SpvApp" color="blue" class="q-mr-lg" label="Requesting approval" />
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="create" to="task_monitoring" />
+                      type="submit" @click="create" to="/supervisor/task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -317,7 +318,7 @@ export default {
       pic: [],
       selectedpic: null,
       spv: [],
-      selectedspv: { label: localStorage.getItem('username'), value: localStorage.getItem('email') },
+      selectedspv: { label: localStorage.getItem('username'), value: localStorage.getItem('username') },
       iteration: '',
     }
   },
@@ -417,10 +418,13 @@ export default {
 
   computed: {
     picOptions() {
-      return this.pic.map(pic => ({ label: pic.u_name, value: pic.u_email }));
+      return this.pic.map(pic => ({ label: pic.u_name, value: pic.u_name }));
     },
     spvOptions() {
-      return this.spv.map(spv => ({ label: spv.u_name, value: spv.u_email }));
+      return this.spv.map(spv => ({ label: spv.u_name, value: spv.u_name }));
+    },
+    pic_title() {
+      return this.SpvApp ? "supervisor" : "operator";
     },
   },
 
@@ -471,30 +475,31 @@ export default {
     },
 
     async create() {
-      const data = {
-        pic_id: this.pic_id,
-        spv_id: this.spv_id,
-        task_type: this.task_type,
-        task_title: this.task_title,
-        priority: this.priority.value,
-        status: "Wait-app",
-        start_date: new Date(this.start_date).toISOString(),
-        due_date: new Date(this.due_date).toISOString(),
-        description: `${this.description} \n`,
-        pic_title: "supervisor",
-        pic: this.submitResultpic.map(item => item.value).join(','),
-        spv: this.submitResultspv.map(item => item.value).join(','),
-        created_by: localStorage.getItem('email')
-      };
+      const formData = new FormData();
+      formData.append('pic_id', this.pic_id);
+      formData.append('spv_id', this.spv_id);
+      formData.append('task_type', this.task_type);
+      formData.append('task_title', this.task_title);
+      formData.append('priority', this.priority.value);
+      formData.append('status', 'Wait-app');
+      formData.append('start_date', new Date(this.start_date).toISOString());
+      formData.append('due_date', new Date(this.due_date).toISOString());
+      formData.append('description', `${this.description} \n`);
+      formData.append('pic_title', this.pic_title);
+      formData.append('created_by', localStorage.getItem('username'));
+      formData.append('bukti_tayang', this.model);
+      formData.append('iteration', this.iteration);
+      formData.append('pic', this.submitResultpic.map(item => item.value).join(','));
+      formData.append('spv', this.submitResultspv.map(item => item.value).join(','));
 
       try {
-        const response = await this.$axios.post('/task/new', data,  {
+        const response = await this.$axios.post('/task/new', formData, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Created',
           });
@@ -513,30 +518,6 @@ export default {
         message: 'Task Created',
       })
     },
-
-    // handleFileUpload(event) {
-    //   const file = event.target.files[0];
-
-    //   if (file) {
-    //     const reader = new FileReader();
-
-    //     reader.onload = (e) => {
-    //       const content = e.target.result;
-
-    //       // Determine if the file is XLSX or CSV
-    //       if (file.name.endsWith('.xlsx')) {
-    //         this.parseXLSX(content);
-    //       } else if (file.name.endsWith('.csv')) {
-    //         this.parseCSV(content);
-    //       }
-    //     };
-
-    //     reader.readAsBinaryString(file);
-    //   }
-
-    // },
-
-
 
   },
 }

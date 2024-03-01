@@ -168,7 +168,7 @@
                     <q-btn unelevated dense class=" col-2" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
                       label="Start" no-caps @click="startCountdown" />
                     <q-btn unelevated dense class=" col-3" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Send Back" no-caps to="task_detail" />
+                      label="Send Back" no-caps to="/supervisor/task_detail" />
                     <q-btn unelevated dense class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
                       label="Submit To Superior" no-caps />
                   </div>

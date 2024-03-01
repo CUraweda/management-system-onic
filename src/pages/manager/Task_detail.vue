@@ -260,7 +260,7 @@ export default {
     this.fetchData();
   },
 
-  methods: { 
+  methods: {
 
     formatLocalTime(utcTime) {
       if (utcTime === null) {
@@ -295,7 +295,7 @@ export default {
           },
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -322,7 +322,7 @@ export default {
           },
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });
@@ -338,7 +338,7 @@ export default {
     },
 
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Director: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Manager: ${this.chat}`;
 
       const data = {
         progress: this.progress,
@@ -352,7 +352,7 @@ export default {
           },
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Progress Updated',
           });

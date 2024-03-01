@@ -1,110 +1,7 @@
 <template>
   <q-page>
 
-    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
 
-      <!-- completed task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
-
-            <q-item-section class="text-weight-bold">
-              Tasks Completed
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-129.svg" />
-              </q-icon>
-            </q-item-section>
-
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">68</div>
-                Increased by 6 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- completed task -->
-
-      <!-- in progres task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
-
-            <q-item-section class="text-weight-bold">
-              Tasks Open
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-142.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">17</div>
-                Decreased by 5 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-
-        </q-card>
-      </div>
-      <!-- in progres task -->
-
-      <!-- overdue -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
-            <q-item>
-              <q-item-section class="text-weight-bold">
-                Tasks In Progress
-              </q-item-section>
-              <q-item-section avatar>
-                <q-icon class="card-icon">
-                  <img src="statics/Button-143.svg" />
-                </q-icon>
-              </q-item-section>
-            </q-item>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">9</div>
-                Increased by 3 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-
-        </q-card>
-      </div>
-      <!-- overdue -->
-
-      <!-- opened -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
-            <q-item>
-              <q-item-section class="text-weight-bold">
-                Tasks Delayed
-              </q-item-section>
-              <q-item-section avatar>
-                <q-icon class="card-icon">
-                  <img src="statics/Button-144.svg" />
-                </q-icon>
-              </q-item-section>
-            </q-item>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">85</div>
-                Completion rate: 80%
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- opened -->
-    </div>
-    <!-- kartu atas -->
 
 
     <q-card class="q-mt-md row justify-end items-start text-h5 text-weight-bold text-black no-shadow q-ma-none q-pa-none">
@@ -550,7 +447,7 @@ export default {
     async fetchData() {
       try {
         const response = await this.$axios.get('/task/all/manager');
-        this.data = response.data;
+        this.data = response.data.sort((a, b) => new Date(b.update_at) - new Date(a.update_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -559,7 +456,7 @@ export default {
     async fetchWaitedData() {
       try {
         const response = await this.$axios.get('/task/waited/manager');
-        this.waiting_data = response.data;
+        this.waiting_data = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -568,7 +465,7 @@ export default {
     async fetchDeletedData() {
       try {
         const response = await this.$axios.get('/task/deleted/manager');
-        this.deleted_data = response.data;
+        this.deleted_data = response.data.sort((a, b) => new Date(b.update_at) - new Date(a.update_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }

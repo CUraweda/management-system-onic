@@ -445,7 +445,7 @@ export default {
           },
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
           this.$q.notify({
             message: 'Task Edited',
           });

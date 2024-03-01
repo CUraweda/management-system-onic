@@ -1,112 +1,7 @@
 <template>
   <q-page>
 
-    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
 
-      <!-- completed task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
-            class="text-black">
-
-            <q-item-section class="text-weight-bold">
-              Tasks Completed
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-129.svg" />
-              </q-icon>
-            </q-item-section>
-
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">68</div>
-                Increased by 6 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- completed task -->
-
-      <!-- in progres task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
-
-            <q-item-section class="text-weight-bold">
-              Tasks Open
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon class="card-icon">
-                <img src="statics/Button-142.svg" />
-              </q-icon>
-            </q-item-section>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">17</div>
-                Decreased by 5 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-
-        </q-card>
-      </div>
-      <!-- in progres task -->
-
-      <!-- overdue -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'"
-            class="text-black">
-            <q-item>
-              <q-item-section class="text-weight-bold">
-                Tasks In Progress
-              </q-item-section>
-              <q-item-section avatar>
-                <q-icon class="card-icon">
-                  <img src="statics/Button-143.svg" />
-                </q-icon>
-              </q-item-section>
-            </q-item>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">9</div>
-                Increased by 3 this week
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-
-        </q-card>
-      </div>
-      <!-- overdue -->
-
-      <!-- opened -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow">
-          <q-card-section style="height: 180px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
-            <q-item>
-              <q-item-section class="text-weight-bold">
-                Tasks Delayed
-              </q-item-section>
-              <q-item-section avatar>
-                <q-icon class="card-icon">
-                  <img src="statics/Button-144.svg" />
-                </q-icon>
-              </q-item-section>
-            </q-item>
-            <q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="text-h4 text-weight-bold q-mt-none">85</div>
-                Completion rate: 80%
-              </q-card-section>
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- opened -->
-    </div>
-    <!-- kartu atas -->
 
     <div>
       <q-card-section class="text-h5 text-weight-bold text-black">
@@ -203,17 +98,11 @@
               </q-td>
 
               <q-td key="pic" :props="props">
-                <q-item style="max-width: 420px">
-                  <q-item-section avatar>
-                    <q-avatar>
-                      <img :src="props.row.avatar">
-                    </q-avatar>
-                  </q-item-section>
+                <div>{{ props.row.pic }}</div>
+              </q-td>
 
-                  <q-item-section>
-                    <q-item-label>{{ props.row.pic }}</q-item-label>
-                  </q-item-section>
-                </q-item>
+              <q-td key="pic_title" :props="props">
+                <div>{{ props.row.pic_title }}</div>
               </q-td>
 
               <q-td key="due_date" :props="props">
@@ -224,14 +113,14 @@
 
               <q-td key="priority" :props="props">
                 <q-chip
-                  :color="(props.row.priority == 'Important') ? 'red-2 text-red' : (props.row.priority == 'High') ? 'orange-2 text-orange' : (props.row.priority == 'Normal' ? 'blue-2 text-blue' : 'secondary')"
+                  :color="(props.row.priority == 'Important') ? 'white text-red' : (props.row.priority == 'High') ? 'white text-orange' : (props.row.priority == 'Normal' ? 'white text-blue' : 'secondary')"
                   text-color="white" dense class="text-center under-title q-px-sm tex" rounded>{{ props.row.priority }}
                 </q-chip>
               </q-td>
 
               <q-td key="status" :props="props">
                 <q-chip
-                  :color="(props.row.status == 'Deleted') ? 'red-2 text-red' : (props.row.status == 'Idle') ? 'orange-2 text-orange' : (props.row.status == 'Wait-app') ? 'blue-2 text-blue' : (props.row.status == 'Completed') ? 'blue-2 text-blue' : (props.row.status == 'In-progress') ? 'orange-2 text-orange' : (props.row.status == 'Open' ? 'green-2 text-green' : 'secondary')"
+                  :color="(props.row.status == 'Deleted') ? 'white text-red' : (props.row.status == 'Idle') ? 'white text-orange' : (props.row.status == 'Wait-app') ? 'white text-blue' : (props.row.status == 'Completed') ? 'white text-blue' : (props.row.status == 'In-progress') ? 'white text-orange' : (props.row.status == 'Open' ? 'white text-green' : 'secondary')"
                   dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
                 </q-chip>
               </q-td>
@@ -322,6 +211,7 @@ export default {
         { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
         { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
         { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
+        { name: "pic_title", align: "left", label: "Title", field: "pic_title", sortable: true },
         { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
@@ -416,7 +306,7 @@ export default {
     async fetchData() {
       try {
         const response = await this.$axios.get('/task/waited/supervisor');
-        this.data = response.data;
+        this.data = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
       }

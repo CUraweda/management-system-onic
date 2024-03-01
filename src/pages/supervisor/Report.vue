@@ -36,7 +36,7 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
-                    <div class="q-mr-lg"> {{formatLocalTime(due_date) }}
+                    <div class="q-mr-lg"> {{ formatLocalTime(due_date) }}
                     </div>
                   </div>
                 </div>
@@ -71,7 +71,7 @@
               <div class="col">
                 <div class=""> {{ task_title }} </div>
                 <div class=""> {{ pic }} </div>
-                <div class="">  {{ formatLocalTime(due_date) }} </div>
+                <div class=""> {{ formatLocalTime(due_date) }}</div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -128,7 +128,7 @@
                           </div>
                           <div class="col">
                             <div class="">{{ formatLocalTime(started_at) }}</div>
-                            <div class=""> {{ formatLocalTime(finished_at) }}</div>
+                            <div class="">{{ formatLocalTime(finished_at) }}</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -167,7 +167,13 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered />
+                  <q-btn @click="downloadFile()">
+                    Download File
+                  </q-btn>
+                  <q-btn @click="downloadFile()">
+                    Download Dokumen Hasil
+                  </q-btn>
+                  <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
                   <div class="q-pt-md"></div>
                   <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
                     color="grey" />
@@ -186,7 +192,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                    :disable="status === 'Close'" no-caps class="col-5" @click="Ok()" />
+                      no-caps class="col-5" @click="Ok()" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -212,7 +218,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                    :disable="status === 'Close'" no-caps class="col-5" @click="Ok()" />
+                      no-caps class="col-5" @click="Ok()" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -239,6 +245,20 @@ import Vue from 'vue';
 import { exportFile } from 'quasar';
 import axios from 'axios';
 
+function wrapCsvValue(val, formatFn) {
+  let formatted = formatFn !== void 0
+    ? formatFn(val)
+    : val
+
+  formatted = formatted === void 0 || formatted === null
+    ? ''
+    : String(formatted)
+
+  formatted = formatted.split('"').join('""')
+
+  return `"${formatted}"`
+}
+
 export default {
   name: 'SupervisorReport',
   props: ['id'],
@@ -257,7 +277,6 @@ export default {
       task_title: '',
       status: '',
       priority: '',
-      start_date: '',
       due_date: '',
       progress: 0,
       started_at: '',
@@ -269,6 +288,7 @@ export default {
       history: '',
       description: '',
       task_type: '',
+      fileName: ''
       // Add other properties with default values
     }
   },
@@ -290,6 +310,32 @@ export default {
   },
 
   methods: {
+  async downloadFile() {
+    try {
+      // Mengganti URL dengan endpoint yang sesuai
+      const response = await this.$axios.get('/image/' + this.fileName, {
+        responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
+      });
+
+      // Membuat objek URL dari blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Membuat elemen <a> untuk tautan unduhan
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = this.fileName; // Set nama berkas yang diinginkan
+      document.body.appendChild(link);
+
+      // Simulasi klik pada elemen <a> untuk memulai unduhan
+      link.click();
+
+      // Membersihkan objek URL dan menghapus elemen <a>
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  },
 
     formatLocalTime(utcTime) {
       if (utcTime === null) {
@@ -320,7 +366,8 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+        const id = this.id;
+        const response = await this.$axios.put('/task/edit/' + id, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -351,10 +398,12 @@ export default {
         this.status = response.data.status;
         this.iteration = response.data.Iteration;
         this.created_by = response.data.created_by;
+        this.created_by = response.data.created_by;
         this.started_at = response.data.started_at;
         this.created_at = response.data.created_at;
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
+        this.fileName = response.data.fileName;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -413,10 +462,12 @@ export default {
         };
 
         try {
-          await this.$axios.put('/task/edit/' + this.id, data, {
+          const id = this.id;
+          await this.$axios.put('/task/edit/' + id, data, {
             headers: {
               'Content-Type': 'application/json',
             },
+            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error('EROR:', error);
@@ -429,7 +480,8 @@ export default {
     },
 
     send() {
-      this.$router.push('/supervisor/task_detail_2/' + this.id)
+      const id = this.id;
+      this.$router.push('/supervisor/task_detail_2/' + id)
     },
 
     async Revise() {
@@ -456,7 +508,7 @@ export default {
           started_by: null,
           finished_at: null,
           finished_by: null,
-          status: "Open",
+          status: "Wait-app",
           progress: 0,
           fileName: response.data.fileName,
           filePath: response.data.filePath,
@@ -499,7 +551,6 @@ export default {
       }
       // window.location.reload();
     },
-
 
     async Approve() {
       const data = {
