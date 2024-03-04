@@ -6,11 +6,10 @@
           <div class="col-md-8 offset-md-2 col-xs-12 q-pl-md q-pr-md q-pt-sm">
             <q-card flat class="bg-white text-black fixed-full">
               <div class="row justify-end">
-
-                <div class="col-md-4 col-xs-12 q-my-xl">
-                  <div class="q-pa-md text-center q-mt-md">
+                <div class="col-md-4 col-xs-12">
+                  <div class="q-pa-md text-center">
                     <!-- welcome section -->
-                    <div class="col items-center">
+                    <div class="col items-center q-mt-md">
                       <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class=" text-h5">
                         Welcome Back!
@@ -31,15 +30,16 @@
                     <!-- button section -->
 
                     <!-- form section -->
-                    <q-form class="q-gutter-md">
-
-                      <q-input filled v-model="Email" label="Email" lazy-rules />
+                    <q-form class="q-gutter-md" @submit="SignIn()">
+                      <q-input filled v-model="email" label="Email" lazy-rules
+                        :rules="[val => val !== null && val !== '' || 'Required']" />
 
                       <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
-                        placeholder="Enter at least 8+ characters" :dense="dense">
+                        placeholder="Enter at least 8+ characters" :dense="dense"
+                        :rules="[val => val !== null && val !== '' || 'Required']">
                         <template v-slot:append>
                           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                            @click="isPwd = !isPwd" />
+                            @click="togglePwdVisibility" />
                         </template>
                       </q-input>
 
@@ -50,7 +50,7 @@
                       </div>
 
                       <div>
-                        <q-btn class="full-width" label="Sign In" type="button" color="cyan" to="manager/dashboard" />
+                        <q-btn class="full-width" label="Sign In" color="cyan" type="submit" />
                       </div>
                     </q-form>
                     <!-- form section -->
@@ -79,57 +79,103 @@ import { ref } from 'vue';
 import axios from 'axios';
 
 export default {
-  name: 'sign-in',
+  name: 'SignIn',
 
   data() {
     return {
-      Email: '',
+      email: '',
       password: '',
     };
   },
 
   setup() {
-    return {
-      right: ref(false),
-      isPwd: ref(false),
-      dense: ref(false),
+    const right = ref(false);
+    const isPwd = ref(true);
+    const dense = ref(false);
+
+    const togglePwdVisibility = function () {
+      isPwd.value = !isPwd.value;
     };
+
+    return {
+      right,
+      isPwd,
+      dense,
+      togglePwdVisibility,
+    }
   },
 
-  // methods: {
-  //   async signIn() {
-  //     try {
-  //       const response = await axios.post('http://localhost:3000/api/user/signin', {
-  //         u_email: this.Email,
-  //         u_password: this.password,
-  //       });
 
-  //       // Dapatkan token dari respons
-  //       // const token = response.data.token;
+  methods: {
+    async SignIn() {
+      const data = {
+        email: this.email,
+        password: this.password,
+      };
 
-  //       // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
-  //       // localStorage.setItem('token', token);
+      try {
+        const response = await this.$axios.post('/user/login', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-  //       // Redirect ke halaman lain jika login berhasil
-  //       this.$router.push('/worker/Dashboard');
+        if (response.status === 200) {
+          const accessToken = response.data.accessToken;
+          const email = response.data.email;
+          const name = response.data.name;
+          const title = response.data.title;
 
-  //       this.$q.notify({
-  //         message: 'Login Successful',
-  //       });
-  //     } catch (error) {
-  //       console.error('Error signing in:', error);
+          // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
+          localStorage.setItem('token', accessToken);
+          localStorage.setItem('email', email);
+          localStorage.setItem('username', name);
+          localStorage.setItem('title', title);
 
-  //       this.$q.notify({
-  //         color: 'negative',
-  //         position: 'top',
-  //         message: 'Invalid email or password',
-  //       });
-  //     }
-  //   },
-  // },
+          this.redirectUser(title);
+
+          this.$q.notify({
+            message: 'Login Successful.',
+          });
+        } else {
+          // Handle non-OK responses (e.g., 401 Unauthorized)
+          throw new Error('Invalid email or password');
+        }
+      } catch (error) {
+        console.error('Error signing in:', error);
+
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Invalid email or password',
+        });
+      }
+    },
+
+    redirectUser: function (title) {
+      switch (title) {
+        case 'manager':
+          this.$router.push('manager/dashboard');
+          break;
+        case 'operator':
+          this.$router.push('operator/dashboard');
+          break;
+        case 'supervisor':
+          this.$router.push('supervisor/dashboard');
+          break;
+        case 'director':
+          this.$router.push('director/dashboard');
+          break;
+        default:
+          this.$q.notify({
+            message: 'Wrong Email or Password',
+          });
+      }
+
+    }
+  },
 };
 </script>
-
 
 <style>
 * {

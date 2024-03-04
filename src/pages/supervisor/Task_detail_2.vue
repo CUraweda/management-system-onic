@@ -8,12 +8,13 @@
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_1">
           <q-card class="no-shadow q-pa-sm">
             <div class="row items-center">
-              <div class="text-h8 text-weight-bold q-mr-md q-mt-noe">LAPORAN MINGGUAN</div>
+              <div class="text-h6 text-weight-bold q-mr-md q-mt-noe">{{ task_title }}</div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">Finish</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ status }}</div>
               </div>
               <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">On Schedule</div>
+                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}
+                </div>
               </div>
             </div>
             <q-card-section>
@@ -23,19 +24,19 @@
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       Assigned By</div>
-                    <div class="q-mr-lg"><q-input readonly label="RIAN SPV" /></div>
+                    <div class="q-mr-lg"> {{ spv }} </div>
                   </div>
                   <div class="col-4">
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       TASK TITLE</div>
-                    <div class="q-mr-lg"><q-input readonly label="Laporan Mingguan" /></div>
+                    <div class="q-mr-lg"> {{ task_title }} </div>
                   </div>
                   <div class="col-4">
                     <div
                       class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
                       DUE DATE</div>
-                    <div class="q-mr-lg"><q-input readonly label="08-DEC-2023, 09.00AM" />
+                    <div class="q-mr-lg"> {{ due_date }}
                     </div>
                   </div>
                 </div>
@@ -68,9 +69,9 @@
                 <div class="">Due Date</div>
               </div>
               <div class="col">
-                <div class="">Laporan Mingguan</div>
-                <div class="">Bambang</div>
-                <div class="">08-DEC-2023, 09.00AM</div>
+                <div class=""> {{ task_title }} </div>
+                <div class=""> {{ pic }} </div>
+                <div class=""> {{ due_date }} </div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
@@ -88,9 +89,9 @@
                           </div>
                           <div class="col">
                             <div class="">100 %</div>
-                            <div class="">{{ slide }} %</div>
-                            <q-slider v-model="slide" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
-                              :max="100" />
+                            <div class="">{{ progress }} %</div>
+                            <q-slider v-model="progress" color="blue" track-color="light-blue-1"
+                              inner-track-color="blue-3" :max="100" />
                           </div>
                         </div>
                       </q-card-section>
@@ -106,8 +107,8 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">04-DEC-2023, 09.15 AM</div>
-                            <div class="">RIAN SPV</div>
+                            <div class="">{{ created_at }}</div>
+                            <div class="">RIAN</div>
                           </div>
                         </div>
                       </q-card-section>
@@ -120,8 +121,8 @@
                     <q-separator />
                     <q-card>
                       <q-card-section>
-                        <div class="">Bambang logged 1 Days, 4 Hours, 45 Minutes, 55 Seconds.</div>
-                        <div class="q-pt-md">Finished on 05 Dec 2023, 15:45</div>
+                        <div class="">Started on {{ started_at }}</div>
+                        <div class="q-pt-md">Finished on {{ finished_at }}</div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
@@ -144,12 +145,11 @@
                 <div class="q-ml-lg">.</div>
               </CardBase>
               <CardBase class="col-6">
-
-                    <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
-                      <template v-slot:after>
-                        <q-btn round dense flat icon="send" />
-                      </template>
-                    </q-input>
+                <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
+                  <template v-slot:after>
+                    <q-btn round dense flat icon="send" />
+                  </template>
+                </q-input>
               </CardBase>
             </q-card-section>
           </q-card>
@@ -157,7 +157,7 @@
           <div class="q-mt-md">
             Attachment Download
           </div>
-          <q-card flat bordered class="no-shadow">
+          <q-card flat bordered class="no-shadow col-12">
             <q-card-section class="row">
               <CardBase class="">
                 <div class="q-pa-md">
@@ -165,10 +165,12 @@
                   <div class="q-pt-md"></div>
                   <q-uploader style="max-width: 300px" url="" label="Screenchot" multiple color="grey" />
                   <div class="q-pt-md row justify-between q-gutter-sm">
-                    <q-btn unelevated disable class=" col-2" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
+                    <q-btn unelevated dense class=" col-2" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
                       label="Start" no-caps @click="startCountdown" />
-                    <q-btn unelevated disable class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Submit To Superior" no-caps/>
+                    <q-btn unelevated dense class=" col-3" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Send Back" no-caps to="/supervisor/task_detail" />
+                    <q-btn unelevated dense class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Submit To Superior" no-caps />
                   </div>
                 </div>
               </CardBase>
@@ -200,6 +202,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'TaskDetail2',
   setup() {
     return {
       slide: ref(15)
