@@ -23,6 +23,7 @@
 
               <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
                 v-model="deposit.date" mask="date" label="From">
+
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -34,6 +35,7 @@
 
               <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
                 v-model="deposit.date" mask="date" label="To">
+
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -66,9 +68,9 @@
                 </q-list>
               </q-btn-dropdown>
 
-              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
-                use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
-                dropdown-icon="filter_list"></q-select>
+              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled
+                v-model="deposit.account" use-input multiple dense input-debounce="0" label="Filter" :options="options"
+                @filter="filterFn" dropdown-icon="filter_list"></q-select>
 
               <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
                 text-color="cyan" unelevated dense outline label="Export" no-caps @click="exportTable" />
@@ -87,7 +89,8 @@
           :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination">
 
           <template v-slot:body="props">
-            <q-tr :props="props" :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
+            <q-tr :props="props"
+              :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
 
               <q-td key="id" :props="props">
                 <div>{{ props.row.id }}</div>
@@ -105,7 +108,12 @@
                 <div>{{ props.row.pic_title }}</div>
               </q-td>
               <q-td key="due_date" :props="props">
-                 <div>{{ formatLocalTime(props.row.due_date) }}</div>
+                <div>{{ formatLocalTime(props.row.due_date) }}</div>
+              </q-td>
+
+
+              <q-td key="start_date" :props="props">
+                <div>{{ formatLocalTime(props.row.start_date) }}</div>
               </q-td>
 
               <!-- priority -->
@@ -128,6 +136,11 @@
               <q-td key="Progress" :props="props">
                 <q-linear-progress grey :color="getColor(props.row.progress)" :value="props.row.progress / 100"
                   class="q-mt-md" />
+              </q-td>
+
+
+              <q-td key="Progress" :props="props">
+                <div>{{ props.row.progress }} %</div>
               </q-td>
 
               <q-td key="Review" :props="props">
@@ -207,14 +220,15 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
-        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
-        { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
+        // { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
+        { name: "task_title", align: "left", label: "Project", field: "task_title", sortable: true },
         { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
         { name: "pic_title", align: "left", label: "Title", field: "pic_title", sortable: true },
-        { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
+        { name: "due_date", align: "left", label: "End project", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
         { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
+        { name: "Progress", align: "left", label: "%", field: "Progress", sortable: true },
 
       ],
       data: [
@@ -355,6 +369,7 @@ export default {
 
 
 </script>
+
 <style scoped>
 .my-card {
   width: 175px;

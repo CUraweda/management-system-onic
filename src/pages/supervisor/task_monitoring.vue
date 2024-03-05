@@ -235,6 +235,11 @@
                 />
               </q-td>
 
+              <q-td key="Progress" :props="props">
+                <div>{{ props.row.progress }} %</div>
+              </q-td>
+
+
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
                   <q-btn dense unelevated @click="Report(props.row.id)">

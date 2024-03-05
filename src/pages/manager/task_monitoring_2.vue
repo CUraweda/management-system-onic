@@ -461,8 +461,7 @@ export default {
   watch: {
     search: {
       handler(value) {
-        this.search = value != "" ? value : "";
-        this.fetchData();
+        if (value != "") this.fetchData();
       },
     },
   },
