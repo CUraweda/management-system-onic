@@ -170,9 +170,13 @@
                   <q-btn @click="downloadFile()">
                     Download File
                   </q-btn>
-                  <q-btn :disable="this.file_hasil === null" @click="downloadFileHasil()">
+                  <q-btn @click="downloadFile()">
                     Download Dokumen Hasil
                   </q-btn>
+                  <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
+                  <div class="q-pt-md"></div>
+                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
+                    color="grey" />
 
                   <div v-if="task_type === 'Multi'" class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-select multiple dense v-model="picrate" filled use-input input-debounce="0" :options="picoptions"
@@ -235,11 +239,8 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import { ref } from 'vue';
-import Vue from 'vue';
-import { exportFile } from 'quasar';
-import axios from 'axios';
+import { store } from '../../store/store'
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0
@@ -257,7 +258,6 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: 'DirectorReport',
-  props: ['id'],
   data() {
     return {
       chat: '',
@@ -284,8 +284,7 @@ export default {
       history: '',
       description: '',
       task_type: '',
-      file: '',
-      file_hasil: null,
+      fileName: ''
       // Add other properties with default values
     }
   },
@@ -294,6 +293,7 @@ export default {
     return {
       model: ref(0),
       text: ref(''),
+      id: store.id,
       ratingModel: ref(0),
       ratingColors: ['yellow'],
       picrate: ref([]),
@@ -310,7 +310,7 @@ export default {
   async downloadFile() {
     try {
       // Mengganti URL dengan endpoint yang sesuai
-      const response = await this.$axios.get('/image/' + this.file, {
+      const response = await this.$axios.get('/image/' + this.fileName, {
         responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
       });
 
@@ -320,34 +320,7 @@ export default {
       // Membuat elemen <a> untuk tautan unduhan
       const link = document.createElement('a');
       link.href = url;
-      link.download = this.file; // Set nama berkas yang diinginkan
-      document.body.appendChild(link);
-
-      // Simulasi klik pada elemen <a> untuk memulai unduhan
-      link.click();
-
-      // Membersihkan objek URL dan menghapus elemen <a>
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Error downloading file:', error);
-    }
-  },
-
-  async downloadFileHasil() {
-    try {
-      // Mengganti URL dengan endpoint yang sesuai
-      const response = await this.$axios.get('/image/' + this.file_hasil, {
-        responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
-      });
-
-      // Membuat objek URL dari blob
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-
-      // Membuat elemen <a> untuk tautan unduhan
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = this.file; // Set nama berkas yang diinginkan
+      link.download = this.fileName; // Set nama berkas yang diinginkan
       document.body.appendChild(link);
 
       // Simulasi klik pada elemen <a> untuk memulai unduhan
@@ -414,6 +387,7 @@ export default {
 
     async fetchData() {
       try {
+        console.log(this.id)
         const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
@@ -427,8 +401,7 @@ export default {
         this.created_at = response.data.created_at;
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
-        this.file = response.data.file;
-        this.file_hasil = response.data.file_hasil;
+        this.fileName = response.data.fileName;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -466,7 +439,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log(totalSeconds);
           console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
@@ -509,69 +481,53 @@ export default {
       this.$router.push('/director/task_detail_2/' + id)
     },
 
-    async fetchTaskById(id) {
-      try {
-        const response = await this.$axios.get('/task/get-by-id/' + id);
-        return response.data;
-      } catch (error) {
-        console.error('Error fetching task by ID:', error);
-        throw error; // lemparkan kembali kesalahan untuk ditangani di luar
-      }
-    },
-
     async Revise() {
       try {
         const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
-        const taskToRevise = await this.fetchTaskById(id);
+        const response = await this.$axios.get('/task/get-by-id/' + id);
 
-        const revisedTaskData = new FormData();
-        revisedTaskData.append('task_type', taskToRevise.task_type);
-        revisedTaskData.append('task_title', taskToRevise.task_title);
-        revisedTaskData.append('priority', taskToRevise.priority);
-        revisedTaskData.append('iteration', taskToRevise.iteration);
-        revisedTaskData.append('start_date', new Date(taskToRevise.start_date).toISOString());
-        revisedTaskData.append('due_date', new Date(taskToRevise.due_date).toISOString());
-        revisedTaskData.append('description', taskToRevise.description);
-        revisedTaskData.append('pic_title', taskToRevise.pic_title);
-        revisedTaskData.append('pic', taskToRevise.pic);
-        revisedTaskData.append('spv', taskToRevise.spv);
-        revisedTaskData.append('approved_at', null);
-        revisedTaskData.append('approved_by', null);
-        revisedTaskData.append('started_at', null);
-        revisedTaskData.append('started_by', null);
-        revisedTaskData.append('finished_at', null);
-        revisedTaskData.append('finished_by', null);
-        revisedTaskData.append('status', "Open");
-        revisedTaskData.append('progress', 0);
-        revisedTaskData.append('file', taskToRevise.file);
-        const fileResponse = await this.$axios.get('/image/' + taskToRevise.file, {
-          responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
-        });
-
-        const originalFile = new File([fileResponse.data], taskToRevise.file, { type: fileResponse.data.type });
-
-        // Membuat objek FormData
-        revisedTaskData.append('bukti_tayang', originalFile);
+        // 2. Buat objek baru dengan status "open" dan progress 0
+        const revisedTaskData = {
+          task_type: response.data.task_type,
+          task_title: response.data.task_title,
+          priority: response.data.priority,
+          iteration: response.data.iteration,
+          start_date: new Date(response.data.start_date).toISOString(),
+          due_date: new Date(response.data.due_date).toISOString(),
+          description: response.data.description,
+          pic_title: response.data.pic_title,
+          pic: response.data.pic,
+          spv: response.data.spv,
+          approved_at: null,
+          approved_by: null,
+          started_at: null,
+          started_by: null,
+          finished_at: null,
+          finished_by: null,
+          status: "Wait-app",
+          progress: 0,
+          fileName: response.data.fileName,
+          filePath: response.data.filePath,
+          fileSize: response.data.fileSize,
+        };
 
         // 3. Kirim permintaan untuk membuat tugas baru
         const createTaskResponse = await this.$axios.post('/task/new', revisedTaskData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+            'Content-Type': 'application/json',
+          }
         });
 
-        if (!createTaskResponse.status === 200) {
+        if (createTaskResponse.status !== 200) {
           throw new Error('Failed to create revised task');
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const deletedData = {
+        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
           status: "Deleted",
           deleted_at: new Date().toISOString(),
-        };
-
-        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, deletedData, {
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -581,7 +537,7 @@ export default {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.go(-1)
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -608,9 +564,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
+            type: 'positive',
             message: 'Task Approved',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/director/task_monitoring_2');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -624,7 +581,7 @@ export default {
     async Ok() {
       const data = {
         status: "Close",
-        // approved_at: new Date().toISOString(),
+        approved_at: new Date().toISOString(),
       };
 
       try {
@@ -636,7 +593,7 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: 'Task Closed',
+            message: 'Task Approved',
           });
           this.$router.push('/director/task_monitoring');
         } else {
@@ -664,9 +621,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
+            type: 'positive',
             message: 'Task Canceled',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/director/task_monitoring_3');
         } else {
           this.$q.notify({
             message: 'Failed Canceling Task',

@@ -71,7 +71,7 @@ const routes = [
         component: DirectorCreateTask,
       },
       {
-        path: "edit/:id",
+        path: "edit",
         meta: { title: "EDIT TASK" },
         component: DirectorEditTask,
         props: true,
@@ -92,7 +92,7 @@ const routes = [
         component: DirectorTaskMonitoring3,
       },
       {
-        path: "report/:id",
+        path: "report",
         meta: { title: "REPORTS" },
         component: DirectorReport,
         props: true,
@@ -114,7 +114,7 @@ const routes = [
         component: ManagerCreateTask,
       },
       {
-        path: "edit/:id",
+        path: "edit",
         meta: { title: "EDIT TASK" },
         component: ManagerEditTask,
         props: true,
@@ -174,7 +174,7 @@ const routes = [
         component: SupervisorCreateTask,
       },
       {
-        path: "edit/:id",
+        path: "edit",
         meta: { title: "EDIT TASK" },
         component: SupervisorEditTask,
         props: true,
@@ -234,13 +234,13 @@ const routes = [
         component: OperatorCreateTask,
       },
       {
-        path: "task_detail/:id",
+        path: "task_detail",
         meta: { title: "TASK DETAIL" },
         component: OperatorTaskDetail,
         props: true,
       },
       {
-        path: "task_detail_2/:id",
+        path: "task_detail_2",
         meta: { title: "TASK DETAIL" },
         component: OperatorTaskDetail2,
         props: true,

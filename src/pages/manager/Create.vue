@@ -474,6 +474,8 @@
                       filled
                       type="submit"
                       v-close-popup
+                      to="/manager/task_monitoring"
+
                     />
                     <q-btn
                       unelevated
@@ -616,7 +618,7 @@ export default {
 
   computed: {
     pic_title() {
-      return this.SpvApp ? "manager" : "supervisor";
+      return this.SpvApp ? "supervisor" : "manager";
     },
   },
 
@@ -707,7 +709,7 @@ export default {
         this.addToForm("task_type", this.task_type);
         this.addToForm("task_title", this.task_title);
         this.addToForm("priority", this.priority.value);
-        this.addToForm("status", this.SpvApp ? "Wait-app" : "Idle");
+        this.addToForm("status", "Wait-app");
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);

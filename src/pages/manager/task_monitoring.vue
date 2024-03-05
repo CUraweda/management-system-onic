@@ -165,6 +165,10 @@
                 <div>{{ props.row.pic_title }}</div>
               </q-td>
 
+              <q-td key="start_date" :props="props">
+                <div>{{ formatLocalTime(props.row.start_date) }}</div>
+              </q-td>
+
               <q-td key="due_date" :props="props">
                 <div>{{ formatLocalTime(props.row.due_date) }}</div>
               </q-td>
@@ -224,6 +228,10 @@
                   :value="props.row.progress / 100"
                   class="q-mt-md"
                 />
+              </q-td>
+
+              <q-td key="progress" :props="props">
+                <div>{{ props.row.progress }}</div>
               </q-td>
 
               <q-td key="detail" :props="props">
@@ -387,7 +395,7 @@ export default {
         {
           name: "task_title",
           align: "left",
-          label: "Task Title",
+          label: "Project",
           field: "task_title",
           sortable: true,
         },
@@ -414,16 +422,9 @@ export default {
           sortable: true,
         },
         {
-          name: "priority",
-          align: "center",
-          label: "Priority",
-          field: "priority",
-          sortable: true,
-        },
-        {
           name: "status",
           align: "center",
-          label: "Status",
+          label: "Stage saat ini",
           field: "status",
           sortable: true,
         },
@@ -432,6 +433,13 @@ export default {
           align: "left",
           label: "Progress bar",
           field: "Progress",
+          sortable: true,
+        },
+                            {
+          name: "progress",
+          align: "left",
+          label: "%",
+          field: "progress",
           sortable: true,
         },
         {
@@ -564,7 +572,7 @@ export default {
     async Revise(id) {
       try {
         let taskToRevise = await this.fetchTaskById(id);
-        taskToRevise.status = "Done";
+        taskToRevise.status = "Open";
         taskToRevise.progress = 0;
         taskToRevise.approved_at = null;
         taskToRevise.approved_by = null;

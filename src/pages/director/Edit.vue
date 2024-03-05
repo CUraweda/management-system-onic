@@ -416,8 +416,8 @@ export default {
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
         this.form.iteration = response.data.Iteration;
-        this.form.start_date = response.data.start_date;
-        this.form.due_date = response.data.due_date;
+        this.form.start_date = new Date(response.data.start_date).toLocaleString();
+        this.form.due_date = new Date(response.data.due_date).toLocaleString();
         this.form.description = response.data.description;
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
@@ -432,11 +432,11 @@ export default {
         task_type: this.form.task_type,
         task_title: this.form.task_title,
         priority: this.form.priority.value,
-        start_date: new Date(this.form.start_date).toISOString(),
-        due_date: new Date(this.form.due_date).toISOString(),
+        start_date: this.form.start_date,
+        due_date: this.form.due_date,
         description: this.form.description,
-        pic: this.form.pic,
-        spv: this.form.spv,
+        pic: this.submitResultpic.map(item => item.value).join(','),
+        spv: this.submitResultspv.map(item => item.value).join(','),
       };
 
       try {
@@ -482,6 +482,8 @@ export default {
     //   }
 
     // },
+
+
 
   },
 }

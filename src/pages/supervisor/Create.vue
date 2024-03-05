@@ -494,6 +494,7 @@
                       filled
                       type="submit"
                       v-close-popup
+                      to="/supervisor/task_monitoring"                  
                     />
                     <q-btn
                       unelevated

@@ -20,7 +20,6 @@
               >
                 <template v-slot:prepend>
                   <q-icon name="search" text-color="black" />
-                  <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
@@ -165,6 +164,10 @@
                 <div>{{ props.row.pic_title }}</div>
               </q-td>
 
+              <q-td key="start_date" :props="props">
+                <div>{{ formatLocalTime(props.row.start_date) }}</div>
+              </q-td>
+
               <q-td key="due_date" :props="props">
                 <div>{{ formatLocalTime(props.row.due_date) }}</div>
               </q-td>
@@ -222,6 +225,10 @@
                   :value="props.row.progress / 100"
                   class="q-mt-md"
                 />
+              </q-td>
+
+              <q-td key="progress" :props="props">
+                <div>{{ props.row.progress }}</div>
               </q-td>
 
               <q-td key="Review" :props="props">
@@ -283,8 +290,8 @@
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
-import { store } from '../../store/store'
 // import Status from "components/Status"
+import { store } from "../../store/store";
 
 const stringOptions = [
   "Google",
@@ -330,7 +337,7 @@ export default {
         {
           name: "task_title",
           align: "left",
-          label: "Task Title",
+          label: "Project",
           field: "task_title",
           sortable: true,
         },
@@ -349,23 +356,23 @@ export default {
           sortable: true,
         },
         {
-          name: "due_date",
+          name: "start_date",
           align: "left",
-          label: "Due Date",
-          field: "due_date",
+          label: "Start Project",
+          field: "start_date",
           sortable: true,
         },
         {
-          name: "priority",
-          align: "center",
-          label: "Priority",
-          field: "priority",
+          name: "due_date",
+          align: "left",
+          label: "End Project",
+          field: "due_date",
           sortable: true,
         },
         {
           name: "status",
           align: "center",
-          label: "Status",
+          label: "Stage saat ini",
           field: "status",
           sortable: true,
         },
@@ -376,6 +383,13 @@ export default {
           field: "Progress",
           sortable: true,
         },
+                            {
+          name: "progress",
+          align: "left",
+          label: "%",
+          field: "progress",
+          sortable: true,
+        },
         {
           name: "Review",
           align: "left",
@@ -384,60 +398,7 @@ export default {
           sortable: true,
         },
       ],
-      data: [
-        // {
-        //   serial_no: "01",
-        //   task_title: "Hitung Laba",
-        //   name: "Syahrini",
-        //   due_date: "05/01/2020",
-        //   priority: "High",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
-        // },
-        // {
-        //   serial_no: "02",
-        //   task_title: "Rekap Pendapatan",
-        //   name: "Agus",
-        //   due_date: "15/12/2019",
-        //   priority: "High",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
-        // },
-        // {
-        //   serial_no: "03",
-        //   task_title: "Merekap Nota",
-        //   name: "Kaesang",
-        //   due_date: "11/09/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
-        // },
-        // {
-        //   serial_no: "04",
-        //   task_title: "Merekap Data",
-        //   name: "Jajang",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Important",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // },
-        // {
-        //   serial_no: "05",
-        //   task_title: "Riset Pasar",
-        //   name: "Junaedi",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // }
-      ],
+      data: [],
       pagination: {
         rowsPerPage: 5,
       },
@@ -447,23 +408,23 @@ export default {
   mounted() {
     this.fetchData();
   },
-
+  watch: {
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : "";
+        this.fetchData();
+      },
+    },
+  },
   setup() {
     return {
       model: ref(0),
       yellow: ["yellow"],
+      id: store.id,
       onItemClick() {
         // console.log('Clicked on an Item')
       },
     };
-  },
-
-  watch: {
-    search: {
-      handler(value) {
-        if (value != "") this.fetchData();
-      },
-    },
   },
 
   methods: {
@@ -475,8 +436,11 @@ export default {
     async fetchData() {
       try {
         const response = await this.$axios.get("/task/waited/supervisor", {
-          params: { search: this.search },
+          params: {
+            search: this.search,
+          },
         });
+
         this.data = response.data.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
@@ -493,8 +457,8 @@ export default {
     },
 
     Report(id) {
-      store.id = id 
-      this.$router.push("task_detail_2/");
+      store.id = id;
+      this.$router.push("report/");
     },
 
     acc() {
