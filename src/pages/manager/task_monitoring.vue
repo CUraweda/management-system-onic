@@ -303,24 +303,26 @@ export default {
     },
 
     async Delete(id) {
+      console.log(id)
       const data = {
         status: "Deleted",
         deleted_at: new Date().toISOString(),
       };
 
+      console.log(data)
+
       try {
-        const response = await this.$axios.put('/task/edit/' + id, {
+        const response = await this.$axios.put('/task/edit/' + id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
-          body: JSON.stringify(data),
         });
 
         if (response.status === 200) {
           this.$q.notify({
             message: 'Task Deleted',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.fetchData()
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -329,7 +331,6 @@ export default {
       } catch (error) {
         console.error('Error:', error);
       }
-      window.location.reload();
     },
 
     async fetchTaskById(id) {
