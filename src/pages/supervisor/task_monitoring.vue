@@ -216,7 +216,6 @@ export default {
   name: 'TaskMonitoring',
   data() {
     return {
-
       statusFilter: "",
       filter: "",
       mode: "list",
@@ -271,8 +270,6 @@ export default {
   },
 
   methods: {
-
-
     formatLocalTime(utcTime) {
       if (utcTime === null) {
         return ''; // Jika utcTime null, kembalikan string kosong

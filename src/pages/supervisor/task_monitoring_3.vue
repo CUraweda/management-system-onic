@@ -13,11 +13,17 @@
           <q-space></q-space>
           <div class=" col-lg-6 col-md-7 col-sm-12 col-xs-12">
             <q-card-section class="row q-gutter-xs q-pt-none justify-between">
-              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
-                standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
+              <q-input
+                class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title"
+                dense
+                text-color="black"
+                standout="bg-grey-3 no-shadow under-title"
+                v-model="search"
+                placeholder="Search..."
+              >
                 <template v-slot:prepend>
-                  <q-icon v-if="search === ''" name="search" text-color="black" />
-                  <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+                  <q-icon name="search" text-color="black" />
+                  <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
@@ -240,6 +246,16 @@ export default {
       },
     };
   },
+
+  watch: {
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : ""
+        this.fetchData()
+      },
+    },
+  },
+
   methods: {
 
     formatLocalTime(utcTime) {
@@ -249,7 +265,9 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get('/task/deleted/operator');
+        const response = await this.$axios.get('/task/deleted/operator', {
+          params: { search: this.search }
+        });
         this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));;
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -540,7 +540,7 @@ export default {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.$router.go(-1)
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -625,7 +625,7 @@ export default {
           this.$q.notify({
             message: 'Task Canceled',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.$router.push('/manager/task_monitoring_3');
         } else {
           this.$q.notify({
             message: 'Failed Canceling Task',
