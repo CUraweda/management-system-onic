@@ -144,7 +144,6 @@
                 <div class="q-ml-lg">.</div>
               </CardBase>
               <CardBase class="col-6">
-
                 <q-input class=" border2 col-6" bottom-slots v-model="text" label="Text" dense>
                   <template v-slot:after>
                     <q-btn round dense flat icon="send" />
@@ -159,16 +158,18 @@
           </div>
           <q-card flat bordered class="no-shadow col-12">
             <q-card-section class="row">
-              <CardBase class="  ">
+              <CardBase class="">
                 <div class="q-pa-md">
                   <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
                   <div class="q-pt-md"></div>
-                  <q-uploader style="max-width: 300px" url="" label="Dokumen Hasil" multiple color="grey" />
-                  <div class="q-pt-md row justify-between">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
+                  <q-uploader style="max-width: 300px" url="" label="Screenchot" multiple color="grey" />
+                  <div class="q-pt-md row justify-between q-gutter-sm">
+                    <q-btn unelevated dense class=" col-2" :ripple="{ color: 'blue' }" color="blue-1" text-color="blue"
                       label="Start" no-caps @click="startCountdown" />
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Send To Other PIC" no-caps to="task_detail_2" />
+                    <q-btn unelevated dense class=" col-3" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Send Back" no-caps to="/operator/task_detail" />
+                    <q-btn unelevated dense class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
+                      label="Submit To Superior" no-caps />
                   </div>
                 </div>
               </CardBase>
@@ -200,6 +201,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'TaskDetail2',
   setup() {
     return {
       slide: ref(15)
@@ -220,6 +222,27 @@ export default {
     }
   },
   methods: {
+
+    formatLocalTime(utcTime) {
+      if (utcTime === null) {
+        return ''; // Jika utcTime null, kembalikan string kosong
+      }
+
+      const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        timeZone: 'UTC'  // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString('id-ID', options);
+      return localTime;
+    },
+
     startCountdown() {
       this.countdown = setInterval(() => {
         // Calculate seconds
