@@ -208,8 +208,8 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
-        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
-        { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
+        // { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
+        { name: "task_title", align: "left", label: "project", field: "task_title", sortable: true },
         { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
         { name: "pic_title", align: "left", label: "Title", field: "pic_title", sortable: true },
         { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },

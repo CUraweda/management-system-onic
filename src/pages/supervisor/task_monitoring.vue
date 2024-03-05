@@ -131,6 +131,11 @@
                   class="q-mt-md" />
               </q-td>
 
+              <q-td key="Progress" :props="props">
+                <div>{{ props.row.progress }} %</div>
+              </q-td>
+
+
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
                   <q-btn dense unelevated @click="Report(props.row.id)">
@@ -197,9 +202,7 @@ import { exportFile } from "quasar";
 import axios from 'axios';
 // import Status from "components/Status"
 
-const stringOptions = [
-  'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
-]
+
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -227,15 +230,16 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
-        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
-        { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
+        // { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
+        { name: "task_title", align: "left", label: "project", field: "task_title", sortable: true },
         { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
         { name: "pic_title", align: "left", label: "Title", field: "pic_title", sortable: true },
-
-        { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
+        { name: "start_date", align: "left", label: "Start project", field: "due_date", sortable: true },
+        { name: "due_date", align: "left", label: "End project", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
         { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
+        { name: "Progress", align: "left", label: "%", field: "Progress", sortable: true },
         { name: "detail", align: "left", label: "Detail", field: "detail", sortable: true },
         { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: true },
         {
