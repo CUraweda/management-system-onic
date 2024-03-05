@@ -1,19 +1,28 @@
 <template>
   <q-page class="q-pt-xs">
     <div class="q-ma-md">
-
-      <div class="row q-my-md shadow q-pa-md items-center"
-        style="border-radius: 4px;border: 1px solid rgba(0, 0, 0, 0.12);">
-
+      <div
+        class="row q-my-md shadow q-pa-md items-center"
+        style="border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.12)"
+      >
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_1">
           <q-card class="no-shadow q-pa-sm">
             <div class="row items-center">
-              <div class="text-h6 text-weight-bold q-mr-md q-mt-noe">{{ task_title }}</div>
-              <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ status }}</div>
+              <div class="text-h6 text-weight-bold q-mr-md q-mt-noe">
+                {{ task_title }}
               </div>
-              <div class="bg-grey-3  q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">{{ priority }}
+              <div class="bg-grey-3 q-mr-sm tulisan border1">
+                <div
+                  class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7"
+                >
+                  {{ status }}
+                </div>
+              </div>
+              <div class="bg-grey-3 q-mr-sm tulisan border1">
+                <div
+                  class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7"
+                >
+                  {{ priority }}
                 </div>
               </div>
             </div>
@@ -22,22 +31,27 @@
                 <div class="row">
                   <div class="col-4">
                     <div
-                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
-                      Assigned By</div>
-                    <div class="q-mr-lg"> {{ spv }} </div>
-                  </div>
-                  <div class="col-4">
-                    <div
-                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
-                      TASK TITLE</div>
-                    <div class="q-mr-lg"> {{ task_title }} </div>
-                  </div>
-                  <div class="col-4">
-                    <div
-                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3  q-mr-md q-pa-md border2">
-                      DUE DATE</div>
-                    <div class="q-mr-lg"> {{ formatLocalTime(due_date) }}
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2"
+                    >
+                      Assigned By
                     </div>
+                    <div class="q-mr-lg">{{ spv }}</div>
+                  </div>
+                  <div class="col-4">
+                    <div
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2"
+                    >
+                      TASK TITLE
+                    </div>
+                    <div class="q-mr-lg">{{ task_title }}</div>
+                  </div>
+                  <div class="col-4">
+                    <div
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2"
+                    >
+                      DUE DATE
+                    </div>
+                    <div class="q-mr-lg">{{ formatLocalTime(due_date) }}</div>
                   </div>
                 </div>
               </div>
@@ -46,11 +60,28 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
-            <div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5 ">
-              <q-circular-progress :max="time.max" show-value track-color="light-blue-2" class="text-black q-ma-md"
-                :value="time.value" size="100px" color="light-blue" />
-              <div v-if="time.labelPosition === 'bottom'" class="vertical-bottom text-center text-black">{{ time.label }}
+          <q-card
+            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
+          >
+            <div
+              v-for="(time, index) in timerData"
+              :key="index"
+              class="col-md-3 col-lg-3 col-sm-5 col-xs-5"
+            >
+              <q-circular-progress
+                :max="time.max"
+                show-value
+                track-color="light-blue-2"
+                class="text-black q-ma-md"
+                :value="time.value"
+                size="100px"
+                color="light-blue"
+              />
+              <div
+                v-if="time.labelPosition === 'bottom'"
+                class="vertical-bottom text-center text-black"
+              >
+                {{ time.label }}
               </div>
               <div v-else class="text-center text-black">{{ time.label }}</div>
             </div>
@@ -69,15 +100,21 @@
                 <div class="">Due Date</div>
               </div>
               <div class="col">
-                <div class=""> {{ task_title }} </div>
-                <div class=""> {{ pic }} </div>
-                <div class=""> {{ formatLocalTime(due_date) }} </div>
+                <div class="">{{ task_title }}</div>
+                <div class="">{{ pic }}</div>
+                <div class="">{{ formatLocalTime(due_date) }}</div>
               </div>
             </q-card-section>
             <q-card-section class="col-12">
               <div class="q-pa-md" style="max-width: 100%">
                 <q-list>
-                  <q-expansion-item popup default-opened icon="" class="col-12" label="Progress">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    class="col-12"
+                    label="Progress"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -90,14 +127,28 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
-                            <q-slider :disable="status === 'Wait-app' || status === 'Deleted'" v-model="progress" color="blue" track-color="light-blue-1"
-                              inner-track-color="blue-3" :max="100" />
+                            <q-slider
+                              :disable="
+                                status === 'Wait-app' || status === 'Deleted'
+                              "
+                              v-model="progress"
+                              color="blue"
+                              track-color="light-blue-1"
+                              inner-track-color="blue-3"
+                              :max="100"
+                            />
                           </div>
                         </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" class="col-12" label="Addtional Details">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    class="col-12"
+                    label="Addtional Details"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -107,17 +158,22 @@
                             <div class="">Create By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(created_at) }}</div>
+                            <div class="">
+                              {{ formatLocalTime(created_at) }}
+                            </div>
                             <div class="">RIAN</div>
                           </div>
                         </div>
                       </q-card-section>
-                      <q-card-section>
-
-                      </q-card-section>
+                      <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" label="History">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    label="History"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -127,8 +183,12 @@
                             <div class="">Finished On</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(started_at) }}</div>
-                            <div class="">{{ formatLocalTime(finished_at) }}</div>
+                            <div class="">
+                              {{ formatLocalTime(started_at) }}
+                            </div>
+                            <div class="">
+                              {{ formatLocalTime(finished_at) }}
+                            </div>
                           </div>
                         </div>
                       </q-card-section>
@@ -136,7 +196,6 @@
                   </q-expansion-item>
                 </q-list>
               </div>
-
             </q-card-section>
           </q-card>
         </div>
@@ -146,41 +205,91 @@
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
             <q-card-section class="row justify-center">
               <CardBase class="col-12">
-                <p class="q-ml-lg" style="white-space: pre-line;"> {{ description }} </p>
+                <p class="q-ml-lg" style="white-space: pre-line">
+                  {{ description }}
+                </p>
 
-                <div class="q-ml-lg"> {{ chat }} </div>
+                <div class="q-ml-lg">{{ chat }}</div>
               </CardBase>
               <CardBase class="col-6">
-                <q-input class=" border2 col-6" bottom-slots v-model="chat" label="Text" dense>
+                <q-input
+                  class="border2 col-6"
+                  bottom-slots
+                  v-model="chat"
+                  label="Text"
+                  dense
+                >
                   <template v-slot:after>
-                    <q-btn round dense flat icon="send" @click="SendUpdate()" :disable="status === 'Wait-app' || status === 'Deleted'"/>
+                    <q-btn
+                      round
+                      dense
+                      flat
+                      icon="send"
+                      @click="SendUpdate()"
+                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                    />
                   </template>
                 </q-input>
               </CardBase>
             </q-card-section>
           </q-card>
 
-          <div class="q-mt-md">
-            Attachment Download
-          </div>
+          <div class="q-mt-md">Attachment Download</div>
           <q-card flat bordered class="no-shadow col-12">
             <q-card-section class="row">
               <CardBase class="  ">
                 <div class="q-pa-md">
-                  <q-uploader url="" label="File" color="grey" square flat bordered style="max-width: 300px" />
+                  <q-uploader
+                    url=""
+                    label="File"
+                    color="grey"
+                    square
+                    flat
+                    bordered
+                    style="max-width: 300px"
+                  />
                   <div class="q-pt-md"></div>
-                  <q-uploader style="max-width: 300px" url="" label="Dokumen Hasil" multiple color="grey" />
+                  <q-uploader
+                    style="max-width: 300px"
+                    url=""
+                    label="Dokumen Hasil"
+                    multiple
+                    color="grey"
+                  />
                   <div class="q-pt-md row justify-between">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }" :color="started_at ? 'red-1' : 'blue-1'"
-                      :text-color="started_at ? 'red' : 'blue'" :label="started_at ? 'Finish' : 'Start'"
-                      @click="started_at ? FinishTask() : StartTask()" :disable="status === 'Wait-app' || status === 'Deleted'" />
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Send To Other PIC" no-caps @click="send"
-                      v-if="task_type === 'Multi'" />
+                    <q-btn
+                      unelevated
+                      class="q-mr-md"
+                      :ripple="{ color: 'blue' }"
+                      :color="started_at ? 'red-1' : 'blue-1'"
+                      :text-color="started_at ? 'red' : 'blue'"
+                      :label="started_at ? 'Finish' : 'Start'"
+                      @click="started_at ? FinishTask() : StartTask()"
+                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                    />
+                    <q-btn
+                      unelevated
+                      :ripple="{ color: 'grey' }"
+                      color="grey-3"
+                      text-color="grey-7"
+                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      label="Send To Other PIC"
+                      no-caps
+                      @click="send"
+                      v-if="task_type === 'Multi'"
+                    />
 
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Submit To Superior" no-caps @click="submitToSuperior"
-                      v-else-if="task_type === 'Single'" />
+                    <q-btn
+                      unelevated
+                      :ripple="{ color: 'grey' }"
+                      color="grey-3"
+                      text-color="grey-7"
+                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      label="Submit To Superior"
+                      no-caps
+                      @click="submitToSuperior"
+                      v-else-if="task_type === 'Single'"
+                    />
                   </div>
                 </div>
               </CardBase>
@@ -193,92 +302,86 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import Vue from 'vue';
-import { exportFile } from 'quasar';
-import axios from 'axios';
+import { ref } from "vue";
+import Vue from "vue";
+import { exportFile } from "quasar";
+import axios from "axios";
 
 function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0 ?
-    formatFn(val) :
-    val
+  let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ?
-    '' :
-    String(formatted)
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
-  formatted = formatted.split('"').join('""')
+  formatted = formatted.split('"').join('""');
 
-  return `"${formatted}"`
+  return `"${formatted}"`;
 }
 
 export default {
-  name: 'TaskDetail',
-  props: ['id'],
+  name: "TaskDetail",
+  props: ["id"],
   setup() {
     return {
       model: ref(0),
-      text: ref(''),
+      text: ref(""),
       ratingModel: ref(0),
-      ratingColors: ['yellow'],
+      ratingColors: ["yellow"],
       // pic: ref(''),
     };
   },
 
-
   data() {
     return {
-      chat: '',
-      filter: '',
-      mode: 'list',
+      chat: "",
+      filter: "",
+      mode: "list",
       timerData: [
-        { label: 'Days', labelPosition: 'bottom', max: 30, value: 0 },
-        { label: 'Hours', labelPosition: 'top', max: 24, value: 0 },
-        { label: 'Minutes', labelPosition: 'bottom', max: 60, value: 0 },
-        { label: 'Seconds', labelPosition: 'bottom', max: 60, value: 0 },
+        { label: "Days", labelPosition: "bottom", max: 30, value: 0 },
+        { label: "Hours", labelPosition: "top", max: 24, value: 0 },
+        { label: "Minutes", labelPosition: "bottom", max: 60, value: 0 },
+        { label: "Seconds", labelPosition: "bottom", max: 60, value: 0 },
       ],
       countdown: null,
-      task_title: '',
-      status: '',
-      priority: '',
-      pic: '',
-      due_date: '',
+      task_title: "",
+      status: "",
+      priority: "",
+      pic: "",
+      due_date: "",
       progress: 0,
-      started_at: '',
-      started_by: '',
-      created_at: '',
-      created_by: '',
-      history: '',
-      description: '',
-      task_type: '',
+      started_at: "",
+      started_by: "",
+      created_at: "",
+      created_by: "",
+      history: "",
+      description: "",
+      task_type: "",
       // Add other properties with default values
-    }
+    };
   },
-
 
   mounted() {
     this.fetchData();
   },
 
   methods: {
-
     formatLocalTime(utcTime) {
       if (utcTime === null) {
-        return ''; // Jika utcTime null, kembalikan string kosong
+        return ""; // Jika utcTime null, kembalikan string kosong
       }
 
       const options = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
         hour12: false,
-        timeZone: 'UTC'  // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+        timeZone: "UTC", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
       };
 
-      const localTime = new Date(utcTime).toLocaleString('id-ID', options);
+      const localTime = new Date(utcTime).toLocaleString("id-ID", options);
       return localTime;
     },
 
@@ -289,50 +392,50 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+        const response = await this.$axios.put("/task/edit/" + this.id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         if (response.status === 200) {
           this.$q.notify({
-            message: 'Progress Updated',
+            message: "Progress Updated",
           });
         } else {
           this.$q.notify({
-            message: 'Failed Updating task',
+            message: "Failed Updating task",
           });
         }
       } catch (error) {
-        console.error('EROR:', error);
+        console.error("EROR:", error);
       }
       window.location.reload();
     },
 
     async FinishTask() {
       const data = {
-        finished_at: new Date().toISOString(),
+        deleted_at: new Date().toISOString(),
       };
 
       try {
-        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+        const response = await this.$axios.put("/task/edit/" + this.id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         if (response.status === 200) {
           this.$q.notify({
-            message: 'Progress Updated',
+            message: "Progress Updated",
           });
         } else {
           this.$q.notify({
-            message: 'Failed Updating task',
+            message: "Failed Updating task",
           });
         }
       } catch (error) {
-        console.error('EROR:', error);
+        console.error("EROR:", error);
       }
       window.location.reload();
     },
@@ -346,30 +449,30 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+        const response = await this.$axios.put("/task/edit/" + this.id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         if (response.status === 200) {
           this.$q.notify({
-            message: 'Progress Updated',
+            message: "Progress Updated",
           });
         } else {
           this.$q.notify({
-            message: 'Failed Updating task',
+            message: "Failed Updating task",
           });
         }
       } catch (error) {
-        console.error('EROR:', error);
+        console.error("EROR:", error);
       }
       window.location.reload();
     },
 
     async fetchData() {
       try {
-        const response = await this.$axios.get('/task/get-by-id/' + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -390,23 +493,31 @@ export default {
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
-        this.timerData[1].value = Math.floor((timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-        this.timerData[2].value = Math.floor((timeDifference % (60 * 60 * 1000)) / (60 * 1000));
-        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
+        this.timerData[0].value = Math.floor(
+          timeDifference / (24 * 60 * 60 * 1000)
+        );
+        this.timerData[1].value = Math.floor(
+          (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
+        );
+        this.timerData[2].value = Math.floor(
+          (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
+        );
+        this.timerData[3].value = Math.floor(
+          (timeDifference % (60 * 1000)) / 1000
+        );
 
         // Start the countdown
         this.startCountdown();
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     },
-
 
     startCountdown() {
       this.countdown = setInterval(() => {
         // Calculate seconds
-        let totalSeconds = this.timerData[0].value * 24 * 60 * 60 +
+        let totalSeconds =
+          this.timerData[0].value * 24 * 60 * 60 +
           this.timerData[1].value * 60 * 60 +
           this.timerData[2].value * 60 +
           this.timerData[3].value;
@@ -414,7 +525,9 @@ export default {
         if (totalSeconds > 0) {
           totalSeconds--;
           this.timerData[0].value = Math.floor(totalSeconds / (24 * 60 * 60));
-          this.timerData[1].value = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+          this.timerData[1].value = Math.floor(
+            (totalSeconds % (24 * 60 * 60)) / (60 * 60)
+          );
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
@@ -427,11 +540,10 @@ export default {
     },
 
     async UpdateStatus() {
-
       if (this.status === "Idle") {
         this.$q.notify({
-          color: 'warning',
-          message: 'Task Idle',
+          color: "warning",
+          message: "Task Idle",
         });
       } else {
         const data = {
@@ -439,14 +551,14 @@ export default {
         };
 
         try {
-          await this.$axios.put('/task/edit/' + this.id, data, {
+          await this.$axios.put("/task/edit/" + this.id, data, {
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
           });
         } catch (error) {
-          console.error('EROR:', error);
+          console.error("EROR:", error);
         }
       }
     },
@@ -456,10 +568,10 @@ export default {
     },
 
     send() {
-      this.$router.push('/manager/task_detail_2/' + this.id)
+      this.$router.push("/manager/task_detail_2/" + this.id);
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -477,4 +589,5 @@ export default {
 
 .border2 {
   border-radius: 8px;
-}</style>
+}
+</style>
