@@ -206,7 +206,7 @@
                   <div v-if="status === 'Wait-app' && task_type === 'Single'"
                     class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Cancle" @click="Cancle()" no-caps />
+                      label="Cancel" @click="Cancel()" no-caps />
                     <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
                       no-caps class="col-3" @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
@@ -260,7 +260,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: 'SupervisorReport',
+  name: 'ManagerReport',
   props: ['id'],
   data() {
     return {
@@ -358,7 +358,7 @@ export default {
     },
 
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Supervisor: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Manager: ${this.chat}`;
 
       const data = {
         progress: this.progress,
@@ -481,7 +481,7 @@ export default {
 
     send() {
       const id = this.id;
-      this.$router.push('/supervisor/task_detail_2/' + id)
+      this.$router.push('/manager/task_detail_2/' + id)
     },
 
     async Revise() {
@@ -540,7 +540,7 @@ export default {
           this.$q.notify({
             message: 'Task Revised',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Revising Task',
@@ -567,9 +567,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
+            type: 'positive',
             message: 'Task Approved',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring_2');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -597,7 +598,7 @@ export default {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -608,7 +609,7 @@ export default {
       }
     },
 
-    async Cancle() {
+    async Cancel() {
       const data = {
         status: "Deleted",
         deleted_at: new Date().toISOString(),
@@ -623,9 +624,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
+            type: 'positive',
             message: 'Task Canceled',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.$router.push('/manager/task_monitoring_2');
         } else {
           this.$q.notify({
             message: 'Failed Canceling Task',

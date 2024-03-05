@@ -144,7 +144,7 @@
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
                     label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
-                    @click="employee_dialog = true" />
+                    @click="openEmployeeDialog(props.row.id)" />
                 </div>
               </q-td>
 
@@ -216,7 +216,7 @@ export default {
   name: 'TaskMonitoring',
   data() {
     return {
-
+      id:  ref(null),
       statusFilter: "",
       filter: "",
       mode: "list",
@@ -271,7 +271,11 @@ export default {
   },
 
   methods: {
-
+    openEmployeeDialog(row){
+      this.id = row
+      console.log(row)
+      this.employee_dialog = true
+    },
 
     formatLocalTime(utcTime) {
       if (utcTime === null) {
@@ -318,6 +322,7 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
+            type: 'positive',
             message: 'Task Deleted',
           });
           this.$router.push('/supervisor/task_monitoring');
@@ -342,8 +347,9 @@ export default {
       }
     },
 
-    async Revise() {
+    async Revise(id) {
       try {
+
         // 1. Ambil data dari tugas yang akan direvisi
         const taskToRevise = await this.fetchTaskById(id);
 
@@ -373,11 +379,10 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post('/task/new', {
+        const createTaskResponse = await this.$axios.post('/task/new',revisedTaskData, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(revisedTaskData),
         });
 
         if (!createTaskResponse.status === 200) {
@@ -397,6 +402,7 @@ export default {
 
         if (updateTaskResponse.status === 200) {
           this.$q.notify({
+            type: 'positive',
             message: 'Task Revised',
           });
           this.$router.push('/supervisor/task_monitoring');
@@ -431,12 +437,39 @@ export default {
       return ''; // No background color for other statuses
     },
 
-    submit() {
-      this.$q.notify({
-        message: 'Task Done',
-      })
-    },
+    // submit() {
+    //   this.$q.notify({
+    //     message: 'Task Done',
+    //   })
+    // },
 
+    async submit() {
+      try{
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+        };
+
+        const response = await this.$axios.put(`/task/edit/${this.id}`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.status != 200) throw Error('Terjadi kesalahan, mohon coba ulang')
+        this.$q.notify({
+          type: 'positive',
+          message: 'Task Done',
+        })
+        this.fetchData()
+      }catch(err){
+        console.log(err)
+        return this.$q.notify(
+{ type: 'negative',
+          message: 'Terjadi kesalahan, mohon coba ulang',}
+        )
+      }
+
+    },
 
     filterFn(val, update) {
       if (val === '') {
