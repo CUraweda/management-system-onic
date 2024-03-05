@@ -467,14 +467,8 @@ export default {
     },
 
     addToForm(properties, value){
-      try{
-        console.log(value)
         if(!value) throw Error('Please fill all input')
-        console.log(value)
         this.sendedForm[properties] =  value
-      }catch(err){
-        return this.$q.notify({ message: err.message })
-      }
     },
 
     async create() {
@@ -497,8 +491,6 @@ export default {
         this.addToForm('pic', pic);
         this.addToForm('spv',  spv);
 
-        console.log(this.sendedForm)
-
         const response = await this.$axios.post('/task/new', this.sendedForm, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -517,6 +509,7 @@ export default {
         }
       } catch (error) {
         console.error('Error when creating task:', error);
+        return this.$q.notify({ message: error.message })
       }
     },
   },
