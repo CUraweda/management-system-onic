@@ -618,7 +618,7 @@ export default {
 
   computed: {
     pic_title() {
-      return this.SpvApp ? "supervisor" : "manager";
+      return this.SpvApp ? "manager" : "supervisor";
     },
   },
 

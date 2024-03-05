@@ -23,7 +23,7 @@
             class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
             borderless
             dense
-            v-model="deposit.date"
+            v-model="deposit.start"
             mask="date"
             label="From"
           >
@@ -34,7 +34,7 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="deposit.date" />
+                  <q-date v-model="deposit.start" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -44,7 +44,7 @@
             class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
             borderless
             dense
-            v-model="deposit.date"
+            v-model="deposit.due"
             mask="date"
             label="To"
           >
@@ -55,7 +55,7 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="deposit.date" />
+                  <q-date v-model="deposit.due" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -551,7 +551,10 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {},
+      deposit: {
+        start:"",
+        due:"",
+      },
       options: stringOptions,
       employee_dialog: false,
       columns: [

@@ -412,7 +412,7 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      window.location.reload();
+      this.$router.push({ path: "/supervisor/task_list" });
     },
 
     async FinishTask() {
@@ -440,7 +440,7 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      window.location.reload();
+      this.$router.push({ path: "/supervisor/task_list" });
     },
 
     async SendUpdate() {
@@ -470,7 +470,7 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      window.location.reload();
+      this.$router.push({ path: "/supervisor/task_list" });
     },
 
     async fetchData() {
