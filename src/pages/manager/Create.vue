@@ -418,7 +418,6 @@ export default {
   },
 
   methods: {
-
     async fetchData() {
       try {
         const { status, data} = await this.$axios.get('/user/all');
@@ -479,7 +478,7 @@ export default {
         this.addToForm('spv_id', spv);
         this.addToForm('task_type', this.task_type);
         this.addToForm('task_title', this.task_title);
-        this.addToForm('priority', this.priority.value);
+        this.addToForm('priority', this.priority.value || this.priority);
         this.addToForm('status', 'Wait-app');
         this.addToForm('start_date', new Date(this.start_date).toISOString());
         this.addToForm('due_date', new Date(this.due_date).toISOString());
