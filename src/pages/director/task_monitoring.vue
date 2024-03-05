@@ -22,22 +22,22 @@
               </q-input>
 
               <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="deposit.date" mask="date" label="From">
+                v-model="date" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
               <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="deposit.date" mask="date" label="To">
+                v-model="date" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -66,7 +66,7 @@
                 </q-list>
               </q-btn-dropdown>
 
-              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
+              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="account"
                 use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
                 dropdown-icon="filter_list"></q-select>
 
