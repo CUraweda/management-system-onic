@@ -337,6 +337,7 @@
 <script>
 import { ref } from "vue";
 import { exportFile } from "quasar";
+import { store } from "../../store/store"
 import axios from "axios";
 // import Status from "components/Status"
 
@@ -512,12 +513,14 @@ export default {
     },
 
     Edit(id) {
-      this.$router.push("edit/" + id);
+      store.id = id 
+      this.$router.push("edit/");
       // console.log(id);
     },
 
     Report(id) {
-      this.$router.push("report/" + id);
+      store.id = id 
+      this.$router.push("report/");
     },
 
     async Delete(id) {

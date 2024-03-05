@@ -698,7 +698,8 @@ export default {
     },
 
     Detail(id) {
-      this.$router.push("task_detail/" + id);
+      store.id = id
+      this.$router.push("task_detail/");
     },
 
     exportTable() {

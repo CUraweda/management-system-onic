@@ -306,6 +306,7 @@ import { ref } from "vue";
 import Vue from "vue";
 import { exportFile } from "quasar";
 import axios from "axios";
+import { store } from '../../store/store'
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -320,11 +321,11 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: "TaskDetail",
-  props: ["id"],
   setup() {
     return {
       model: ref(0),
       text: ref(""),
+      id: store.id,
       ratingModel: ref(0),
       ratingColors: ["yellow"],
       // pic: ref(''),

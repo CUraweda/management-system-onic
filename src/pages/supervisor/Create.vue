@@ -713,10 +713,8 @@ export default {
     async create() {
       try {
         const pic =
-          this.selectedpic.value != undefined
-            ? this.selectedpic.value
-            : this.selectedpic.map((user) => user.value).join(",");
-        const spv = this.selectedspv.value;
+          this.selectedpic.label != undefined ? this.selectedpic.label : this.selectedpic.map((user) => user.label).join(",");
+        const spv = this.selectedspv.label;
         this.addToForm("pic_id", pic);
         this.addToForm("spv_id", spv);
         this.addToForm("task_type", this.task_type);
