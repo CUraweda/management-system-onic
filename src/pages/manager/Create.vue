@@ -497,6 +497,7 @@
 
 <script>
 import { ref } from "vue";
+import { store } from "../../store/store.js";
 
 export default {
   name: "ManagerCreate",
@@ -636,6 +637,8 @@ export default {
   methods: {
     async fetchData() {
       try {
+        store.count = 1;
+        console.log(store.count);
         const { status, data } = await this.$axios.get("/user/all");
         if (status != 200) throw Error("Error while fetching");
 
