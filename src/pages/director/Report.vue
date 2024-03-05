@@ -170,11 +170,10 @@
                   <q-btn @click="downloadFile()">
                     Download File
                   </q-btn>
-                  <q-btn @click="downloadFile()">
+                  <q-btn :disable="this.file_hasil === null" @click="downloadFileHasil()">
                     Download Dokumen Hasil
                   </q-btn>
-                  <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
-                  <div class="q-pt-md"></div>
+
                   <div v-if="task_type === 'Multi'" class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-select multiple dense v-model="picrate" filled use-input input-debounce="0" :options="picoptions"
                       behavior="menu" class="col-12">
@@ -285,7 +284,8 @@ export default {
       history: '',
       description: '',
       task_type: '',
-      fileName: ''
+      file: '',
+      file_hasil: null,
       // Add other properties with default values
     }
   },
@@ -310,7 +310,7 @@ export default {
   async downloadFile() {
     try {
       // Mengganti URL dengan endpoint yang sesuai
-      const response = await this.$axios.get('/image/' + this.fileName, {
+      const response = await this.$axios.get('/image/' + this.file, {
         responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
       });
 
@@ -320,7 +320,34 @@ export default {
       // Membuat elemen <a> untuk tautan unduhan
       const link = document.createElement('a');
       link.href = url;
-      link.download = this.fileName; // Set nama berkas yang diinginkan
+      link.download = this.file; // Set nama berkas yang diinginkan
+      document.body.appendChild(link);
+
+      // Simulasi klik pada elemen <a> untuk memulai unduhan
+      link.click();
+
+      // Membersihkan objek URL dan menghapus elemen <a>
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  },
+
+  async downloadFileHasil() {
+    try {
+      // Mengganti URL dengan endpoint yang sesuai
+      const response = await this.$axios.get('/image/' + this.file_hasil, {
+        responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
+      });
+
+      // Membuat objek URL dari blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Membuat elemen <a> untuk tautan unduhan
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = this.file; // Set nama berkas yang diinginkan
       document.body.appendChild(link);
 
       // Simulasi klik pada elemen <a> untuk memulai unduhan
@@ -400,7 +427,8 @@ export default {
         this.created_at = response.data.created_at;
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
-        this.fileName = response.data.fileName;
+        this.file = response.data.file;
+        this.file_hasil = response.data.file_hasil;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -481,53 +509,69 @@ export default {
       this.$router.push('/director/task_detail_2/' + id)
     },
 
+    async fetchTaskById(id) {
+      try {
+        const response = await this.$axios.get('/task/get-by-id/' + id);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching task by ID:', error);
+        throw error; // lemparkan kembali kesalahan untuk ditangani di luar
+      }
+    },
+
     async Revise() {
       try {
         const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
-        const response = await this.$axios.get('/task/get-by-id/' + id);
+        const taskToRevise = await this.fetchTaskById(id);
 
-        // 2. Buat objek baru dengan status "open" dan progress 0
-        const revisedTaskData = {
-          task_type: response.data.task_type,
-          task_title: response.data.task_title,
-          priority: response.data.priority,
-          iteration: response.data.iteration,
-          start_date: new Date(response.data.start_date).toISOString(),
-          due_date: new Date(response.data.due_date).toISOString(),
-          description: response.data.description,
-          pic_title: response.data.pic_title,
-          pic: response.data.pic,
-          spv: response.data.spv,
-          approved_at: null,
-          approved_by: null,
-          started_at: null,
-          started_by: null,
-          finished_at: null,
-          finished_by: null,
-          status: "Wait-app",
-          progress: 0,
-          fileName: response.data.fileName,
-          filePath: response.data.filePath,
-          fileSize: response.data.fileSize,
-        };
+        const revisedTaskData = new FormData();
+        revisedTaskData.append('task_type', taskToRevise.task_type);
+        revisedTaskData.append('task_title', taskToRevise.task_title);
+        revisedTaskData.append('priority', taskToRevise.priority);
+        revisedTaskData.append('iteration', taskToRevise.iteration);
+        revisedTaskData.append('start_date', new Date(taskToRevise.start_date).toISOString());
+        revisedTaskData.append('due_date', new Date(taskToRevise.due_date).toISOString());
+        revisedTaskData.append('description', taskToRevise.description);
+        revisedTaskData.append('pic_title', taskToRevise.pic_title);
+        revisedTaskData.append('pic', taskToRevise.pic);
+        revisedTaskData.append('spv', taskToRevise.spv);
+        revisedTaskData.append('approved_at', null);
+        revisedTaskData.append('approved_by', null);
+        revisedTaskData.append('started_at', null);
+        revisedTaskData.append('started_by', null);
+        revisedTaskData.append('finished_at', null);
+        revisedTaskData.append('finished_by', null);
+        revisedTaskData.append('status', "Open");
+        revisedTaskData.append('progress', 0);
+        revisedTaskData.append('file', taskToRevise.file);
+        const fileResponse = await this.$axios.get('/image/' + taskToRevise.file, {
+          responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
+        });
+
+        const originalFile = new File([fileResponse.data], taskToRevise.file, { type: fileResponse.data.type });
+
+        // Membuat objek FormData
+        revisedTaskData.append('bukti_tayang', originalFile);
 
         // 3. Kirim permintaan untuk membuat tugas baru
         const createTaskResponse = await this.$axios.post('/task/new', revisedTaskData, {
           headers: {
-            'Content-Type': 'application/json',
-          }
+            'Content-Type': 'multipart/form-data',
+          },
         });
 
-        if (createTaskResponse.status !== 200) {
+        if (!createTaskResponse.status === 200) {
           throw new Error('Failed to create revised task');
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
+        const deletedData = {
           status: "Deleted",
           deleted_at: new Date().toISOString(),
-        }, {
+        };
+
+        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, deletedData, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -566,7 +610,7 @@ export default {
           this.$q.notify({
             message: 'Task Approved',
           });
-          this.$router.push('/director/task_monitoring');
+          this.$router.push('/supervisor/task_monitoring');
         } else {
           this.$q.notify({
             message: 'Failed Approving Task',
@@ -580,7 +624,7 @@ export default {
     async Ok() {
       const data = {
         status: "Close",
-        approved_at: new Date().toISOString(),
+        // approved_at: new Date().toISOString(),
       };
 
       try {
@@ -592,7 +636,7 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: 'Task Approved',
+            message: 'Task Closed',
           });
           this.$router.push('/director/task_monitoring');
         } else {

@@ -21,6 +21,7 @@
               </q-item>
             </div> -->
 
+
             <div class="col-12">
               <q-item>
                 <q-item-section>
@@ -269,7 +270,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="create" to="/director/task_monitoring" />
+                      type="submit" @click="create" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -451,42 +452,54 @@ export default {
     },
 
     async create() {
-      const formData = new FormData();
-
-      formData.append('pic_id', this.pic_id);
-      formData.append('spv_id', this.spv_id);
-      formData.append('task_type', this.task_type);
-      formData.append('task_title', this.task_title);
-      formData.append('priority', this.priority.value);
-      formData.append('status', 'Wait-app');
-      formData.append('start_date', new Date(this.start_date).toISOString());
-      formData.append('due_date', new Date(this.due_date).toISOString());
-      formData.append('description', `${this.description} \n`);
-      formData.append('pic_title', 'manager');
-      formData.append('created_by', localStorage.getItem('username'));
-      formData.append('bukti_tayang', this.model);
-      formData.append('iteration', this.iteration);
-      formData.append('pic', this.submitResultpic.map(item => item.value).join(','));
-      formData.append('spv', this.submitResultspv.map(item => item.value).join(','));
-
-      try {
-        const response = await this.$axios.post('/task/new', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      // Periksa apakah data tanggal dan judul tugas telah diisi
+      if (!this.start_date || !this.due_date || !this.task_title || !this.task_type || !this.priority.value ||
+      !this.submitResultpic.map(item => item.value).join(',') || !this.submitResultspv.map(item => item.value).join(',')
+      || !this.model ) {
+        this.$q.notify({
+          message: 'Please fill all the form data',
+          color: 'negative',
         });
+        return;
+      } else {
+        const formData = new FormData();
 
-        if (response.status === 200) {
-          this.$q.notify({
-            message: 'Task Created',
+        formData.append('pic_id', this.pic_id);
+        formData.append('spv_id', this.spv_id);
+        formData.append('task_type', this.task_type);
+        formData.append('task_title', this.task_title);
+        formData.append('priority', this.priority.value);
+        formData.append('status', 'Wait-app');
+        formData.append('start_date', new Date(this.start_date).toISOString());
+        formData.append('due_date', new Date(this.due_date).toISOString());
+        formData.append('description', `${this.description} \n`);
+        formData.append('pic_title', 'manager');
+        formData.append('created_by', localStorage.getItem('username'));
+        formData.append('bukti_tayang', this.model);
+        formData.append('iteration', this.iteration);
+        formData.append('pic', this.submitResultpic.map(item => item.value).join(','));
+        formData.append('spv', this.submitResultspv.map(item => item.value).join(','));
+
+        try {
+          const response = await this.$axios.post('/task/new', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
           });
-        } else {
-          this.$q.notify({
-            message: 'Failed Creating task',
-          });
+
+          if (response.status === 200) {
+            this.$q.notify({
+              message: 'Task Created',
+            });
+            this.$router.push('/director/task_monitoring');
+          } else {
+            this.$q.notify({
+              message: 'Failed Creating task',
+            });
+          }
+        } catch (error) {
+          console.error('Fa:', error);
         }
-      } catch (error) {
-        console.error('Fa:', error);
       }
     },
 

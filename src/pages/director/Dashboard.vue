@@ -57,7 +57,7 @@
 
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Completed')">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Close')">
           <span class="q-focus-helper"></span>
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
             class="text-black">
@@ -228,22 +228,22 @@
               </q-btn-dropdown>
 
               <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="deposit.date" mask="date" label="From">
+                v-model="deposit.start_1" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start_1" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
               <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="deposit.date" mask="date" label="To">
+                v-model="deposit.due_1" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due_1" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -319,22 +319,22 @@
               </q-btn-dropdown>
 
               <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="deposit.date" mask="date" label="From">
+                v-model="deposit.start" mask="date" label="From">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
               <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                v-model="deposit.date" mask="date" label="To">
+                v-model="deposit.due" mask="date" label="To">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -386,6 +386,8 @@ export default {
       filter: '',
       mode: 'list',
       search: "",
+start:"",
+due:"",
       deposit: {},
     }
   },

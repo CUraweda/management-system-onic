@@ -432,11 +432,11 @@ export default {
         task_type: this.form.task_type,
         task_title: this.form.task_title,
         priority: this.form.priority.value,
-        start_date: this.form.start_date,
-        due_date: this.form.due_date,
+        start_date: new Date(this.form.start_date).toISOString(),
+        due_date: new Date(this.form.due_date).toISOString(),
         description: this.form.description,
-        pic: this.submitResultpic.map(item => item.value).join(','),
-        spv: this.submitResultspv.map(item => item.value).join(','),
+        pic: this.form.pic,
+        spv: this.form.spv,
       };
 
       try {
