@@ -283,6 +283,7 @@ import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
 // import Status from "components/Status"
+import { store } from "../../store/store";
 
 const stringOptions = [
   "Google",
@@ -404,6 +405,7 @@ export default {
     return {
       model: ref(0),
       yellow: ["yellow"],
+      id: store.id,
       onItemClick() {
         // console.log('Clicked on an Item')
       },
@@ -440,7 +442,8 @@ export default {
     },
 
     Report(id) {
-      this.$router.push("report/" + id);
+      store.id = id;
+      this.$router.push("report/");
     },
 
     acc() {
