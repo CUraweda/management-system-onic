@@ -486,6 +486,15 @@ export default {
     };
   },
 
+  watch: {
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : "";
+        this.fetchData();
+      },
+    },
+  },
+
   methods: {
     openEmployeeDialog(row) {
       this.id = row;
@@ -525,13 +534,14 @@ export default {
     },
 
     async Delete(id) {
+      console.log(id)
       const data = {
         status: "Deleted",
         deleted_at: new Date().toISOString(),
       };
 
       try {
-        const response = await this.$axios.put("/task/edit/" + id, data, {
+        const response = await this.$axios.put("/task/edit/"+id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -610,13 +620,12 @@ export default {
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
         const updateTaskResponse = await this.$axios.put("/task/edit/" + id, {
+            status: "Deleted",
+            deleted_at: new Date().toISOString(),
+          },{
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
         });
 
         if (updateTaskResponse.status === 200) {
@@ -624,8 +633,9 @@ export default {
             type: "positive",
             message: "Task Revised",
           });
-          this.$router.push("/supervisor/task_monitoring");
-        } else {
+          this.fetchData()
+         } else {
+            
           this.$q.notify({
             message: "Failed Revising Task",
           });
@@ -639,9 +649,8 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        console.log(statusFilter);
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: statusFilter },
+        const response = await this.$axios.get("/task/all/supervisor", {
+          params: { status: statusFilter, search: this.search },
         });
         this.data = response.data.sort(
           (a, b) => new Date(b.updated_at) - new Date(a.updated_at)

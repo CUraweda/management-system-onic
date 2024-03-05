@@ -654,7 +654,7 @@ export default {
 
     send() {
       store.id = this.id;
-      this.$router.push("/manager/task_detail_2/");
+      this.$router.push("/supervisor/task_detail_2/");
     },
 
     async Revise() {
@@ -721,7 +721,7 @@ export default {
           this.$q.notify({
             message: "Task Revised",
           });
-          this.$router.push("/manager/task_monitoring");
+          this.$router.push("/supervisor/task_monitoring");
         } else {
           this.$q.notify({
             message: "Failed Revising Task",
@@ -751,7 +751,7 @@ export default {
             type: "positive",
             message: "Task Approved",
           });
-          this.$router.push("/manager/task_monitoring_2");
+          this.$router.push("/supervisor/task_monitoring_2");
         } else {
           this.$q.notify({
             message: "Failed Approving Task",
@@ -779,7 +779,7 @@ export default {
           this.$q.notify({
             message: "Task Approved",
           });
-          this.$router.push("/manager/task_monitoring");
+          this.$router.push("/supervisor/task_monitoring");
         } else {
           this.$q.notify({
             message: "Failed Approving Task",
@@ -808,7 +808,7 @@ export default {
             type: "positive",
             message: "Task Canceled",
           });
-          this.$router.push("/manager/task_monitoring_2");
+          this.$router.push("/supervisor/task_monitoring_2");
         } else {
           this.$q.notify({
             message: "Failed Canceling Task",

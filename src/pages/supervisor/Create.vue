@@ -380,6 +380,7 @@
                       v-model="selectedspv"
                       name="spv"
                       use-input
+                      disable
                       input-debounce="0"
                       :options="spvOptions"
                       behavior="menu"
@@ -632,18 +633,6 @@ export default {
     this.fetchData();
   },
 
-  computed: {
-    picOptions() {
-      return this.pic.map((pic) => ({ label: pic.u_name, value: pic.u_name }));
-    },
-    spvOptions() {
-      return this.spv.map((spv) => ({ label: spv.u_name, value: spv.u_name }));
-    },
-    pic_title() {
-      return this.SpvApp ? "supervisor" : "operator";
-    },
-  },
-
   watch: {
     task_type: {
       handler(value) {
@@ -662,11 +651,21 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await this.$axios.get("/user/all");
-        this.pic = response.data;
-        this.spv = response.data;
+        const { status, data } = await this.$axios.get("/user/all");
+        if (status != 200) throw Error("Error while fetching");
+
+        const listOfUser = data.map((user) => ({
+          label: user.u_name,
+          value: user.u_name,
+        }));
+        const supervisorIndex  = listOfUser.findIndex(user => user.label ===  localStorage.getItem("username") )
+        const supervisorList = listOfUser[supervisorIndex]
+        listOfUser.splice(supervisorIndex, 1)
+        console.log(listOfUser)
+        this.picOptions = listOfUser;
+        this.spvOptions = supervisorList
         this.selectedpic = this.picOptions[0];
-        this.selectedspv = this.spvOptions[0];
+        this.selectedspv = this.spvOptions
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -712,28 +711,23 @@ export default {
 
     async create() {
       try {
-        const pic =
-          this.selectedpic.label != undefined ? this.selectedpic.label : this.selectedpic.map((user) => user.label).join(",");
+        const pic = this.selectedpic.label != undefined ? this.selectedpic.label : this.selectedpic.map((user) => user.label).join(",");
         const spv = this.selectedspv.label;
         this.addToForm("pic_id", pic);
         this.addToForm("spv_id", spv);
         this.addToForm("task_type", this.task_type);
         this.addToForm("task_title", this.task_title);
-        this.addToForm("priority", this.priority);
-        this.addToForm("status", "Wait-app");
+        this.addToForm("priority", this.priority.value ? this.priority.value :  this.priority);
+        this.addToForm("status", this.SpvApp ? "Wait-app" : "Idle");
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", this.pic_title);
-        this.addToForm(
-          "created_by",
-          localStorage.getItem("username") || "Unknown"
-        );
+        this.addToForm("pic_title", localStorage.getItem("title"));
+        this.addToForm( "created_by", localStorage.getItem("username") || "Unknown");
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);
         this.addToForm("pic", pic);
         this.addToForm("spv", spv);
-        console.log(this.priority);
 
         const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {
@@ -745,8 +739,7 @@ export default {
           this.$q.notify({
             message: "Task Created",
           });
-          this.$router.push({ path: "/supervisor/task_monitoring" });
-        } else {
+          this.SpvApp ? this.$router.push({ path: "/supervisor/task_monitoring_2" }) : this.$router.push({ path: "/supervisor/task_monitoring" })        } else {
           this.$q.notify({
             message: "Failed Creating task",
           });

@@ -91,7 +91,7 @@
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold"></q-item-label>
                   <div class="q-gutter-sm">
-                    <q-radio v-model="iteration" val="daily" label="Daily" />
+                    <q-radio v-model="iteration" val="aily" label="Daily" />
                     <q-radio v-model="iteration" val="weekly" label="Weekly" />
                     <q-radio
                       v-model="iteration"
@@ -711,11 +711,8 @@ export default {
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", this.pic_title);
-        this.addToForm(
-          "created_by",
-          localStorage.getItem("username") || "Unknown"
-        );
+        this.addToForm("pic_title", localStorage.getItem("title"));
+        this.addToForm( "created_by", localStorage.getItem("username") || "Unknown");
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);
         this.addToForm("pic", pic);

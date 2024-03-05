@@ -114,7 +114,7 @@ const routes = [
         component: ManagerCreateTask,
       },
       {
-        path: "edit/:id",
+        path: "edit",
         meta: { title: "EDIT TASK" },
         component: ManagerEditTask,
         props: true,
@@ -174,7 +174,7 @@ const routes = [
         component: SupervisorCreateTask,
       },
       {
-        path: "edit/:id",
+        path: "edit",
         meta: { title: "EDIT TASK" },
         component: SupervisorEditTask,
         props: true,

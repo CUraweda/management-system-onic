@@ -425,7 +425,7 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/deleted/supervisor", {
+        const response = await this.$axios.get("/task/deleted/manager", {
           params: { search: this.search },
         });
         this.data = response.data.sort(

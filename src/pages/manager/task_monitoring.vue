@@ -600,7 +600,7 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const response = await this.$axios.get("/task/all/supervisor", {
+        const response = await this.$axios.get("/task/all/manager", {
           params: { status: statusFilter, search: this.search },
         });
         this.data = response.data.sort(
