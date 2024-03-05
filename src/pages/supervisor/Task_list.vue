@@ -6,13 +6,19 @@
     <q-card class="q-mt-md row justify-end items-start text-h5 text-weight-bold text-black no-shadow q-ma-none q-pa-none">
       <div class=" col-lg-6 col-md-7 col-sm-12 col-xs-12">
         <q-card-section class="row q-gutter-xs q-pt-none justify-between">
-          <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
-            standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
-            <template v-slot:prepend>
-              <q-icon v-if="search === ''" name="search" text-color="black" />
-              <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
-            </template>
-          </q-input>
+          <q-input
+                class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title"
+                dense
+                text-color="black"
+                standout="bg-grey-3 no-shadow under-title"
+                v-model="search"
+                placeholder="Search..."
+              >
+                <template v-slot:prepend>
+                  <q-icon name="search" text-color="black" />
+                  <q-icon class="cursor-pointer col" />
+                </template>
+              </q-input>
 
           <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
             v-model="deposit.date" mask="date" label="From">
@@ -435,6 +441,16 @@ export default {
       },
     };
   },
+  watch: {
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : ""
+        this.fetchData();
+        this.fetchDeletedData();
+        this.fetchWaitedData();
+      },
+    },
+  },
 
   mounted() {
     this.fetchDeletedData();
@@ -445,9 +461,10 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await this.$axios.get('/task/all/supervisor');
+        const response = await this.$axios.get('/task/all/supervisor', {
+          params: { search: this.search }
+        });
         this.data = response.data.sort((a, b) => new Date(b.up_at) - new Date(a.update_at));;
-
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -455,7 +472,9 @@ export default {
 
     async fetchWaitedData() {
       try {
-        const response = await this.$axios.get('/task/waited/supervisor');
+        const response = await this.$axios.get('/task/waited/supervisor', {
+          params: { search: this.search }
+        });
         this.waiting_data = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -464,7 +483,9 @@ export default {
 
     async fetchDeletedData() {
       try {
-        const response = await this.$axios.get('/task/deleted/supervisor');
+        const response = await this.$axios.get('/task/deleted/supervisor', {
+          params: { search: this.search }
+        });
         this.deleted_data = response.data.sort((a, b) => new Date(b.update_at) - new Date(a.update_at));;
       } catch (error) {
         console.error('Error fetching data:', error);
