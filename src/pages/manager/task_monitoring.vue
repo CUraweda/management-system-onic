@@ -16,8 +16,8 @@
               <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
                 standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
                 <template v-slot:prepend>
-                  <q-icon v-if="search === ''" name="search" text-color="black" />
-                  <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+                  <q-icon name="search" text-color="black" />
+                  <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
@@ -144,7 +144,7 @@
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
                     label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
-                    @click="employee_dialog = true" />
+                    @click="openEmployeeDialog(props.row)" />
                 </div>
               </q-td>
 
@@ -216,7 +216,7 @@ export default {
   name: 'TaskMonitoring',
   data() {
     return {
-
+      id:  ref(null),
       statusFilter: "",
       filter: "",
       mode: "list",
@@ -270,8 +270,19 @@ export default {
     };
   },
 
-  methods: {
+  watch: {
+    search: {
+      handler(value){
+        if(value != "") this.fetchData()
+      }
+    }
+  },
 
+  methods: {
+    openEmployeeDialog(row){
+      this.id = row.id
+      this.employee_dialog = true
+    },
 
     formatLocalTime(utcTime) {
       if (utcTime === null) {
@@ -308,19 +319,19 @@ export default {
         deleted_at: new Date().toISOString(),
       };
 
+
       try {
-        const response = await this.$axios.put('/task/edit/' + id, {
+        const response = await this.$axios.put('/task/edit/' + id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(data),
         });
 
         if (response.status === 200) {
           this.$q.notify({
             message: 'Task Deleted',
           });
-          this.$router.push('/manager/task_monitoring');
+          this.fetchData()
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -329,7 +340,6 @@ export default {
       } catch (error) {
         console.error('Error:', error);
       }
-      window.location.reload();
     },
 
     async fetchTaskById(id) {
@@ -342,71 +352,33 @@ export default {
       }
     },
 
-    async Revise() {
+    async Revise(id) {
       try {
-        // 1. Ambil data dari tugas yang akan direvisi
-        const taskToRevise = await this.fetchTaskById(id);
+        let taskToRevise = await this.fetchTaskById(id);
+        taskToRevise.status = "Done"
+        taskToRevise.progress = 0
+        taskToRevise.approved_at = null
+        taskToRevise.approved_by = null
+        taskToRevise.finished_at = null
+        taskToRevise.finished_by = null
+        taskToRevise.started_at = null
+        taskToRevise.started_by = null
 
-        // 2. Buat objek baru dengan status "open" dan progress 0
-        const revisedTaskData = {
-          task_type: taskToRevise.task_type,
-          task_title: taskToRevise.task_title,
-          priority: taskToRevise.priority,
-          iteration: taskToRevise.iteration,
-          start_date: new Date(taskToRevise.start_date).toISOString(),
-          due_date: new Date(taskToRevise.due_date).toISOString(),
-          description: taskToRevise.description,
-          pic_title: taskToRevise.pic_title,
-          pic: taskToRevise.pic,
-          spv: taskToRevise.spv,
-          approved_at: null,
-          approved_by: null,
-          started_at: null,
-          started_by: null,
-          finished_at: null,
-          finished_by: null,
-          status: "Open",
-          progress: 0,
-          fileName: taskToRevise.fileName,
-          filePath: taskToRevise.filePath,
-          fileSize: taskToRevise.fileSize,
-        };
-
-        // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post('/task/new', {
+        const createTaskResponse = await this.$axios.post('/task/new', taskToRevise, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(revisedTaskData),
         });
+        if (!createTaskResponse.status === 200) throw Error('Failed to create revised task');
 
-        if (!createTaskResponse.status === 200) {
-          throw new Error('Failed to create revised task');
-        }
-
-        // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
+        await this.Delete(id)
+        this.$q.notify({
+          message: 'Task Revised',
         });
-
-        if (updateTaskResponse.status === 200) {
-          this.$q.notify({
-            message: 'Task Revised',
-          });
-          this.$router.push('/manager/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Revising Task',
-          });
-        }
+        this.fetchData()
       } catch (error) {
         console.error('Error:', error);
+        return this.$q.notify(error.message)
       }
       // window.location.reload();
     },
@@ -414,9 +386,8 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        console.log(statusFilter);
         const response = await this.$axios.get('/task/all/supervisor', {
-          params: { status: statusFilter }
+          params: {  status: statusFilter, search: this.search }
         });
         this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));;
       } catch (error) {
@@ -431,10 +402,28 @@ export default {
       return ''; // No background color for other statuses
     },
 
-    submit() {
-      this.$q.notify({
-        message: 'Task Done',
-      })
+    async submit() {
+      try{
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+        };
+
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.status != 200) throw Error('Terjadi kesalahan, mohon coba ulang')
+        this.$q.notify({
+          message: 'Task Done',
+        })
+        this.fetchData()
+      }catch(err){
+        console.log(err)
+        return this.$q.notify(error.message)
+      }
+
     },
 
 

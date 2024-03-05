@@ -312,8 +312,9 @@ export default {
 
     async FinishTask() {
       const data = {
-        finished_at: new Date().toISOString(),
+        deleted_at: new Date().toISOString(),
       };
+
 
       try {
         const response = await this.$axios.put('/task/edit/' + this.id, data, {

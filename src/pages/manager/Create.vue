@@ -150,7 +150,7 @@
                   <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
 
                   <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="selectedpic" name="pic" use-input input-debounce="0"
+                    <q-select :multiple="isMultitask" dense filled v-model="selectedpic" name="pic" use-input input-debounce="0"
                       :options="picOptions" behavior="menu" class="col-6"
                       :rules="[val => val !== null && val !== '' || 'Required']">
                       <template v-slot:no-option>
@@ -196,7 +196,7 @@
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="selectedspv" name="spv" use-input input-debounce="0"
+                    <q-select dense filled v-model="selectedspv" name="spv" use-input input-debounce="0"
                       :options="spvOptions" behavior="menu" class="col-6"
                       :rules="[val => val !== null && val !== '' || 'Required']">
                       <template v-slot:no-option>
@@ -269,7 +269,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="create" to="/manager/task_monitoring" />
+                      type="submit" @click="create" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -283,10 +283,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
 import { ref } from 'vue';
-import { exportFile } from "quasar";
-import axios from 'axios';
 
 export default {
   name: 'ManagerCreate',
@@ -298,7 +295,9 @@ export default {
       selectedpic: null,
       spv: [],
       selectedspv: { label: localStorage.getItem('username'), value: localStorage.getItem('username') },
-      iteration: '',
+      iteration: 'daily',
+      isMultitask: ref(false),
+      sendedForm: ref({}) //Sorry but i need to
     }
   },
 
@@ -313,7 +312,9 @@ export default {
 
     return {
       SpvApp,
-      task_type: ref([]),
+      picOptions: ref([]),
+      spvOptions: ref([]),
+      task_type: ref('Single'),
       task_type_options: [
         {
           label: 'Single Task',
@@ -325,7 +326,7 @@ export default {
         }
       ],
       task_title: ref(''),
-      priority: ref([]),
+      priority: ref('Important'),
       opsipriority: [
         {
           label: 'Important',
@@ -340,8 +341,8 @@ export default {
           value: 'Normal'
         }
       ],
-      start_date: ref(null),
-      due_date: ref(null),
+      start_date: ref(),
+      due_date: ref(),
       description: ref(''),
 
       submittedpic,
@@ -386,6 +387,7 @@ export default {
       },
       model: ref(null),
       text: ref(''),
+
       address_detail: ref({}),
       card_detail: ref({}),
     }
@@ -396,31 +398,41 @@ export default {
   },
 
   computed: {
-    picOptions() {
-      return this.pic.map(pic => ({ label: pic.u_name, value: pic.u_name }));
-    },
-    spvOptions() {
-      return this.spv.map(spv => ({ label: spv.u_name, value: spv.u_name }));
-    },
     pic_title() {
       return this.SpvApp ? "manager" : "supervisor";
     },
   },
 
   watch: {
+    task_type:{
+      handler(value){
+        if(value != "Single"){ this.isMultitask = true
+        } else this.isMultitask = false
+        this.selectedpic = null
+      }
+    },
     // Menyebabkan pemanggilan metode getSelectedPicId() setiap kali selectedPic berubah
-    selectedPic: 'getSelectedPicId',
-    // Menyebabkan pemanggilan metode getSelectedSpvId() setiap kali selectedSpv berubah
-    selectedSpv: 'getSelectedSpvId',
+    // selectedPic: 'getSelectedPicId',
+    // // Menyebabkan pemanggilan metode getSelectedSpvId() setiap kali selectedSpv berubah
+    // selectedSpv: 'getSelectedSpvId',
   },
 
   methods: {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get('/user/all');
-        this.pic = response.data;
-        this.spv = response.data;
+        const { status, data} = await this.$axios.get('/user/all');
+        if(status != 200) throw Error('Error while fetching')
+
+        const listOfUser = data.map(user => ({
+          label: user.u_name,
+          value: user.u_id
+        }))
+        this.picOptions = listOfUser;
+        this.spvOptions = listOfUser;
+        this.selectedpic = this.picOptions[0]
+        this.selectedspv = this.spvOptions[0]
+
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -454,26 +466,32 @@ export default {
       this.submitResultpic.splice(index, 1);
     },
 
-    async create() {
-      const formData = new FormData();
-      formData.append('pic_id', this.pic_id);
-      formData.append('spv_id', this.spv_id);
-      formData.append('task_type', this.task_type);
-      formData.append('task_title', this.task_title);
-      formData.append('priority', this.priority.value);
-      formData.append('status', 'Wait-app');
-      formData.append('start_date', new Date(this.start_date).toISOString());
-      formData.append('due_date', new Date(this.due_date).toISOString());
-      formData.append('description', `${this.description} \n`);
-      formData.append('pic_title', this.pic_title);
-      formData.append('created_by', localStorage.getItem('username'));
-      formData.append('bukti_tayang', this.model);
-      formData.append('iteration', this.iteration);
-      formData.append('pic', this.submitResultpic.map(item => item.value).join(','));
-      formData.append('spv', this.submitResultspv.map(item => item.value).join(','));
+    addToForm(properties, value){
+        if(!value) throw Error('Please fill all input')
+        this.sendedForm[properties] =  value
+    },
 
+    async create() {
       try {
-        const response = await this.$axios.post('/task/new', formData, {
+        const pic = this.selectedpic.value != undefined ? this.selectedpic.value :  this.selectedpic.map(user => user.value).join(',')
+        const spv = this.selectedspv.value
+        this.addToForm('pic_id', pic);
+        this.addToForm('spv_id', spv);
+        this.addToForm('task_type', this.task_type);
+        this.addToForm('task_title', this.task_title);
+        this.addToForm('priority', this.priority.value);
+        this.addToForm('status', 'Wait-app');
+        this.addToForm('start_date', new Date(this.start_date).toISOString());
+        this.addToForm('due_date', new Date(this.due_date).toISOString());
+        this.addToForm('description', `${this.description} \n`);
+        this.addToForm('pic_title', this.pic_title);
+        this.addToForm('created_by', localStorage.getItem('username') || "Unknown");
+        this.addToForm('bukti_tayang', this.model);
+        this.addToForm('iteration', this.iteration);
+        this.addToForm('pic', pic);
+        this.addToForm('spv',  spv);
+
+        const response = await this.$axios.post('/task/new', this.sendedForm, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -483,13 +501,15 @@ export default {
           this.$q.notify({
             message: 'Task Created',
           });
+          this.$router.push({ path: '/manager/task_monitoring' })
         } else {
           this.$q.notify({
             message: 'Failed Creating task',
           });
         }
       } catch (error) {
-        console.error('Fa:', error);
+        console.error('Error when creating task:', error);
+        return this.$q.notify({ message: error.message })
       }
     },
   },

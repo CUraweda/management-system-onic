@@ -16,14 +16,13 @@
               <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
                 standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
                 <template v-slot:prepend>
-                  <q-icon v-if="search === ''" name="search" text-color="black" />
-                  <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
+                  <q-icon name="search" text-color="black" />
+                  <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
               <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
                 v-model="deposit.date" mask="date" label="From">
-
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -35,7 +34,6 @@
 
               <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
                 v-model="deposit.date" mask="date" label="To">
-
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
@@ -68,9 +66,9 @@
                 </q-list>
               </q-btn-dropdown>
 
-              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled
-                v-model="deposit.account" use-input multiple dense input-debounce="0" label="Filter" :options="options"
-                @filter="filterFn" dropdown-icon="filter_list"></q-select>
+              <q-select class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title" filled v-model="deposit.account"
+                use-input multiple dense input-debounce="0" label="Filter" :options="options" @filter="filterFn"
+                dropdown-icon="filter_list"></q-select>
 
               <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
                 text-color="cyan" unelevated dense outline label="Export" no-caps @click="exportTable" />
@@ -89,8 +87,7 @@
           :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination">
 
           <template v-slot:body="props">
-            <q-tr :props="props"
-              :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
+            <q-tr :props="props" :class="(props.row.status == 'Idle') ? 'bg-yellow-3 text-black' : 'bg-white text-black'">
 
               <q-td key="id" :props="props">
                 <div>{{ props.row.id }}</div>
@@ -106,10 +103,6 @@
 
               <q-td key="pic_title" :props="props">
                 <div>{{ props.row.pic_title }}</div>
-              </q-td>
-
-              <q-td key="start_date" :props="props">
-                <div>{{ formatLocalTime(props.row.start_date) }}</div>
               </q-td>
 
               <q-td key="due_date" :props="props">
@@ -138,10 +131,6 @@
                   class="q-mt-md" />
               </q-td>
 
-              <q-td key="Progress" :props="props">
-                <div>{{ props.row.progress }} %</div>
-              </q-td>
-
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
                   <q-btn dense unelevated @click="Report(props.row.id)">
@@ -154,10 +143,12 @@
                 <div class="q-gutter-sm">
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
                     label="Revise" @click="Revise(props.row.id)" />
-                  <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue"
-                    label="OK" @click="employee_dialog = true" />
+                  <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue" label="OK"
+                    @click="openEmployeeDialog(props.row)" />
                 </div>
               </q-td>
+
+
 
               <!-- action -->
               <q-td key="action" :props="props">
@@ -225,7 +216,7 @@ export default {
   name: 'TaskMonitoring',
   data() {
     return {
-
+      id:  ref(null),
       statusFilter: "",
       filter: "",
       mode: "list",
@@ -236,16 +227,15 @@ export default {
       options: stringOptions,
       employee_dialog: false,
       columns: [
-        // { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
-        { name: "task_title", align: "left", label: "Project", field: "task_title", sortable: true },
+        { name: "id", align: "left", label: "Task Id", field: "id", sortable: true },
+        { name: "task_title", align: "left", label: "Task Title", field: "task_title", sortable: true },
         { name: "pic", align: "left", label: "PIC", field: "pic", sortable: true },
         { name: "pic_title", align: "left", label: "Title", field: "pic_title", sortable: true },
-        { name: "start_date", align: "left", label: "Start project", field: "due_date", sortable: true },
-        { name: "due_date", align: "left", label: "End project", field: "due_date", sortable: true },
+
+        { name: "due_date", align: "left", label: "Due Date", field: "due_date", sortable: true },
         { name: "priority", align: "center", label: "Priority", field: "priority", sortable: true },
         { name: "status", align: "center", label: "Status", field: "status", sortable: true },
         { name: "Progress", align: "left", label: "Progress bar", field: "Progress", sortable: true },
-        { name: "Progress", align: "left", label: "%", field: "Progress", sortable: true },
         { name: "detail", align: "left", label: "Detail", field: "detail", sortable: true },
         { name: "feed", align: "left", label: "Feedback", field: "feed", sortable: true },
         {
@@ -280,7 +270,20 @@ export default {
     };
   },
 
+  watch: {
+    search: {
+      handler(value){
+        if(value != "") this.fetchData()
+      }
+    }
+  },
+
   methods: {
+    openEmployeeDialog(row){
+      this.id = row.id
+      this.employee_dialog = true
+    },
+
     formatLocalTime(utcTime) {
       if (utcTime === null) {
         return ''; // Jika utcTime null, kembalikan string kosong
@@ -316,10 +319,11 @@ export default {
         deleted_at: new Date().toISOString(),
       };
 
+
       try {
         const response = await this.$axios.put('/task/edit/' + id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
         });
 
@@ -327,7 +331,7 @@ export default {
           this.$q.notify({
             message: 'Task Deleted',
           });
-          this.$router.push('/director/task_monitoring');
+          this.fetchData()
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -336,7 +340,6 @@ export default {
       } catch (error) {
         console.error('Error:', error);
       }
-      window.location.reload();
     },
 
     async fetchTaskById(id) {
@@ -351,83 +354,40 @@ export default {
 
     async Revise(id) {
       try {
-        // 1. Ambil data dari tugas yang akan direvisi
-        const taskToRevise = await this.fetchTaskById(id);
+        let taskToRevise = await this.fetchTaskById(id);
+        taskToRevise.status = "Done"
+        taskToRevise.progress = 0
+        taskToRevise.approved_at = null
+        taskToRevise.approved_by = null
+        taskToRevise.finished_at = null
+        taskToRevise.finished_by = null
+        taskToRevise.started_at = null
+        taskToRevise.started_by = null
 
-        const revisedTaskData = new FormData();
-        revisedTaskData.append('task_type', taskToRevise.task_type);
-        revisedTaskData.append('task_title', taskToRevise.task_title);
-        revisedTaskData.append('priority', taskToRevise.priority);
-        revisedTaskData.append('iteration', taskToRevise.iteration);
-        revisedTaskData.append('start_date', new Date(taskToRevise.start_date).toISOString());
-        revisedTaskData.append('due_date', new Date(taskToRevise.due_date).toISOString());
-        revisedTaskData.append('description', taskToRevise.description);
-        revisedTaskData.append('pic_title', taskToRevise.pic_title);
-        revisedTaskData.append('pic', taskToRevise.pic);
-        revisedTaskData.append('spv', taskToRevise.spv);
-        revisedTaskData.append('approved_at', null);
-        revisedTaskData.append('approved_by', null);
-        revisedTaskData.append('started_at', null);
-        revisedTaskData.append('started_by', null);
-        revisedTaskData.append('finished_at', null);
-        revisedTaskData.append('finished_by', null);
-        revisedTaskData.append('status', "Open");
-        revisedTaskData.append('progress', 0);
-        revisedTaskData.append('file', taskToRevise.file);
-        const fileResponse = await this.$axios.get('/image/' + taskToRevise.file, {
-          responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
-        });
-
-        const originalFile = new File([fileResponse.data], taskToRevise.file, { type: fileResponse.data.type });
-
-        // Membuat objek FormData
-        revisedTaskData.append('bukti_tayang', originalFile);
-
-        // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post('/task/new', revisedTaskData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        if (!createTaskResponse.status === 200) {
-          throw new Error('Failed to create revised task');
-        }
-
-        // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const deletedData = {
-          status: "Deleted",
-          deleted_at: new Date().toISOString(),
-        };
-
-        const updateTaskResponse = await this.$axios.put('/task/edit/' + id, deletedData, {
+        const createTaskResponse = await this.$axios.post('/task/new', taskToRevise, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
+        if (!createTaskResponse.status === 200) throw Error('Failed to create revised task');
 
-        if (updateTaskResponse.status === 200) {
-          this.$q.notify({
-            message: 'Task Revised',
-          });
-          this.$router.push('/director/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Revising Task',
-          });
-        }
+        await this.Delete(id)
+        this.$q.notify({
+          message: 'Task Revised',
+        });
+        this.fetchData()
       } catch (error) {
         console.error('Error:', error);
+        return this.$q.notify(error.message)
       }
-      window.location.reload();
+      // window.location.reload();
     },
 
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        console.log(statusFilter);
         const response = await this.$axios.get('/task/all', {
-          params: { status: statusFilter }
+          params: {  status: statusFilter, search: this.search }
         });
         this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));;
       } catch (error) {
@@ -442,10 +402,28 @@ export default {
       return ''; // No background color for other statuses
     },
 
-    submit() {
-      this.$q.notify({
-        message: 'Task Done',
-      })
+    async submit() {
+      try{
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+        };
+
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.status != 200) throw Error('Terjadi kesalahan, mohon coba ulang')
+        this.$q.notify({
+          message: 'Task Done',
+        })
+        this.fetchData()
+      }catch(err){
+        console.log(err)
+        return this.$q.notify(error.message)
+      }
+
     },
 
 
@@ -510,7 +488,6 @@ export default {
 
 
 </script>
-
 <style scoped>
 .my-card {
   width: 175px;
