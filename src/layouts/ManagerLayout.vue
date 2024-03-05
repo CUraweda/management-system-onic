@@ -18,19 +18,37 @@
             </div>
           </q-toolbar-title>
 
-          <div class="row wrap items-center justify-end">
-            <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
+          <div class="row wrap items-center justify-end q-gutter-sm">
+            <!-- <q-input class="bg-grey-3 col-lg-5 col-md-5 col-sm-4 col-xs-4 under-title" dense text-color="black"
               standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
               <template v-slot:prepend>
                 <q-icon v-if="search === ''" name="search" text-color="black" />
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
-            </q-input>
-            <q-btn flat round dense icon="notifications" color="black" size="15px" />
+            </q-input> -->
+            <q-btn round dense flat color="black" icon="notifications">
+              <q-badge color="red" text-color="white" floating>
+                5
+              </q-badge>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <notification></notification>
+                </q-list>
+              </q-menu>
+            </q-btn>
+
             <q-btn flat round dense icon="question_mark" color="black" size="15px" />
-            <q-avatar color="cyan-3" size="30px">
-              <img src="statics/propil.png" />
-            </q-avatar>
+
+            <q-btn round dense flat>
+              <q-avatar color="cyan-3" size="30px">
+                <img src="statics/propil.png" />
+              </q-avatar>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <profile></profile>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </div>
         </q-toolbar>
       </div>
@@ -48,7 +66,7 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-          <q-item clickable v-ripple to="dashboard">
+          <q-item clickable v-ripple to="/manager/dashboard">
             <q-item-section avatar>
               <q-icon name="dashboard" color="grey-7" size="30px" />
             </q-item-section>
@@ -56,7 +74,7 @@
             <q-item-section> Dashboard </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="create">
+          <q-item clickable v-ripple to="/manager/create">
             <q-item-section avatar>
               <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
             </q-item-section>
@@ -64,7 +82,15 @@
             <q-item-section> Create Task </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="task_monitoring">
+          <q-item clickable v-ripple to="/manager/task_list">
+            <q-item-section avatar>
+              <q-icon name="description" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Task List </q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/manager/task_monitoring">
             <q-item-section avatar>
               <q-icon name="view_list" color="grey-7" size="30px" />
             </q-item-section>
@@ -72,7 +98,25 @@
             <q-item-section> Task Monitoring </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="report">
+          <q-item clickable v-ripple to="/manager/task_monitoring_2">
+            <q-item-section avatar>
+              <q-icon name="task" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Task Approval</q-item-section>
+          </q-item>
+
+      
+
+          <q-item clickable v-ripple to="/manager/task_monitoring_3">
+            <q-item-section avatar>
+              <q-icon name="recycling" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Deleted Task</q-item-section>
+          </q-item>
+
+          <q-item disable>
             <q-item-section avatar>
               <q-icon name="assignment" color="grey-7" size="30px" />
             </q-item-section>
@@ -107,10 +151,17 @@
 
 <script>
 import { ref } from "vue";
+import notification from "./Notification.vue";
+import profile from "./Profile.vue";
 import { date } from "quasar";
 
 export default {
   name: 'ManagerLayout',
+
+  components: {
+    notification,
+    profile,
+  },
 
   data() {
     return {

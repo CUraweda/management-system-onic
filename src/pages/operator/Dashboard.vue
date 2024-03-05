@@ -37,7 +37,7 @@
 
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Close')">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-purple q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -56,7 +56,7 @@
 
       <!-- in progres task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('In-progress')">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-blue q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -75,7 +75,7 @@
 
       <!-- overdue -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Idle')">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-orange q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -94,7 +94,7 @@
 
       <!-- opened -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Open')">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-green q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -113,7 +113,7 @@
 
       <!-- total -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable to="task_monitoring">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
           <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'" class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-cyan q-px-sm q-pt-xs card-icon q-mb-sm">
@@ -151,22 +151,22 @@
                     <q-space></q-space>
 
                     <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="From">
+                      v-model="deposit.start_1" mask="date" label="From">
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.start_1" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
                     </q-input>
 
                     <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="To">
+                      v-model="deposit.due_1" mask="date" label="To">
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.due_1" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
@@ -199,22 +199,22 @@
                     <q-space></q-space>
 
                     <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="From">
+                      v-model="deposit.start" mask="date" label="From">
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.start" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
                     </q-input>
 
                     <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="To">
+                      v-model="deposit.due" mask="date" label="To">
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.due" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
@@ -257,11 +257,14 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
+  name: 'Dashboard',
   data() {
     return {
       filter: '',
       mode: 'list',
       search: "",
+start:"",
+due:"",
       deposit: {},
     }
   },
@@ -273,6 +276,14 @@ export default {
     };
   },
   methods: {
+
+    redirectToTaskMonitoring(statusFilter) {
+      this.$router.push({
+        path: '/operator/task_list',
+        query: { status: statusFilter }
+      });
+    },
+
     SaveImage(type) {
       const linkSource = this.$refs[type].getDataURL();
       const downloadLink = document.createElement('a');

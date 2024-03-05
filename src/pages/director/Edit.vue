@@ -16,11 +16,8 @@
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Type</q-item-label>
                   <div class="no-shadow">
-                    <q-btn-toggle v-model="btnmodel" spread no-caps toggle-color="cyan-6" class="no-shadow" color="grey-3"
-                      text-color="black" :options="[
-                        { label: 'Single Task', value: 'single' },
-                        { label: 'Multi Task', value: 'multi' }
-                      ]" />
+                    <q-btn-toggle v-model="form.task_type" spread no-caps toggle-color="cyan-6" class="no-shadow"
+                      color="grey-3" text-color="black" :options="task_type_options" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -30,7 +27,7 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
-                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="title" />
+                  <q-input dense autogrow filled class="full-width" placeholder="Type name" v-model="form.task_title" />
                 </q-item-section>
               </q-item>
             </div>
@@ -39,8 +36,22 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Priority</q-item-label>
-                  <q-select dense filled outlined v-model="deposit.priority" :options="priorityoptions" stack-label
+                  <q-select dense filled outlined v-model="form.priority" :options="opsipriority" stack-label
                     options-dense></q-select>
+                </q-item-section>
+              </q-item>
+            </div>
+
+            <div class="col-12">
+              <q-item>
+                <q-item-section>
+                  <q-item-label class="q-pb-xs text-weight-bold"></q-item-label>
+                  <div class="q-gutter-sm">
+                    <q-radio v-model="form.iteration" label="Daily" val="daily" />
+                    <q-radio v-model="form.iteration" label="Weekly" val="weekly" />
+                    <q-radio v-model="form.iteration" label="Monthly" val="monthly" />
+                    <q-radio v-model="form.iteration" label="Insidental" val="insidental" />
+                  </div>
                 </q-item-section>
               </q-item>
             </div>
@@ -49,11 +60,11 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
-                  <q-input filled dense v-model="startdate">
+                  <q-input filled dense v-model="form.start_date">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="startdate" mask="YYYY-MM-DD HH:mm">
+                          <q-date v-model="form.start_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -65,7 +76,7 @@
                     <template v-slot:append>
                       <q-icon name="access_time" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-time v-model="startdate" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time v-model="form.start_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -82,11 +93,11 @@
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input filled dense v-model="duedate">
+                  <q-input filled dense v-model="form.due_date">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="duedate" mask="YYYY-MM-DD HH:mm">
+                          <q-date v-model="form.due_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -98,7 +109,7 @@
                     <template v-slot:append>
                       <q-icon name="access_time" class="cursor-pointer">
                         <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-time v-model="duedate" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time v-model="form.due_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -111,31 +122,11 @@
               </q-item>
             </div>
 
-            <!-- <div class="col-6">
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input dense filled v-model="duedate" mask="date" :rules="['date']">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="duedate">
-                            <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </q-item-section>
-              </q-item>
-            </div> -->
             <div class="col-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold">Description</q-item-label>
-                  <q-input v-model="text" filled type="textarea" placeholder="Give some example" />
+                  <q-input v-model="form.description" filled type="textarea" placeholder="Give some example" />
                 </q-item-section>
               </q-item>
             </div>
@@ -147,7 +138,7 @@
                   <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
 
                   <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="pic" name="pic" use-input input-debounce="0"
+                    <q-select readonly multiple dense filled v-model="form.pic" name="pic" use-input input-debounce="0"
                       :options="picoptions" behavior="menu" class="col-6">
                       <template v-slot:no-option>
                         <q-item>
@@ -159,7 +150,7 @@
                     </q-select>
 
                     <div class="text-cyan col-5">
-                      <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
+                      <q-btn disable dense flat color="cyan" icon="add" type="submit" label="Add Person" />
                     </div>
                   </q-form>
 
@@ -193,7 +184,7 @@
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
-                    <q-select multiple dense filled v-model="spv" name="spv" use-input input-debounce="0"
+                    <q-select readonly multiple dense filled v-model="form.spv" name="spv" use-input input-debounce="0"
                       :options="spvoptions" behavior="menu" class="col-6">
                       <template v-slot:no-option>
                         <q-item>
@@ -204,7 +195,7 @@
                       </template>
                     </q-select>
                     <div class="text-cyan col-5">
-                      <q-btn dense flat color="cyan" icon="add" type="submit" label="Add Person" />
+                      <q-btn disable dense flat color="cyan" icon="add" type="submit" label="Add Person" />
                     </div>
                   </q-form>
 
@@ -241,7 +232,7 @@
           <div class="col-12">
             <q-item>
               <q-item-section class="q-mb-xl">
-                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl">
+                <q-file outlined v-model="form.model" label="Upload File" class="q-mb-xl">
                   <template v-slot:append>
                     <q-icon name="ios_share" />
                   </template>
@@ -249,6 +240,7 @@
               </q-item-section>
             </q-item>
           </div>
+
 
           <q-space></q-space>
 
@@ -260,7 +252,7 @@
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
                       type="submit" v-close-popup />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
-                      type="submit" @click="createNotify" to="task_monitoring" />
+                      type="submit" @click="edit" to="/director/task_monitoring" />
                   </q-card-actions>
                 </div>
               </q-item-section>
@@ -277,21 +269,27 @@
 import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import { exportFile } from "quasar";
+import axios from 'axios';
 
-export default defineComponent({
+export default {
+  name: 'DirectorEdit',
+  props: ['id'],
   data() {
     return {
-      deposit: {},
-      statusoptions: [
-        "To-do",
-      ],
-      priorityoptions: [
-        "Important",
-        "High",
-        "Normal",
-      ],
-    }
+      form: {
+        task_type: '',
+        task_title: '',
+        priority: '',
+        iteration: '',
+        start_date: null,
+        due_date: null,
+        description: '',
+        pic: '',
+        spv: '',
+      },
+    };
   },
+
 
   setup() {
     const submittedpic = ref(false)
@@ -300,16 +298,36 @@ export default defineComponent({
     const submittedspv = ref(false)
     const submitEmptyspv = ref(false)
     const submitResultspv = ref([])
+
     return {
-      title: ref(''),
-      startdate: ref(''),
-      duedate:  ref(''),
-      model: ref(null),
-      btnmodel: ref('single'),
-      text: ref(''),
-      step: ref(1),
-      address_detail: ref({}),
-      card_detail: ref({}),
+      iteration: ref(''),
+      task_type_options: [
+        {
+          label: 'Single Task',
+          value: 'Single'
+        },
+        {
+          label: 'Multi Task',
+          value: 'Multi'
+        }
+      ],
+      priority: ref([]),
+      opsipriority: [
+        {
+          label: 'Important',
+          value: 'Important'
+        },
+        {
+          label: 'High',
+          value: 'High'
+        },
+        {
+          label: 'Normal',
+          value: 'Normal'
+        }
+      ],
+      start_date: ref(null),
+      due_date: ref(null),
       pic: ref([]),
       picoptions: [
         {
@@ -378,18 +396,97 @@ export default defineComponent({
         submitResultspv.value = data
         submitEmptyspv.value = data.length === 0
       },
+      model: ref(null),
+      text: ref(''),
+      address_detail: ref({}),
+      card_detail: ref({}),
     }
+  },
+
+  mounted() {
+    this.fetchData();
   },
 
   methods: {
-    createNotify() {
-      this.$q.notify({
-        message: 'Task Created',
-      })
-    }
+    async fetchData() {
+      console.log(this.id)
+      try {
+        const response = await this.$axios.get('/task/get-by-id/' + this.id);
+        this.form.task_type = response.data.task_type;
+        this.form.task_title = response.data.task_title;
+        this.form.priority = response.data.priority;
+        this.form.iteration = response.data.Iteration;
+        this.form.start_date = new Date(response.data.start_date).toLocaleString();
+        this.form.due_date = new Date(response.data.due_date).toLocaleString();
+        this.form.description = response.data.description;
+        this.form.pic = response.data.pic;
+        this.form.spv = response.data.spv;
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+
+    async edit() {
+      const data = {
+        task_type: this.form.task_type,
+        task_title: this.form.task_title,
+        priority: this.form.priority.value,
+        start_date: this.form.start_date,
+        due_date: this.form.due_date,
+        description: this.form.description,
+        pic: this.submitResultpic.map(item => item.value).join(','),
+        spv: this.submitResultspv.map(item => item.value).join(','),
+      };
+
+      try {
+        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.status === 200) {
+          this.$q.notify({
+            message: 'Task Edited',
+          });
+          this.$router.push('/director/task_monitoring')
+        } else {
+          this.$q.notify({
+            message: 'Failed Edited task',
+          });
+        }
+      } catch (error) {
+        console.error('EROR:', error);
+      }
+    },
+
+// handleFileUpload(event) {
+    //   const file = event.target.files[0];
+
+    //   if (file) {
+    //     const reader = new FileReader();
+
+    //     reader.onload = (e) => {
+    //       const content = e.target.result;
+
+    //       // Determine if the file is XLSX or CSV
+    //       if (file.name.endsWith('.xlsx')) {
+    //         this.parseXLSX(content);
+    //       } else if (file.name.endsWith('.csv')) {
+    //         this.parseCSV(content);
+    //       }
+    //     };
+
+    //     reader.readAsBinaryString(file);
+    //   }
+
+    // },
+
+
+
   },
-})
+}
 </script>
 
 <style scoped></style>
-
