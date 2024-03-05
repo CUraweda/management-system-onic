@@ -79,10 +79,10 @@ const routes = [
       { path: 'task_monitoring',  meta: { title: 'TASK MONITORING' }, component: ManagerTaskMonitoring },
       { path: 'task_monitoring_2',  meta: { title: 'TASK ACC' }, component: ManagerTaskMonitoring2 },
       { path: 'task_list',  meta: { title: 'TASK LIST' }, component: ManagerTaskList },
-      { path: 'task_detail/:id', meta: { title: 'TASK DETAIL' }, component: ManagerTaskDetail, props: true },
-      { path: 'task_detail_2/:id', meta: { title: 'TASK DETAIL' }, component: ManagerTaskDetail2, props: true },
+      { path: 'task_detail', meta: { title: 'TASK DETAIL' }, component: ManagerTaskDetail, props: true },
+      { path: 'task_detail_2', meta: { title: 'TASK DETAIL' }, component: ManagerTaskDetail2, props: true },
       { path: 'task_monitoring_3',  meta: { title: 'DELETED TASK' }, component: ManagerTaskMonitoring3 },
-      { path: 'report/:id', meta: { title: 'REPORTS' }, component: ManagerReport , props: true },
+      { path: 'report', meta: { title: 'REPORTS' }, component: ManagerReport , props: true },
     ],
   },
   {

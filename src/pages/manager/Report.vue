@@ -239,11 +239,8 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import { ref } from 'vue';
-import Vue from 'vue';
-import { exportFile } from 'quasar';
-import axios from 'axios';
+import { store } from '../../store/store'
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0
@@ -261,7 +258,6 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: 'ManagerReport',
-  props: ['id'],
   data() {
     return {
       chat: '',
@@ -297,6 +293,7 @@ export default {
     return {
       model: ref(0),
       text: ref(''),
+      id: store.id,
       ratingModel: ref(0),
       ratingColors: ['yellow'],
       picrate: ref([]),
@@ -390,6 +387,7 @@ export default {
 
     async fetchData() {
       try {
+        console.log(this.id)
         const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
@@ -441,7 +439,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log(totalSeconds);
           console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();

@@ -358,6 +358,7 @@
                       filled
                       v-model="selectedspv"
                       name="spv"
+                      disable
                       use-input
                       input-debounce="0"
                       :options="spvOptions"
@@ -497,6 +498,7 @@
 
 <script>
 import { ref } from "vue";
+import { store } from "../../store/store.js";
 
 export default {
   name: "ManagerCreate",
@@ -641,12 +643,15 @@ export default {
 
         const listOfUser = data.map((user) => ({
           label: user.u_name,
-          value: user.u_id,
+          value: user.u_name,
         }));
+        const supervisorIndex  = listOfUser.findIndex(user => user.label ===  localStorage.getItem("username") )
+        const supervisorList = listOfUser[supervisorIndex]
+        listOfUser.splice(supervisorIndex, 1)
         this.picOptions = listOfUser;
-        this.spvOptions = listOfUser;
+        this.spvOptions = supervisorList
         this.selectedpic = this.picOptions[0];
-        this.selectedspv = this.spvOptions[0];
+        this.selectedspv = this.spvOptions
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -702,7 +707,7 @@ export default {
         this.addToForm("task_type", this.task_type);
         this.addToForm("task_title", this.task_title);
         this.addToForm("priority", this.priority.value);
-        this.addToForm("status", "Wait-app");
+        this.addToForm("status", this.SpvApp ? "Wait-app" : "Idle");
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
@@ -715,7 +720,6 @@ export default {
         this.addToForm("iteration", this.iteration);
         this.addToForm("pic", pic);
         this.addToForm("spv", spv);
-        console.log(this.priority);
 
         const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {
@@ -727,7 +731,7 @@ export default {
           this.$q.notify({
             message: "Task Created",
           });
-          this.$router.push({ path: "/manager/task_monitoring" });
+          this.SpvApp ? this.$router.push({ path: "/manager/task_monitoring_2" }) : this.$router.push({ path: "/manager/task_monitoring" })
         } else {
           this.$q.notify({
             message: "Failed Creating task",

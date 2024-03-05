@@ -202,7 +202,7 @@
                   <div v-if="status === 'Wait-app' && task_type === 'Single'"
                     class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-btn unelevated class="col-3" :ripple="{ color: 'red' }" color="red-1" text-color="red"
-                      label="Cancle" @click="Cancle()" no-caps />
+                      label="Cancel" @click="Cancel()" no-caps />
                     <q-btn unelevated :ripple="{ color: 'yellow' }" color="yellow-2" text-color="yellow-9" label="Revise"
                       no-caps class="col-3" @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="Approved"
@@ -649,7 +649,7 @@ export default {
       }
     },
 
-    async Cancle() {
+    async Cancel() {
       const data = {
         status: "Deleted",
         deleted_at: new Date().toISOString(),

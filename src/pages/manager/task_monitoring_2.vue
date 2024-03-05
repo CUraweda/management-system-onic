@@ -283,6 +283,7 @@
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
+import { store } from '../../store/store'
 // import Status from "components/Status"
 
 const stringOptions = [
@@ -492,7 +493,8 @@ export default {
     },
 
     Report(id) {
-      this.$router.push("report/" + id);
+      store.id = id 
+      this.$router.push("task_detail_2/");
     },
 
     acc() {

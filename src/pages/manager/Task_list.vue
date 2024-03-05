@@ -519,6 +519,7 @@ import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
 // import Status from "components/Status"
+import { store } from "../../store/store.js";
 
 const stringOptions = [
   "Google",
@@ -642,6 +643,7 @@ export default {
   methods: {
     async fetchData() {
       try {
+        console.log(store.count);
         const response = await this.$axios.get("/task/all/manager", {
           params: { search: this.search },
         });
@@ -696,7 +698,8 @@ export default {
     },
 
     Detail(id) {
-      this.$router.push("task_detail/" + id);
+      store.id = id
+      this.$router.push("task_detail/");
     },
 
     exportTable() {
