@@ -542,7 +542,7 @@ export default {
         },
       ],
       task_title: ref(""),
-      priority: ref("Important"),
+      priority: ref(),
       opsipriority: [
         {
           label: "Important",
@@ -685,6 +685,7 @@ export default {
     },
 
     addToForm(properties, value) {
+      console.log(value);
       if (!value) throw Error("Please fill all input");
       this.sendedForm[properties] = value;
     },
@@ -714,6 +715,7 @@ export default {
         this.addToForm("iteration", this.iteration);
         this.addToForm("pic", pic);
         this.addToForm("spv", spv);
+        console.log(this.priority);
 
         const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {

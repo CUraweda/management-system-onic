@@ -460,7 +460,8 @@ export default {
   watch: {
     search: {
       handler(value) {
-        if (value != "") this.fetchData();
+        this.search = value != "" ? value : "";
+        this.fetchData();
       },
     },
   },

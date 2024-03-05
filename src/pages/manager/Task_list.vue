@@ -632,11 +632,10 @@ export default {
   watch: {
     search: {
       handler(value) {
-        if (value != "") {
-          this.fetchData();
-          this.fetchDeletedData();
-          this.fetchWaitedData();
-        }
+        this.search = value != "" ? value : "";
+        this.fetchData();
+        this.fetchDeletedData();
+        this.fetchWaitedData();
       },
     },
   },

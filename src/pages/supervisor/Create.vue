@@ -504,7 +504,6 @@
                       filled
                       type="submit"
                       @click="create"
-                      to="/supervisor/task_monitoring"
                     />
                   </q-card-actions>
                 </div>
@@ -579,7 +578,7 @@ export default {
         },
       ],
       start_date: ref(null),
-      due_date: ref(null),
+      due_date: ref(""),
       description: ref(""),
 
       submittedpic,
@@ -625,6 +624,7 @@ export default {
       text: ref(""),
       address_detail: ref({}),
       card_detail: ref({}),
+      sendedForm: ref({}),
     };
   },
 
@@ -704,32 +704,40 @@ export default {
       this.submitResultpic.splice(index, 1);
     },
 
-    async create() {
-      const formData = new FormData();
-      formData.append("pic_id", this.pic_id);
-      formData.append("spv_id", this.spv_id);
-      formData.append("task_type", this.task_type);
-      formData.append("task_title", this.task_title);
-      formData.append("priority", this.priority.value);
-      formData.append("status", "Wait-app");
-      formData.append("start_date", new Date(this.start_date).toISOString());
-      formData.append("due_date", new Date(this.due_date).toISOString());
-      formData.append("description", `${this.description} \n`);
-      formData.append("pic_title", this.pic_title);
-      formData.append("created_by", localStorage.getItem("username"));
-      formData.append("bukti_tayang", this.model);
-      formData.append("iteration", this.iteration);
-      formData.append(
-        "pic",
-        this.submitResultpic.map((item) => item.value).join(",")
-      );
-      formData.append(
-        "spv",
-        this.submitResultspv.map((item) => item.value).join(",")
-      );
+    addToForm(properties, value) {
+      console.log(value);
+      if (!value) throw Error("Please fill all input");
+      this.sendedForm[properties] = value;
+    },
 
+    async create() {
       try {
-        const response = await this.$axios.post("/task/new", formData, {
+        const pic =
+          this.selectedpic.value != undefined
+            ? this.selectedpic.value
+            : this.selectedpic.map((user) => user.value).join(",");
+        const spv = this.selectedspv.value;
+        this.addToForm("pic_id", pic);
+        this.addToForm("spv_id", spv);
+        this.addToForm("task_type", this.task_type);
+        this.addToForm("task_title", this.task_title);
+        this.addToForm("priority", this.priority);
+        this.addToForm("status", "Wait-app");
+        this.addToForm("start_date", new Date(this.start_date).toISOString());
+        this.addToForm("due_date", new Date(this.due_date).toISOString());
+        this.addToForm("description", `${this.description} \n`);
+        this.addToForm("pic_title", this.pic_title);
+        this.addToForm(
+          "created_by",
+          localStorage.getItem("username") || "Unknown"
+        );
+        this.addToForm("bukti_tayang", this.model);
+        this.addToForm("iteration", this.iteration);
+        this.addToForm("pic", pic);
+        this.addToForm("spv", spv);
+        console.log(this.priority);
+
+        const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -739,13 +747,15 @@ export default {
           this.$q.notify({
             message: "Task Created",
           });
+          this.$router.push({ path: "/supervisor/task_monitoring" });
         } else {
           this.$q.notify({
             message: "Failed Creating task",
           });
         }
       } catch (error) {
-        console.error("Fa:", error);
+        console.error("Error when creating task:", error);
+        return this.$q.notify({ message: error.message });
       }
     },
 
