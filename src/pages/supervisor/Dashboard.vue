@@ -30,22 +30,22 @@
         </q-btn-dropdown>
 
         <q-input class=" bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-3 col-xs-3" borderless dense
-          v-model="deposit.date" mask="date" label="From">
+          v-model="deposit.start_2" mask="date" label="From">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.date" />
+                <q-date v-model="deposit.start_2" />
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
 
         <q-input class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-3 col-xs-3" borderless dense
-          v-model="deposit.date" mask="date" label="To">
+          v-model="deposit.due_2" mask="date" label="To">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.date" />
+                <q-date v-model="deposit.due_2" />
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -386,9 +386,14 @@ export default {
       filter: '',
       mode: 'list',
       search: "",
+      deposit: {
 start:"",
-due:"",
-      deposit: {},
+        due:"",
+start_1:"",
+        due_1:"",
+start_2:"",
+        due_2:"",
+      },
     }
   },
   setup() {
