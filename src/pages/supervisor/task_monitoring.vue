@@ -312,12 +312,12 @@ export default {
         deleted_at: new Date().toISOString(),
       };
 
+
       try {
-        const response = await this.$axios.put('/task/edit/' + id, {
+        const response = await this.$axios.put('/task/edit/' + id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(data),
         });
 
         if (response.status === 200) {
@@ -325,7 +325,7 @@ export default {
             type: 'positive',
             message: 'Task Deleted',
           });
-          this.$router.push('/supervisor/task_monitoring');
+          this.fetchData()
         } else {
           this.$q.notify({
             message: 'Failed Deleted Task',
@@ -334,7 +334,6 @@ export default {
       } catch (error) {
         console.error('Error:', error);
       }
-      window.location.reload();
     },
 
     async fetchTaskById(id) {
