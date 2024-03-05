@@ -620,7 +620,6 @@ export default {
   setup() {
     return {
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },
@@ -643,7 +642,6 @@ export default {
   methods: {
     async fetchData() {
       try {
-        console.log(store.count);
         const response = await this.$axios.get("/task/all/manager", {
           params: { search: this.search },
         });

@@ -387,7 +387,6 @@ export default {
 
     async fetchData() {
       try {
-        console.log(this.id)
         const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
@@ -439,7 +438,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
         }

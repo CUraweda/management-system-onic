@@ -532,8 +532,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log(totalSeconds);
-          console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
         }

@@ -661,7 +661,6 @@ export default {
         const supervisorIndex  = listOfUser.findIndex(user => user.label ===  localStorage.getItem("username") )
         const supervisorList = listOfUser[supervisorIndex]
         listOfUser.splice(supervisorIndex, 1)
-        console.log(listOfUser)
         this.picOptions = listOfUser;
         this.spvOptions = supervisorList
         this.selectedpic = this.picOptions[0];
@@ -704,7 +703,6 @@ export default {
     },
 
     addToForm(properties, value) {
-      console.log(value);
       if (!value) throw Error("Please fill all input");
       this.sendedForm[properties] = value;
     },

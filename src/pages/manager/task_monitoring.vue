@@ -472,7 +472,6 @@ export default {
       model: ref(0),
       yellow: ["yellow"],
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },
@@ -515,7 +514,6 @@ export default {
     Edit(id) {
       store.id = id 
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
@@ -637,7 +635,6 @@ export default {
         });
         this.fetchData();
       } catch (err) {
-        console.log(err);
         return this.$q.notify(error.message);
       }
     },

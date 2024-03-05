@@ -614,7 +614,6 @@ export default {
   setup() {
     return {
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
       id: store.id,
     };

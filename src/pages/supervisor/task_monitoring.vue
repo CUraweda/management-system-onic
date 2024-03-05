@@ -481,7 +481,6 @@ export default {
       model: ref(0),
       yellow: ["yellow"],
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },
@@ -498,7 +497,6 @@ export default {
   methods: {
     openEmployeeDialog(row) {
       this.id = row;
-      console.log(row);
       this.employee_dialog = true;
     },
 
@@ -525,7 +523,6 @@ export default {
     Edit(id) {
       store.id = id;
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
@@ -534,7 +531,6 @@ export default {
     },
 
     async Delete(id) {
-      console.log(id)
       const data = {
         status: "Deleted",
         deleted_at: new Date().toISOString(),
@@ -693,7 +689,6 @@ export default {
         });
         this.fetchData();
       } catch (err) {
-        console.log(err);
         return this.$q.notify({
           type: "negative",
           message: "Terjadi kesalahan, mohon coba ulang",

@@ -453,7 +453,6 @@ export default {
       model: ref(0),
       yellow: ["yellow"],
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },

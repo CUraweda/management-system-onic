@@ -635,8 +635,6 @@ export default {
 
     async edit() {
       try {
-        console.log(this.form.start_date);
-        console.log(this.form.due_date);
         const response = await this.$axios.put(
           "/task/edit/" + this.id,
           {

@@ -91,7 +91,7 @@
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold"></q-item-label>
                   <div class="q-gutter-sm">
-                    <q-radio v-model="iteration" val="aily" label="Daily" />
+                    <q-radio v-model="iteration" val="daily" label="Daily" />
                     <q-radio v-model="iteration" val="weekly" label="Weekly" />
                     <q-radio
                       v-model="iteration"
@@ -690,7 +690,6 @@ export default {
     },
 
     addToForm(properties, value) {
-      console.log(value);
       if (!value) throw Error("Please fill all input");
       this.sendedForm[properties] = value;
     },
