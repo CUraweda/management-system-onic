@@ -429,12 +429,14 @@ export default {
     async edit() {
 
       try {
+        console.log( this.form.start_date)
+        console.log( this.form.due_date)
         const response = await this.$axios.put('/task/edit/' + this.id, {
           task_type: this.form.task_type,
           task_title: this.form.task_title,
           priority: this.form.priority.value,
-          start_date: this.form.start_date.toISOString(),
-          due_date: this.form.due_date.toISOString(),
+          start_date: this.form.start_date,
+          due_date: this.form.due_date,
           description: this.form.description,
           pic: this.form.pic,
           spv: this.form.spv
