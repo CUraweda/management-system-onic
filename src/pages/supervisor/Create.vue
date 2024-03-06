@@ -641,19 +641,28 @@ export default {
     async fetchData() {
       try {
         const { status, data } = await this.$axios.get("/user/all");
-        if (status != 200) throw Error("Error while fetching");
+        if (status !== 200) throw Error("Error while fetching");
 
-        const listOfUser = data.map((user) => ({
+        // Filter out users with title "director"
+        const filteredData = data.filter((user) => user.title !== "director" && user.title !== "manager");
+
+        const listOfUser = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
         }));
-        const supervisorIndex  = listOfUser.findIndex(user => user.label ===  localStorage.getItem("username") )
-        const supervisorList = listOfUser[supervisorIndex]
-        listOfUser.splice(supervisorIndex, 1)
+
+        const supervisorIndex = listOfUser.findIndex(
+          (user) => user.label === localStorage.getItem("username")
+        );
+
+        const supervisorList = listOfUser[supervisorIndex];
+
+        listOfUser.splice(supervisorIndex, 1);
+
         this.picOptions = listOfUser;
-        this.spvOptions = supervisorList
+        this.spvOptions = supervisorList;
         this.selectedpic = this.picOptions[0];
-        this.selectedspv = this.spvOptions
+        this.selectedspv = this.spvOptions;
       } catch (error) {
         console.error("Error fetching users:", error);
       }

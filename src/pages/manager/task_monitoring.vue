@@ -66,49 +66,7 @@
                 </template>
               </q-input>
 
-              <q-btn-dropdown
-                unelevated
-                text-color="dark"
-                color="grey-3"
-                label="Category"
-                dropdown-icon="expand_more"
-                no-caps
-                class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5"
-              >
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-
-              <q-select
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title"
-                filled
-                v-model="deposit.account"
-                use-input
-                multiple
-                dense
-                input-debounce="0"
-                label="Filter"
-                :options="options"
-                @filter="filterFn"
-                dropdown-icon="filter_list"
-              ></q-select>
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -416,11 +374,17 @@ export default {
           field: "pic_title",
           sortable: true,
         },
-
+        {
+          name: "start_date",
+          align: "left",
+          label: "Start Project",
+          field: "start_date",
+          sortable: true,
+        },
         {
           name: "due_date",
           align: "left",
-          label: "Due Date",
+          label: "End Project",
           field: "due_date",
           sortable: true,
         },
@@ -524,13 +488,13 @@ export default {
     },
 
     Edit(id) {
-      store.id = id 
+      store.id = id
       this.$router.push("edit/");
       // console.log(id);
     },
 
     Report(id) {
-      store.id = id 
+      store.id = id
       this.$router.push("report/");
     },
 

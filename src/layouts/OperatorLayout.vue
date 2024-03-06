@@ -25,7 +25,7 @@
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
             </q-input> -->
-            <q-btn round dense flat color="black" icon="notifications">
+            <!-- <q-btn round dense flat color="black" icon="notifications">
               <q-badge color="red" text-color="white" floating>
                 5
               </q-badge>
@@ -37,7 +37,7 @@
                   </q-card>
                 </q-list>
               </q-menu>
-            </q-btn>
+            </q-btn> -->
 
             <q-btn flat round dense icon="question_mark" color="black" size="15px" />
 
@@ -131,7 +131,7 @@ export default {
   name: 'WorkerLayout',
 
     components: {
-    notification,
+    // notification,
     profile,
   },
 

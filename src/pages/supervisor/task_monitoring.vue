@@ -37,7 +37,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.start"
+                v-model="deposit.date"
                 mask="date"
                 label="From"
               >
@@ -48,7 +48,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.start" />
+                      <q-date v-model="deposit.date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -58,7 +58,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.due"
+                v-model="deposit.date"
                 mask="date"
                 label="To"
               >
@@ -69,55 +69,13 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.due" />
+                      <q-date v-model="deposit.date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
-              <q-btn-dropdown
-                unelevated
-                text-color="dark"
-                color="grey-3"
-                label="Category"
-                dropdown-icon="expand_more"
-                no-caps
-                class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5"
-              >
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-
-              <q-select
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title"
-                filled
-                v-model="deposit.account"
-                use-input
-                multiple
-                dense
-                input-debounce="0"
-                label="Filter"
-                :options="options"
-                @filter="filterFn"
-                dropdown-icon="filter_list"
-              ></q-select>
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -239,14 +197,9 @@
                 />
               </q-td>
 
-              <q-td key="progress" :props="props">
-                <div>{{ props.row.progress }}</div>
-              </q-td>
-
               <q-td key="Progress" :props="props">
                 <div>{{ props.row.progress }} %</div>
               </q-td>
-
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
@@ -395,10 +348,7 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {
-        start:"",
-        due:"",
-      },
+      deposit: {},
       options: stringOptions,
       employee_dialog: false,
       columns: [
@@ -430,11 +380,17 @@ export default {
           field: "pic_title",
           sortable: true,
         },
-
+        {
+          name: "start_date",
+          align: "left",
+          label: "Start Project",
+          field: "start_date",
+          sortable: true,
+        },
         {
           name: "due_date",
           align: "left",
-          label: "Due Date",
+          label: "End Project",
           field: "due_date",
           sortable: true,
         },
@@ -583,6 +539,7 @@ export default {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
         const taskToRevise = await this.fetchTaskById(id);
+        console.log(" task yang kudu di rv:" + taskToRevise.fileName);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
@@ -625,14 +582,15 @@ export default {
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await this.$axios.put("/task/edit/" + id, {
+        const deletedData = {
+          status: "Deleted",
+          deleted_at: new Date().toISOString(),
+        };
+
+        const updateTaskResponse = await this.$axios.put("/task/edit/" + id, deletedData, {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
         });
 
         if (updateTaskResponse.status === 200) {
@@ -640,7 +598,7 @@ export default {
             type: "positive",
             message: "Task Revised",
           });
-          this.$router.push("/supervisor/task_monitoring");
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Revising Task",
@@ -649,7 +607,6 @@ export default {
       } catch (error) {
         console.error("Error:", error);
       }
-      // window.location.reload();
     },
 
     async fetchData() {
