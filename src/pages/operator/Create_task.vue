@@ -477,7 +477,7 @@
                       filled
                       type="submit"
                       v-close-popup
-                      to="/operator/task_monitoring"                  
+                      to="/operator/task_monitoring"
                     />
                     <q-btn
                       unelevated
@@ -705,7 +705,7 @@ export default {
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", this.pic_title);
+        this.addToForm("pic_title", "operator");
         this.addToForm(
           "created_by",
           localStorage.getItem("username") || "Unknown"
