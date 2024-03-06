@@ -299,6 +299,10 @@ export default {
 
   mounted() {
     this.fetchOpen();
+    this.fetchInProgress();
+    this.fetchCompleted();
+    this.fetchOverdue();
+    this.fetchTotal();
   },
 
   methods: {
@@ -393,10 +397,12 @@ export default {
 
     async fetchTotal() {
       try {
-        const response = await this.$axios.get("/task/all/operator");
+        const response = await this.$axios.get("/task/all/operator", {
+          params: { status: '', search: this.search },
+        });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response;
+        const openedTasks = response.data;
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;
