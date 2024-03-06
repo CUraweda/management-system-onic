@@ -309,30 +309,38 @@ export default {
 
     async fetchOpen() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: 'Open', search: this.search },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
 
-        // Assuming response.data is an array of tasks
         const openedTasks = response.data.filter(task => task.status === 'Open');
 
-        // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
         console.log(openedTasks.length);
 
-        // You can use this value in your component or store it in a data property
         return openedTasks.length;
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
         return 0;
       }
     },
 
     async fetchCompleted() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: 'Close', search: this.search },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
 
         // Assuming response.data is an array of tasks
@@ -353,8 +361,14 @@ export default {
 
     async fetchInProgress() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: 'In-progress', search: this.search },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
 
         // Assuming response.data is an array of tasks
@@ -375,8 +389,14 @@ export default {
 
     async fetchOverdue() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: 'Idle', search: this.search },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
 
         // Assuming response.data is an array of tasks
@@ -397,8 +417,14 @@ export default {
 
     async fetchTotal() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: '', search: this.search },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
 
         // Assuming response.data is an array of tasks

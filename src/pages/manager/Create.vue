@@ -494,9 +494,13 @@ export default {
     },
 
     addToForm(properties, value) {
-      console.log(value);
-      if (!value) throw Error("Please fill all input");
-      this.sendedForm[properties] = value;
+      // Check if the value is empty (undefined, null, or empty string)
+      if (properties !== 'bukti_tayang' && (value === undefined || value === null || value === "")) {
+        throw new Error(`Please fill all input`);
+      } else {
+        // Assign the value to the specified property in sendedForm
+        this.sendedForm[properties] = value;
+      }
     },
 
     async create() {

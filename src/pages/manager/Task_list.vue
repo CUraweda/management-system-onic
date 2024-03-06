@@ -86,7 +86,7 @@
               :data="waiting_data"
               :hide-header="mode === 'grid'"
               :columns="columns"
-              row-key="task_title"
+              row-key="id"
               :grid="mode == 'grid'"
               :filter="filter"
               :pagination.sync="pagination"
@@ -220,7 +220,7 @@
               :data="data"
               :hide-header="mode === 'grid'"
               :columns="columns"
-              row-key="task_title"
+              row-key="id"
               :grid="mode == 'grid'"
               :filter="filter"
               :pagination.sync="pagination"
@@ -354,7 +354,7 @@
               :data="deleted_data"
               :hide-header="mode === 'grid'"
               :columns="columns"
-              row-key="task_title"
+              row-key="id"
               :grid="mode == 'grid'"
               :filter="filter"
               :pagination.sync="pagination"
@@ -604,13 +604,18 @@ export default {
   methods: {
     async fetchData() {
       try {
-        console.log(store.count);
-        const response = await this.$axios.get("/task/all/manager", {
-          params: { search: this.search },
+        const statusFilter = this.$route.query.status;
+        const username = localStorage.getItem('username');
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
-        this.data = response.data.sort(
-          (a, b) => new Date(b.update_at) - new Date(a.update_at)
-        );
+          this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -618,12 +623,18 @@ export default {
 
     async fetchWaitedData() {
       try {
-        const response = await this.$axios.get("/task/waited/manager", {
-          params: { search: this.search },
+        const statusFilter = this.$route.query.status;
+        const username = localStorage.getItem('username');
+        const response = await this.$axios.get("/task/waited", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
-        this.waiting_data = response.data.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+          this.waiting_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -631,12 +642,18 @@ export default {
 
     async fetchDeletedData() {
       try {
-        const response = await this.$axios.get("/task/deleted/manager", {
-          params: { search: this.search },
+        const statusFilter = this.$route.query.status;
+        const username = localStorage.getItem('username');
+        const response = await this.$axios.get("/task/deleted", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
+          headers: {
+            username: username
+          }
         });
-        this.deleted_data = response.data.sort(
-          (a, b) => new Date(b.update_at) - new Date(a.update_at)
-        );
+          this.deleted_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       } catch (error) {
         console.error("Error fetching data:", error);
       }

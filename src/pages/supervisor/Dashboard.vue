@@ -497,7 +497,7 @@ start_2:"",
         this.TotalOverdue = openedTasks.length;
         console.log(openedTasks.length);
 
-    *  console.log(openedTasks.length);
+        console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;

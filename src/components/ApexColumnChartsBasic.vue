@@ -11,14 +11,18 @@ export default {
         name: 'Completed',
         data: [90, 55, 57, 56]
       }, {
-        name: 'On-Going',
+        name: 'In-progress',
         data: [76, 85, 101, 98]
       }, {
-        name: 'Delayed',
+        name: 'Overdue',
         data: [35, 41, 36, 26]
-      }],
+      },{
+        name: 'Opened',
+        data: [35, 41, 36, 26]
+      },
+    ],
       chartOptions: {
-        colors: ['#00BDD6', '#8353E2', '#BCC1CA'],
+        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50'],
         animations: {
           enabled: true,
           easing: 'easeinout',
