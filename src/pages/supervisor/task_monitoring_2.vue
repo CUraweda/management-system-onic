@@ -186,7 +186,7 @@
               </q-td>
 
               <q-td key="progress" :props="props">
-                <div>{{ props.row.progress }}</div>
+                <div>{{ props.row.progress }}%</div>
               </q-td>
 
               <q-td key="Review" :props="props">
@@ -395,15 +395,20 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/waited/operator", {
+        const statusFilter = this.$route.query.status;
+        const response = await this.$axios.get("/task/all", {
           params: {
+            status: statusFilter,
             search: this.search,
           },
         });
 
-        this.data = response.data.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+        if (Array.isArray(response.data)) {
+          const filteredData = response.data.filter((item) => item.pic_title !== "Manager" && item.pic_title !== "Supervisor");
+          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        } else {
+          console.error("Invalid response format:", response);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }

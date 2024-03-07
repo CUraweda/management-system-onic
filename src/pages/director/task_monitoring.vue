@@ -10,56 +10,32 @@
           <q-space></q-space>
           <div class="col-lg-6 col-md-7 col-sm-12 col-xs-12">
             <q-card-section class="row q-gutter-xs q-pt-none justify-between">
-              <q-input
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title"
-                dense
-                text-color="black"
-                standout="bg-grey-3 no-shadow under-title"
-                v-model="search"
-                placeholder="Search..."
-              >
+              <q-input class="bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title" dense text-color="black"
+                standout="bg-grey-3 no-shadow under-title" v-model="search" placeholder="Search...">
                 <template v-slot:prepend>
                   <q-icon name="search" text-color="black" />
                   <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
-              <q-input
-                class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
-                borderless
-                dense
-                v-model="deposit.start"
-                mask="date"
-                label="From"
-              >
+              <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.start" mask="date" label="From">
+
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="depositDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
-              <q-input
-                class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
-                borderless
-                dense
-                v-model="deposit.due"
-                mask="date"
-                label="To"
-              >
+              <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
+                v-model="deposit.due" mask="date" label="To">
+
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="depositDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
@@ -68,18 +44,8 @@
 
 
 
-              <q-btn
-                class="under-title col-lg col-md col-sm-12 col-xs-12"
-                color="cyan"
-                icon-right="upgrade"
-                text-color="cyan"
-                unelevated
-                dense
-                outline
-                label="Export"
-                no-caps
-                @click="exportTable"
-              />
+              <q-btn class="under-title col-lg col-md col-sm-12 col-xs-12" color="cyan" icon-right="upgrade"
+                text-color="cyan" unelevated dense outline label="Export" no-caps @click="exportTable" />
             </q-card-section>
           </div>
         </div>
@@ -88,25 +54,14 @@
 
     <q-page class="q-pa-sm">
       <q-card>
-        <q-table
-          class="no-shadow q-ml-md"
-          :data="data"
-          :hide-header="mode === 'grid'"
-          :columns="columns"
-          row-key="pic"
-          :grid="mode == 'grid'"
-          :filter="filter"
-          :pagination.sync="pagination"
-        >
+        <q-table class="no-shadow q-ml-md" :data="data" :hide-header="mode === 'grid'" :columns="columns" row-key="pic"
+          :grid="mode == 'grid'" :filter="filter" :pagination.sync="pagination">
+
           <template v-slot:body="props">
-            <q-tr
-              :props="props"
-              :class="
-                props.row.status == 'Idle'
-                  ? 'bg-yellow-3 text-black'
-                  : 'bg-white text-black'
-              "
-            >
+            <q-tr :props="props" :class="props.row.status == 'Idle'
+              ? 'bg-yellow-3 text-black'
+              : 'bg-white text-black'
+              ">
               <q-td key="id" :props="props">
                 <div>{{ props.row.id }}</div>
               </q-td>
@@ -134,62 +89,46 @@
               <!-- priority -->
 
               <q-td key="priority" :props="props">
-                <q-chip
-                  :color="
-                    props.row.priority == 'Important'
-                      ? 'white text-red'
-                      : props.row.priority == 'High'
-                      ? 'white text-orange'
-                      : props.row.priority == 'Normal'
-                      ? 'white text-blue'
-                      : 'secondary'
-                  "
-                  text-color="white"
-                  dense
-                  class="text-center under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.priority }}
+                <q-chip :color="props.row.priority == 'Important'
+              ? 'white text-red'
+              : props.row.priority == 'High'
+                ? 'white text-orange'
+                : props.row.priority == 'Normal'
+                  ? 'white text-blue'
+                  : 'secondary'
+              " text-color="white" dense class="text-center under-title q-px-sm tex" rounded>{{ props.row.priority
+                  }}
                 </q-chip>
               </q-td>
 
               <q-td key="status" :props="props">
-                <q-chip
-                  :color="
-                    props.row.status == 'Close'
-                      ? 'white text-deep-orange'
-                      : props.row.status == 'Deleted'
-                      ? 'white text-red'
-                      : props.row.status == 'Idle'
-                      ? 'white text-orange'
-                      : props.row.status == 'Wait-app'
-                      ? 'white text-blue'
-                      : props.row.status == 'Completed'
+                <q-chip :color="props.row.status == 'Close'
+              ? 'white text-deep-orange'
+              : props.row.status == 'Deleted'
+                ? 'white text-red'
+                : props.row.status == 'Idle'
+                  ? 'white text-orange'
+                  : props.row.status == 'Wait-app'
+                    ? 'white text-blue'
+                    : props.row.status == 'Completed'
                       ? 'white text-blue'
                       : props.row.status == 'In-progress'
-                      ? 'white text-orange'
-                      : props.row.status == 'Open'
-                      ? 'white text-green'
-                      : 'secondary'
-                  "
-                  dense
-                  class="under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.status }}
+                        ? 'white text-orange'
+                        : props.row.status == 'Open'
+                          ? 'white text-green'
+                          : 'secondary'
+              " dense class="under-title q-px-sm tex" rounded>{{ props.row.status }}
                 </q-chip>
               </q-td>
 
               <!-- priority -->
               <q-td key="Progress" :props="props">
-                <q-linear-progress
-                  grey
-                  :color="getColor(props.row.progress)"
-                  :value="props.row.progress / 100"
-                  class="q-mt-md"
-                />
+                <q-linear-progress grey :color="getColor(props.row.progress)" :value="props.row.progress / 100"
+                  class="q-mt-md" />
               </q-td>
 
               <q-td key="progress" :props="props">
-                <div>{{ props.row.progress }}</div>
+                <div>{{ props.row.progress }}%</div>
               </q-td>
 
               <q-td key="detail" :props="props">
@@ -202,53 +141,20 @@
 
               <q-td key="feed" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm"
-                    rounded
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    text-color="red"
-                    label="Revise"
-                    @click="Revise(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    unelevated
-                    color="blue-2"
-                    class="under-title q-px-sm"
-                    rounded
-                    text-color="blue"
-                    label="OK"
-                    @click="openEmployeeDialog(props.row)"
-                  />
+                  <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
+                    label="Revise" @click="Revise(props.row.id)" />
+                  <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue"
+                    label="OK" @click="openEmployeeDialog(props.row)" />
                 </div>
               </q-td>
 
               <!-- action -->
               <q-td key="action" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-green"
-                    no-caps
-                    unelevated
-                    color="green-2"
-                    rounded
-                    label="Edit"
-                    @click="Edit(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-red"
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    rounded
-                    label="Delete"
-                    @click="Delete(props.row.id)"
-                  />
+                  <q-btn dense class="under-title q-px-sm text-green" no-caps unelevated color="green-2" rounded
+                    label="Edit" @click="Edit(props.row.id)" />
+                  <q-btn dense class="under-title q-px-sm text-red" no-caps unelevated color="red-2" rounded
+                    label="Delete" @click="Delete(props.row.id)" />
                 </div>
               </q-td>
               <!-- action -->
@@ -261,37 +167,14 @@
           <q-card-section>
             <div class="text-h6">
               Beri Rating untuk Pekerja!
-              <q-btn
-                round
-                flat
-                dense
-                icon="close"
-                class="q-ml-sm float-right"
-                color="grey-8"
-                v-close-popup
-              ></q-btn>
+              <q-btn round flat dense icon="close" class="q-ml-sm float-right" color="grey-8" v-close-popup></q-btn>
             </div>
           </q-card-section>
           <q-card-section>
             <div class="q-gutter-md row items-center">
-              <q-slider
-                class=""
-                v-model="model"
-                color="orange"
-                :min="0"
-                :max="5"
-                markers
-                :marker-labels="model"
-                label-always
-                :label-value="model"
-              />
-              <q-btn
-                class="q-px-sm bg-yellow-2 text-yellow-9"
-                v-close-popup
-                unelevated
-                @click="submit()"
-                >Submit</q-btn
-              >
+              <q-slider class="" v-model="model" color="orange" :min="0" :max="5" markers :marker-labels="model"
+                label-always :label-value="model" />
+              <q-btn class="q-px-sm bg-yellow-2 text-yellow-9" v-close-popup unelevated @click="submit()">Submit</q-btn>
             </div>
           </q-card-section>
         </q-card>
@@ -340,8 +223,8 @@ export default {
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -402,7 +285,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -576,15 +459,17 @@ export default {
       try {
         const statusFilter = this.$route.query.status;
         const response = await this.$axios.get("/task/all", {
-          params: { status: statusFilter, search: this.search },
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
         });
-        this.data = response.data.sort(
-          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-        );
+          this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     },
+
 
     getRowColor(status) {
       if (status === "Open") {
@@ -674,6 +559,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .my-card {
   width: 175px;

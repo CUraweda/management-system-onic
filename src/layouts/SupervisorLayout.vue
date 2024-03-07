@@ -36,6 +36,7 @@
                 </q-list>
               </q-menu>
             </q-btn> -->
+            <notification/>
 
             <q-btn flat round dense icon="question_mark" color="black" size="15px" />
 
@@ -116,7 +117,7 @@
             <q-item-section> Deleted Task</q-item-section>
           </q-item>
 
-          <q-item disable>
+          <!-- <q-item disable>
             <q-item-section avatar>
               <q-icon name="assignment" color="grey-7" size="30px" />
             </q-item-section>
@@ -126,7 +127,7 @@
             <q-item-section>
               <q-avatar class="q-ml-md" color="red" text-color="white" size="22px">N</q-avatar>
             </q-item-section>
-          </q-item>
+          </q-item> -->
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -159,7 +160,7 @@ export default {
   name: 'ManagerLayout',
 
   components: {
-    // notification,
+    notification,
     profile,
   },
 
