@@ -1,12 +1,14 @@
 <template>
   <q-layout view="lHh Lpr lff">
-
     <!-- header -->
     <q-header bordered class="bg-white">
       <div class="">
         <q-toolbar>
           <q-toolbar-title class="row">
-            <div class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
+            <div
+              class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer"
+              @click="drawer = !drawer"
+            >
               {{ $route.meta.title }}
             </div>
 
@@ -26,18 +28,16 @@
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
             </q-input> -->
-            <!-- <q-btn round dense flat color="black" icon="notifications">
-              <q-badge color="red" text-color="white" floating>
-                5
-              </q-badge>
-              <q-menu>
-                <q-list style="min-width: 100px">
-                  <notification></notification>
-                </q-list>
-              </q-menu>
-            </q-btn> -->
+            <notification />
 
-            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+            <q-btn
+              flat
+              round
+              dense
+              icon="question_mark"
+              color="black"
+              size="15px"
+            />
 
             <q-btn round dense flat>
               <q-avatar color="cyan-3" size="30px">
@@ -57,13 +57,27 @@
     <!-- header -->
 
     <!-- sidebar -->
-    <q-drawer v-model="drawer" show-if-above :mini="!drawer || miniState" @click.capture="drawerClick" :width="200"
-      :breakpoint="500" :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-1'">
-      <q-scroll-area class="fit bg-grey-1" :horizontal-thumb-style="{ opacity: 0 }">
+    <q-drawer
+      v-model="drawer"
+      show-if-above
+      :mini="!drawer || miniState"
+      @click.capture="drawerClick"
+      :width="200"
+      :breakpoint="500"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-1'"
+    >
+      <q-scroll-area
+        class="fit bg-grey-1"
+        :horizontal-thumb-style="{ opacity: 0 }"
+      >
         <q-list padding>
-
           <q-item>
-            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+            <q-img
+              clickable
+              @click="miniState = true"
+              class="q-mx-md q-mt-none"
+              src="statics/logo.jpg"
+            ></q-img>
           </q-item>
 
           <q-item clickable v-ripple to="/manager/dashboard">
@@ -76,7 +90,12 @@
 
           <q-item clickable v-ripple to="/manager/create">
             <q-item-section avatar>
-              <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
+              <q-icon
+                name="post_add"
+                color="grey-7"
+                class="flip-vertical"
+                size="30px"
+              />
             </q-item-section>
 
             <q-item-section> Create Task </q-item-section>
@@ -106,8 +125,6 @@
             <q-item-section> Task Approval</q-item-section>
           </q-item>
 
-
-
           <q-item clickable v-ripple to="/manager/task_monitoring_3">
             <q-item-section avatar>
               <q-icon name="recycling" color="grey-7" size="30px" />
@@ -124,7 +141,13 @@
             <q-item-section> Reports </q-item-section>
 
             <q-item-section>
-              <q-avatar class="q-ml-md" color="red" text-color="white" size="22px">N</q-avatar>
+              <q-avatar
+                class="q-ml-md"
+                color="red"
+                text-color="white"
+                size="22px"
+                >N</q-avatar
+              >
             </q-item-section>
           </q-item>
         </q-list>
@@ -145,7 +168,6 @@
       <router-view />
     </q-page-container>
     <!-- content -->
-
   </q-layout>
 </template>
 
@@ -156,10 +178,10 @@ import profile from "./Profile.vue";
 import { date } from "quasar";
 
 export default {
-  name: 'ManagerLayout',
+  name: "ManagerLayout",
 
   components: {
-    // notification,
+    notification,
     profile,
   },
 
