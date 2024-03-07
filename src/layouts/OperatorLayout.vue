@@ -91,13 +91,13 @@
             <q-item-section> Task List </q-item-section>
           </q-item>
 
-          <q-item v-ripple to="/operator/task_detail" disable>
+          <!-- <q-item v-ripple to="/operator/task_detail" disable>
             <q-item-section avatar>
               <q-icon name="list_alt" color="grey-7" size="30px" />
             </q-item-section>
 
             <q-item-section> Task Detail </q-item-section>
-          </q-item>
+          </q-item> -->
 
         </q-list>
       </q-scroll-area>
