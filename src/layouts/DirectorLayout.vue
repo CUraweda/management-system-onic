@@ -66,22 +66,16 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-
-          <q-item class="">
+          <q-item class="items-center">
             <div class="items-center text-center">
               <q-item-section avatar class="items-center">
                 <q-avatar color="cyan-3" size="30px">
                       <img src="statics/propil.png" />
                 </q-avatar>
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="items-center">
             <div class="text-bold items-center">{{ username }}</div>
-            <div>{{ title }}</div>
-            <div class="">
-              <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
-                icon-half="star_half" no-dimming />
-              {{ rating }}
-            </div>    
+            <div>{{ title }}</div>  
             </q-item-section>  
           </div>
           </q-item>
@@ -180,7 +174,6 @@ export default {
       left: false,
       username: '',
       title: '',
-      rating: 3.8
     };
   },
 
