@@ -1,74 +1,93 @@
 <template>
   <div>
-    <q-item style="max-width: 420px" v-for="msg in messages" :key="msg.id" clickable v-ripple>
-      <q-item-section avatar>
-        <q-avatar>
-          <img :src="msg.avatar">
-        </q-avatar>
-      </q-item-section>
+    <q-btn
+      round
+      dense
+      flat
+      color="black"
+      icon="notifications"
+      @click="readNotif"
+    >
+      <q-badge color="red" text-color="white" v-if="notifNumber > 0" floating>
+        {{ notifNumber }}
+      </q-badge>
+      <q-menu v-if="showBar">
+        <q-item style="max-width: 490px" clickable v-ripple>
+          <!-- <q-item-section avatar>
+            <q-avatar>
+              <img :src="msg.avatar" />
+            </q-avatar>
+          </q-item-section> -->
 
-      <q-item-section>
-        <q-item-label>{{ msg.name }}</q-item-label>
-        <q-item-label caption lines="1">{{ msg.msg }}</q-item-label>
-      </q-item-section>
+          <q-item-section v-for="msg in messages" :key="msg">
+            <q-item-label>{{ msg.taskTitle }}</q-item-label>
+            <q-item-label caption>{{ msg.pic }}</q-item-label>
+            <q-item-label caption lines="1">{{ msg.message }}</q-item-label>
+          </q-item-section>
 
-      <q-item-section side>
-        {{ msg.time }}
-      </q-item-section>
-    </q-item>
+          <q-item-section side v-for="msg in messages" :key="msg">
+            {{ msg.timeStamp }}
+          </q-item-section>
+        </q-item>
+      </q-menu>
+    </q-btn>
   </div>
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import { ref } from "vue";
+import axios from "axios";
 
 export default {
   name: "Notification",
   setup() {
     return {
-      messages: [
-        {
-          id: 5,
-          name: 'Pratik Patel',
-          msg: ' -- I\'ll be in your neighborhood doing errands this\n' +
-            '            weekend. Do you want to grab brunch?',
-          avatar: 'https://avatars2.githubusercontent.com/u/34883558?s=400&v=4',
-          time: '10:42 PM'
-        }, {
-          id: 6,
-          name: 'Winfield Stapforth',
-          msg: ' -- I\'ll be in your neighborhood doing errands this\n' +
-            '            weekend. Do you want to grab brunch?',
-          avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
-          time: '11:17 AM'
-        }, {
-          id: 1,
-          name: 'Boy',
-          msg: ' -- I\'ll be in your neighborhood doing errands this\n' +
-            '            weekend. Do you want to grab brunch?',
-          avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          time: '5:17 AM'
-        }, {
-          id: 2,
-          name: 'Jeff Galbraith',
-          msg: ' -- I\'ll be in your neighborhood doing errands this\n' +
-            '            weekend. Do you want to grab brunch?',
-          avatar: 'https://cdn.quasar.dev/team/jeff_galbraith.jpg',
-          time: '5:17 AM'
-        }, {
-          id: 3,
-          name: 'Razvan Stoenescu',
-          msg: ' -- I\'ll be in your neighborhood doing errands this\n' +
-            '            weekend. Do you want to grab brunch?',
-          avatar: 'https://cdn.quasar.dev/team/razvan_stoenescu.jpeg',
-          time: '5:17 AM'
-        }
-      ],
+      messages: ref(),
+      notifNumber: ref(),
+      token: ref(localStorage.getItem("token")),
+      showBar: ref(false)
+    };
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        console.log(this.token);
+        const response = await this.$axios.get(`/notif`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        });
+
+        if (response.status != 200) throw Error('Error while Requesting Notification')
+        const { notifs, unread } = response.data.data
+        if(notifs.length < 1) { this.showBar = false
+        } else this.showBar = true
+        this.messages = notifs;
+        this.notifNumber = unread
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+    async readNotif() {
+      try {
+        this.notifNumber > 0 ? (this.notifNumber = 0) : "";
+        const response = await this.$axios.post(`/notif/read`, null, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        });
+        if (response.status != 200) throw Error('Error while Reading Notification')
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
     }
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -383,7 +383,6 @@ export default {
       yellow: ["yellow"],
       id: store.id,
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },

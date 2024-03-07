@@ -453,15 +453,22 @@ export default {
       rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
+  },
+
+  watch: {
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : "";
+        this.fetchData();
+      },
+    },
   },
 
   methods: {
     openEmployeeDialog(row) {
       this.id = row;
-      console.log(row);
       this.employee_dialog = true;
     },
 
@@ -488,7 +495,6 @@ export default {
     Edit(id) {
       store.id = id;
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
@@ -503,7 +509,7 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put("/task/edit/" + id, data, {
+        const response = await this.$axios.put("/task/edit/"+id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -582,12 +588,10 @@ export default {
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const deletedData = {
-          status: "Deleted",
-          deleted_at: new Date().toISOString(),
-        };
-
-        const updateTaskResponse = await this.$axios.put("/task/edit/" + id, deletedData, {
+        const updateTaskResponse = await this.$axios.put("/task/edit/" + id, {
+            status: "Deleted",
+            deleted_at: new Date().toISOString(),
+          },{
           headers: {
             "Content-Type": "application/json",
           },
@@ -664,7 +668,6 @@ export default {
         });
         this.fetchData();
       } catch (err) {
-        console.log(err);
         return this.$q.notify({
           type: "negative",
           message: "Terjadi kesalahan, mohon coba ulang",

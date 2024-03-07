@@ -421,7 +421,6 @@ start_2:"",
   setup() {
     return {
       onItemClick() {
-        console.log('Clicked on an Item')
       },
     };
   },

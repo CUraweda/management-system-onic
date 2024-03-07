@@ -409,7 +409,6 @@ export default {
 
   methods: {
     async fetchData() {
-      console.log(this.id)
       try {
         const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.form.task_type = response.data.task_type;

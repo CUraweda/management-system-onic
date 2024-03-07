@@ -491,7 +491,6 @@ export default {
         description: "",
         pic: "",
         spv: "",
-        id: store.id,
       },
     };
   },
@@ -584,6 +583,8 @@ export default {
       ],
       submittedspv,
       submitEmptyspv,
+      id: store.id,
+
       submitResultspv,
 
       onSubmitspv(evt) {
@@ -619,7 +620,7 @@ export default {
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
-        this.form.iteration = response.data.Iteration;
+        this.form.iteration = response.data.iteration;
         this.form.start_date = new Date(
           response.data.start_date
         ).toLocaleString();
@@ -634,16 +635,15 @@ export default {
 
     async edit() {
       try {
-        console.log(this.form.start_date);
-        console.log(this.form.due_date);
         const response = await this.$axios.put(
           "/task/edit/" + this.id,
           {
             task_type: this.form.task_type,
             task_title: this.form.task_title,
             priority: this.form.priority.value,
-            start_date: this.form.start_date,
-            due_date: this.form.due_date,
+            start_date: new Date(this.form.start_date).toISOString(),
+
+            due_date: new Date(this.form.due_date).toISOString(),
             description: this.form.description,
             pic: this.form.pic,
             spv: this.form.spv,

@@ -504,25 +504,19 @@ export default {
 
     async create() {
       try {
-        const pic =
-          this.selectedpic.value != undefined
-            ? this.selectedpic.value
-            : this.selectedpic.map((user) => user.value).join(",");
-        const spv = this.selectedspv.value;
+        const pic = this.selectedpic.label != undefined ? this.selectedpic.label : this.selectedpic.map((user) => user.label).join(",");
+        const spv = this.selectedspv.label;
         this.addToForm("pic_id", pic);
         this.addToForm("spv_id", spv);
         this.addToForm("task_type", this.task_type);
         this.addToForm("task_title", this.task_title);
-        this.addToForm("priority", this.priority.value);
-        this.addToForm("status", "Wait-app");
+        this.addToForm("priority", this.priority.value ? this.priority.value :  this.priority);
+        this.addToForm("status", this.SpvApp ? "Wait-app" : "Idle");
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", this.pic_title);
-        this.addToForm(
-          "created_by",
-          localStorage.getItem("username") || "Unknown"
-        );
+        this.addToForm("pic_title", localStorage.getItem("title"));
+        this.addToForm( "created_by", localStorage.getItem("username") || "Unknown");
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);
         this.addToForm("pic", pic);

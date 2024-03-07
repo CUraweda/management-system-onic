@@ -36,6 +36,7 @@
                 </q-list>
               </q-menu>
             </q-btn> -->
+            <notification/>
 
             <q-btn flat round dense icon="question_mark" color="black" size="15px" />
 
@@ -159,7 +160,7 @@ export default {
   name: 'ManagerLayout',
 
   components: {
-    // notification,
+    notification,
     profile,
   },
 
