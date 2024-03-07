@@ -172,8 +172,8 @@
           </q-card-section>
           <q-card-section>
             <div class="q-gutter-md row items-center">
-              <q-slider class="" v-model="model" color="orange" :min="0" :max="5" markers :marker-labels="model"
-                label-always :label-value="model" />
+              <q-slider class="" v-model="rate" color="orange" :min="0" :max="5" markers :marker-labels="rate"
+                label-always :label-value="rate" />
               <q-btn class="q-px-sm bg-yellow-2 text-yellow-9" v-close-popup unelevated @click="submit()">Submit</q-btn>
             </div>
           </q-card-section>
@@ -188,17 +188,6 @@ import { ref } from "vue";
 import { exportFile } from "quasar";
 import { store } from "../../store/store"
 import axios from "axios";
-// import Status from "components/Status"
-
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Apples1",
-  "Apples2",
-  "Oracle",
-];
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -327,7 +316,7 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {
         // console.log('Clicked on an Item')
