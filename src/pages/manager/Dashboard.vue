@@ -435,12 +435,12 @@ export default {
   methods: {
     async fetchOpen() {
       try {
-        const response = await this.$axios.get("/task/all/supervisor", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'Open', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Open');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager');
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
