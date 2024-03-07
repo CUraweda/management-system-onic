@@ -142,6 +142,20 @@
 
     <div>
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
+      <div class="q-ml-md">
+          <q-rating
+      v-model="rating"
+      max="5"
+      size="2.5em"
+      color="yellow"
+      icon="star_border"
+      icon-selected="star"
+      icon-half="star_half"
+      no-dimming
+    />
+    {{ rating }}
+  </div>
+  
       <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           <q-card flat>
@@ -250,6 +264,7 @@
 import Vue from 'vue';
 import { exportFile } from 'quasar';
 import CardBase from "components/CardBase";
+import { ref } from 'vue'
 
 // Vue.component('IEcharts', IEcharts);
 
@@ -278,6 +293,7 @@ export default {
       TotalTotal: '0',
       filter: '',
       mode: 'list',
+      rating: ref(2.5),
       search: "",
       deposit: {
         start: "",
