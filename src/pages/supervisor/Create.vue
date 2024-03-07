@@ -15,8 +15,7 @@
               <q-item>
                 <q-item-section>
                   <div class="no-shadow">
-                    <q-checkbox v-model="SpvApp" color="blue" class="q-pl-none q-ml-none"
-                      label="Need to be approved by spv?" />
+                    <q-checkbox v-model="SpvApp" color="blue" class="q-pl-none q-ml-none" label="Requesting approval" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -237,26 +236,6 @@
               </q-item>
             </div>
 
-            <!-- <div class="col-6">
-              <q-item>
-                <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
-                  <q-input dense filled v-model="duedate" mask="date" :rules="['date']">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                          <q-date v-model="duedate">
-                            <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
-                            </div>
-                          </q-date>
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </q-item-section>
-              </q-item>
-            </div> -->
             <div class="col-12">
               <q-item>
                 <q-item-section>
@@ -312,11 +291,12 @@
                       </template>
                     </q-select>
 
-                    <div class="text-cyan col-5">
+                    <div class="text-cyan col-5 q-mb-lg q-mt-md">
                       <q-btn
                         dense
                         flat
                         color="cyan"
+                        class="text-center"
                         icon="add"
                         type="submit"
                         label="Add Person"
@@ -374,13 +354,12 @@
                     class="row q-gutter-sm items-center"
                   >
                     <q-select
-                      multiple
                       dense
                       filled
                       v-model="selectedspv"
                       name="spv"
-                      use-input
                       disable
+                      use-input
                       input-debounce="0"
                       :options="spvOptions"
                       behavior="menu"
@@ -397,7 +376,7 @@
                         </q-item>
                       </template>
                     </q-select>
-                    <div class="text-cyan col-5">
+                    <div class="text-cyan col-5 q-mb-lg q-mt-md">
                       <q-btn
                         dense
                         flat
@@ -478,7 +457,7 @@
           <div class="col-12 absolute-bottom-right q-mt-xl">
             <q-item>
               <q-item-section>
-                <div class="row justify-end">
+                <div class="row justify-end q-gutter-sm">
                   <q-card-actions>
                     <q-checkbox
                       v-model="SpvApp"
@@ -495,6 +474,8 @@
                       filled
                       type="submit"
                       v-close-popup
+                      to="/supervisor/task_monitoring"
+
                     />
                     <q-btn
                       unelevated
@@ -518,10 +499,8 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import { ref } from "vue";
-import { exportFile } from "quasar";
-import axios from "axios";
+import { store } from "../../store/store.js";
 
 export default {
   name: "ManagerCreate",
@@ -537,6 +516,8 @@ export default {
         value: localStorage.getItem("username"),
       },
       iteration: "daily",
+      isMultitask: ref(false),
+      sendedForm: ref({}), //Sorry but i need to
     };
   },
 
@@ -551,6 +532,8 @@ export default {
 
     return {
       SpvApp,
+      picOptions: ref([]),
+      spvOptions: ref([]),
       task_type: ref("Single"),
       task_type_options: [
         {
@@ -563,7 +546,7 @@ export default {
         },
       ],
       task_title: ref(""),
-      priority: ref("Important"),
+      priority: ref(),
       opsipriority: [
         {
           label: "Important",
@@ -578,8 +561,8 @@ export default {
           value: "Normal",
         },
       ],
-      start_date: ref(null),
-      due_date: ref(""),
+      start_date: ref(),
+      due_date: ref(),
       description: ref(""),
 
       submittedpic,
@@ -623,14 +606,20 @@ export default {
       },
       model: ref(null),
       text: ref(""),
+
       address_detail: ref({}),
       card_detail: ref({}),
-      sendedForm: ref({}),
     };
   },
 
   mounted() {
     this.fetchData();
+  },
+
+  computed: {
+    pic_title() {
+      return this.SpvApp ? "supervisor" : "operator";
+    },
   },
 
   watch: {
@@ -643,28 +632,37 @@ export default {
       },
     },
     // Menyebabkan pemanggilan metode getSelectedPicId() setiap kali selectedPic berubah
-    // selectedPic: "getSelectedPicId",
-    // Menyebabkan pemanggilan metode getSelectedSpvId() setiap kali selectedSpv berubah
-    // selectedSpv: "getSelectedSpvId",
+    // selectedPic: 'getSelectedPicId',
+    // // Menyebabkan pemanggilan metode getSelectedSpvId() setiap kali selectedSpv berubah
+    // selectedSpv: 'getSelectedSpvId',
   },
 
   methods: {
     async fetchData() {
       try {
         const { status, data } = await this.$axios.get("/user/all");
-        if (status != 200) throw Error("Error while fetching");
+        if (status !== 200) throw Error("Error while fetching");
 
-        const listOfUser = data.map((user) => ({
+        // Filter out users with title "director"
+        const filteredData = data.filter((user) => user.title !== "director" && user.title !== "manager");
+
+        const listOfUser = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
         }));
-        const supervisorIndex  = listOfUser.findIndex(user => user.label ===  localStorage.getItem("username") )
-        const supervisorList = listOfUser[supervisorIndex]
-        listOfUser.splice(supervisorIndex, 1)
+
+        const supervisorIndex = listOfUser.findIndex(
+          (user) => user.label === localStorage.getItem("username")
+        );
+
+        const supervisorList = listOfUser[supervisorIndex];
+
+        listOfUser.splice(supervisorIndex, 1);
+
         this.picOptions = listOfUser;
-        this.spvOptions = supervisorList
+        this.spvOptions = supervisorList;
         this.selectedpic = this.picOptions[0];
-        this.selectedspv = this.spvOptions
+        this.selectedspv = this.spvOptions;
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -737,7 +735,8 @@ export default {
           this.$q.notify({
             message: "Task Created",
           });
-          this.SpvApp ? this.$router.push({ path: "/supervisor/task_monitoring_2" }) : this.$router.push({ path: "/supervisor/task_monitoring" })        } else {
+          this.SpvApp ? this.$router.push({ path: "/supervisor/task_monitoring_2" }) : this.$router.push({ path: "/supervisor/task_monitoring" })
+        } else {
           this.$q.notify({
             message: "Failed Creating task",
           });
@@ -746,12 +745,6 @@ export default {
         console.error("Error when creating task:", error);
         return this.$q.notify({ message: error.message });
       }
-    },
-
-    createNotify() {
-      this.$q.notify({
-        message: "Task Created",
-      });
     },
   },
 };

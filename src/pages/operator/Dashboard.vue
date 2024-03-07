@@ -8,22 +8,23 @@
         <q-space></q-space>
 
         <q-input class=" bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-5 col-xs-5" borderless dense
-          v-model="deposit.date" mask="date" label="From">
+          v-model="deposit.start_2" mask="date" label="From">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.date" />
+                <q-date v-model="deposit.start_2" />
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
 
         <q-input class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-5 col-xs-5" borderless dense
-          v-model="deposit.date" mask="date" label="To">
+          v-model="deposit.due_2" mask="date" label="To">
+
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.date" />
+                <q-date v-model="deposit.due_2" />
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -37,8 +38,9 @@
 
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Completed')">
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'" class="text-black">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskList('Close')">
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
+            class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-purple q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/check.svg" />
@@ -46,7 +48,7 @@
               <div class="text-weight-bold text-center">Completed Tasks</div>
             </q-card-section>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">68</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalCompleted }}</div>
               Increased by 6 this week
             </q-card-section>
           </q-card-section>
@@ -56,8 +58,10 @@
 
       <!-- in progres task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('In-progress')">
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'" class="text-black">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable
+          @click="redirectToTaskList('In-progress')">
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'"
+            class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-blue q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/Load.svg" />
@@ -65,7 +69,7 @@
               <div class="text-weight-bold text-center">In Progress Tasks</div>
             </q-card-section>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">17</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalInProgress}}</div>
               Decreased by 5 this week
             </q-card-section>
           </q-card-section>
@@ -75,8 +79,9 @@
 
       <!-- overdue -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Idle')">
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'" class="text-black">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskList('Idle')">
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'"
+            class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-orange q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/Jam.svg" />
@@ -84,7 +89,7 @@
               <div class="text-weight-bold text-center">Overdue Tasks</div>
             </q-card-section>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">9</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalOverdue }}</div>
               Increased by 3 this week
             </q-card-section>
           </q-card-section>
@@ -94,8 +99,9 @@
 
       <!-- opened -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Open')">
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'" class="text-black">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskList('Open')">
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'"
+            class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-green q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/check.svg" />
@@ -103,7 +109,7 @@
               <div class="text-weight-bold text-center">Opened Tasks</div>
             </q-card-section>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">84</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalOpen }}</div>
               Increased by 8 this week
             </q-card-section>
           </q-card-section>
@@ -113,8 +119,9 @@
 
       <!-- total -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring()">
-          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'" class="text-black">
+        <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskList()">
+          <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'"
+            class="text-black">
             <q-card-section class="row items-center justify-center q-gutter-md">
               <div class="bg-cyan q-px-sm q-pt-xs card-icon q-mb-sm">
                 <img width="35px" src="statics/list.svg" />
@@ -122,7 +129,7 @@
               <div class="text-weight-bold text-center">Total Tasks</div>
             </q-card-section>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">85</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{  TotalTotal }}</div>
               Completion rate: 80%
             </q-card-section>
           </q-card-section>
@@ -151,22 +158,24 @@
                     <q-space></q-space>
 
                     <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="From">
+                      v-model="deposit.start_1" mask="date" label="From">
+
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.start_1" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
                     </q-input>
 
                     <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="To">
+                      v-model="deposit.due_1" mask="date" label="To">
+
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.due_1" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
@@ -199,22 +208,24 @@
                     <q-space></q-space>
 
                     <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="From">
+                      v-model="deposit.start" mask="date" label="From">
+
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.start" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
                     </q-input>
 
                     <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.date" mask="date" label="To">
+                      v-model="deposit.due" mask="date" label="To">
+
                       <template v-slot:append>
                         <q-icon name="event" class="cursor-pointer">
                           <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.date" />
+                            <q-date v-model="deposit.due" />
                           </q-popup-proxy>
                         </q-icon>
                       </template>
@@ -260,10 +271,22 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      TotalOpen: '0',
+      TotalInProgress: '0',
+      TotalOverdue: '0',
+      TotalCompleted: '0',
+      TotalTotal: '0',
       filter: '',
       mode: 'list',
       search: "",
-      deposit: {},
+      deposit: {
+        start: "",
+        due: "",
+        start_1: "",
+        due_1: "",
+        start_2: "",
+        due_2: "",
+      },
     }
   },
   setup() {
@@ -273,9 +296,122 @@ export default {
       },
     };
   },
+
+  mounted() {
+    this.fetchOpen();
+  },
+
   methods: {
 
-    redirectToTaskMonitoring(statusFilter) {
+    async fetchOpen() {
+      try {
+        const response = await this.$axios.get("/task/all/operator", {
+          params: { status: 'Open', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.status === 'Open');
+
+        // Log the length of opened tasks
+        this.TotalOpen = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchCompleted() {
+      try {
+        const response = await this.$axios.get("/task/all/operator", {
+          params: { status: 'Close', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.status === 'Close');
+
+        // Log the length of opened tasks
+        this.TotalCompleted = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchInProgress() {
+      try {
+        const response = await this.$axios.get("/task/all/operator", {
+          params: { status: 'In-progress', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.status === 'In-progress');
+
+        // Log the length of opened tasks
+        this.TotalInProgress = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchOverdue() {
+      try {
+        const response = await this.$axios.get("/task/all/operator", {
+          params: { status: 'Idle', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.status === 'Idle');
+
+        // Log the length of opened tasks
+        this.TotalOverdue = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchTotal() {
+      try {
+        const response = await this.$axios.get("/task/all/operator");
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response;
+
+        // Log the length of opened tasks
+        this.TotalTotal = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    redirectToTaskList(statusFilter) {
       this.$router.push({
         path: '/operator/task_list',
         query: { status: statusFilter }

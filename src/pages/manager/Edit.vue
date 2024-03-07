@@ -250,7 +250,7 @@
                 <div class="row justify-end">
                   <q-card-actions>
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
-                      type="submit" v-close-popup />
+                      type="submit" v-close-popup to="/manager/task_monitoring"/>
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
                       type="submit" @click="edit" to="/manager/task_monitoring" />
                   </q-card-actions>

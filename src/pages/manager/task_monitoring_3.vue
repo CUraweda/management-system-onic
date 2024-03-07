@@ -28,7 +28,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.start"
                 mask="date"
                 label="From"
               >
@@ -39,7 +39,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -49,7 +49,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.due"
                 mask="date"
                 label="To"
               >
@@ -60,55 +60,13 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
-              <q-btn-dropdown
-                unelevated
-                text-color="dark"
-                color="grey-3"
-                label="Category"
-                dropdown-icon="expand_more"
-                no-caps
-                class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5"
-              >
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-
-              <q-select
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title"
-                filled
-                v-model="deposit.account"
-                use-input
-                multiple
-                dense
-                input-debounce="0"
-                label="Filter"
-                :options="options"
-                @filter="filterFn"
-                dropdown-icon="filter_list"
-              ></q-select>
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -163,6 +121,10 @@
 
               <q-td key="pic_title" :props="props">
                 <div>{{ props.row.pic_title }}</div>
+              </q-td>
+
+              <q-td key="start_date" :props="props">
+                <div>{{ formatLocalTime(props.row.start_date) }}</div>
               </q-td>
 
               <q-td key="due_date" :props="props">
@@ -222,6 +184,10 @@
                   :value="props.row.progress / 100"
                   class="q-mt-md"
                 />
+              </q-td>
+
+              <q-td key="progress" :props="props">
+                <div>{{ props.row.progress }}</div>
               </q-td>
 
               <q-td key="Review" :props="props">
@@ -315,7 +281,10 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {},
+      deposit: {
+        start:"",
+        due:"",
+      },
       options: stringOptions,
       employee_dialog: false,
       columns: [
@@ -329,7 +298,7 @@ export default {
         {
           name: "task_title",
           align: "left",
-          label: "Task Title",
+          label: "Project",
           field: "task_title",
           sortable: true,
         },
@@ -348,23 +317,23 @@ export default {
           sortable: true,
         },
         {
-          name: "due_date",
+          name: "start_date",
           align: "left",
-          label: "Due Date",
-          field: "due_date",
+          label: "Start Project",
+          field: "start_date",
           sortable: true,
         },
         {
-          name: "priority",
-          align: "center",
-          label: "Priority",
-          field: "priority",
+          name: "due_date",
+          align: "left",
+          label: "End Project",
+          field: "due_date",
           sortable: true,
         },
         {
           name: "status",
           align: "center",
-          label: "Status",
+          label: "Stage saat ini",
           field: "status",
           sortable: true,
         },
@@ -373,6 +342,13 @@ export default {
           align: "left",
           label: "Progress bar",
           field: "Progress",
+          sortable: true,
+        },
+                            {
+          name: "progress",
+          align: "left",
+          label: "%",
+          field: "progress",
           sortable: true,
         },
       ],

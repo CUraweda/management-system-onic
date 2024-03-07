@@ -236,16 +236,6 @@
                   </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
                   <div class="q-pt-md"></div>
-                  <q-uploader
-                    class="col-6 q-mb-md"
-                    square
-                    flat
-                    bordered
-                    url=""
-                    label="Dokumen Hasil"
-                    multiple
-                    color="grey"
-                  />
 
                   <div
                     v-if="task_type === 'Multi'"
@@ -425,7 +415,7 @@ function wrapCsvValue(val, formatFn) {
 }
 
 export default {
-  name: "ManagerReport",
+  name: "SupervisorReport",
   data() {
     return {
       chat: "",
@@ -522,7 +512,7 @@ export default {
 
     async SendUpdate() {
       const id = this.id;
-      const updatedDescription = `${this.description} \n Manager: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Supervisor: ${this.chat}`;
 
       const data = {
         progress: this.progress,

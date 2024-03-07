@@ -250,7 +250,7 @@
                 <div class="row justify-end">
                   <q-card-actions>
                     <q-btn unelevated class="no-shadow" label="Cancel" color="grey-3" text-color="black" filled
-                      type="submit" v-close-popup />
+                      type="submit" v-close-popup to="/director/task_monitoring" />
                     <q-btn unelevated class="no-shadow" label="Create" color="grey-3" text-color="primary" filled
                       type="submit" @click="edit" to="/director/task_monitoring" />
                   </q-card-actions>
@@ -416,8 +416,8 @@ export default {
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
         this.form.iteration = response.data.Iteration;
-        this.form.start_date = response.data.start_date;
-        this.form.due_date = response.data.due_date;
+        this.form.start_date = new Date(response.data.start_date).toLocaleString();
+        this.form.due_date = new Date(response.data.due_date).toLocaleString();
         this.form.description = response.data.description;
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
@@ -482,6 +482,8 @@ export default {
     //   }
 
     // },
+
+
 
   },
 }

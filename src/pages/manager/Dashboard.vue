@@ -43,7 +43,7 @@
           class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-3 col-xs-3"
           borderless
           dense
-          v-model="deposit.date"
+          v-model="deposit.start_2"
           mask="date"
           label="From"
         >
@@ -54,7 +54,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="deposit.date" />
+                <q-date v-model="deposit.start_2" />
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -64,7 +64,7 @@
           class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-3 col-xs-3"
           borderless
           dense
-          v-model="deposit.date"
+          v-model="deposit.due_2"
           mask="date"
           label="To"
         >
@@ -75,7 +75,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="deposit.date" />
+                <q-date v-model="deposit.due_2" />
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -334,7 +334,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.start_1"
                 mask="date"
                 label="From"
               >
@@ -345,7 +345,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start_1" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -355,7 +355,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.due_1"
                 mask="date"
                 label="To"
               >
@@ -366,7 +366,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due_1" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -460,7 +460,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.start"
                 mask="date"
                 label="From"
               >
@@ -471,7 +471,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -481,7 +481,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.due"
                 mask="date"
                 label="To"
               >
@@ -492,7 +492,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -538,7 +538,14 @@ export default {
       filter: "",
       mode: "list",
       search: "",
-      deposit: {},
+      deposit: {
+        start:"",
+        due:"",
+        start_1:"",
+        due_1:"",
+        start_2:"",
+        due_2:"",
+      },
     };
   },
   setup() {

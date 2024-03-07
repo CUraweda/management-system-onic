@@ -20,7 +20,6 @@
               >
                 <template v-slot:prepend>
                   <q-icon name="search" text-color="black" />
-                  <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
@@ -28,7 +27,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.start"
                 mask="date"
                 label="From"
               >
@@ -39,7 +38,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -49,7 +48,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.due"
                 mask="date"
                 label="To"
               >
@@ -60,55 +59,13 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
-              <q-btn-dropdown
-                unelevated
-                text-color="dark"
-                color="grey-3"
-                label="Category"
-                dropdown-icon="expand_more"
-                no-caps
-                class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5"
-              >
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-
-              <q-select
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title"
-                filled
-                v-model="deposit.account"
-                use-input
-                multiple
-                dense
-                input-debounce="0"
-                label="Filter"
-                :options="options"
-                @filter="filterFn"
-                dropdown-icon="filter_list"
-              ></q-select>
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -163,6 +120,10 @@
 
               <q-td key="pic_title" :props="props">
                 <div>{{ props.row.pic_title }}</div>
+              </q-td>
+
+              <q-td key="start_date" :props="props">
+                <div>{{ formatLocalTime(props.row.start_date) }}</div>
               </q-td>
 
               <q-td key="due_date" :props="props">
@@ -224,6 +185,10 @@
                 />
               </q-td>
 
+              <q-td key="progress" :props="props">
+                <div>{{ props.row.progress }}</div>
+              </q-td>
+
               <q-td key="Review" :props="props">
                 <div class="q-gutter-sm">
                   <q-btn dense unelevated @click="Report(props.row.id)">
@@ -283,8 +248,8 @@
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
-import { store } from '../../store/store'
 // import Status from "components/Status"
+import { store } from "../../store/store";
 
 const stringOptions = [
   "Google",
@@ -316,7 +281,10 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {},
+      deposit: {
+        start:"",
+        due:"",
+      },
       options: stringOptions,
       employee_dialog: false,
       columns: [
@@ -330,7 +298,7 @@ export default {
         {
           name: "task_title",
           align: "left",
-          label: "Task Title",
+          label: "Project",
           field: "task_title",
           sortable: true,
         },
@@ -349,23 +317,23 @@ export default {
           sortable: true,
         },
         {
-          name: "due_date",
+          name: "start_date",
           align: "left",
-          label: "Due Date",
-          field: "due_date",
+          label: "Start Project",
+          field: "start_date",
           sortable: true,
         },
         {
-          name: "priority",
-          align: "center",
-          label: "Priority",
-          field: "priority",
+          name: "due_date",
+          align: "left",
+          label: "End Project",
+          field: "due_date",
           sortable: true,
         },
         {
           name: "status",
           align: "center",
-          label: "Status",
+          label: "Stage saat ini",
           field: "status",
           sortable: true,
         },
@@ -376,6 +344,13 @@ export default {
           field: "Progress",
           sortable: true,
         },
+                            {
+          name: "progress",
+          align: "left",
+          label: "%",
+          field: "progress",
+          sortable: true,
+        },
         {
           name: "Review",
           align: "left",
@@ -384,60 +359,7 @@ export default {
           sortable: true,
         },
       ],
-      data: [
-        // {
-        //   serial_no: "01",
-        //   task_title: "Hitung Laba",
-        //   name: "Syahrini",
-        //   due_date: "05/01/2020",
-        //   priority: "High",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: 'https://avatars3.githubusercontent.com/u/34883558?s=400&u=09455019882ac53dc69b23df570629fd84d37dd1&v=4',
-        // },
-        // {
-        //   serial_no: "02",
-        //   task_title: "Rekap Pendapatan",
-        //   name: "Agus",
-        //   due_date: "15/12/2019",
-        //   priority: "High",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw4TZ4MBGmThCq4F5qZ38R65CTfecb9j-PK8ErcxHlZg&s",
-        // },
-        // {
-        //   serial_no: "03",
-        //   task_title: "Merekap Nota",
-        //   name: "Kaesang",
-        //   due_date: "11/09/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://awsimages.detik.net.id/community/media/visual/2019/02/19/42393387-9c5c-4be4-97b8-49260708719e.jpeg?w=600&q=90",
-        // },
-        // {
-        //   serial_no: "04",
-        //   task_title: "Merekap Data",
-        //   name: "Jajang",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Important",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // },
-        // {
-        //   serial_no: "05",
-        //   task_title: "Riset Pasar",
-        //   name: "Junaedi",
-        //   amount: "$ 900",
-        //   due_date: "12/11/2019",
-        //   priority: "Normal",
-        //   status: "Wait-app",
-        //   progress: 0,
-        //   avatar: "https://avatars1.githubusercontent.com/u/10262924?s=400&u=9f601b344d597ed76581e3a6a10f3c149cb5f6dc&v=4",
-        // }
-      ],
+      data: [],
       pagination: {
         rowsPerPage: 5,
       },
@@ -447,16 +369,6 @@ export default {
   mounted() {
     this.fetchData();
   },
-
-  setup() {
-    return {
-      model: ref(0),
-      yellow: ["yellow"],
-      onItemClick() {
-      },
-    };
-  },
-
   watch: {
     search: {
       handler(value) {
@@ -464,6 +376,15 @@ export default {
         this.fetchData();
       },
     },
+  },
+  setup() {
+    return {
+      model: ref(0),
+      yellow: ["yellow"],
+      id: store.id,
+      onItemClick() {
+      },
+    };
   },
 
   methods: {
@@ -475,8 +396,11 @@ export default {
     async fetchData() {
       try {
         const response = await this.$axios.get("/task/waited/supervisor", {
-          params: { search: this.search },
+          params: {
+            search: this.search,
+          },
         });
+
         this.data = response.data.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
@@ -493,8 +417,8 @@ export default {
     },
 
     Report(id) {
-      store.id = id 
-      this.$router.push("task_detail_2/");
+      store.id = id;
+      this.$router.push("report/");
     },
 
     acc() {
