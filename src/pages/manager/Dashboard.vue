@@ -440,7 +440,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager');
+        const openedTasks = response.data.filter((item) => item.pic_title !== "Manager");
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
@@ -457,12 +457,12 @@ export default {
 
     async fetchCompleted() {
       try {
-        const response = await this.$axios.get("/task/all/supervisor", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'Close', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Close');
+        const openedTasks = response.data.filter((item) => item.pic_title !== 'Manager');
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -479,12 +479,12 @@ export default {
 
     async fetchInProgress() {
       try {
-        const response = await this.$axios.get("/task/all/supervisor", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'In-progress', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'In-progress');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager');
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -501,12 +501,12 @@ export default {
 
     async fetchOverdue() {
       try {
-        const response = await this.$axios.get("/task/all/supervisor", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'Idle', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Idle');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager');
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -523,12 +523,12 @@ export default {
 
     async fetchTotal() {
       try {
-        const response = await this.$axios.get("/task/all/supervisor", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: '', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data;
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager') 
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;

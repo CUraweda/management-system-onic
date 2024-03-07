@@ -57,7 +57,7 @@
 
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-          <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Completed')">
+          <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Close')">
             <span class="q-focus-helper"></span>
             <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
               class="text-black">
@@ -437,12 +437,12 @@ start_2:"",
   methods: {
     async fetchOpen() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'Open', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Open');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
@@ -459,12 +459,12 @@ start_2:"",
 
     async fetchCompleted() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'Close', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Close');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -479,14 +479,15 @@ start_2:"",
       }
     },
 
+
     async fetchInProgress() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'In-progress', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'In-progress');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -503,12 +504,12 @@ start_2:"",
 
     async fetchOverdue() {
       try {
-        const response = await this.$axios.get("/task/all/operator", {
+        const response = await this.$axios.get("/task/all", {
           params: { status: 'Idle', search: this.search },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Idle');
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -524,6 +525,30 @@ start_2:"",
         return 0;
       }
     },
+
+    async fetchTotal() {
+      try {
+        const response = await this.$axios.get("/task/all", {
+          params: { status: '', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" )  
+
+        // Log the length of opened tasks
+        this.TotalTotal = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+
 
     redirectToTaskMonitoring(statusFilter) {
       this.$router.push({
