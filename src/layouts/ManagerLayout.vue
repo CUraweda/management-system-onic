@@ -38,6 +38,18 @@
               color="black"
               size="15px"
             />
+            <!-- <q-btn round dense flat color="black" icon="notifications">
+              <q-badge color="red" text-color="white" floating>
+                5
+              </q-badge>
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <notification></notification>
+                </q-list>
+              </q-menu>
+            </q-btn> -->
+
+            <!-- <q-btn flat round dense icon="question_mark" color="black" size="15px" /> -->
 
             <q-btn round dense flat>
               <q-avatar color="cyan-3" size="30px">
@@ -72,12 +84,26 @@
       >
         <q-list padding>
           <q-item>
-            <q-img
-              clickable
-              @click="miniState = true"
-              class="q-mx-md q-mt-none"
-              src="statics/logo.jpg"
-            ></q-img>
+            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+          </q-item>
+
+          <q-item class="">
+            <div class="items-center text-center">
+              <q-item-section avatar class="items-center">
+                <q-avatar color="cyan-3" size="30px">
+                      <img src="statics/propil.png" />
+                </q-avatar>
+            </q-item-section>
+            <q-item-section>
+            <div class="text-bold items-center">{{ username }}</div>
+            <div>{{ title }}</div>
+            <div class="">
+              <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
+                icon-half="star_half" no-dimming />
+              {{ rating }}
+            </div>
+            </q-item-section>
+          </div>
           </q-item>
 
           <q-item clickable v-ripple to="/manager/dashboard">
@@ -188,7 +214,23 @@ export default {
   data() {
     return {
       search: "",
+      left: false,
+      username: '',
+      title: '',
+      rating: 3.8
     };
+  },
+  mounted() {
+    this.username = localStorage.getItem('username') || '';
+    this.title = localStorage.getItem('title') || '';
+    // this.userAccessToken = localStorage.getItem('token') || '';
+  },
+
+  methods: {
+    keluar() {
+      localStorage.clear()
+      this.$router.push('/')
+    }
   },
 
   setup() {
