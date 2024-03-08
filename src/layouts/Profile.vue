@@ -7,7 +7,7 @@
           <div>{{ title }}</div>
           <div class="">
             <q-rating v-model="rating" max="1" size="2.5em" color="yellow" icon="star_border" icon-selected="star"
-              icon-half="star_half" no-dimming />
+              icon-half="star_half" no-dimming  />
             {{ rating }}
           </div>
         </div>
