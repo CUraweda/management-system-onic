@@ -144,7 +144,7 @@
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
                     label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue"
-                    label="OK" @click="openEmployeeDialog(props.row)" />
+                    label="OK" @click="openEmployeeDialog(props.row)" :disable="props.row.status !== 'In-progress'" />
                 </div>
               </q-td>
 
@@ -318,6 +318,7 @@ export default {
       pagination: {
         rowsPerPage: 5,
       },
+      pic: "",
     };
   },
   mounted() {
@@ -347,6 +348,7 @@ export default {
   methods: {
     openEmployeeDialog(row) {
       this.id = row.id;
+      this.pic = row.pic;
       this.employee_dialog = true;
     },
 
@@ -483,11 +485,11 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
-          pic_rating: this.rate
+          pic_rating: this.rate,
+          pic: this.pic
         };
-        console.log(this.rate);
 
-        const response = await this.$axios.put("/task/edit/" + this.id, data, {
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },

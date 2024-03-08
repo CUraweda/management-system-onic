@@ -24,7 +24,7 @@
                 <q-icon v-if="search === ''" name="search" text-color="black" />
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
-            </q-input> -->
+</q-input> -->
             <!-- <q-btn round dense flat color="black" icon="notifications">
               <q-badge color="red" text-color="white" floating>
                 5
@@ -38,7 +38,7 @@
                 </q-list>
               </q-menu>
             </q-btn> -->
-            <notification/>
+            <notification />
 
             <!-- <q-btn flat round dense icon="question_mark" color="black" size="15px" /> -->
 
@@ -72,19 +72,19 @@
             <div class="items-center text-center">
               <q-item-section avatar class="items-center">
                 <q-avatar color="cyan-3" size="30px">
-                      <img src="statics/propil.png" />
+                  <img src="statics/propil.png" />
                 </q-avatar>
-            </q-item-section>
-            <q-item-section>
-            <div class="text-bold items-center">{{ username }}</div>
-            <div>{{ title }}</div>
-            <div class="">
-              <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
-                icon-half="star_half" no-dimming />
-              {{ rating }}
-            </div>    
-            </q-item-section>  
-          </div>
+              </q-item-section>
+              <q-item-section>
+                <div class="text-bold items-center">{{ username }}</div>
+                <div>{{ title }}</div>
+                <div class="">
+                  <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
+                    icon-half="star_half" no-dimming />
+                  {{ rating }}
+                </div>
+              </q-item-section>
+            </div>
           </q-item>
 
           <q-item clickable v-ripple to="/operator/dashboard">
@@ -150,7 +150,7 @@ import profile from "./Profile.vue";
 export default {
   name: 'WorkerLayout',
 
-    components: {
+  components: {
     notification,
     profile,
   },
@@ -161,17 +161,24 @@ export default {
       left: false,
       username: '',
       title: '',
-      rating: 3.8
+      rating: 0
     };
   },
-  
+
   mounted() {
+    const storedRating = parseFloat(localStorage.getItem('rate'));
+    this.rating = !isNaN(storedRating) ? storedRating : 0;
+    console.log(this.rating);
     this.username = localStorage.getItem('username') || '';
     this.title = localStorage.getItem('title') || '';
-    // this.userAccessToken = localStorage.getItem('token') || '';
   },
-  
+
+
   methods: {
+    RatingAve() {
+
+    },
+
     keluar() {
       localStorage.clear()
       this.$router.push('/')
