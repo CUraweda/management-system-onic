@@ -12,21 +12,27 @@
         {{ notifNumber }}
       </q-badge>
       <q-menu v-if="showBar">
-        <q-item style="max-width: 490px" clickable v-ripple>
+        <q-item
+          clickable
+          v-ripple
+          v-for="(item, index) in messages"
+          :key="index"
+          style="max-width: 490px"
+        >
           <!-- <q-item-section avatar>
             <q-avatar>
               <img :src="msg.avatar" />
             </q-avatar>
           </q-item-section> -->
 
-          <q-item-section v-for="msg in messages" :key="msg">
-            <q-item-label>{{ msg.taskTitle }}</q-item-label>
-            <q-item-label caption>{{ msg.pic }}</q-item-label>
-            <q-item-label caption lines="1">{{ msg.message }}</q-item-label>
+          <q-item-section>
+            <q-item-label>{{ item.taskTitle }}</q-item-label>
+            <q-item-label caption>{{ item.pic }}</q-item-label>
+            <q-item-label caption lines="1">{{ item.message }}</q-item-label>
           </q-item-section>
 
-          <q-item-section side v-for="msg in messages" :key="msg">
-            {{ msg.timeStamp }}
+          <q-item-section side v-for="(item, index) in messages" :key="index">
+            {{ item.time }}
           </q-item-section>
         </q-item>
       </q-menu>
@@ -45,7 +51,7 @@ export default {
       messages: ref(),
       notifNumber: ref(),
       token: ref(localStorage.getItem("token")),
-      showBar: ref(false)
+      showBar: ref(false),
     };
   },
   mounted() {
@@ -57,16 +63,18 @@ export default {
         console.log(this.token);
         const response = await this.$axios.get(`/notif`, {
           headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
-        if (response.status != 200) throw Error('Error while Requesting Notification')
-        const { notifs, unread } = response.data.data
-        if(notifs.length < 1) { this.showBar = false
-        } else this.showBar = true
+        if (response.status != 200)
+          throw Error("Error while Requesting Notification");
+        const { notifs, unread } = response.data.data;
+        if (notifs.length < 1) {
+          this.showBar = false;
+        } else this.showBar = true;
         this.messages = notifs;
-        this.notifNumber = unread
+        this.notifNumber = unread;
       } catch (err) {
         console.error(err);
         throw err;
@@ -77,15 +85,16 @@ export default {
         this.notifNumber > 0 ? (this.notifNumber = 0) : "";
         const response = await this.$axios.post(`/notif/read`, null, {
           headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
+            Authorization: `Bearer ${this.token}`,
+          },
         });
-        if (response.status != 200) throw Error('Error while Reading Notification')
+        if (response.status != 200)
+          throw Error("Error while Reading Notification");
       } catch (err) {
         console.error(err);
         throw err;
       }
-    }
+    },
   },
 };
 </script>
