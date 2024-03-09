@@ -142,6 +142,7 @@
 
     <div>
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
+  
       <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           <q-card flat>
@@ -250,6 +251,7 @@
 import Vue from 'vue';
 import { exportFile } from 'quasar';
 import CardBase from "components/CardBase";
+import { ref } from 'vue'
 
 // Vue.component('IEcharts', IEcharts);
 
@@ -278,6 +280,7 @@ export default {
       TotalTotal: '0',
       filter: '',
       mode: 'list',
+      rating: ref(2.5),
       search: "",
       deposit: {
         start: "",
@@ -307,11 +310,13 @@ export default {
 
   methods: {
 
+    
     async fetchOpen() {
       try {
+        const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            status: "Open",
             search: this.search,
           },
           headers: {
@@ -319,7 +324,7 @@ export default {
           }
         });
 
-        const openedTasks = response.data.filter(task => task.status === 'Open');
+        const openedTasks = response.data.filter(task => task.pic.title !== 'Open');
 
         this.TotalOpen = openedTasks.length;
         console.log(openedTasks.length);
@@ -333,9 +338,10 @@ export default {
 
     async fetchCompleted() {
       try {
+        const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            status: "Close",
             search: this.search,
           },
           headers: {
@@ -344,7 +350,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Close');
+        const openedTasks = response.data.filter(task => task.pic.title !== 'Close');
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -361,9 +367,10 @@ export default {
 
     async fetchInProgress() {
       try {
+        const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            status: "In-progress",
             search: this.search,
           },
           headers: {
@@ -372,7 +379,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'In-progress');
+        const openedTasks = response.data.filter(task => task.pic.title !== 'In-progress');
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -389,9 +396,10 @@ export default {
 
     async fetchOverdue() {
       try {
+        const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            status: "Idle",
             search: this.search,
           },
           headers: {
@@ -400,7 +408,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Idle');
+        const openedTasks = response.data.filter(task => task.pic.title !== 'Operator');
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -417,9 +425,10 @@ export default {
 
     async fetchTotal() {
       try {
+        const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            status: "",
             search: this.search,
           },
           headers: {

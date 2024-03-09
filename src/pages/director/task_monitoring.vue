@@ -172,8 +172,8 @@
           </q-card-section>
           <q-card-section>
             <div class="q-gutter-md row items-center">
-              <q-slider class="" v-model="model" color="orange" :min="0" :max="5" markers :marker-labels="model"
-                label-always :label-value="model" />
+              <q-slider class="" v-model="rate" color="orange" :min="0" :max="5" markers :marker-labels="rate"
+                label-always :label-value="rate" />
               <q-btn class="q-px-sm bg-yellow-2 text-yellow-9" v-close-popup unelevated @click="submit()">Submit</q-btn>
             </div>
           </q-card-section>
@@ -327,7 +327,7 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {
         // console.log('Clicked on an Item')
@@ -483,7 +483,9 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
+          pic_rating: this.rate
         };
+        console.log(this.rate);
 
         const response = await this.$axios.put("/task/edit/" + this.id, data, {
           headers: {

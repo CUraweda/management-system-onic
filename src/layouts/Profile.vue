@@ -3,8 +3,13 @@
     <div class="no-wrap">
       <div class="col-5">
         <div class="items-center text-center">
-          <div class="text-bold items-center">{{ email }}</div>
-          <div>{{ username }}</div>
+          <div class="text-bold items-center">{{ username }}</div>
+          <div>{{ title }}</div>
+          <div class="">
+            <q-rating v-model="rating" max="1" size="2.5em" color="yellow" icon="star_border" icon-selected="star"
+              icon-half="star_half" no-dimming />
+            {{ rating }}
+          </div>
         </div>
       </div>
 
@@ -28,14 +33,15 @@ export default {
   data() {
     return {
       left: false,
-      email: '',
       username: '',
+      title: '',
+      rating: 1
       // userAccessToken: ''
     }
   },
   mounted() {
-    this.email = localStorage.getItem('email') || '';
     this.username = localStorage.getItem('username') || '';
+    this.title = localStorage.getItem('title') || '';
     // this.userAccessToken = localStorage.getItem('token') || '';
   },
 

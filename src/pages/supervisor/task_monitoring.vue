@@ -285,14 +285,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -450,7 +450,7 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {
       },
@@ -652,6 +652,7 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
+          pic_rating: this.rate
         };
 
         const response = await this.$axios.put(`/task/edit/${this.id}`, data, {

@@ -38,7 +38,7 @@
             </q-btn> -->
             <notification/>
 
-            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+            <!-- <q-btn flat round dense icon="question_mark" color="black" size="15px" /> -->
 
             <q-btn round dense flat>
               <q-avatar color="cyan-3" size="30px">
@@ -65,6 +65,20 @@
 
           <q-item>
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+          </q-item>
+
+          <q-item class="items-center">
+            <div class="items-center text-center">
+              <q-item-section avatar class="items-center">
+                <q-avatar color="cyan-3" size="30px">
+                      <img src="statics/propil.png" />
+                </q-avatar>
+            </q-item-section>
+            <q-item-section class="items-center">
+            <div class="text-bold items-center">{{ username }}</div>
+            <div>{{ title }}</div>  
+            </q-item-section>  
+          </div>
           </q-item>
 
           <q-item clickable v-ripple to="/director/dashboard">
@@ -158,7 +172,23 @@ export default {
   data() {
     return {
       search: "",
+      left: false,
+      username: '',
+      title: '',
     };
+  },
+
+  mounted() {
+    this.username = localStorage.getItem('username') || '';
+    this.title = localStorage.getItem('title') || '';
+    // this.userAccessToken = localStorage.getItem('token') || '';
+  },
+  
+  methods: {
+    keluar() {
+      localStorage.clear()
+      this.$router.push('/')
+    }
   },
 
   setup() {
