@@ -31,7 +31,7 @@
             <q-item-label caption lines="1">{{ item.message }}</q-item-label>
           </q-item-section>
 
-          <q-item-section side v-for="(item, index) in messages" :key="index">
+          <q-item-section side>
             {{ item.time }}
           </q-item-section>
         </q-item>
