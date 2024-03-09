@@ -97,11 +97,11 @@
             <q-item-section>
             <div class="text-bold items-center">{{ username }}</div>
             <div>{{ title }}</div>
-            <div class="">
+            <!-- <div class="">
               <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
-                icon-half="star_half" no-dimming hint="readonly" :dense="dense" disable readonly />
+                icon-half="star_half" no-dimming hint="readonly" :dense="dense" disable />
               {{ rating }}
-            </div>
+            </div> -->
             </q-item-section>
           </div>
           </q-item>

@@ -9,20 +9,24 @@ export default {
     return {
       series: [{
         name: 'Completed',
-        data: [90, 55, 57, 56]
+        data: [7, 5, 7, 6]
       }, {
         name: 'In-progress',
-        data: [76, 85, 101, 98]
+        data: [4, 8, 1, 8]
       }, {
         name: 'Overdue',
-        data: [35, 41, 36, 26]
+        data: [0, 4, 3, 6]
       },{
         name: 'Opened',
-        data: [35, 41, 36, 26]
+        data: [3, 4, 6, 6]
+      },
+      {
+        name: 'Total',
+        data: [14, 11, 12, 15]
       },
     ],
       chartOptions: {
-        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50'],
+        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50', '#5196F3'],
         animations: {
           enabled: true,
           easing: 'easeinout',

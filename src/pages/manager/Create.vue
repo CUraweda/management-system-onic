@@ -203,7 +203,7 @@
             <div class="col-12">
               <q-item>
                 <q-item-selection class="row items-center">
-                  <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
+                  <q-item-label class="text-weight-bold q-pb-xs col-12">Superior</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
                     <q-select dense filled v-model="selectedspv" name="spv" disable use-input input-debounce="0"
                       :options="spvOptions" behavior="menu" class="col-6" :rules="[
