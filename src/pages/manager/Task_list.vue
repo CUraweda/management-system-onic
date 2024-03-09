@@ -214,7 +214,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -399,7 +399,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -584,7 +584,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disabled="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    :disabled="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    :disabled="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    :disabled="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -618,7 +618,7 @@
             </q-tr>
           </template>
         </q-table>
-          </q-card-section> 
+          </q-card-section>
         </q-card>
       </div>
     </q-expansion-item>
@@ -742,8 +742,8 @@ export default {
           field: "detail",
           sortable: true,
         },
-   
-     
+
+
       ],
       data: [],
       deleted_data: [],

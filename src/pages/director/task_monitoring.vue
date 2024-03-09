@@ -144,7 +144,8 @@
                   <q-btn dense class="under-title q-px-sm" rounded no-caps unelevated color="red-2" text-color="red"
                     label="Revise" @click="Revise(props.row.id)" />
                   <q-btn dense unelevated color="blue-2" class="under-title q-px-sm" rounded text-color="blue"
-                    label="OK" @click="openEmployeeDialog(props.row)" :disable="props.row.status !== 'In-progress'" />
+                    label="OK" @click="openEmployeeDialog(props.row)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />
                 </div>
               </q-td>
 

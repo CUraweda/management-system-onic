@@ -167,7 +167,7 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()">
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
                     Download File
                   </q-btn>
                   <q-btn @click="downloadFile()">
@@ -175,8 +175,8 @@
                   </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
                   <div class="q-pt-md"></div>
-                  <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
-                    color="grey" />
+                  <!-- <q-uploader class="col-6 q-mb-md" square flat bordered url="" label="Dokumen Hasil" multiple
+                    color="grey" /> -->
 
                   <div v-if="task_type === 'Multi'" class="q-pt-md row q-gutter-md justify-between col-12 items-center">
                     <q-select multiple dense v-model="picrate" filled use-input input-debounce="0" :options="picoptions"
@@ -192,14 +192,14 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Ok()" />
+                      no-caps class="col-5" @click="Ok()" :disable="finished_at === null || (status !== 'In-progress' && status !== 'Idle')" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
                         Feedback
                       </div>
-                      <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange"
-                        :min="0" :max="5" markers :marker-labels="model" label-always :label-value="model" />
+                      <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="rate" color="orange"
+                        :min="0" :max="5" markers :marker-labels="rate" label-always :label-value="rate" />
                     </div>
                   </div>
 
@@ -218,14 +218,14 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Ok()" />
+                      no-caps class="col-5" @click="Ok()" :disable="finished_at === null || (status !== 'In-progress' && status !== 'Idle')"/>
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
                         Feedback
                       </div>
-                      <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="model" color="orange"
-                        :min="0" :max="5" markers :marker-labels="model" label-always :label-value="model" />
+                      <q-slider class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg" v-model="rate" color="orange"
+                        :min="0" :max="5" markers :marker-labels="rate" label-always :label-value="rate" />
                     </div>
                   </div>
                 </div>
@@ -291,10 +291,9 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       text: ref(''),
       id: store.id,
-      ratingModel: ref(0),
       ratingColors: ['yellow'],
       picrate: ref([]),
     };
@@ -447,29 +446,10 @@ export default {
     },
 
     async UpdateStatus() {
-
-      if (this.status === "Wait-app") {
         this.$q.notify({
           color: 'warning',
           message: 'Task Idle',
         });
-      } else {
-        const data = {
-          status: "Idle",
-        };
-
-        try {
-          const id = this.id;
-          await this.$axios.put('/task/edit/' + id, data, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          });
-        } catch (error) {
-          console.error('EROR:', error);
-        }
-      }
     },
 
     stopCountdown() {
@@ -579,31 +559,30 @@ export default {
     },
 
     async Ok() {
-      const data = {
-        status: "Close",
-        approved_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic
+        };
+
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
-
-        if (response.status === 200) {
-          this.$q.notify({
-            message: 'Task Approved',
-          });
-          this.$router.push('/director/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Approving Task',
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
+        this.$q.notify({
+          message: "Task Done",
+        });
+        this.fetchData();
+      } catch (err) {
+        console.log(err);
+        return this.$q.notify(error.message);
       }
+      this.$router.push({ path: "/director/task_monitoring" });
     },
 
     async Cancel() {

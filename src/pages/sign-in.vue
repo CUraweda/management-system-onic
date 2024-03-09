@@ -131,11 +131,16 @@ export default {
           const Avgrate = u_rate / total_task;
 
           // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
-          localStorage.setItem('rate', Avgrate);
           localStorage.setItem('token', accessToken);
           localStorage.setItem('email', email);
           localStorage.setItem('username', name);
           localStorage.setItem('title', title);
+          if(title === "director")
+          {
+            localStorage.setItem('rate', 5)
+          } else {
+            localStorage.setItem('rate', Avgrate)
+          };
 
           this.redirectUser(title);
 

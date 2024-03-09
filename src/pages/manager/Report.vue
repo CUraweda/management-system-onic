@@ -192,7 +192,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Ok()" />
+                      no-caps class="col-5" @click="Ok()" :disable="props.row.finished_at === null || props.row.status !== 'In-progress'" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">

@@ -230,7 +230,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disabled="props.row.finished_at === null || props.row.status !== 'In-progress'" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>

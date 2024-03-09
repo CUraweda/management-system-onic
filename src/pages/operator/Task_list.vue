@@ -187,7 +187,7 @@
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
+                  <q-btn dense unelevated @click="Detail(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -214,7 +214,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -372,7 +372,7 @@
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
+                  <q-btn dense unelevated @click="Detail(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -399,7 +399,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -557,7 +557,7 @@
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
+                  <q-btn dense unelevated @click="Detail(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -584,7 +584,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -734,8 +734,8 @@ export default {
           field: "detail",
           sortable: true,
         },
-   
-     
+
+
       ],
       data: [],
       pagination: {
