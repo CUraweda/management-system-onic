@@ -31,6 +31,7 @@ import ManagerReport from "pages/manager/Report.vue";
 import ManagerTaskList from "pages/manager/Task_list.vue";
 import ManagerTaskDetail from "pages/manager/Task_detail.vue";
 import ManagerTaskDetail2 from "pages/manager/Task_detail_2.vue";
+import UploadManager from "pages/manager/upload.vue";
 
 // supervisor
 import SupervisorDashboard from "pages/supervisor/Dashboard.vue";
@@ -43,6 +44,7 @@ import SupervisorTaskList from "pages/supervisor/Task_list.vue";
 import SupervisorTaskDetail from "pages/supervisor/Task_detail.vue";
 import SupervisorTaskDetail2 from "pages/supervisor/Task_detail_2.vue";
 import SupervisorReport from "pages/supervisor/Report.vue";
+import UploadSupervisor from "pages/supervisor/upload.vue";
 
 // operator
 import OperatorDashboard from "pages/operator/Dashboard.vue";
@@ -157,6 +159,12 @@ const routes = [
         component: ManagerReport,
         props: true,
       },
+      {
+        path: "upload",
+        meta: { title: "UPLOAD" },
+        component: UploadManager,
+        props: true,
+      },
     ],
   },
   {
@@ -215,6 +223,12 @@ const routes = [
         path: "report",
         meta: { title: "REPORTS" },
         component: SupervisorReport,
+        props: true,
+      },
+      {
+        path: "upload",
+        meta: { title: "UPLOAD" },
+        component: UploadSupervisor,
         props: true,
       },
     ],

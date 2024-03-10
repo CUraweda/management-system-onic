@@ -84,7 +84,12 @@
       >
         <q-list padding>
           <q-item>
-            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+            <q-img
+              clickable
+              @click="miniState = true"
+              class="q-mx-md q-mt-none"
+              src="statics/logo.jpg"
+            ></q-img>
           </q-item>
 
           <q-item class="text-center items-center">
@@ -157,6 +162,14 @@
             <q-item-section> Deleted Task</q-item-section>
           </q-item>
 
+          <q-item clickable v-ripple to="/manager/upload">
+            <q-item-section avatar>
+              <q-icon name="upload" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Upload Task</q-item-section>
+          </q-item>
+
           <!-- <q-item disable>
             <q-item-section avatar>
               <q-icon name="assignment" color="grey-7" size="30px" />
@@ -213,22 +226,22 @@ export default {
     return {
       search: "",
       left: false,
-      username: '',
-      title: '',
-      rating: 3.8
+      username: "",
+      title: "",
+      rating: 3.8,
     };
   },
   mounted() {
-    this.username = localStorage.getItem('username') || '';
-    this.title = localStorage.getItem('title') || '';
+    this.username = localStorage.getItem("username") || "";
+    this.title = localStorage.getItem("title") || "";
     // this.userAccessToken = localStorage.getItem('token') || '';
   },
 
   methods: {
     keluar() {
-      localStorage.clear()
-      this.$router.push('/')
-    }
+      localStorage.clear();
+      this.$router.push("/");
+    },
   },
 
   setup() {
