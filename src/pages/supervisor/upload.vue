@@ -76,8 +76,34 @@
                 outline
                 label="Export"
                 no-caps
-                @click="exportTable"
+                @click="uploadTask = true"
               />
+              <q-dialog v-model="uploadTask">
+                <q-card>
+                  <q-card-section class="row items-center q-pb-none">
+                    <div class="text-h6">Upload Task</div>
+                    <q-space />
+                    <q-btn icon="close" flat round dense v-close-popup />
+                  </q-card-section>
+
+                  <q-card-section>
+                    <q-file
+                      v-model="fileTask"
+                      label="Upload File"
+                      filled
+                      style="width: 400px"
+                      multiple
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="attach_file" />
+                      </template>
+                    </q-file>
+                  </q-card-section>
+                  <q-card-actions align="right">
+                    <q-btn label="Submit" color="cyan" />
+                  </q-card-actions>
+                </q-card>
+              </q-dialog>
             </q-card-section>
           </div>
         </div>
@@ -97,103 +123,25 @@
           :pagination.sync="pagination"
         >
           <template v-slot:body="props">
-            <q-tr
-              :props="props"
-              :class="
-                props.row.status == 'Idle'
-                  ? 'bg-yellow-3 text-black'
-                  : 'bg-white text-black'
-              "
-            >
-              <q-td key="id" :props="props">
-                <div>{{ props.row.id }}</div>
+            <q-tr :props="props">
+              <q-td key="no" :props="props">
+                <div>{{ props.row.no }}</div>
               </q-td>
 
-              <q-td key="task_title" :props="props">
-                <div>{{ props.row.task_title }}</div>
+              <q-td key="file_names" :props="props">
+                <div>{{ props.row.fileName }}</div>
               </q-td>
 
-              <q-td key="pic" :props="props">
-                <div>{{ props.row.pic }}</div>
+              <q-td key="upload_date" :props="props">
+                <div>{{ props.row.uploadDate }}</div>
               </q-td>
 
-              <q-td key="pic_title" :props="props">
-                <div>{{ props.row.pic_title }}</div>
+              <q-td key="upload_by" :props="props">
+                <div>{{ props.row.uploadBy }}</div>
               </q-td>
 
-              <q-td key="start_date" :props="props">
-                <div>{{ formatLocalTime(props.row.start_date) }}</div>
-              </q-td>
-
-              <q-td key="due_date" :props="props">
-                <div>{{ formatLocalTime(props.row.due_date) }}</div>
-              </q-td>
-
-              <!-- priority -->
-
-              <q-td key="priority" :props="props">
-                <q-chip
-                  :color="
-                    props.row.priority == 'Important'
-                      ? 'white text-red'
-                      : props.row.priority == 'High'
-                      ? 'white text-orange'
-                      : props.row.priority == 'Normal'
-                      ? 'white text-blue'
-                      : 'secondary'
-                  "
-                  text-color="white"
-                  dense
-                  class="text-center under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.priority }}
-                </q-chip>
-              </q-td>
-
-              <q-td key="status" :props="props">
-                <q-chip
-                  :color="
-                    props.row.status == 'Deleted'
-                      ? 'white text-red'
-                      : props.row.status == 'Idle'
-                      ? 'white text-orange'
-                      : props.row.status == 'Wait-app'
-                      ? 'white text-blue'
-                      : props.row.status == 'Completed'
-                      ? 'white text-blue'
-                      : props.row.status == 'In-progress'
-                      ? 'white text-orange'
-                      : props.row.status == 'Open'
-                      ? 'white text-green'
-                      : 'secondary'
-                  "
-                  dense
-                  class="under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.status }}
-                </q-chip>
-              </q-td>
-
-              <!-- priority -->
-              <q-td key="Progress" :props="props">
-                <q-linear-progress
-                  grey
-                  :color="getColor(props.row.progress)"
-                  :value="props.row.progress / 100"
-                  class="q-mt-md"
-                />
-              </q-td>
-
-              <q-td key="progress" :props="props">
-                <div>{{ props.row.progress }}%</div>
-              </q-td>
-
-              <q-td key="Review" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
-                    <q-icon name="img:/statics/reportc.svg" />
-                  </q-btn>
-                </div>
+              <q-td key="jabatan" :props="props">
+                <div>{{ props.row.jabatan }}</div>
               </q-td>
             </q-tr>
           </template>
@@ -275,6 +223,8 @@ export default {
   name: "TaskMonitoring3",
   data() {
     return {
+      fileTask: ref(),
+      uploadTask: ref(false),
       filter: "",
       mode: "list",
       invoice: {},
