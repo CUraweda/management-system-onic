@@ -355,7 +355,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Supervisor</q-item-label
+                    >Superior</q-item-label
                   >
                   <q-form
                     multiple
@@ -477,7 +477,7 @@
                       filled
                       type="submit"
                       v-close-popup
-                      to="/operator/task_monitoring"                  
+                      to="/operator/task_monitoring"
                     />
                     <q-btn
                       unelevated
@@ -686,9 +686,13 @@ export default {
     },
 
     addToForm(properties, value) {
-      console.log(value);
-      if (!value) throw Error("Please fill all input");
-      this.sendedForm[properties] = value;
+      // Check if the value is empty (undefined, null, or empty string)
+      if (properties !== 'bukti_tayang' && (value === undefined || value === null || value === "")) {
+        throw new Error(`Please fill all input`);
+      } else {
+        // Assign the value to the specified property in sendedForm
+        this.sendedForm[properties] = value;
+      }
     },
 
     async create() {
@@ -705,7 +709,7 @@ export default {
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", this.pic_title);
+        this.addToForm("pic_title", "operator");
         this.addToForm(
           "created_by",
           localStorage.getItem("username") || "Unknown"

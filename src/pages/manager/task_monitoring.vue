@@ -66,49 +66,7 @@
                 </template>
               </q-input>
 
-              <q-btn-dropdown
-                unelevated
-                text-color="dark"
-                color="grey-3"
-                label="Category"
-                dropdown-icon="expand_more"
-                no-caps
-                class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5"
-              >
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-
-              <q-select
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title"
-                filled
-                v-model="deposit.account"
-                use-input
-                multiple
-                dense
-                input-debounce="0"
-                label="Filter"
-                :options="options"
-                @filter="filterFn"
-                dropdown-icon="filter_list"
-              ></q-select>
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -231,7 +189,7 @@
               </q-td>
 
               <q-td key="progress" :props="props">
-                <div>{{ props.row.progress }}</div>
+                <div>{{ props.row.progress }}%</div>
               </q-td>
 
               <q-td key="detail" :props="props">
@@ -263,6 +221,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')"
                     @click="openEmployeeDialog(props.row)"
                   />
                 </div>
@@ -318,14 +277,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -416,11 +375,17 @@ export default {
           field: "pic_title",
           sortable: true,
         },
-
+        {
+          name: "start_date",
+          align: "left",
+          label: "Start Project",
+          field: "start_date",
+          sortable: true,
+        },
         {
           name: "due_date",
           align: "left",
-          label: "Due Date",
+          label: "End Project",
           field: "due_date",
           sortable: true,
         },
@@ -480,10 +445,9 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },
@@ -500,6 +464,7 @@ export default {
   methods: {
     openEmployeeDialog(row) {
       this.id = row.id;
+      this.pic = row.pic;
       this.employee_dialog = true;
     },
 
@@ -524,13 +489,12 @@ export default {
     },
 
     Edit(id) {
-      store.id = id 
+      store.id = id
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
-      store.id = id 
+      store.id = id
       this.$router.push("report/");
     },
 
@@ -611,12 +575,19 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const response = await this.$axios.get("/task/all/supervisor", {
-          params: { status: statusFilter, search: this.search },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
         });
-        this.data = response.data.sort(
-          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-        );
+
+        if (Array.isArray(response.data)) {
+          const filteredData = response.data.filter((item) => item.pic_title !== "Manager");
+          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        } else {
+          console.error("Invalid response format:", response);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -634,9 +605,11 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic
         };
 
-        const response = await this.$axios.put("/task/edit/" + this.id, data, {
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },

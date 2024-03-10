@@ -37,7 +37,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.start"
+                v-model="deposit.date"
                 mask="date"
                 label="From"
               >
@@ -48,7 +48,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.start" />
+                      <q-date v-model="deposit.date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -58,7 +58,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.due"
+                v-model="deposit.date"
                 mask="date"
                 label="To"
               >
@@ -69,55 +69,13 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.due" />
+                      <q-date v-model="deposit.date" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
               </q-input>
 
-              <q-btn-dropdown
-                unelevated
-                text-color="dark"
-                color="grey-3"
-                label="Category"
-                dropdown-icon="expand_more"
-                no-caps
-                class="text-weight-regular under-title bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5"
-              >
-                <q-list>
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 1</q-item-label>
-                    </q-item-section>
-                  </q-item>
 
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 2</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                  <q-item clickable v-close-popup @click="onItemClick">
-                    <q-item-section>
-                      <q-item-label>Category 3</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-
-              <q-select
-                class="bg-grey-2 col-lg-2 col-md-2 col-sm-5 col-xs-5 under-title"
-                filled
-                v-model="deposit.account"
-                use-input
-                multiple
-                dense
-                input-debounce="0"
-                label="Filter"
-                :options="options"
-                @filter="filterFn"
-                dropdown-icon="filter_list"
-              ></q-select>
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -239,14 +197,9 @@
                 />
               </q-td>
 
-              <q-td key="progress" :props="props">
-                <div>{{ props.row.progress }}</div>
-              </q-td>
-
               <q-td key="Progress" :props="props">
                 <div>{{ props.row.progress }} %</div>
               </q-td>
-
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
@@ -277,7 +230,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
+                    :disabled="props.row.finished_at === null || props.row.status !== 'In-progress'" />                    @click="openEmployeeDialog(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -332,14 +285,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -395,10 +348,7 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {
-        start:"",
-        due:"",
-      },
+      deposit: {},
       options: stringOptions,
       employee_dialog: false,
       columns: [
@@ -430,11 +380,17 @@ export default {
           field: "pic_title",
           sortable: true,
         },
-
+        {
+          name: "start_date",
+          align: "left",
+          label: "Start Project",
+          field: "start_date",
+          sortable: true,
+        },
         {
           name: "due_date",
           align: "left",
-          label: "Due Date",
+          label: "End Project",
           field: "due_date",
           sortable: true,
         },
@@ -494,18 +450,26 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {
-        // console.log('Clicked on an Item')
       },
     };
   },
 
+  watch: {
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : "";
+        this.fetchData();
+      },
+    },
+  },
+
   methods: {
     openEmployeeDialog(row) {
-      this.id = row;
-      console.log(row);
+      this.id = row.id;
+      this.pic = row.pic;
       this.employee_dialog = true;
     },
 
@@ -532,7 +496,6 @@ export default {
     Edit(id) {
       store.id = id;
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
@@ -547,7 +510,7 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put("/task/edit/" + id, data, {
+        const response = await this.$axios.put("/task/edit/"+id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -583,6 +546,7 @@ export default {
       try {
         // 1. Ambil data dari tugas yang akan direvisi
         const taskToRevise = await this.fetchTaskById(id);
+        console.log(" task yang kudu di rv:" + taskToRevise.fileName);
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
@@ -626,13 +590,12 @@ export default {
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
         const updateTaskResponse = await this.$axios.put("/task/edit/" + id, {
+            status: "Deleted",
+            deleted_at: new Date().toISOString(),
+          },{
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          }),
         });
 
         if (updateTaskResponse.status === 200) {
@@ -640,7 +603,7 @@ export default {
             type: "positive",
             message: "Task Revised",
           });
-          this.$router.push("/supervisor/task_monitoring");
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Revising Task",
@@ -649,19 +612,24 @@ export default {
       } catch (error) {
         console.error("Error:", error);
       }
-      // window.location.reload();
     },
 
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        console.log(statusFilter);
-        const response = await this.$axios.get("/task/all/operator", {
-          params: { status: statusFilter },
+        const response = await this.$axios.get("/task/all", {
+          params: {
+            status: statusFilter,
+            search: this.search,
+          },
         });
-        this.data = response.data.sort(
-          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-        );
+
+        if (Array.isArray(response.data)) {
+          const filteredData = response.data.filter((item) => item.pic_title !== "Manager" && item.pic_title !== "Supervisor");
+          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        } else {
+          console.error("Invalid response format:", response);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -685,9 +653,11 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic
         };
 
-        const response = await this.$axios.put(`/task/edit/${this.id}`, data, {
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -695,16 +665,12 @@ export default {
         if (response.status != 200)
           throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
-          type: "positive",
           message: "Task Done",
         });
         this.fetchData();
       } catch (err) {
         console.log(err);
-        return this.$q.notify({
-          type: "negative",
-          message: "Terjadi kesalahan, mohon coba ulang",
-        });
+        return this.$q.notify(error.message);
       }
     },
 

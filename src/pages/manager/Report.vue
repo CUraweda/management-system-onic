@@ -192,7 +192,7 @@
                     <q-btn unelevated class="col-5" :ripple="{ color: 'red' }" color="red-1" text-color="red"
                       label="Revise" no-caps @click="Revise()" />
                     <q-btn unelevated :ripple="{ color: 'blue' }" color="light-blue-1" text-color="blue" label="OK"
-                      no-caps class="col-5" @click="Ok()" />
+                      no-caps class="col-5" @click="Ok()" :disable="props.row.finished_at === null || props.row.status !== 'In-progress'" />
                     <div class="q-py-md text-weight-bold text-body1">Beri Rating untuk Pekerja!</div>
                     <div class="q-gutter-md row col-12 items-center">
                       <div class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9">
@@ -387,7 +387,6 @@ export default {
 
     async fetchData() {
       try {
-        console.log(this.id)
         const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
@@ -439,7 +438,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
         }
@@ -579,31 +577,30 @@ export default {
     },
 
     async Ok() {
-      const data = {
-        status: "Close",
-        approved_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await this.$axios.put('/task/edit/' + this.id, data, {
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic
+        };
+
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
-
-        if (response.status === 200) {
-          this.$q.notify({
-            message: 'Task Approved',
-          });
-          this.$router.push('/manager/task_monitoring');
-        } else {
-          this.$q.notify({
-            message: 'Failed Approving Task',
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
+        this.$q.notify({
+          message: "Task Done",
+        });
+        this.fetchData();
+      } catch (err) {
+        console.log(err);
+        return this.$q.notify(error.message);
       }
+      this.$router.push({ path: "/manager/task_monitoring" });
     },
 
     async Cancel() {

@@ -57,7 +57,7 @@
 
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-          <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Completed')">
+          <q-card class="no-shadow cursor-pointer q-hoverable" v-ripple clickable @click="redirectToTaskMonitoring('Close')">
             <span class="q-focus-helper"></span>
             <q-card-section style="height: 270px" :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
               class="text-black">
@@ -69,7 +69,7 @@
               </q-card-section>
               <q-space></q-space>
               <q-card-section class="text-center">
-                <div class="text-h4 text-weight-bold q-mt-none">68</div>
+                <div class="text-h4 text-weight-bold q-mt-none">{{TotalCompleted}}</div>
                 Increased by 6 this week
               </q-card-section>
             </q-card-section>
@@ -89,7 +89,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">17</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{TotalInProgress}}</div>
               Decreased by 5 this week
             </q-card-section>
           </q-card-section>
@@ -110,7 +110,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">9</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{TotalOverdue}}</div>
               Increased by 3 this week
             </q-card-section>
           </q-card-section>
@@ -130,7 +130,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">84</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{TotalOpen}}</div>
               Increased by 8 this week
             </q-card-section>
           </q-card-section>
@@ -150,7 +150,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">85</div>
+              <div class="text-h4 text-weight-bold q-mt-none">{{TotalTotal}}</div>
               Completion rate: 80%
             </q-card-section>
           </q-card-section>
@@ -162,7 +162,8 @@
     <!-- task card  -->
 
     <div>
-      <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
+      <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>        
+      
       <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           <q-card flat>
@@ -346,7 +347,15 @@
             <q-card-section>
               <CardBase>
                 <div class="col-12">
-                  <apex-column-charts-basic></apex-column-charts-basic>
+                  <apex-column-charts-basic
+                    :taskStatusData="{
+                      open: TotalOpen,
+                      inProgress: TotalInProgress,
+                      overdue: TotalOverdue,
+                      completed: TotalCompleted,
+                      total: TotalTotal,
+                    }"
+                  ></apex-column-charts-basic>
                 </div>
               </CardBase>
             </q-card-section>
@@ -362,6 +371,7 @@
 import Vue from 'vue';
 import { exportFile } from 'quasar';
 import CardBase from "components/CardBase";
+import { ref } from 'vue'
 
 // Vue.component('IEcharts', IEcharts);
 
@@ -383,9 +393,15 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      TotalOpen: '0',
+      TotalInProgress: '0',
+      TotalOverdue: '0',
+      TotalCompleted: '0',
+      TotalTotal: '0',
       filter: '',
       mode: 'list',
       search: "",
+      rating: ref(2.5),
       deposit: {
 start:"",
         due:"",
@@ -399,11 +415,134 @@ start_2:"",
   setup() {
     return {
       onItemClick() {
-        console.log('Clicked on an Item')
       },
     };
   },
+
+  mounted() {
+    this.fetchOpen();
+    this.fetchInProgress();
+    this.fetchCompleted();
+    this.fetchOverdue();
+    this.fetchTotal();
+  },
+
   methods: {
+    async fetchOpen() {
+      try {
+        const response = await this.$axios.get("/task/all", {
+          params: { status: 'Open', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+
+        // Log the length of opened tasks
+        this.TotalOpen = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchCompleted() {
+      try {
+        const response = await this.$axios.get("/task/all", {
+          params: { status: 'Close', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+
+        // Log the length of opened tasks
+        this.TotalCompleted = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+
+    async fetchInProgress() {
+      try {
+        const response = await this.$axios.get("/task/all", {
+          params: { status: 'In-progress', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+
+        // Log the length of opened tasks
+        this.TotalInProgress = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchOverdue() {
+      try {
+        const response = await this.$axios.get("/task/all", {
+          params: { status: 'Idle', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+
+        // Log the length of opened tasks
+        this.TotalOverdue = openedTasks.length;
+        console.log(openedTasks.length);
+
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+    async fetchTotal() {
+      try {
+        const response = await this.$axios.get("/task/all", {
+          params: { status: '', search: this.search },
+        });
+
+        // Assuming response.data is an array of tasks
+        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" )  
+
+        // Log the length of opened tasks
+        this.TotalTotal = openedTasks.length;
+        console.log(openedTasks.length);
+
+        // You can use this value in your component or store it in a data property
+        return openedTasks.length;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle the error as needed, maybe set a default value or show an error message
+        return 0;
+      }
+    },
+
+
+
     redirectToTaskMonitoring(statusFilter) {
       this.$router.push({
         path: '/supervisor/task_monitoring',

@@ -605,8 +605,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log(totalSeconds);
-          console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
         }
@@ -753,31 +751,30 @@ export default {
     },
 
     async Ok() {
-      const data = {
-        status: "Close",
-        approved_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await this.$axios.put("/task/edit/" + this.id, data, {
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic
+        };
+
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-
-        if (response.status === 200) {
-          this.$q.notify({
-            message: "Task Approved",
-          });
-          this.$router.push("/supervisor/task_monitoring");
-        } else {
-          this.$q.notify({
-            message: "Failed Approving Task",
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
+        this.$q.notify({
+          message: "Task Done",
+        });
+        this.fetchData();
+      } catch (err) {
+        console.log(err);
+        return this.$q.notify(error.message);
       }
+      this.$router.push({ path: "/supervisor/task_monitoring" });
     },
 
     async Cancel() {

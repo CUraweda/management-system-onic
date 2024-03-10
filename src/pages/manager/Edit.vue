@@ -182,7 +182,7 @@
             <div class="col-12">
               <q-item>
                 <q-item-selection class="row items-center">
-                  <q-item-label class="text-weight-bold q-pb-xs col-12">Supervisor</q-item-label>
+                  <q-item-label class="text-weight-bold q-pb-xs col-12">Superior</q-item-label>
                   <q-form multiple @submit="onSubmitspv" class="row q-gutter-sm items-center">
                     <q-select readonly multiple dense filled v-model="form.spv" name="spv" use-input input-debounce="0"
                       :options="spvoptions" behavior="menu" class="col-6">
@@ -409,7 +409,6 @@ export default {
 
   methods: {
     async fetchData() {
-      console.log(this.id)
       try {
         const response = await this.$axios.get('/task/get-by-id/' + this.id);
         this.form.task_type = response.data.task_type;
