@@ -332,84 +332,39 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
-      yellow: ["yellow"],
-      id: store.id,
-      onItemClick() {},
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.fetchHistory()
+  },
 
-  watch: {},
+  watch: {
+    search:{
+      handler(value){
+        this.search = value != "" ? value : ""
+      }
+    }
+  },
 
   methods: {
-    formatLocalTime(utcTime) {
-      const localTime = new Date(utcTime).toLocaleString();
-      return localTime;
-    },
-
-    getRowColor(status) {
-      if (status === "Open") {
-        return "bg-blue-3"; // Change it to your desired color class
+    async fetchHistory() {
+      try{
+        const histories = await this.$axios.post('/upload/', {
+          params: {
+            search: this.search,
+            ...(this.deposit.start != "" && {from: this.deposit.start}),
+            ...(this.deposit.due != "" &&{ to: this.deposit.due}),
+          }
+        })
+        console.log(histories)
+      }catch(err){
+        console.log(err)
+        return this.$q.notify({
+          message: "Error occured while fetching data"
+        })
       }
-      return ""; // No background color for other statuses
-    },
-
-    filterFn(val, update) {
-      if (val === "") {
-        update(() => {
-          this.options = stringOptions;
-        });
-        return;
-      }
-
-      update(() => {
-        const needle = val.toLowerCase();
-        this.options = stringOptions.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
-      });
-    },
-
-    exportTable() {
-      // naive encoding to csv format
-      const content = [this.columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          this.data.map((row) =>
-            this.columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.pic : col.field],
-                  col.format
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
-
-      const status = exportFile("change-request.csv", content, "text/csv");
-
-      if (status !== true) {
-        this.$q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
-        });
-      }
-    },
-
-    getColor(val) {
-      if (val > 70 && val <= 100) {
-        return "green";
-      } else if (val > 50 && val <= 70) {
-        return "blue";
-      }
-      return "red";
-    },
+    }
   },
 };
 </script>
