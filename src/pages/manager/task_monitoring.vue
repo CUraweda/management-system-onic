@@ -464,6 +464,7 @@ export default {
   methods: {
     openEmployeeDialog(row) {
       this.id = row.id;
+      this.pic = row.pic;
       this.employee_dialog = true;
     },
 
@@ -604,10 +605,11 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
-          pic_rating: this.rate
+          pic_rating: this.rate,
+          pic: this.pic
         };
 
-        const response = await this.$axios.put("/task/edit/" + this.id, data, {
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -619,6 +621,7 @@ export default {
         });
         this.fetchData();
       } catch (err) {
+        console.log(err);
         return this.$q.notify(error.message);
       }
     },

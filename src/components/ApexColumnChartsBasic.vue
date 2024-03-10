@@ -1,32 +1,21 @@
 <template>
-  <apexchart type="bar" height="321"   :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="bar" height="321" :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
 export default {
-  name: 'ApexColumnChartsBasic',
+  name: 'TaskStatusChart',
+  props: {
+    taskStatusData: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
-      series: [{
-        name: 'Completed',
-        data: [7, 5, 7, 6]
-      }, {
-        name: 'In-progress',
-        data: [4, 8, 1, 8]
-      }, {
-        name: 'Overdue',
-        data: [0, 4, 3, 6]
-      },{
-        name: 'Opened',
-        data: [3, 4, 6, 6]
-      },
-      {
-        name: 'Total',
-        data: [14, 11, 12, 15]
-      },
-    ],
+      series: [],
       chartOptions: {
-        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50', '#5196F3'],
+        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50', '#2816F3'],
         animations: {
           enabled: true,
           easing: 'easeinout',
@@ -86,11 +75,49 @@ export default {
         tooltip: {
           y: {
             formatter: function (val) {
-              return '$ ' + val + ' thousands'
+              return  val + ' Task'
             }
           }
         }
-      }
+      },
+    }
+  },
+  watch: {
+    taskStatusData: {
+      handler(newData) {
+        // Update the series with new data when taskStatusData changes
+        this.updateSeries(newData);
+        console.log(newData);
+      },
+      immediate: true // Trigger the handler immediately when the component is created
+    }
+  },
+  
+  methods: {
+    updateSeries(newData) {
+      // Update the series with dynamic data
+      this.series = [
+        {
+          name: 'Completed',
+          data: [newData.completed]
+        },
+        {
+          name: 'In-progress',
+          data: [newData.inProgress]
+        },
+        {
+          name: 'Overdue',
+          data: [newData.overdue]
+        },
+        {
+          name: 'Open',
+          data: [newData.open]
+        },
+        {
+          name: 'Total',
+          data: [newData.total]
+        }
+      ];
     }
   }
 }

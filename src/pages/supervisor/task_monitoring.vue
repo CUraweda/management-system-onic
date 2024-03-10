@@ -468,7 +468,8 @@ export default {
 
   methods: {
     openEmployeeDialog(row) {
-      this.id = row;
+      this.id = row.id;
+      this.pic = row.pic;
       this.employee_dialog = true;
     },
 
@@ -652,10 +653,11 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
-          pic_rating: this.rate
+          pic_rating: this.rate,
+          pic: this.pic
         };
 
-        const response = await this.$axios.put(`/task/edit/${this.id}`, data, {
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -663,15 +665,12 @@ export default {
         if (response.status != 200)
           throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
-          type: "positive",
           message: "Task Done",
         });
         this.fetchData();
       } catch (err) {
-        return this.$q.notify({
-          type: "negative",
-          message: "Terjadi kesalahan, mohon coba ulang",
-        });
+        console.log(err);
+        return this.$q.notify(error.message);
       }
     },
 

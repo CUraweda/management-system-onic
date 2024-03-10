@@ -502,7 +502,15 @@
             <q-card-section>
               <CardBase>
                 <div class="col-12">
-                  <apex-column-charts-basic></apex-column-charts-basic>
+                  <apex-column-charts-basic
+                    :taskStatusData="{
+                      open: TotalOpen,
+                      inProgress: TotalInProgress,
+                      overdue: TotalOverdue,
+                      completed: TotalCompleted,
+                      total: TotalTotal,
+                    }"
+                  ></apex-column-charts-basic>
                 </div>
               </CardBase>
             </q-card-section>

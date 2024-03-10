@@ -12,11 +12,17 @@
 <script>
 export default {
   name: "ApexBarChartsGrouped",
+  props: {
+    TotalTotal: {
+      type: Number, // Adjust the type accordingly
+      required: true,
+    },
+  },
   data() {
     return {
       series: [
         {
-          data: [400, 430, 448, 470, 540, 580],
+          data: [this.TotalTotal],
         },
       ],
       chartOptions: {
@@ -46,6 +52,11 @@ export default {
         },
       },
     };
+  },
+  watch: {
+    TotalTotal(newTotalTotal) {
+      this.series[0].data = [newTotalTotal];
+    },
   },
 };
 </script>

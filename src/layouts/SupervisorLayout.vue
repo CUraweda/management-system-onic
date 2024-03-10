@@ -67,23 +67,21 @@
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
           </q-item>
 
-          <q-item class="">
-            <div class="items-center text-center">
-              <q-item-section avatar class="items-center">
-                <q-avatar color="cyan-3" size="30px">
-                      <img src="statics/propil.png" />
-                </q-avatar>
+          <q-item class="text-center items-center">
+            <q-item-section avatar class="" clickable @click="miniState = true">
+              <q-avatar color="white" size="50px">
+                <img src="statics/untitled.png" />
+              </q-avatar>
             </q-item-section>
-            <q-item-section>
-            <div class="text-bold items-center">{{ username }}</div>
-            <div>{{ title }}</div>
-            <div class="">
-              <!-- <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
-                icon-half="star_half" no-dimming hint="readonly" :dense="dense" disable />
-              {{ rating }} -->
-            </div>
+            <q-item-section class="text-center items-center">
+              <div class="text-bold items-center">{{ username }}</div>
+              <div>{{ title }}</div>
+              <!-- <div class="">
+                <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
+                  icon-half="star_half" no-dimming hint="readonly" :dense="dense" readonly />
+                {{ rating }}
+              </div> -->
             </q-item-section>
-          </div>
           </q-item>
 
           <q-item clickable v-ripple to="/supervisor/dashboard">

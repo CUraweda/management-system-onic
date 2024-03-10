@@ -235,7 +235,7 @@
                 </q-card>
                 <!-- overview -->
                 <div class="">
-                  <apex-bar-charts-basic></apex-bar-charts-basic>
+                  <apex-bar-charts-basic :TotalTotal=TotalTotal></apex-bar-charts-basic>
                 </div>
               </CardBase>
             </q-card-section>
