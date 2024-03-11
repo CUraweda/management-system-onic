@@ -230,8 +230,8 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()"> Download File </q-btn>
-                  <q-btn @click="downloadFile()">
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null"> Download File </q-btn>
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
                     Download Dokumen Hasil
                   </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
@@ -268,6 +268,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
+                      :disable="spv !== username"
                       @click="Revise()"
                     />
                     <q-btn
@@ -278,6 +279,11 @@
                       label="OK"
                       no-caps
                       class="col-5"
+                      :disable="
+                        finished_at === null ||
+                        (status !== 'In-progress' && status !== 'Idle') ||
+                        spv !== username
+                      "
                       @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">
@@ -291,14 +297,14 @@
                       </div>
                       <q-slider
                         class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg"
-                        v-model="model"
+                        v-model="rate"
                         color="orange"
                         :min="0"
                         :max="5"
                         markers
-                        :marker-labels="model"
+                        :marker-labels="rate"
                         label-always
-                        :label-value="model"
+                        :label-value="rate"
                       />
                     </div>
                   </div>
@@ -351,6 +357,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
+                      :disable="spv !== username"
                       @click="Revise()"
                     />
                     <q-btn
@@ -361,6 +368,11 @@
                       label="OK"
                       no-caps
                       class="col-5"
+                      :disable="
+                        finished_at === null ||
+                        (status !== 'In-progress' && status !== 'Idle') ||
+                        spv !== username
+                      "
                       @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">
@@ -374,14 +386,14 @@
                       </div>
                       <q-slider
                         class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg"
-                        v-model="model"
+                        v-model="rate"
                         color="orange"
                         :min="0"
                         :max="5"
                         markers
-                        :marker-labels="model"
+                        :marker-labels="rate"
                         label-always
-                        :label-value="model"
+                        :label-value="rate"
                       />
                     </div>
                   </div>
@@ -450,7 +462,7 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       text: ref(""),
       ratingModel: ref(0),
       ratingColors: ["yellow"],

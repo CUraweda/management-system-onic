@@ -187,7 +187,7 @@
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
+                  <q-btn dense unelevated @click="Detail(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -372,7 +372,7 @@
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
+                  <q-btn dense unelevated @click="Detail(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -557,7 +557,7 @@
 
               <q-td key="detail" :props="props">
                 <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Report(props.row.id)">
+                  <q-btn dense unelevated @click="Detail(props.row.id)">
                     <q-icon name="img:/statics/reportc.svg" />
                   </q-btn>
                 </div>
@@ -782,11 +782,11 @@ export default {
         const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            // status: "Open",
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
           this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
@@ -821,11 +821,10 @@ export default {
         const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
           this.waiting_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
@@ -840,11 +839,10 @@ export default {
         const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/deleted", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
           this.deleted_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));

@@ -226,7 +226,7 @@
                       flat
                       icon="send"
                       @click="SendUpdate()"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="status === 'Wait-app' || status === 'Deleted' || started_at === null"
                     />
                   </template>
                 </q-input>
@@ -265,14 +265,14 @@
                       :text-color="started_at ? 'red' : 'blue'"
                       :label="started_at ? 'Finish' : 'Start'"
                       @click="started_at ? FinishTask() : StartTask()"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at !== null"
                     />
                     <q-btn
                       unelevated
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at !== null"
                       label="Send To Other PIC"
                       no-caps
                       @click="send"
@@ -284,7 +284,7 @@
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at === null"
                       label="Submit To Superior"
                       no-caps
                       @click="submitToSuperior"
@@ -323,7 +323,7 @@ export default {
   name: "TaskDetail",
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       text: ref(""),
       id: store.id,
       ratingModel: ref(0),
@@ -346,8 +346,8 @@ export default {
       countdown: null,
       task_title: "",
       status: "",
-      priority: "",
       pic: "",
+      priority: "",
       due_date: "",
       progress: 0,
       started_at: "",
@@ -416,7 +416,7 @@ export default {
 
     async FinishTask() {
       const data = {
-        deleted_at: new Date().toISOString(),
+        finished_at: new Date().toISOString(),
       };
 
       try {

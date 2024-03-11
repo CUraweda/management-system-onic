@@ -211,6 +211,7 @@
                     color="red-2"
                     text-color="red"
                     label="Revise"
+                    :disable="props.row.spv !== username"
                     @click="Revise(props.row.id)"
                   />
                   <q-btn
@@ -221,7 +222,8 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle' 
+                    || props.row.spv !== username)"
                     @click="openEmployeeDialog(props.row)"
                   />
                 </div>
@@ -238,6 +240,7 @@
                     color="green-2"
                     rounded
                     label="Edit"
+                    :disable="props.row.spv !== username"
                     @click="Edit(props.row.id)"
                   />
                   <q-btn
@@ -248,6 +251,7 @@
                     color="red-2"
                     rounded
                     label="Delete"
+                    :disable="props.row.spv !== username"
                     @click="Delete(props.row.id)"
                   />
                 </div>
@@ -333,6 +337,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      username: localStorage.getItem("username"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -569,7 +574,7 @@ export default {
         console.error("Error:", error);
         return this.$q.notify(error.message);
       }
-      // window.location.reload();
+      this.fetchData()
     },
 
     async fetchData() {
@@ -583,7 +588,7 @@ export default {
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager");
+          const filteredData = response.data.filter((item) => item.pic_title !== "manager");
           this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
         } else {
           console.error("Invalid response format:", response);

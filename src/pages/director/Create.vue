@@ -279,7 +279,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Supervisor</q-item-label
+                    >Superior</q-item-label
                   >
                   <q-form
                     multiple
@@ -576,7 +576,9 @@ export default {
                 (user) => user.title.toLowerCase() === "director"
               );
               console.log("Updating SPV options to director.");
-              // this.selectedspv = this.picOptions[0];
+            } else {
+              this.spvOptions = null;
+              this.selectedspv = null;
             }
           }
         }

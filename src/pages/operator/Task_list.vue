@@ -214,7 +214,7 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" 
                   />
                 </div>
               </q-td>
@@ -777,7 +777,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
           this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
@@ -816,7 +816,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
           this.waiting_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
@@ -835,7 +835,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
           this.deleted_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));

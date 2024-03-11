@@ -19,11 +19,7 @@
                 placeholder="Search..."
               >
                 <template v-slot:prepend>
-                  <q-icon
-                    v-if="search === ''"
-                    name="search"
-                    text-color="black"
-                  />
+                  <q-icon v-if="search === ''" name="search" text-color="black" />
                   <q-icon
                     v-else
                     name="clear"
@@ -74,8 +70,6 @@
                   </q-icon>
                 </template>
               </q-input>
-
-
 
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
@@ -220,6 +214,7 @@
                     color="red-2"
                     text-color="red"
                     label="Revise"
+                    :disable="props.row.spv !== username"
                     @click="Revise(props.row.id)"
                   />
                   <q-btn
@@ -230,7 +225,13 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    :disabled="props.row.finished_at === null || props.row.status !== 'In-progress'" />                    @click="openEmployeeDialog(props.row.id)"
+                    @click="openEmployeeDialog(props.row.id)"
+                    :disable="
+                      props.row.finished_at === null ||
+                      (props.row.status !== 'In-progress' &&
+                        props.row.status !== 'Idle') ||
+                      props.row.spv !== username
+                    "
                   />
                 </div>
               </q-td>
@@ -246,6 +247,7 @@
                     color="green-2"
                     rounded
                     label="Edit"
+                    :disable="props.row.spv !== username"
                     @click="Edit(props.row.id)"
                   />
                   <q-btn
@@ -256,6 +258,7 @@
                     color="red-2"
                     rounded
                     label="Delete"
+                    :disable="props.row.spv !== username"
                     @click="Delete(props.row.id)"
                   />
                 </div>
@@ -329,8 +332,7 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -341,6 +343,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      username: localStorage.getItem("username"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -408,7 +411,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -452,8 +455,7 @@ export default {
     return {
       rate: ref(0),
       yellow: ["yellow"],
-      onItemClick() {
-      },
+      onItemClick() {},
     };
   },
 
@@ -510,7 +512,7 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put("/task/edit/"+id, data, {
+        const response = await this.$axios.put("/task/edit/" + id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -574,29 +576,29 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post(
-          "/task/new",
-          revisedTaskData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!createTaskResponse.status === 200) {
           throw new Error("Failed to create revised task");
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await this.$axios.put("/task/edit/" + id, {
+        const updateTaskResponse = await this.$axios.put(
+          "/task/edit/" + id,
+          {
             status: "Deleted",
             deleted_at: new Date().toISOString(),
-          },{
-          headers: {
-            "Content-Type": "application/json",
           },
-        });
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (updateTaskResponse.status === 200) {
           this.$q.notify({
@@ -625,8 +627,12 @@ export default {
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager" && item.pic_title !== "Supervisor");
-          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+          const filteredData = response.data.filter(
+            (item) => item.pic_title === "operator"
+          );
+          this.data = filteredData.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+          );
         } else {
           console.error("Invalid response format:", response);
         }
@@ -654,7 +660,7 @@ export default {
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic
+          pic: this.pic,
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {
@@ -662,8 +668,7 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200)
-          throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -684,9 +689,7 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
       });
     },
 

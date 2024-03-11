@@ -279,7 +279,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Supervisor</q-item-label
+                    >Superior</q-item-label
                   >
                   <q-form
                     multiple
@@ -379,7 +379,6 @@
               <q-item-section>
                 <div class="row justify-end q-gutter-sm">
                   <q-card-actions>
-                    <q-checkbox v-model="SpvApp" color="blue" class="q-mr-lg" label="Requesting approval" />
                     <q-btn
                       unelevated
                       class="no-shadow"
@@ -389,7 +388,7 @@
                       filled
                       type="submit"
                       v-close-popup
-                      to="/director/task_monitoring"
+                      to="/manager/task_monitoring"
                     />
                     <q-btn
                       unelevated
@@ -417,7 +416,7 @@ import { ref } from "vue";
 import { store } from "../../store/store.js";
 
 export default {
-  name: "DirectorCreate",
+  name: "ManagerCreate",
   data() {
     return {
       spv_id: "",
@@ -552,33 +551,16 @@ export default {
         console.log("PIC title:", value.title);
 
         if (value.title) {
-          console.log("Ping:", this.picOptions.find((user) => user.title === value.title));
+          console.log(
+            "Ping:",
+            this.picOptions.find((user) => user.title === value.title)
+          );
           // Perbarui opsi SPV berdasarkan peran PIC yang dipilih
           const selectedpic = this.picOptions.find((user) => user.title === value.title);
           console.log("Selected pic:", selectedpic);
 
           if (selectedpic) {
-            const selectedTitleLowerCase = selectedpic.title.toLowerCase();
-
-            if (selectedTitleLowerCase === "operator") {
-              this.spvOptions = this.picOptions.filter(
-                (user) => user.title.toLowerCase() === "supervisor"
-              );
-              console.log("Updating SPV options to supervisor.");
-              this.selectedspv = this.spvOptions[0];
-            } else if (selectedTitleLowerCase === "supervisor") {
-              this.spvOptions = this.picOptions.filter(
-                (user) => user.title.toLowerCase() === "manager"
-              );
-              console.log("Updating SPV options to manager.");
-              this.selectedspv = this.spvOptions[0];
-            } else if (selectedTitleLowerCase === "manager"){
-              this.spvOptions = this.picOptions.filter(
-                (user) => user.title.toLowerCase() === "director"
-              );
-              console.log("Updating SPV options to director.");
-              // this.selectedspv = this.picOptions[0];
-            }
+            this.fetchSpvData();
           }
         }
       },
@@ -591,44 +573,65 @@ export default {
         const { status, data } = await this.$axios.get("/user/all");
         if (status !== 200) throw Error("Error while fetching");
 
-        const listOfUser = data.map((user) => ({
+        const filteredData = data.filter((user) => user.title !== "director");
+
+        const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
           title: user.title,
-          id: user.u_id // tambahkan properti title untuk menentukan peran pengguna
+          id: user.u_id,
         }));
 
-        const currentUser = listOfUser.find(
-          (user) => user.label === localStorage.getItem("username")
-        );
-
-        // Mengatur opsi SPV berdasarkan peran pengguna
-        if (currentUser && currentUser.title === "operator") {
-          // Jika peran pengguna adalah operator, pilih atasan langsung (supervisor)
-          const supervisorList = listOfUser.filter((user) => user.title === "supervisor");
-          this.spvOptions = supervisorList;
-          this.selectedspv = supervisorList[0];
-        } else if (currentUser && currentUser.title === "supervisor") {
-          // Jika peran pengguna adalah supervisor, pilih atasan langsung (manager)
-          const managerList = listOfUser.filter((user) => user.title === "manager");
-          this.spvOptions = managerList;
-          this.selectedspv = managerList[0];
-        } else {
-          // Untuk peran lain, gunakan seluruh opsi SPV
-          this.spvOptions = listOfUser;
-          this.selectedspv = listOfUser[0];
-        }
-
-        // Hapus pengguna saat ini dari opsi PIC (jika diperlukan)
-        const currentUserIndex = listOfUser.findIndex(
-          (user) => user.label === localStorage.getItem("username")
-        );
-        // if (currentUserIndex !== -1) {
-        //   listOfUser.splice(currentUserIndex, 1);
-        // }
-
-        this.picOptions = listOfUser;
+        this.picOptions = listOfPic;
         this.selectedpic = this.picOptions[0];
+
+        const selectedpic = this.picOptions.title;
+        console.log("Selected pic:", selectedpic);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchSpvData() {
+      try {
+        const { status, data } = await this.$axios.get("/user/all");
+        if (status !== 200) throw Error("Error while fetching");
+
+        const listOfSpv = data.map((user) => ({
+          label: user.u_name,
+          value: user.u_name,
+          title: user.title,
+          id: user.u_id,
+        }));
+
+        const SelectedPic = this.selectedpic.title;
+
+        if (SelectedPic) {
+          const selectedTitleLowerCase = SelectedPic.toLowerCase();
+
+          if (selectedTitleLowerCase === "operator") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "supervisor"
+            );
+            console.log("Updating SPV options to supervisor.");
+            this.selectedspv = this.spvOptions[0];
+          } else if (selectedTitleLowerCase === "supervisor") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "manager"
+            );
+            console.log("Updating SPV options to manager.");
+            this.selectedspv = this.spvOptions[0];
+          } else if (selectedTitleLowerCase === "manager") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "director"
+            );
+            console.log("Updating SPV options to director.");
+            this.selectedspv = this.spvOptions[0];
+          } else {
+            this.spvOptions = null;
+            this.selectedspv = null;
+          }
+        }
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -664,7 +667,10 @@ export default {
 
     addToForm(properties, value) {
       // Check if the value is empty (undefined, null, or empty string)
-      if (properties !== 'bukti_tayang' && (value === undefined || value === null || value === "")) {
+      if (
+        properties !== "bukti_tayang" &&
+        (value === undefined || value === null || value === "")
+      ) {
         throw new Error(`Please fill all input`);
       } else {
         // Assign the value to the specified property in sendedForm
@@ -706,8 +712,8 @@ export default {
             message: "Task Created",
           });
           this.SpvApp
-            ? this.$router.push({ path: "/director/task_monitoring_2" })
-            : this.$router.push({ path: "/director/task_monitoring" });
+            ? this.$router.push({ path: "/manager/task_monitoring_2" })
+            : this.$router.push({ path: "/manager/task_monitoring" });
         } else {
           this.$q.notify({
             message: "Failed Creating task",
