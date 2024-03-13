@@ -60,205 +60,169 @@
               </q-icon>
             </template>
           </q-input>
-
-
         </q-card-section>
       </div>
     </q-card>
 
-    <q-expansion-item
-      class="text-h5 text-weight-bold"
-      popup
-      default-opened
-      icon=""
-    >
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
-            <div class="text-h5 text-weight-bold text-blue">
-              Task Wait Approval
-            </div>
+            <div class="text-h5 text-weight-bold text-blue">Task Wait Approval</div>
           </q-card-section>
 
           <q-card-section class="q-pa-none">
             <q-table
-          class="no-shadow q-ml-md"
-          :data="waiting_data"
-          :hide-header="mode === 'grid'"
-          :columns="columns"
-          row-key="pic"
-          :grid="mode == 'grid'"
-          :filter="filter"
-          :pagination.sync="pagination"
-        >
-          <template v-slot:body="props">
-            <q-tr
-              :props="props"
-              :class="
-                props.row.status == 'Idle'
-                  ? 'bg-yellow-3 text-black'
-                  : 'bg-white text-black'
-              "
+              class="no-shadow q-ml-md"
+              :data="waiting_data"
+              :hide-header="mode === 'grid'"
+              :columns="columns"
+              row-key="pic"
+              :grid="mode == 'grid'"
+              :filter="filter"
+              :pagination.sync="pagination"
             >
-              <q-td key="id" :props="props">
-                <div>{{ props.row.id }}</div>
-              </q-td>
-
-              <q-td key="task_title" :props="props">
-                <div>{{ props.row.task_title }}</div>
-              </q-td>
-
-              <q-td key="pic" :props="props">
-                <div>{{ props.row.pic }}</div>
-              </q-td>
-
-              <q-td key="pic_title" :props="props">
-                <div>{{ props.row.pic_title }}</div>
-              </q-td>
-
-              <q-td key="start_date" :props="props">
-                <div>{{ formatLocalTime(props.row.start_date) }}</div>
-              </q-td>
-
-              <q-td key="due_date" :props="props">
-                <div>{{ formatLocalTime(props.row.due_date) }}</div>
-              </q-td>
-
-              <!-- priority -->
-
-              <q-td key="priority" :props="props">
-                <q-chip
-                  :color="
-                    props.row.priority == 'Important'
-                      ? 'white text-red'
-                      : props.row.priority == 'High'
-                      ? 'white text-orange'
-                      : props.row.priority == 'Normal'
-                      ? 'white text-blue'
-                      : 'secondary'
+              <template v-slot:body="props">
+                <q-tr
+                  :props="props"
+                  :class="
+                    props.row.status == 'Idle'
+                      ? 'bg-yellow-3 text-black'
+                      : 'bg-white text-black'
                   "
-                  text-color="white"
-                  dense
-                  class="text-center under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.priority }}
-                </q-chip>
-              </q-td>
+                >
+                  <q-td key="id" :props="props">
+                    <div>{{ props.row.id }}</div>
+                  </q-td>
 
-              <q-td key="status" :props="props">
-                <q-chip
-                  :color="
-                    props.row.status == 'Close'
-                      ? 'white text-deep-orange'
-                      : props.row.status == 'Deleted'
-                      ? 'white text-red'
-                      : props.row.status == 'Idle'
-                      ? 'white text-orange'
-                      : props.row.status == 'Wait-app'
-                      ? 'white text-blue'
-                      : props.row.status == 'Completed'
-                      ? 'white text-blue'
-                      : props.row.status == 'In-progress'
-                      ? 'white text-orange'
-                      : props.row.status == 'Open'
-                      ? 'white text-green'
-                      : 'secondary'
-                  "
-                  dense
-                  class="under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.status }}
-                </q-chip>
-              </q-td>
+                  <q-td key="task_title" :props="props">
+                    <div>{{ props.row.task_title }}</div>
+                  </q-td>
 
-              <!-- priority -->
-              <q-td key="Progress" :props="props">
-                <q-linear-progress
-                  grey
-                  :color="getColor(props.row.progress)"
-                  :value="props.row.progress / 100"
-                  class="q-mt-md"
-                />
-              </q-td>
+                  <q-td key="pic" :props="props">
+                    <div>{{ props.row.pic }}</div>
+                  </q-td>
 
-              <q-td key="Progress" :props="props">
-                <div>{{ props.row.progress }} %</div>
-              </q-td>
+                  <q-td key="pic_title" :props="props">
+                    <div>{{ props.row.pic_title }}</div>
+                  </q-td>
 
-              <q-td key="detail" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Detail(props.row.id)">
-                    <q-icon name="img:/statics/reportc.svg" />
-                  </q-btn>
-                </div>
-              </q-td>
+                  <q-td key="start_date" :props="props">
+                    <div>{{ formatLocalTime(props.row.start_date) }}</div>
+                  </q-td>
 
-              <q-td key="feed" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm"
-                    rounded
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    text-color="red"
-                    label="Revise"
-                    @click="Revise(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    unelevated
-                    color="blue-2"
-                    class="under-title q-px-sm"
-                    rounded
-                    text-color="blue"
-                    label="OK"
-                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" 
-                  />
-                </div>
-              </q-td>
+                  <q-td key="due_date" :props="props">
+                    <div>{{ formatLocalTime(props.row.due_date) }}</div>
+                  </q-td>
 
-              <!-- action -->
-              <q-td key="action" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-green"
-                    no-caps
-                    unelevated
-                    color="green-2"
-                    rounded
-                    label="Edit"
-                    @click="Edit(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-red"
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    rounded
-                    label="Delete"
-                    @click="Delete(props.row.id)"
-                  />
-                </div>
-              </q-td>
-              <!-- action -->
-            </q-tr>
-          </template>
-        </q-table>
+                  <!-- priority -->
+
+                  <q-td key="priority" :props="props">
+                    <q-chip
+                      :color="
+                        props.row.priority == 'Important'
+                          ? 'white text-red'
+                          : props.row.priority == 'High'
+                          ? 'white text-orange'
+                          : props.row.priority == 'Normal'
+                          ? 'white text-blue'
+                          : 'secondary'
+                      "
+                      text-color="white"
+                      dense
+                      class="text-center under-title q-px-sm tex"
+                      rounded
+                      >{{ props.row.priority }}
+                    </q-chip>
+                  </q-td>
+
+                  <q-td key="status" :props="props">
+                    <q-chip
+                      :color="
+                        props.row.status == 'Close'
+                          ? 'white text-deep-orange'
+                          : props.row.status == 'Deleted'
+                          ? 'white text-red'
+                          : props.row.status == 'Idle'
+                          ? 'white text-orange'
+                          : props.row.status == 'Wait-app'
+                          ? 'white text-blue'
+                          : props.row.status == 'Completed'
+                          ? 'white text-blue'
+                          : props.row.status == 'In-progress'
+                          ? 'white text-orange'
+                          : props.row.status == 'Open'
+                          ? 'white text-green'
+                          : 'secondary'
+                      "
+                      dense
+                      class="under-title q-px-sm tex"
+                      rounded
+                      >{{ props.row.status }}
+                    </q-chip>
+                  </q-td>
+
+                  <!-- priority -->
+                  <q-td key="Progress" :props="props">
+                    <q-linear-progress
+                      grey
+                      :color="getColor(props.row.progress)"
+                      :value="props.row.progress / 100"
+                      class="q-mt-md"
+                    />
+                  </q-td>
+
+                  <q-td key="Progress" :props="props">
+                    <div>{{ props.row.progress }} %</div>
+                  </q-td>
+
+                  <q-td key="detail" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn dense unelevated @click="Report(props.row.id)">
+                        <q-icon name="img:/statics/reportc.svg" />
+                      </q-btn>
+                    </div>
+                  </q-td>
+
+                  <q-td key="feed" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm"
+                        rounded
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        text-color="red"
+                        label="Revise"
+                        @click="Revise(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        unelevated
+                        color="blue-2"
+                        class="under-title q-px-sm"
+                        rounded
+                        text-color="blue"
+                        label="OK"
+                        :disabled="
+                          props.row.finished_at === null ||
+                          (props.row.status !== 'In-progress' &&
+                            props.row.status !== 'Idle')
+                        "
+                      />
+                      @click="openEmployeeDialog(props.row.id)" />
+                    </div>
+                  </q-td>
+                </q-tr>
+              </template>
+            </q-table>
           </q-card-section>
         </q-card>
       </div>
     </q-expansion-item>
 
-    <q-expansion-item
-      class="text-h5 text-weight-bold"
-      popup
-      default-opened
-      icon=""
-    >
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -266,184 +230,157 @@
           </q-card-section>
 
           <q-card-section class="q-pa-none">
-        <q-table
-          class="no-shadow q-ml-md"
-          :data="data"
-          :hide-header="mode === 'grid'"
-          :columns="columns"
-          row-key="pic"
-          :grid="mode == 'grid'"
-          :filter="filter"
-          :pagination.sync="pagination"
-        >
-          <template v-slot:body="props">
-            <q-tr
-              :props="props"
-              :class="
-                props.row.status == 'Idle'
-                  ? 'bg-yellow-3 text-black'
-                  : 'bg-white text-black'
-              "
+            <q-table
+              class="no-shadow q-ml-md"
+              :data="data"
+              :hide-header="mode === 'grid'"
+              :columns="columns"
+              row-key="pic"
+              :grid="mode == 'grid'"
+              :filter="filter"
+              :pagination.sync="pagination"
             >
-              <q-td key="id" :props="props">
-                <div>{{ props.row.id }}</div>
-              </q-td>
-
-              <q-td key="task_title" :props="props">
-                <div>{{ props.row.task_title }}</div>
-              </q-td>
-
-              <q-td key="pic" :props="props">
-                <div>{{ props.row.pic }}</div>
-              </q-td>
-
-              <q-td key="pic_title" :props="props">
-                <div>{{ props.row.pic_title }}</div>
-              </q-td>
-
-              <q-td key="start_date" :props="props">
-                <div>{{ formatLocalTime(props.row.start_date) }}</div>
-              </q-td>
-
-              <q-td key="due_date" :props="props">
-                <div>{{ formatLocalTime(props.row.due_date) }}</div>
-              </q-td>
-
-              <!-- priority -->
-
-              <q-td key="priority" :props="props">
-                <q-chip
-                  :color="
-                    props.row.priority == 'Important'
-                      ? 'white text-red'
-                      : props.row.priority == 'High'
-                      ? 'white text-orange'
-                      : props.row.priority == 'Normal'
-                      ? 'white text-blue'
-                      : 'secondary'
+              <template v-slot:body="props">
+                <q-tr
+                  :props="props"
+                  :class="
+                    props.row.status == 'Idle'
+                      ? 'bg-yellow-3 text-black'
+                      : 'bg-white text-black'
                   "
-                  text-color="white"
-                  dense
-                  class="text-center under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.priority }}
-                </q-chip>
-              </q-td>
+                >
+                  <q-td key="id" :props="props">
+                    <div>{{ props.row.id }}</div>
+                  </q-td>
 
-              <q-td key="status" :props="props">
-                <q-chip
-                  :color="
-                    props.row.status == 'Close'
-                      ? 'white text-deep-orange'
-                      : props.row.status == 'Deleted'
-                      ? 'white text-red'
-                      : props.row.status == 'Idle'
-                      ? 'white text-orange'
-                      : props.row.status == 'Wait-app'
-                      ? 'white text-blue'
-                      : props.row.status == 'Completed'
-                      ? 'white text-blue'
-                      : props.row.status == 'In-progress'
-                      ? 'white text-orange'
-                      : props.row.status == 'Open'
-                      ? 'white text-green'
-                      : 'secondary'
-                  "
-                  dense
-                  class="under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.status }}
-                </q-chip>
-              </q-td>
+                  <q-td key="task_title" :props="props">
+                    <div>{{ props.row.task_title }}</div>
+                  </q-td>
 
-              <!-- priority -->
-              <q-td key="Progress" :props="props">
-                <q-linear-progress
-                  grey
-                  :color="getColor(props.row.progress)"
-                  :value="props.row.progress / 100"
-                  class="q-mt-md"
-                />
-              </q-td>
+                  <q-td key="pic" :props="props">
+                    <div>{{ props.row.pic }}</div>
+                  </q-td>
 
-              <q-td key="Progress" :props="props">
-                <div>{{ props.row.progress }} %</div>
-              </q-td>
+                  <q-td key="pic_title" :props="props">
+                    <div>{{ props.row.pic_title }}</div>
+                  </q-td>
 
-              <q-td key="detail" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Detail(props.row.id)">
-                    <q-icon name="img:/statics/reportc.svg" />
-                  </q-btn>
-                </div>
-              </q-td>
+                  <q-td key="start_date" :props="props">
+                    <div>{{ formatLocalTime(props.row.start_date) }}</div>
+                  </q-td>
 
-              <q-td key="feed" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm"
-                    rounded
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    text-color="red"
-                    label="Revise"
-                    @click="Revise(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    unelevated
-                    color="blue-2"
-                    class="under-title q-px-sm"
-                    rounded
-                    text-color="blue"
-                    label="OK"
-                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
-                  />
-                </div>
-              </q-td>
+                  <q-td key="due_date" :props="props">
+                    <div>{{ formatLocalTime(props.row.due_date) }}</div>
+                  </q-td>
 
-              <!-- action -->
-              <q-td key="action" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-green"
-                    no-caps
-                    unelevated
-                    color="green-2"
-                    rounded
-                    label="Edit"
-                    @click="Edit(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-red"
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    rounded
-                    label="Delete"
-                    @click="Delete(props.row.id)"
-                  />
-                </div>
-              </q-td>
-              <!-- action -->
-            </q-tr>
-          </template>
-        </q-table>
+                  <!-- priority -->
+
+                  <q-td key="priority" :props="props">
+                    <q-chip
+                      :color="
+                        props.row.priority == 'Important'
+                          ? 'white text-red'
+                          : props.row.priority == 'High'
+                          ? 'white text-orange'
+                          : props.row.priority == 'Normal'
+                          ? 'white text-blue'
+                          : 'secondary'
+                      "
+                      text-color="white"
+                      dense
+                      class="text-center under-title q-px-sm tex"
+                      rounded
+                      >{{ props.row.priority }}
+                    </q-chip>
+                  </q-td>
+
+                  <q-td key="status" :props="props">
+                    <q-chip
+                      :color="
+                        props.row.status == 'Close'
+                          ? 'white text-deep-orange'
+                          : props.row.status == 'Deleted'
+                          ? 'white text-red'
+                          : props.row.status == 'Idle'
+                          ? 'white text-orange'
+                          : props.row.status == 'Wait-app'
+                          ? 'white text-blue'
+                          : props.row.status == 'Completed'
+                          ? 'white text-blue'
+                          : props.row.status == 'In-progress'
+                          ? 'white text-orange'
+                          : props.row.status == 'Open'
+                          ? 'white text-green'
+                          : 'secondary'
+                      "
+                      dense
+                      class="under-title q-px-sm tex"
+                      rounded
+                      >{{ props.row.status }}
+                    </q-chip>
+                  </q-td>
+
+                  <!-- priority -->
+                  <q-td key="Progress" :props="props">
+                    <q-linear-progress
+                      grey
+                      :color="getColor(props.row.progress)"
+                      :value="props.row.progress / 100"
+                      class="q-mt-md"
+                    />
+                  </q-td>
+
+                  <q-td key="Progress" :props="props">
+                    <div>{{ props.row.progress }} %</div>
+                  </q-td>
+
+                  <q-td key="detail" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn dense unelevated @click="Report(props.row.id)">
+                        <q-icon name="img:/statics/reportc.svg" />
+                      </q-btn>
+                    </div>
+                  </q-td>
+
+                  <q-td key="feed" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm"
+                        rounded
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        text-color="red"
+                        label="Revise"
+                        @click="Revise(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        unelevated
+                        color="blue-2"
+                        class="under-title q-px-sm"
+                        rounded
+                        text-color="blue"
+                        label="OK"
+                        :disabled="
+                          props.row.finished_at === null ||
+                          (props.row.status !== 'In-progress' &&
+                            props.row.status !== 'Idle')
+                        "
+                      />
+                      @click="openEmployeeDialog(props.row.id)" />
+                    </div>
+                  </q-td>
+                </q-tr>
+              </template>
+            </q-table>
           </q-card-section>
         </q-card>
       </div>
     </q-expansion-item>
 
-    <q-expansion-item
-      class="text-h5 text-weight-bold"
-      popup
-      default-opened
-      icon=""
-    >
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -452,172 +389,150 @@
 
           <q-card-section class="q-pa-none">
             <q-table
-          class="no-shadow q-ml-md"
-          :data="deleted_data"
-          :hide-header="mode === 'grid'"
-          :columns="columns"
-          row-key="pic"
-          :grid="mode == 'grid'"
-          :filter="filter"
-          :pagination.sync="pagination"
-        >
-          <template v-slot:body="props">
-            <q-tr
-              :props="props"
-              :class="
-                props.row.status == 'Idle'
-                  ? 'bg-yellow-3 text-black'
-                  : 'bg-white text-black'
-              "
+              class="no-shadow q-ml-md"
+              :data="deleted_data"
+              :hide-header="mode === 'grid'"
+              :columns="columns"
+              row-key="pic"
+              :grid="mode == 'grid'"
+              :filter="filter"
+              :pagination.sync="pagination"
             >
-              <q-td key="id" :props="props">
-                <div>{{ props.row.id }}</div>
-              </q-td>
-
-              <q-td key="task_title" :props="props">
-                <div>{{ props.row.task_title }}</div>
-              </q-td>
-
-              <q-td key="pic" :props="props">
-                <div>{{ props.row.pic }}</div>
-              </q-td>
-
-              <q-td key="pic_title" :props="props">
-                <div>{{ props.row.pic_title }}</div>
-              </q-td>
-
-              <q-td key="start_date" :props="props">
-                <div>{{ formatLocalTime(props.row.start_date) }}</div>
-              </q-td>
-
-              <q-td key="due_date" :props="props">
-                <div>{{ formatLocalTime(props.row.due_date) }}</div>
-              </q-td>
-
-              <!-- priority -->
-
-              <q-td key="priority" :props="props">
-                <q-chip
-                  :color="
-                    props.row.priority == 'Important'
-                      ? 'white text-red'
-                      : props.row.priority == 'High'
-                      ? 'white text-orange'
-                      : props.row.priority == 'Normal'
-                      ? 'white text-blue'
-                      : 'secondary'
+              <template v-slot:body="props">
+                <q-tr
+                  :props="props"
+                  :class="
+                    props.row.status == 'Idle'
+                      ? 'bg-yellow-3 text-black'
+                      : 'bg-white text-black'
                   "
-                  text-color="white"
-                  dense
-                  class="text-center under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.priority }}
-                </q-chip>
-              </q-td>
+                >
+                  <q-td key="id" :props="props">
+                    <div>{{ props.row.id }}</div>
+                  </q-td>
 
-              <q-td key="status" :props="props">
-                <q-chip
-                  :color="
-                    props.row.status == 'Close'
-                      ? 'white text-deep-orange'
-                      : props.row.status == 'Deleted'
-                      ? 'white text-red'
-                      : props.row.status == 'Idle'
-                      ? 'white text-orange'
-                      : props.row.status == 'Wait-app'
-                      ? 'white text-blue'
-                      : props.row.status == 'Completed'
-                      ? 'white text-blue'
-                      : props.row.status == 'In-progress'
-                      ? 'white text-orange'
-                      : props.row.status == 'Open'
-                      ? 'white text-green'
-                      : 'secondary'
-                  "
-                  dense
-                  class="under-title q-px-sm tex"
-                  rounded
-                  >{{ props.row.status }}
-                </q-chip>
-              </q-td>
+                  <q-td key="task_title" :props="props">
+                    <div>{{ props.row.task_title }}</div>
+                  </q-td>
 
-              <!-- priority -->
-              <q-td key="Progress" :props="props">
-                <q-linear-progress
-                  grey
-                  :color="getColor(props.row.progress)"
-                  :value="props.row.progress / 100"
-                  class="q-mt-md"
-                />
-              </q-td>
+                  <q-td key="pic" :props="props">
+                    <div>{{ props.row.pic }}</div>
+                  </q-td>
 
-              <q-td key="Progress" :props="props">
-                <div>{{ props.row.progress }} %</div>
-              </q-td>
+                  <q-td key="pic_title" :props="props">
+                    <div>{{ props.row.pic_title }}</div>
+                  </q-td>
 
-              <q-td key="detail" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn dense unelevated @click="Detail(props.row.id)">
-                    <q-icon name="img:/statics/reportc.svg" />
-                  </q-btn>
-                </div>
-              </q-td>
+                  <q-td key="start_date" :props="props">
+                    <div>{{ formatLocalTime(props.row.start_date) }}</div>
+                  </q-td>
 
-              <q-td key="feed" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm"
-                    rounded
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    text-color="red"
-                    label="Revise"
-                    @click="Revise(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    unelevated
-                    color="blue-2"
-                    class="under-title q-px-sm"
-                    rounded
-                    text-color="blue"
-                    label="OK"
-                    :disable="props.row.finished_at === null || (props.row.status !== 'In-progress' && props.row.status !== 'Idle')" />                    @click="openEmployeeDialog(props.row.id)"
-                  />
-                </div>
-              </q-td>
+                  <q-td key="due_date" :props="props">
+                    <div>{{ formatLocalTime(props.row.due_date) }}</div>
+                  </q-td>
 
-              <!-- action -->
-              <q-td key="action" :props="props">
-                <div class="q-gutter-sm">
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-green"
-                    no-caps
-                    unelevated
-                    color="green-2"
-                    rounded
-                    label="Edit"
-                    @click="Edit(props.row.id)"
-                  />
-                  <q-btn
-                    dense
-                    class="under-title q-px-sm text-red"
-                    no-caps
-                    unelevated
-                    color="red-2"
-                    rounded
-                    label="Delete"
-                    @click="Delete(props.row.id)"
-                  />
-                </div>
-              </q-td>
-              <!-- action -->
-            </q-tr>
-          </template>
-        </q-table>
+                  <!-- priority -->
+
+                  <q-td key="priority" :props="props">
+                    <q-chip
+                      :color="
+                        props.row.priority == 'Important'
+                          ? 'white text-red'
+                          : props.row.priority == 'High'
+                          ? 'white text-orange'
+                          : props.row.priority == 'Normal'
+                          ? 'white text-blue'
+                          : 'secondary'
+                      "
+                      text-color="white"
+                      dense
+                      class="text-center under-title q-px-sm tex"
+                      rounded
+                      >{{ props.row.priority }}
+                    </q-chip>
+                  </q-td>
+
+                  <q-td key="status" :props="props">
+                    <q-chip
+                      :color="
+                        props.row.status == 'Close'
+                          ? 'white text-deep-orange'
+                          : props.row.status == 'Deleted'
+                          ? 'white text-red'
+                          : props.row.status == 'Idle'
+                          ? 'white text-orange'
+                          : props.row.status == 'Wait-app'
+                          ? 'white text-blue'
+                          : props.row.status == 'Completed'
+                          ? 'white text-blue'
+                          : props.row.status == 'In-progress'
+                          ? 'white text-orange'
+                          : props.row.status == 'Open'
+                          ? 'white text-green'
+                          : 'secondary'
+                      "
+                      dense
+                      class="under-title q-px-sm tex"
+                      rounded
+                      >{{ props.row.status }}
+                    </q-chip>
+                  </q-td>
+
+                  <!-- priority -->
+                  <q-td key="Progress" :props="props">
+                    <q-linear-progress
+                      grey
+                      :color="getColor(props.row.progress)"
+                      :value="props.row.progress / 100"
+                      class="q-mt-md"
+                    />
+                  </q-td>
+
+                  <q-td key="Progress" :props="props">
+                    <div>{{ props.row.progress }} %</div>
+                  </q-td>
+
+                  <q-td key="detail" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn dense unelevated @click="Report(props.row.id)">
+                        <q-icon name="img:/statics/reportc.svg" />
+                      </q-btn>
+                    </div>
+                  </q-td>
+
+                  <q-td key="feed" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm"
+                        rounded
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        text-color="red"
+                        label="Revise"
+                        @click="Revise(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        unelevated
+                        color="blue-2"
+                        class="under-title q-px-sm"
+                        rounded
+                        text-color="blue"
+                        label="OK"
+                        :disabled="
+                          props.row.finished_at === null ||
+                          (props.row.status !== 'In-progress' &&
+                            props.row.status !== 'Idle')
+                        "
+                      />
+                      @click="openEmployeeDialog(props.row.id)" />
+                    </div>
+                  </q-td>
+                </q-tr>
+              </template>
+            </q-table>
           </q-card-section>
         </q-card>
       </div>
@@ -630,27 +545,35 @@ import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
 // import Status from "components/Status"
-import { store } from "../../store/store";
+import { store } from "../../store/store.js";
+import { ref } from "vue";
 
 const stringOptions = [
-  // 'Google', 'Facebook', 'Twitter', 'Apple', 'Apples1', 'Apples2', 'Oracle'
+  "Google",
+  "Facebook",
+  "Twitter",
+  "Apple",
+  "Apples1",
+  "Apples2",
+  "Oracle",
 ];
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
-  return `"${formatted}"`;
+  return "${formatted}";
 }
 
 export default {
-  name: "TaskList",
+  name: "TaskMonitoring",
   data() {
     return {
+      token:  ref(localStorage.getItem("token")),
+      id: ref(null),
       statusFilter: "",
       filter: "",
       mode: "list",
@@ -658,8 +581,8 @@ export default {
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -734,8 +657,6 @@ export default {
           field: "detail",
           sortable: true,
         },
-
-
       ],
       data: [],
       pagination: {
@@ -745,8 +666,14 @@ export default {
   },
   setup() {
     return {
-      id: store.id,
+      onItemClick() {},
     };
+  },
+
+  mounted() {
+    this.fetchDeletedData();
+    this.fetchData();
+    this.fetchWaitedData();
   },
   watch: {
     search: {
@@ -758,29 +685,23 @@ export default {
       },
     },
   },
-
-  mounted() {
-    this.fetchDeletedData();
-    this.fetchData();
-    this.fetchWaitedData();
-    this.statusFilter = this.$route.query.status;
-  },
-
   methods: {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem('username');
+        const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: statusFilter,
             search: this.search,
           },
           headers: {
-            pic: username
-          }
+            "Authorization": `Bearer ${this.token}`,
+          },
         });
-          this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        this.data = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -809,17 +730,19 @@ export default {
     async fetchWaitedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem('username');
+        const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/waited", {
           params: {
             status: statusFilter,
             search: this.search,
           },
           headers: {
-            pic: username
-          }
+            "Authorization": `Bearer ${this.token}`,
+          },
         });
-          this.waiting_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        this.waiting_data = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -828,35 +751,37 @@ export default {
     async fetchDeletedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem('username');
+        const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/deleted", {
           params: {
             status: statusFilter,
             search: this.search,
           },
           headers: {
-            pic: username
-          }
+            "Authorization": `Bearer ${this.token}`,
+          },
         });
-          this.deleted_data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        this.deleted_data = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     },
 
-    // filterFn(val, update) {
-    //   if (val === '') {
-    //     update(() => {
-    //       this.options = stringOptions
-    //     })
-    //     return
-    //   }
+    filterFn(val, update) {
+      if (val === "") {
+        update(() => {
+          this.options = stringOptions;
+        });
+        return;
+      }
 
-    //   update(() => {
-    //     const needle = val.toLowerCase()
-    //     this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-    //   })
-    // },
+      update(() => {
+        const needle = val.toLowerCase();
+        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+      });
+    },
 
     Detail(id) {
       store.id = id;
