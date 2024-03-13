@@ -233,7 +233,6 @@
                       props.row.spv !== username
                     "
                   />
-                  @click="openEmployeeDialog(props.row.id)" />
                 </div>
               </q-td>
 
