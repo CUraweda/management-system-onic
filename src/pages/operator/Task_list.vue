@@ -738,6 +738,8 @@ export default {
 
       ],
       data: [],
+      waiting_data: [],
+      deleted_data: [],
       pagination: {
         rowsPerPage: 5,
       },
@@ -812,7 +814,7 @@ export default {
         const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
+            status: "Wait-app",
             search: this.search,
           },
           headers: {
@@ -831,7 +833,7 @@ export default {
         const username = localStorage.getItem('username');
         const response = await this.$axios.get("/task/deleted", {
           params: {
-            status: statusFilter,
+            status: "Deleted",
             search: this.search,
           },
           headers: {

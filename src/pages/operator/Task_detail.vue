@@ -1,8 +1,10 @@
 <template>
   <q-page class="q-pt-xs">
     <div class="q-ma-md">
-      <div class="row q-my-md shadow q-pa-md items-center"
-        style="border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.12)">
+      <div
+        class="row q-my-md shadow q-pa-md items-center"
+        style="border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.12)"
+      >
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_1">
           <q-card class="no-shadow q-pa-sm">
             <div class="row items-center">
@@ -10,12 +12,16 @@
                 {{ task_title }}
               </div>
               <div class="bg-grey-3 q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">
+                <div
+                  class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7"
+                >
                   {{ status }}
                 </div>
               </div>
               <div class="bg-grey-3 q-mr-sm tulisan border1">
-                <div class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7">
+                <div
+                  class="text-h8 text-weight-bold q-px-sm align-left tulisan q-my-xs text-indigo-7"
+                >
                   {{ priority }}
                 </div>
               </div>
@@ -25,21 +31,24 @@
                 <div class="row">
                   <div class="col-4">
                     <div
-                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2">
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2"
+                    >
                       Assigned By
                     </div>
                     <div class="q-mr-lg">{{ spv }}</div>
                   </div>
                   <div class="col-4">
                     <div
-                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2">
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2"
+                    >
                       TASK TITLE
                     </div>
                     <div class="q-mr-lg">{{ task_title }}</div>
                   </div>
                   <div class="col-4">
                     <div
-                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2">
+                      class="text-h8 text-weight-bold q-mt-none align-left tulisan q-my-xs bg-grey-3 q-mr-md q-pa-md border2"
+                    >
                       DUE DATE
                     </div>
                     <div class="q-mr-lg">{{ formatLocalTime(due_date) }}</div>
@@ -52,10 +61,24 @@
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
           <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
-            <div v-for="(time, index) in timerData" :key="index" class="col-md-3 col-lg-3 col-sm-5 col-xs-5">
-              <q-circular-progress :max="time.max" show-value track-color="light-blue-2" class="text-black q-ma-md"
-                :value="time.value" size="100px" color="light-blue" />
-              <div v-if="time.labelPosition === 'bottom'" class="vertical-bottom text-center text-black">
+            <div
+              v-for="(time, index) in timerData"
+              :key="index"
+              class="col-md-3 col-lg-3 col-sm-5 col-xs-5"
+            >
+              <q-circular-progress
+                :max="time.max"
+                show-value
+                track-color="light-blue-2"
+                class="text-black q-ma-md"
+                :value="time.value"
+                size="100px"
+                color="light-blue"
+              />
+              <div
+                v-if="time.labelPosition === 'bottom'"
+                class="vertical-bottom text-center text-black"
+              >
                 {{ time.label }}
               </div>
               <div v-else class="text-center text-black">{{ time.label }}</div>
@@ -83,7 +106,13 @@
             <q-card-section class="col-12">
               <div class="q-pa-md" style="max-width: 100%">
                 <q-list>
-                  <q-expansion-item popup default-opened icon="" class="col-12" label="Progress">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    class="col-12"
+                    label="Progress"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -96,15 +125,26 @@
                           <div class="col">
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
-                            <q-slider :disable="status === 'Wait-app' || status === 'Deleted'
-                  " v-model="progress" color="blue" track-color="light-blue-1" inner-track-color="blue-3"
-                              :max="100" />
+                            <q-slider
+                              :disable="status === 'Wait-app' || status === 'Deleted'"
+                              v-model="progress"
+                              color="blue"
+                              track-color="light-blue-1"
+                              inner-track-color="blue-3"
+                              :max="100"
+                            />
                           </div>
                         </div>
                       </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" class="col-12" label="Addtional Details">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    class="col-12"
+                    label="Addtional Details"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -163,10 +203,26 @@
                 <div class="q-ml-lg">{{ chat }}</div>
               </CardBase>
               <CardBase class="col-6">
-                <q-input class="border2 col-6" bottom-slots v-model="chat" label="Text" dense>
+                <q-input
+                  class="border2 col-6"
+                  bottom-slots
+                  v-model="chat"
+                  label="Text"
+                  dense
+                >
                   <template v-slot:after>
-                    <q-btn round dense flat icon="send" @click="SendUpdate()"
-                      :disable="status === 'Wait-app' || status === 'Deleted'" />
+                    <q-btn
+                      round
+                      dense
+                      flat
+                      icon="send"
+                      @click="SendUpdate()"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        started_at === null
+                      "
+                    />
                   </template>
                 </q-input>
               </CardBase>
@@ -178,24 +234,71 @@
             <q-card-section class="row">
               <CardBase class="  ">
                 <div class="q-pa-md">
-                  <q-btn @click="downloadFile()" :disable="fileName === null">
+                  <div class="q-pt-md"></div>
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
                     Download File
                   </q-btn>
-                  <q-btn @click="downloadFile()">
-                    Download Dokumen Hasil
-                  </q-btn>
+                  <q-file
+                    v-if="status !== 'Wait-app'"
+                    :disable="file_hasil !== null"
+                    color="teal"
+                    filled
+                    v-model="file_hasil"
+                    :label="file_hasil ? file_hasil.name : 'Select file...'"
+                    :placeholder="file_hasil ? file_hasil.name : 'Select file...'"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="cloud_upload" />
+                    </template>
+                  </q-file>
+                  <!-- <input type="file" ref="fileInput" @change="uploadFile"> -->
                   <div class="q-pt-md row justify-between">
-                    <q-btn unelevated class="q-mr-md" :ripple="{ color: 'blue' }"
-                      :color="started_at ? 'red-1' : 'blue-1'" :text-color="started_at ? 'red' : 'blue'"
-                      :label="started_at ? 'Finish' : 'Start'" @click="started_at ? FinishTask() : StartTask()"
-                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at !== null" />
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'" label="Send To Other PIC" no-caps
-                      @click="send" v-if="task_type === 'Multi'" />
+                    <q-btn
+                      unelevated
+                      class="q-mr-md"
+                      :ripple="{ color: 'blue' }"
+                      :color="started_at ? 'red-1' : 'blue-1'"
+                      :text-color="started_at ? 'red' : 'blue'"
+                      :label="started_at ? 'Finish' : 'Start'"
+                      @click="started_at ? FinishTask() : StartTask()"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null
+                      "
+                    />
+                    <q-btn
+                      unelevated
+                      :ripple="{ color: 'grey' }"
+                      color="grey-3"
+                      text-color="grey-7"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null
+                      "
+                      label="Send To Other PIC"
+                      no-caps
+                      @click="send"
+                      v-if="task_type === 'Multi'"
+                    />
 
-                    <q-btn unelevated :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at !== null"
-                      label="Submit To Superior" no-caps @click="submitToSuperior" v-else-if="task_type === 'Single'" />
+                    <q-btn
+                      unelevated
+                      :ripple="{ color: 'grey' }"
+                      color="grey-3"
+                      text-color="grey-7"
+                      :disable="
+                        file_hasil !== null ||
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at === null
+                      "
+                      label="Submit To Superior"
+                      no-caps
+                      @click="uploadFile"
+                      v-else-if="task_type === 'Single'"
+                    />
                   </div>
                 </div>
               </CardBase>
@@ -217,8 +320,7 @@ import { store } from "../../store/store";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -227,11 +329,11 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: "TaskDetail",
-  // props: ["id"]'',
   setup() {
     return {
       rate: ref(0),
       text: ref(""),
+      id: store.id,
       ratingModel: ref(0),
       ratingColors: ["yellow"],
       // pic: ref(''),
@@ -240,6 +342,8 @@ export default {
 
   data() {
     return {
+      file_hasil: null,
+      fileName: null,
       chat: "",
       filter: "",
       mode: "list",
@@ -252,9 +356,8 @@ export default {
       countdown: null,
       task_title: "",
       status: "",
-      priority: "",
       pic: "",
-      id: store.id,
+      priority: "",
       due_date: "",
       progress: 0,
       started_at: "",
@@ -264,7 +367,6 @@ export default {
       history: "",
       description: "",
       task_type: "",
-      fileName: ""
       // Add other properties with default values
     };
   },
@@ -277,15 +379,15 @@ export default {
     async downloadFile() {
       try {
         // Mengganti URL dengan endpoint yang sesuai
-        const response = await this.$axios.get('/image/' + this.fileName, {
-          responseType: 'blob', // Menggunakan responseType 'blob' untuk menghandle file
+        const response = await this.$axios.get("/image/" + this.fileName, {
+          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
         });
 
         // Membuat objek URL dari blob
         const url = window.URL.createObjectURL(new Blob([response.data]));
 
         // Membuat elemen <a> untuk tautan unduhan
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
         link.download = this.fileName; // Set nama berkas yang diinginkan
         document.body.appendChild(link);
@@ -297,8 +399,24 @@ export default {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
       } catch (error) {
-        console.error('Error downloading file:', error);
+        console.error("Error downloading file:", error);
       }
+    },
+
+    uploadFile() {
+      const file = this.file_hasil;
+
+      const formData = new FormData();
+      formData.append("file_hasil", file);
+
+      this.$axios
+        .put(`/task/file_hasil/${this.id}`, formData)
+        .then((response) => {
+          console.log("File berhasil diunggah:", response.data);
+        })
+        .catch((error) => {
+          console.error("Terjadi kesalahan:", error);
+        });
     },
 
     formatLocalTime(utcTime) {
@@ -356,7 +474,6 @@ export default {
 
       try {
         const response = await this.$axios.put("/task/edit/" + this.id, data, {
-          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -409,7 +526,6 @@ export default {
 
     async fetchData() {
       try {
-        console.log(this.id);
         const response = await this.$axios.get("/task/get-by-id/" + this.id);
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
@@ -423,6 +539,7 @@ export default {
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
         this.fileName = response.data.fileName;
+        this.file_hasil = response.data.file_hasil;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -432,21 +549,17 @@ export default {
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(
-          timeDifference / (24 * 60 * 60 * 1000)
-        );
+        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor(
-          (timeDifference % (60 * 1000)) / 1000
-        );
+        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
 
         // Start the countdown
-        this.startCountdown();
+        // this.startCountdown();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -470,8 +583,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log(totalSeconds);
-          console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
         }
@@ -494,6 +605,7 @@ export default {
             headers: {
               "Content-Type": "application/json",
             },
+            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error("EROR:", error);
@@ -506,8 +618,7 @@ export default {
     },
 
     send() {
-      store.id = this.id;
-      this.$router.push("/supervisor/task_detail_2/");
+      this.$router.push("/operator/task_detail_2/" + this.id);
     },
   },
 };

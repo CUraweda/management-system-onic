@@ -231,7 +231,7 @@
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
                   <q-btn @click="downloadFile()" :disable="this.fileName === null"> Download File </q-btn>
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
+                  <q-btn @click="downloadFileHasil()" :disable="this.fileName === null">
                     Download Dokumen Hasil
                   </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
@@ -455,6 +455,7 @@ export default {
       description: "",
       task_type: "",
       fileName: "",
+      file_hasil: "",
       id: store.id,
       // Add other properties with default values
     };
@@ -489,6 +490,33 @@ export default {
         const link = document.createElement("a");
         link.href = url;
         link.download = this.fileName; // Set nama berkas yang diinginkan
+        document.body.appendChild(link);
+
+        // Simulasi klik pada elemen <a> untuk memulai unduhan
+        link.click();
+
+        // Membersihkan objek URL dan menghapus elemen <a>
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
+    async downloadFileHasil() {
+      try {
+        // Mengganti URL dengan endpoint yang sesuai
+        const response = await this.$axios.get("/image/" + this.file_hasil, {
+          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+        });
+
+        // Membuat objek URL dari blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        // Membuat elemen <a> untuk tautan unduhan
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = this.file_hasil; // Set nama berkas yang diinginkan
         document.body.appendChild(link);
 
         // Simulasi klik pada elemen <a> untuk memulai unduhan
@@ -570,6 +598,7 @@ export default {
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
         this.fileName = response.data.fileName;
+        this.file_hasil = response.data.file_hasil;
 
         this.description = response.data.description;
         this.pic = response.data.pic;

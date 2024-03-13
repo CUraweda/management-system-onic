@@ -60,7 +60,9 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
+          <q-card
+            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
+          >
             <div
               v-for="(time, index) in timerData"
               :key="index"
@@ -154,7 +156,9 @@
                             <div class="">Created By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(created_at) }}</div>
+                            <div class="">
+                              {{ formatLocalTime(created_at) }}
+                            </div>
                             <div class="">{{ created_by }}</div>
                           </div>
                         </div>
@@ -162,7 +166,12 @@
                       <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" label="History">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    label="History"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -172,8 +181,12 @@
                             <div class="">Finished On</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(started_at) }}</div>
-                            <div class="">{{ formatLocalTime(finished_at) }}</div>
+                            <div class="">
+                              {{ formatLocalTime(started_at) }}
+                            </div>
+                            <div class="">
+                              {{ formatLocalTime(finished_at) }}
+                            </div>
                           </div>
                         </div>
                       </q-card-section>
@@ -190,7 +203,9 @@
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
             <q-card-section class="row justify-center">
               <CardBase class="col-12">
-                <div class="q-ml-lg" style="white-space: pre-line">{{ description }}</div>
+                <div class="q-ml-lg" style="white-space: pre-line">
+                  {{ description }}
+                </div>
 
                 <div class="q-ml-lg">{{ chat }}</div>
               </CardBase>
@@ -215,22 +230,12 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
-                    Download File
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null"> Download File </q-btn>
+                  <q-btn @click="downloadFileHasil()" :disable="this.fileName === null">
+                    Download Dokumen Hasil
                   </q-btn>
-                  <q-btn @click="downloadFile()"> Download Dokumen Hasil </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
                   <div class="q-pt-md"></div>
-                  <!-- <q-uploader
-                    class="col-6 q-mb-md"
-                    square
-                    flat
-                    bordered
-                    url=""
-                    label="Dokumen Hasil"
-                    multiple
-                    color="grey"
-                  /> -->
 
                   <div
                     v-if="task_type === 'Multi'"
@@ -249,7 +254,9 @@
                     >
                       <template v-slot:no-option>
                         <q-item>
-                          <q-item-section class="text-grey"> No results </q-item-section>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
@@ -261,11 +268,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="
-                        finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle') ||
-                        spv !== username
-                      "
+                      :disable="spv !== username"
                       @click="Revise()"
                     />
                     <q-btn
@@ -276,12 +279,12 @@
                       label="OK"
                       no-caps
                       class="col-5"
-                      @click="Ok()"
                       :disable="
                         finished_at === null ||
                         (status !== 'In-progress' && status !== 'Idle') ||
                         spv !== username
                       "
+                      @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">
                       Beri Rating untuk Pekerja!
@@ -354,11 +357,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="
-                        finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle') ||
-                        spv !== username
-                      "
+                      :disable="spv !== username"
                       @click="Revise()"
                     />
                     <q-btn
@@ -409,13 +408,18 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { ref } from "vue";
+import Vue from "vue";
+import { exportFile } from "quasar";
+import axios from "axios";
 import { store } from "../../store/store";
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -426,7 +430,6 @@ export default {
   name: "ManagerReport",
   data() {
     return {
-      username: localStorage.getItem("username"),
       chat: "",
       filter: "",
       mode: "list",
@@ -452,6 +455,8 @@ export default {
       description: "",
       task_type: "",
       fileName: "",
+      file_hasil: "",
+      id: store.id,
       // Add other properties with default values
     };
   },
@@ -460,7 +465,6 @@ export default {
     return {
       rate: ref(0),
       text: ref(""),
-      id: store.id,
       ratingModel: ref(0),
       ratingColors: ["yellow"],
       picrate: ref([]),
@@ -499,6 +503,33 @@ export default {
       }
     },
 
+    async downloadFileHasil() {
+      try {
+        // Mengganti URL dengan endpoint yang sesuai
+        const response = await this.$axios.get("/image/" + this.file_hasil, {
+          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+        });
+
+        // Membuat objek URL dari blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        // Membuat elemen <a> untuk tautan unduhan
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = this.file_hasil; // Set nama berkas yang diinginkan
+        document.body.appendChild(link);
+
+        // Simulasi klik pada elemen <a> untuk memulai unduhan
+        link.click();
+
+        // Membersihkan objek URL dan menghapus elemen <a>
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
     formatLocalTime(utcTime) {
       if (utcTime === null) {
         return ""; // Jika utcTime null, kembalikan string kosong
@@ -520,6 +551,7 @@ export default {
     },
 
     async SendUpdate() {
+      const id = this.id;
       const updatedDescription = `${this.description} \n Manager: ${this.chat}`;
 
       const data = {
@@ -566,6 +598,7 @@ export default {
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
         this.fileName = response.data.fileName;
+        this.file_hasil = response.data.file_hasil;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -575,14 +608,18 @@ export default {
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+        this.timerData[0].value = Math.floor(
+          timeDifference / (24 * 60 * 60 * 1000)
+        );
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
+        this.timerData[3].value = Math.floor(
+          (timeDifference % (60 * 1000)) / 1000
+        );
 
         // Start the countdown
         this.startCountdown();
@@ -645,8 +682,8 @@ export default {
     },
 
     send() {
-      const id = this.id;
-      this.$router.push("/manager/task_detail_2/" + id);
+      store.id = this.id;
+      this.$router.push("/manager/task_detail_2/");
     },
 
     async Revise() {
@@ -681,11 +718,15 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          revisedTaskData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (createTaskResponse.status !== 200) {
           throw new Error("Failed to create revised task");
@@ -709,7 +750,7 @@ export default {
           this.$q.notify({
             message: "Task Revised",
           });
-          this.$router.go(-1);
+          this.$router.push("/manager/task_monitoring");
         } else {
           this.$q.notify({
             message: "Failed Revising Task",
@@ -756,7 +797,7 @@ export default {
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic,
+          pic: this.pic
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {
@@ -764,7 +805,8 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -794,7 +836,7 @@ export default {
             type: "positive",
             message: "Task Canceled",
           });
-          this.$router.push("/manager/task_monitoring_3");
+          this.$router.push("/manager/task_monitoring_2");
         } else {
           this.$q.notify({
             message: "Failed Canceling Task",

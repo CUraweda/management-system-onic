@@ -207,8 +207,8 @@
                     <q-select
                       :multiple="isMultitask"
                       dense
-                      filled
                       disable
+                      filled
                       v-model="selectedpic"
                       name="pic"
                       use-input
@@ -420,15 +420,13 @@ export default {
   name: "ManagerCreate",
   data() {
     return {
+      username: localStorage.getItem("username"),
       spv_id: "",
       pic_id: "",
       pic: [],
-      selectedpic: null,
       spv: [],
-      selectedspv: {
-        label: localStorage.getItem("username"),
-        value: localStorage.getItem("username"),
-      },
+      selectedspv: null,
+      selectedpic: null,
       iteration: "daily",
       isMultitask: ref(false),
       sendedForm: ref({}),
@@ -571,11 +569,10 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const username = localStorage.getItem("username")
         const { status, data } = await this.$axios.get("/user/all");
         if (status !== 200) throw Error("Error while fetching");
 
-        const filteredData = data.filter((user) => user.u_name === username);
+        const filteredData = data.filter((user) => user.u_name === this.username);
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
