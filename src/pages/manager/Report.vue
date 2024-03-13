@@ -60,7 +60,9 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
+          <q-card
+            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
+          >
             <div
               v-for="(time, index) in timerData"
               :key="index"
@@ -154,7 +156,9 @@
                             <div class="">Created By</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(created_at) }}</div>
+                            <div class="">
+                              {{ formatLocalTime(created_at) }}
+                            </div>
                             <div class="">{{ created_by }}</div>
                           </div>
                         </div>
@@ -162,7 +166,12 @@
                       <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" label="History">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    label="History"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -172,8 +181,12 @@
                             <div class="">Finished On</div>
                           </div>
                           <div class="col">
-                            <div class="">{{ formatLocalTime(started_at) }}</div>
-                            <div class="">{{ formatLocalTime(finished_at) }}</div>
+                            <div class="">
+                              {{ formatLocalTime(started_at) }}
+                            </div>
+                            <div class="">
+                              {{ formatLocalTime(finished_at) }}
+                            </div>
                           </div>
                         </div>
                       </q-card-section>
@@ -190,7 +203,9 @@
           <q-card flat bordered class="no-shadow q-pa-none q-ma-none">
             <q-card-section class="row justify-center">
               <CardBase class="col-12">
-                <div class="q-ml-lg" style="white-space: pre-line">{{ description }}</div>
+                <div class="q-ml-lg" style="white-space: pre-line">
+                  {{ description }}
+                </div>
 
                 <div class="q-ml-lg">{{ chat }}</div>
               </CardBase>
@@ -215,10 +230,15 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
+                  <q-btn
+                    @click="downloadFile()"
+                    :disable="this.fileName === null"
+                  >
                     Download File
                   </q-btn>
-                  <q-btn @click="downloadFile()"> Download Dokumen Hasil </q-btn>
+                  <q-btn @click="downloadFile()">
+                    Download Dokumen Hasil
+                  </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
                   <div class="q-pt-md"></div>
                   <!-- <q-uploader
@@ -249,7 +269,9 @@
                     >
                       <template v-slot:no-option>
                         <q-item>
-                          <q-item-section class="text-grey"> No results </q-item-section>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
@@ -415,7 +437,8 @@ import { store } from "../../store/store";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -426,6 +449,7 @@ export default {
   name: "ManagerReport",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       username: localStorage.getItem("username"),
       chat: "",
       filter: "",
@@ -476,7 +500,10 @@ export default {
       try {
         // Mengganti URL dengan endpoint yang sesuai
         const response = await this.$axios.get("/image/" + this.fileName, {
-          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Membuat objek URL dari blob
@@ -552,7 +579,11 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -575,14 +606,18 @@ export default {
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+        this.timerData[0].value = Math.floor(
+          timeDifference / (24 * 60 * 60 * 1000)
+        );
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
+        this.timerData[3].value = Math.floor(
+          (timeDifference % (60 * 1000)) / 1000
+        );
 
         // Start the countdown
         this.startCountdown();
@@ -653,7 +688,11 @@ export default {
       try {
         const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
@@ -681,11 +720,15 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          revisedTaskData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (createTaskResponse.status !== 200) {
           throw new Error("Failed to create revised task");
@@ -764,7 +807,8 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });

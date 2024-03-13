@@ -226,7 +226,11 @@
                       flat
                       icon="send"
                       @click="SendUpdate()"
-                      :disable="status === 'Wait-app' || status === 'Deleted' || started_at === null"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        started_at === null
+                      "
                     />
                   </template>
                 </q-input>
@@ -265,14 +269,22 @@
                       :text-color="started_at ? 'red' : 'blue'"
                       :label="started_at ? 'Finish' : 'Start'"
                       @click="started_at ? FinishTask() : StartTask()"
-                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at !== null"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null
+                      "
                     />
                     <q-btn
                       unelevated
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at !== null"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null
+                      "
                       label="Send To Other PIC"
                       no-caps
                       @click="send"
@@ -284,7 +296,11 @@
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted' || finished_at === null"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at === null
+                      "
                       label="Submit To Superior"
                       no-caps
                       @click="submitToSuperior"
@@ -306,7 +322,7 @@ import { ref } from "vue";
 import Vue from "vue";
 import { exportFile } from "quasar";
 import axios from "axios";
-import { store } from '../../store/store'
+import { store } from "../../store/store";
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -323,6 +339,7 @@ export default {
   name: "TaskDetail",
   setup() {
     return {
+      token: exportFile(localStorage.getItem("token")),
       rate: ref(0),
       text: ref(""),
       id: store.id,
@@ -411,7 +428,7 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-       this.$router.push({ path: "/manager/task_list" });
+      this.$router.push({ path: "/manager/task_list" });
     },
 
     async FinishTask() {
@@ -438,7 +455,7 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-       this.$router.push({ path: "/manager/task_list" });
+      this.$router.push({ path: "/manager/task_list" });
     },
 
     async SendUpdate() {
@@ -468,12 +485,16 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-       this.$router.push({ path: "/manager/task_list" });
+      this.$router.push({ path: "/manager/task_list" });
     },
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
