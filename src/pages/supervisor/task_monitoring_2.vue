@@ -65,8 +65,6 @@
                 </template>
               </q-input>
 
-
-
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
                 color="cyan"
@@ -282,8 +280,8 @@ export default {
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -344,7 +342,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -379,11 +377,11 @@ export default {
   },
   setup() {
     return {
-      rate: ref(0),
+      token: ref(localStorage.getItem("token")),
+      model: ref(0),
       yellow: ["yellow"],
       id: store.id,
-      onItemClick() {
-      },
+      onItemClick() {},
     };
   },
 
@@ -403,8 +401,8 @@ export default {
             search: this.search,
           },
           headers: {
-            spv: username
-          }
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         if (Array.isArray(response.data)) {

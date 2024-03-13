@@ -233,6 +233,7 @@
                       props.row.spv !== username
                     "
                   />
+                  @click="openEmployeeDialog(props.row.id)" />
                 </div>
               </q-td>
 
@@ -453,6 +454,7 @@ export default {
 
   setup() {
     return {
+      token: ref(localStorage.getItem("token")),
       rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {},
@@ -536,7 +538,11 @@ export default {
 
     async fetchTaskById(id) {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         return response.data;
       } catch (error) {
         console.error("Error fetching task by ID:", error);
@@ -623,6 +629,9 @@ export default {
           params: {
             status: statusFilter,
             search: this.search,
+          },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
           },
         });
 
