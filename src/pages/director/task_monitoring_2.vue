@@ -273,14 +273,15 @@ export default {
   name: "TaskMonitoring2",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       filter: "",
       mode: "list",
       invoice: {},
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -341,7 +342,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -393,16 +394,19 @@ export default {
 
     async fetchData() {
       try {
-      const spv = localStorage.getItem("username");
+        const spv = localStorage.getItem("username");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
           },
           headers: {
-            spv: spv
+            spv: spv,
+            Authorization: `Bearer ${this.token}`,
           },
         });
-        this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        this.data = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
