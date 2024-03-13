@@ -327,7 +327,8 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -338,6 +339,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       id: ref(null),
       username: localStorage.getItem("username"),
       statusFilter: "",
@@ -537,7 +539,11 @@ export default {
 
     async fetchTaskById(id) {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         return response.data;
       } catch (error) {
         console.error("Error fetching task by ID:", error);
@@ -557,11 +563,15 @@ export default {
         taskToRevise.started_at = null;
         taskToRevise.started_by = null;
 
-        const createTaskResponse = await this.$axios.post("/task/new", taskToRevise, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          taskToRevise,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (!createTaskResponse.status === 200)
           throw Error("Failed to create revised task");
 
@@ -584,6 +594,9 @@ export default {
           params: {
             status: statusFilter,
             search: this.search,
+          },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.data = response.data.sort(
@@ -615,7 +628,8 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -636,7 +650,9 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+        this.options = stringOptions.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 

@@ -108,7 +108,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalCompleted}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalCompleted }}
+              </div>
               Increased by 6 this week
             </q-card-section>
           </q-card-section>
@@ -137,7 +139,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalInProgress}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalInProgress }}
+              </div>
               Decreased by 5 this week
             </q-card-section>
           </q-card-section>
@@ -166,7 +170,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalOverdue}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalOverdue }}
+              </div>
               Increased by 3 this week
             </q-card-section>
           </q-card-section>
@@ -195,7 +201,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalOpen}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalOpen }}
+              </div>
               Increased by 8 this week
             </q-card-section>
           </q-card-section>
@@ -224,7 +232,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalTotal}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalTotal }}
+              </div>
               Completion rate: 80%
             </q-card-section>
           </q-card-section>
@@ -543,21 +553,22 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      TotalOpen: '0',
-      TotalInProgress: '0',
-      TotalOverdue: '0',
-      TotalCompleted: '0',
-      TotalTotal: '0',
+      token: ref(localStorage.getItem("token")),
+      TotalOpen: "0",
+      TotalInProgress: "0",
+      TotalOverdue: "0",
+      TotalCompleted: "0",
+      TotalTotal: "0",
       filter: "",
       mode: "list",
       search: "",
       deposit: {
-        start:"",
-        due:"",
-        start_1:"",
-        due_1:"",
-        start_2:"",
-        due_2:"",
+        start: "",
+        due: "",
+        start_1: "",
+        due_1: "",
+        start_2: "",
+        due_2: "",
       },
     };
   },
@@ -581,8 +592,13 @@ export default {
     async fetchOpen() {
       try {
         const response = await this.$axios.get("/task/all", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
-        const openedTasks = response.data.filter(task => task.status === 'Open');
+        const openedTasks = response.data.filter(
+          (task) => task.status === "Open"
+        );
         this.TotalOpen = openedTasks.length;
         console.log(openedTasks.length);
 
@@ -596,8 +612,13 @@ export default {
     async fetchCompleted() {
       try {
         const response = await this.$axios.get("/task/all", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
-        const openedTasks = response.data.filter(task => task.status === 'Close');
+        const openedTasks = response.data.filter(
+          (task) => task.status === "Close"
+        );
         this.TotalCompleted = openedTasks.length;
         console.log(openedTasks.length);
 
@@ -611,11 +632,16 @@ export default {
     async fetchInProgress() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'In-progress', search: this.search },
+          params: { status: "In-progress", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'In-progress');
+        const openedTasks = response.data.filter(
+          (task) => task.status === "In-progress"
+        );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -633,11 +659,16 @@ export default {
     async fetchOverdue() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'Idle', search: this.search },
+          params: { status: "Idle", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Idle');
+        const openedTasks = response.data.filter(
+          (task) => task.status === "Idle"
+        );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -655,7 +686,10 @@ export default {
     async fetchTotal() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: '', search: this.search },
+          params: { status: "", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
