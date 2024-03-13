@@ -75,8 +75,6 @@
                 </template>
               </q-input>
 
-
-
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
                 color="cyan"
@@ -230,8 +228,12 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    :disabled="props.row.finished_at === null || props.row.status !== 'In-progress'" />                    @click="openEmployeeDialog(props.row.id)"
+                    :disabled="
+                      props.row.finished_at === null ||
+                      props.row.status !== 'In-progress'
+                    "
                   />
+                  @click="openEmployeeDialog(props.row.id)" />
                 </div>
               </q-td>
 
@@ -408,7 +410,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -450,10 +452,10 @@ export default {
 
   setup() {
     return {
+      token: ref(localStorage.getItem("token")),
       rate: ref(0),
       yellow: ["yellow"],
-      onItemClick() {
-      },
+      onItemClick() {},
     };
   },
 
@@ -510,7 +512,7 @@ export default {
       };
 
       try {
-        const response = await this.$axios.put("/task/edit/"+id, data, {
+        const response = await this.$axios.put("/task/edit/" + id, data, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -534,7 +536,11 @@ export default {
 
     async fetchTaskById(id) {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         return response.data;
       } catch (error) {
         console.error("Error fetching task by ID:", error);
@@ -589,14 +595,18 @@ export default {
         }
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await this.$axios.put("/task/edit/" + id, {
+        const updateTaskResponse = await this.$axios.put(
+          "/task/edit/" + id,
+          {
             status: "Deleted",
             deleted_at: new Date().toISOString(),
-          },{
-          headers: {
-            "Content-Type": "application/json",
           },
-        });
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (updateTaskResponse.status === 200) {
           this.$q.notify({
@@ -622,11 +632,19 @@ export default {
             status: statusFilter,
             search: this.search,
           },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager" && item.pic_title !== "Supervisor");
-          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+          const filteredData = response.data.filter(
+            (item) =>
+              item.pic_title !== "Manager" && item.pic_title !== "Supervisor"
+          );
+          this.data = filteredData.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+          );
         } else {
           console.error("Invalid response format:", response);
         }
@@ -654,7 +672,7 @@ export default {
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic
+          pic: this.pic,
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {

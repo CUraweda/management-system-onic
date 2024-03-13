@@ -298,6 +298,7 @@ export default {
   name: "TaskDetail2",
   setup() {
     return {
+      token: ref(localStorage.getItem("token")),
       slide: ref(15),
     };
   },

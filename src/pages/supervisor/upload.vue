@@ -282,6 +282,7 @@ export default {
 
   setup() {
     return {
+      token: ref(localStorage.getItem("token")),
       model: ref(0),
       yellow: ["yellow"],
       id: store.id,

@@ -504,6 +504,7 @@ export default {
     const submitResultspv = ref([]);
 
     return {
+      token: ref(localStorage.getItem("token")),
       iteration: ref(""),
       task_type_options: [
         {
@@ -616,7 +617,11 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
