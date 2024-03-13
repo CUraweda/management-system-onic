@@ -60,7 +60,6 @@ export default {
   methods: {
     async fetchData() {
       try {
-        console.log(this.token);
         const response = await this.$axios.get(`/notif`, {
           headers: {
             Authorization: `Bearer ${this.token}`,

@@ -320,7 +320,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
 
@@ -345,7 +345,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
 
@@ -374,7 +374,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
 
@@ -403,7 +403,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
 
@@ -432,7 +432,7 @@ export default {
             search: this.search,
           },
           headers: {
-            username: username
+            pic: username
           }
         });
 

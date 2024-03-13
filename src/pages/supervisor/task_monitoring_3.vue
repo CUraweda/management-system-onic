@@ -221,14 +221,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -366,7 +366,7 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       id: store.id,
       onItemClick() {
@@ -400,7 +400,7 @@ export default {
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager" && item.pic_title !== "Supervisor");
+          const filteredData = response.data.filter((item) => item.pic_title === "operator");
           this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
         } else {
           console.error("Invalid response format:", response);

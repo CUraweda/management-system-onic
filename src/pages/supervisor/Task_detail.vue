@@ -324,7 +324,7 @@ export default {
   // props: ["id"]'',
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       text: ref(""),
       ratingModel: ref(0),
       ratingColors: ["yellow"],

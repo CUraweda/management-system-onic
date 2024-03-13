@@ -581,21 +581,14 @@ export default {
     async fetchOpen() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'Open', search: this.search },
         });
-
-        // Assuming response.data is an array of tasks
         const openedTasks = response.data.filter(task => task.status === 'Open');
-
-        // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
         console.log(openedTasks.length);
 
-        // You can use this value in your component or store it in a data property
         return openedTasks.length;
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
         return 0;
       }
     },
@@ -603,21 +596,14 @@ export default {
     async fetchCompleted() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'Close', search: this.search },
         });
-
-        // Assuming response.data is an array of tasks
         const openedTasks = response.data.filter(task => task.status === 'Close');
-
-        // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
         console.log(openedTasks.length);
 
-        // You can use this value in your component or store it in a data property
         return openedTasks.length;
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
         return 0;
       }
     },

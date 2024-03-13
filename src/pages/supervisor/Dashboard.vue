@@ -435,7 +435,7 @@ start_2:"",
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
@@ -457,7 +457,7 @@ start_2:"",
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -480,7 +480,7 @@ start_2:"",
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -502,7 +502,7 @@ start_2:"",
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -526,7 +526,7 @@ start_2:"",
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'Manager' && task.pic_title !== "Supervisor" )  
+        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" )  
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;

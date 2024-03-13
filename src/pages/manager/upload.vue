@@ -28,7 +28,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.start"
+                v-model="start"
                 mask="date"
                 label="From"
               >
@@ -39,7 +39,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.start" />
+                      <q-date v-model="start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -49,7 +49,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.due"
+                v-model="end"
                 mask="date"
                 label="To"
               >
@@ -60,7 +60,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.due" />
+                      <q-date v-model="end" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -74,14 +74,14 @@
                 unelevated
                 dense
                 outline
-                label="Export"
+                label="Import Task"
                 no-caps
                 @click="uploadTask = true"
               />
               <q-dialog v-model="uploadTask">
                 <q-card>
                   <q-card-section class="row items-center q-pb-none">
-                    <div class="text-h6">Upload Task</div>
+                    <div class="text-h6">Upload Excel File</div>
                     <q-space />
                     <q-btn icon="close" flat round dense v-close-popup />
                   </q-card-section>
@@ -91,8 +91,8 @@
                       v-model="fileTask"
                       label="Upload File"
                       filled
+                      text-color="black"
                       style="width: 400px"
-                      multiple
                     >
                       <template v-slot:prepend>
                         <q-icon name="attach_file" />
@@ -100,7 +100,7 @@
                     </q-file>
                   </q-card-section>
                   <q-card-actions align="right">
-                    <q-btn label="Submit" color="cyan" />
+                    <q-btn label="Submit" @click="importExcel" color="cyan" />
                   </q-card-actions>
                 </q-card>
               </q-dialog>
@@ -115,12 +115,8 @@
         <q-table
           class="no-shadow q-ml-md"
           :data="data"
-          :hide-header="mode === 'grid'"
+          :hide-header="grid"
           :columns="columns"
-          row-key="pic"
-          :grid="mode == 'grid'"
-          :filter="filter"
-          :pagination.sync="pagination"
         >
           <template v-slot:body="props">
             <q-tr :props="props">
@@ -133,11 +129,11 @@
               </q-td>
 
               <q-td key="upload_date" :props="props">
-                <div>{{ props.row.uploadDate }}</div>
+                <div>{{ props.row.uploadedDate }}</div>
               </q-td>
 
               <q-td key="upload_by" :props="props">
-                <div>{{ props.row.uploadBy }}</div>
+                <div>{{ props.row.uploadedBy }}</div>
               </q-td>
 
               <q-td key="jabatan" :props="props">
@@ -147,46 +143,6 @@
           </template>
         </q-table>
       </q-card>
-      <q-dialog v-model="employee_dialog">
-        <q-card class="" flat bordered>
-          <q-card-section>
-            <div class="text-h6">
-              Beri Rating untuk Pekerja!
-              <q-btn
-                round
-                flat
-                dense
-                icon="close"
-                class="q-ml-sm float-right"
-                color="grey-8"
-                v-close-popup
-              ></q-btn>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <div class="q-gutter-md row items-center">
-              <q-slider
-                class=""
-                v-model="model"
-                color="orange"
-                :min="0"
-                :max="5"
-                markers
-                :marker-labels="model"
-                label-always
-                :label-value="model"
-              />
-              <q-btn
-                class="q-px-sm bg-yellow-2 text-yellow-9"
-                v-close-popup
-                unelevated
-                @click="submit"
-                >Submit</q-btn
-              >
-            </div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
     </q-page>
   </q-page>
 </template>
@@ -198,44 +154,23 @@ import { exportFile } from "quasar";
 // import Status from "components/Status"
 import { store } from "../../store/store";
 
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Apples1",
-  "Apples2",
-  "Oracle",
-];
-
-function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0 ? formatFn(val) : val;
-
-  formatted = S;
-  formatted === void 0 || formatted === null ? "" : String(formatted);
-
-  formatted = formatted.split('"').join('""');
-
-  return `"${formatted}"`;
-}
-
 export default {
   name: "TaskMonitoring3",
   data() {
     return {
-      fileTask: ref(),
-      uploadTask: ref(false),
-      filter: "",
-      mode: "list",
-      invoice: {},
-      selected: [],
-      search: "",
-      deposit: {
-        start: "",
-        due: "",
+      search: ref(""),
+      start: ref(),
+      end: ref(),
+      pagination: {
+        rowsPerPage: 5,
       },
-      options: stringOptions,
-      employee_dialog: false,
+    };
+  },
+  
+  setup() {
+    return {
+      token:  ref(localStorage.getItem("token")),
+      data: ref([]),
       columns: [
         {
           name: "no",
@@ -273,15 +208,7 @@ export default {
           sortable: true,
         },
       ],
-      data: [],
-      pagination: {
-        rowsPerPage: 5,
-      },
-    };
-  },
-
-  setup() {
-    return {
+      uploadTask: ref(false),
     };
   },
 
@@ -293,25 +220,64 @@ export default {
     search:{
       handler(value){
         this.search = value != "" ? value : ""
+        this.fetchHistory()
+      }
+    },
+    start: {
+      handler(value){
+        this.start = this.formatDashToSlash(value)
+        this.fetchHistory()
+      }
+    },
+    end: {
+      handler(value){
+        this.end = this.formatDashToSlash(value)
+        this.fetchHistory()
       }
     }
   },
 
   methods: {
+    formatDashToSlash(data){
+      return data.replace(/\//g, '-')
+    },
     async fetchHistory() {
       try{
-        const histories = await this.$axios.post('/upload/', {
+        const histories = await this.$axios.get('/upload/', {
           params: {
             search: this.search,
-            ...(this.deposit.start != "" && {from: this.deposit.start}),
-            ...(this.deposit.due != "" &&{ to: this.deposit.due}),
+            ...(this.start && {from: this.start}),
+            ...(this.end &&{ to: this.end}),
           }
         })
-        console.log(histories)
+        this.data = histories.data.data
+        console.log(this.data)
       }catch(err){
         console.log(err)
         return this.$q.notify({
           message: "Error occured while fetching data"
+        })
+      }
+    },
+    async importExcel(){
+      try{
+        if(!this.token) throw Error('You need to Log In first')
+        if(!this.fileTask) throw Error('Please include an Excel file')
+        const { status, data } = await this.$axios.post('/upload/store-excel/', { file: this.fileTask } ,{
+          headers: {
+            "Authorization": `Bearer ${this.token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        if(status != 200) throw Error(data.message)
+        this.fileTask = null
+        return this.$q.notify({
+          message: data.message
+        })
+      }catch(err){
+        console.log(err)
+        return this.$q.notify({
+          message: err.message
         })
       }
     }
