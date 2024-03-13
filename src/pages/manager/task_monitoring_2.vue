@@ -65,8 +65,6 @@
                 </template>
               </q-input>
 
-
-
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
                 color="cyan"
@@ -276,14 +274,15 @@ export default {
   name: "TaskMonitoring2",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       filter: "",
       mode: "list",
       invoice: {},
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -344,7 +343,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -382,8 +381,7 @@ export default {
       rate: ref(0),
       yellow: ["yellow"],
       id: store.id,
-      onItemClick() {
-      },
+      onItemClick() {},
     };
   },
 
@@ -395,19 +393,24 @@ export default {
 
     async fetchData() {
       try {
-        const username = localStorage.getItem("username")
+        const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
           },
           headers: {
-            spv: username
-          }
+            spv: username,
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager");
-          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+          const filteredData = response.data.filter(
+            (item) => item.pic_title !== "Manager"
+          );
+          this.data = filteredData.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+          );
         } else {
           console.error("Invalid response format:", response);
         }

@@ -430,6 +430,8 @@ export default {
   name: "ManagerReport",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
+      username: localStorage.getItem("username"),
       chat: "",
       filter: "",
       mode: "list",
@@ -480,7 +482,10 @@ export default {
       try {
         // Mengganti URL dengan endpoint yang sesuai
         const response = await this.$axios.get("/image/" + this.fileName, {
-          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Membuat objek URL dari blob
@@ -584,7 +589,11 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -690,7 +699,11 @@ export default {
       try {
         const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {

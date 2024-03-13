@@ -273,6 +273,7 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      token:  ref(localStorage.getItem("token")),
       TotalOpen: '0',
       TotalInProgress: '0',
       TotalOverdue: '0',
@@ -320,7 +321,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username
+            "Authorization": `Bearer ${this.token}`,
           }
         });
 
@@ -345,7 +346,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username
+            "Authorization": `Bearer ${this.token}`,
           }
         });
 
@@ -374,7 +375,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username
+            "Authorization": `Bearer ${this.token}`,
           }
         });
 
@@ -403,7 +404,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username
+            "Authorization": `Bearer ${this.token}`,
           }
         });
 
@@ -432,7 +433,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username
+            "Authorization": `Bearer ${this.token}`,
           }
         });
 

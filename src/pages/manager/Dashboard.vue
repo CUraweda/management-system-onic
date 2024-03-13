@@ -1,7 +1,9 @@
 <template>
   <q-page>
     <q-card flat>
-      <q-card-section class="row q-gutter-sm q-pt-md q-ml-sm q-mr-md items-center">
+      <q-card-section
+        class="row q-gutter-sm q-pt-md q-ml-sm q-mr-md items-center"
+      >
         <div class="text-h6 q-mt-xs q-ml-md col-md-5 col-sm-11 col-xs-11">
           Feedback Review
         </div>
@@ -81,7 +83,9 @@
       </q-card-section>
     </q-card>
     <!-- task card  -->
-    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
+    <div
+      class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch"
+    >
       <!-- completed task -->
       <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
         <q-card
@@ -104,7 +108,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalCompleted }}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalCompleted }}
+              </div>
               Increased by 6 this week
             </q-card-section>
           </q-card-section>
@@ -133,7 +139,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalInProgress }}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalInProgress }}
+              </div>
               Decreased by 5 this week
             </q-card-section>
           </q-card-section>
@@ -162,7 +170,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalOverdue }}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalOverdue }}
+              </div>
               Increased by 3 this week
             </q-card-section>
           </q-card-section>
@@ -191,7 +201,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalOpen }}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalOpen }}
+              </div>
               Increased by 8 this week
             </q-card-section>
           </q-card-section>
@@ -220,7 +232,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{ TotalTotal }}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalTotal }}
+              </div>
               Completion rate: 80%
             </q-card-section>
           </q-card-section>
@@ -237,7 +251,9 @@
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           <q-card flat>
             <q-card-section>
-              <div class="bg-grey-3 q-pa-md text-center title-card">Feedback Review</div>
+              <div class="bg-grey-3 q-pa-md text-center title-card">
+                Feedback Review
+              </div>
             </q-card-section>
 
             <q-card-section class="row q-gutter-sm q-pt-none justify-between">
@@ -250,7 +266,11 @@
                 placeholder="Search..."
               >
                 <template v-slot:prepend>
-                  <q-icon v-if="search === ''" name="search" text-color="black" />
+                  <q-icon
+                    v-if="search === ''"
+                    name="search"
+                    text-color="black"
+                  />
                   <q-icon
                     v-else
                     name="clear"
@@ -523,7 +543,8 @@ import { ref } from "vue";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -534,6 +555,7 @@ export default {
   name: "Dashboard",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -572,10 +594,15 @@ export default {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Open", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((item) => item.pic_title !== "manager");
+        const openedTasks = response.data.filter(
+          (item) => item.pic_title !== "manager"
+        );
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
@@ -594,10 +621,15 @@ export default {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Close", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((item) => item.pic_title !== "manager");
+        const openedTasks = response.data.filter(
+          (item) => item.pic_title !== "manager"
+        );
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -616,10 +648,15 @@ export default {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "In-progress", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title !== "manager");
+        const openedTasks = response.data.filter(
+          (task) => task.pic_title !== "manager"
+        );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -638,10 +675,15 @@ export default {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Idle", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title !== "manager");
+        const openedTasks = response.data.filter(
+          (task) => task.pic_title !== "manager"
+        );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -660,10 +702,15 @@ export default {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title !== "manager");
+        const openedTasks = response.data.filter(
+          (task) => task.pic_title !== "manager"
+        );
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;

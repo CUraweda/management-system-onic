@@ -331,6 +331,7 @@ export default {
   name: "TaskDetail",
   setup() {
     return {
+      token: exportFile(localStorage.getItem("token")),
       rate: ref(0),
       text: ref(""),
       id: store.id,
@@ -490,7 +491,7 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/manager/task_monitor " });
+      this.$router.push({ path: "/manager/task_monitoring " });
     },
 
     async SendUpdate() {
@@ -520,12 +521,16 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/operator/task_list" });
+      this.$router.push({ path: "/manager/task_list" });
     },
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
