@@ -19,7 +19,11 @@
                 placeholder="Search..."
               >
                 <template v-slot:prepend>
-                  <q-icon v-if="search === ''" name="search" text-color="black" />
+                  <q-icon
+                    v-if="search === ''"
+                    name="search"
+                    text-color="black"
+                  />
                   <q-icon
                     v-else
                     name="clear"
@@ -332,7 +336,8 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -449,8 +454,10 @@ export default {
   mounted() {
     this.fetchData();
     this.statusFilter = this.$route.query.status;
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
-
   setup() {
     return {
       token: ref(localStorage.getItem("token")),
@@ -581,11 +588,15 @@ export default {
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          revisedTaskData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!createTaskResponse.status === 200) {
           throw new Error("Failed to create revised task");
@@ -676,7 +687,8 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -697,7 +709,9 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+        this.options = stringOptions.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 
