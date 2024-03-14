@@ -4,7 +4,9 @@
       <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
         <q-card class="no-shadow" bordered>
           <div class="row q-mb-md">
-            <q-card-section class="text-center text-h6 text-black text-weight-bold">
+            <q-card-section
+              class="text-center text-h6 text-black text-weight-bold"
+            >
               <q-img src="statics/info.svg" width="25px" class="q-mr-sm" />
               General Information
             </q-card-section>
@@ -22,7 +24,9 @@
             <div class="col-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold">Task Type</q-item-label>
+                  <q-item-label class="q-pb-xs text-weight-bold"
+                    >Task Type</q-item-label
+                  >
                   <div class="no-shadow">
                     <q-btn-toggle
                       v-model="task_type"
@@ -81,8 +85,16 @@
                   <div class="q-gutter-sm">
                     <q-radio v-model="iteration" val="daily" label="Daily" />
                     <q-radio v-model="iteration" val="weekly" label="Weekly" />
-                    <q-radio v-model="iteration" val="monthly" label="Monthly" />
-                    <q-radio v-model="iteration" val="insidental" label="Insidental" />
+                    <q-radio
+                      v-model="iteration"
+                      val="monthly"
+                      label="Monthly"
+                    />
+                    <q-radio
+                      v-model="iteration"
+                      val="insidental"
+                      label="Insidental"
+                    />
                   </div>
                 </q-item-section>
               </q-item>
@@ -107,7 +119,12 @@
                         >
                           <q-date v-model="start_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -123,7 +140,12 @@
                         >
                           <q-time v-model="start_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -153,7 +175,12 @@
                         >
                           <q-date v-model="due_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -169,7 +196,12 @@
                         >
                           <q-time v-model="due_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -201,7 +233,9 @@
             <div class="col-12">
               <q-item>
                 <q-item-selection class="row items-center">
-                  <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
+                  <q-item-label class="text-weight-bold q-pb-xs col-12"
+                    >PIC</q-item-label
+                  >
 
                   <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
                     <q-select
@@ -355,7 +389,10 @@
         </q-card>
       </div>
       <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-        <q-card class="no-shadow fit row wrap items-start content-start" bordered>
+        <q-card
+          class="no-shadow fit row wrap items-start content-start"
+          bordered
+        >
           <q-card-section class="text-weight-bold text-h6 text-black">
             Add to card
           </q-card-section>
@@ -445,6 +482,7 @@ export default {
 
     return {
       SpvApp,
+      token: ref(localStorage.getItem("token")),
       picOptions: ref([]),
       spvOptions: ref([]),
       task_type: ref("Single"),
@@ -570,7 +608,11 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const { status, data } = await this.$axios.get("/user/all");
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         if (status !== 200) throw Error("Error while fetching");
 
         const filteredData = data.filter((user) => user.title !== "director" && user.title !== "manager");
@@ -671,12 +713,17 @@ export default {
         properties !== "bukti_tayang" &&
         (value === undefined || value === null || value === "")
       ) {
+      if (
+        properties !== "bukti_tayang" &&
+        (value === undefined || value === null || value === "")
+      ) {
         throw new Error(`Please fill all input`);
       } else {
         // Assign the value to the specified property in sendedForm
         this.sendedForm[properties] = value;
       }
-    },
+    }
+  },
 
     async create() {
       try {
@@ -703,6 +750,7 @@ export default {
 
         const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {
+            Authorization: `Bearer ${this.token}`,
             "Content-Type": "multipart/form-data",
           },
         });

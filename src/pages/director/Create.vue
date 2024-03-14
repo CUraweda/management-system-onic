@@ -605,6 +605,10 @@ export default {
     };
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   mounted() {
     this.fetchData();
     this.intervalId = setInterval(() => {

@@ -454,6 +454,10 @@ export default {
     this.statusFilter = this.$route.query.status;
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   setup() {
     return {
       rate: ref(0),

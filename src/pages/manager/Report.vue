@@ -498,6 +498,10 @@ export default {
     }, 60000);
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   methods: {
     async downloadFile() {
       try {

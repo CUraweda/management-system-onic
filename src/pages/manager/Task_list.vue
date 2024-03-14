@@ -788,6 +788,11 @@ export default {
       this.fetchWaitedData();
     }, 60000);
   },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
     search: {
       handler(value) {

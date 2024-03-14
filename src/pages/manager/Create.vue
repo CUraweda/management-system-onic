@@ -612,6 +612,10 @@ export default {
     }, 60000);
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   computed: {
     pic_title() {
       return this.SpvApp ? "supervisor" : "manager";

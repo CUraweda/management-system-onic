@@ -565,13 +565,14 @@ function wrapCsvValue(val, formatFn) {
 
   formatted = formatted.split('"').join('""');
 
-  return `"${formatted}"`;
+  return "${formatted}";
 }
 
 export default {
   name: "TaskMonitoring",
   data() {
     return {
+      token:  ref(localStorage.getItem("token")),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -695,7 +696,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username,
+            "Authorization": `Bearer ${this.token}`,
           },
         });
         this.data = response.data.sort(
@@ -736,7 +737,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username,
+            "Authorization": `Bearer ${this.token}`,
           },
         });
         this.waiting_data = response.data.sort(
@@ -757,7 +758,7 @@ export default {
             search: this.search,
           },
           headers: {
-            pic: username,
+            "Authorization": `Bearer ${this.token}`,
           },
         });
         this.deleted_data = response.data.sort(

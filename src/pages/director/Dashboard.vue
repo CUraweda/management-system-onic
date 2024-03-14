@@ -535,6 +535,7 @@
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
+import { ref } from "vue";
 
 // Vue.component('IEcharts', IEcharts);
 
@@ -553,7 +554,6 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -574,9 +574,8 @@ export default {
   },
   setup() {
     return {
-      onItemClick() {
-        console.log("Clicked on an Item");
-      },
+      token: ref(localStorage.getItem("token")),
+      onItemClick() {},
     };
   },
 
@@ -595,14 +594,21 @@ export default {
     }, 60000);
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   methods: {
     async fetchOpen() {
       try {
+        console.log(this.token);
         const response = await this.$axios.get("/task/all", {
+          params: { status: "Open", search: this.search },
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
         });
+
         const openedTasks = response.data.filter(
           (task) => task.status === "Open"
         );
@@ -619,10 +625,12 @@ export default {
     async fetchCompleted() {
       try {
         const response = await this.$axios.get("/task/all", {
+          params: { status: "Close", search: this.search },
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
         });
+
         const openedTasks = response.data.filter(
           (task) => task.status === "Close"
         );

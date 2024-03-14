@@ -324,7 +324,8 @@ export default {
   // props: ["id"]'',
   setup() {
     return {
-      rate: ref(0),
+      token: ref(localStorage.getItem("token")),
+      model: ref(0),
       text: ref(""),
       ratingModel: ref(0),
       ratingColors: ["yellow"],
@@ -475,7 +476,11 @@ export default {
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;

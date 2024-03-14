@@ -365,6 +365,10 @@ export default {
     }, 60000);
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   setup() {
     return {
       rate: ref(0),

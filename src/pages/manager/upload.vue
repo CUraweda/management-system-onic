@@ -170,6 +170,7 @@ export default {
   setup() {
     return {
       token: ref(localStorage.getItem("token")),
+      fileTask: ref(),
       data: ref([]),
       columns: [
         {
@@ -219,7 +220,16 @@ export default {
     }, 60000);
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
+    uploadTask: {
+      handler(value) {
+        if (!value) this.fileTask = null;
+      },
+    },
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
@@ -278,6 +288,7 @@ export default {
         );
         if (status != 200) throw Error(data.message);
         this.fileTask = null;
+        this.$router.push({ path: "/manager/task_monitoring" });
         return this.$q.notify({
           message: data.message,
         });
