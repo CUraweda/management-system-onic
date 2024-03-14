@@ -9,6 +9,7 @@ import SignUp from "src/pages/sign-up.vue";
 import DirectorLayout from "src/layouts/DirectorLayout.vue";
 import OperatorLayout from "src/layouts/OperatorLayout.vue";
 import ManagerLayout from "src/layouts/ManagerLayout.vue";
+import AdminLayout from "src/layouts/AdminLayout.vue";
 import SupervisorLayout from "src/layouts/SupervisorLayout.vue";
 
 // Director
@@ -52,6 +53,9 @@ import OperatorCreateTask from "pages/operator/Create_task.vue";
 import OperatorTaskDetail from "pages/operator/Task_detail.vue";
 import OperatorTaskDetail2 from "pages/operator/Task_detail_2.vue";
 import OperatorTaskList from "pages/operator/Task_list.vue";
+
+// admin
+import Adminadmindashboard from "pages/Admin/admindashboard.vue";
 
 import Error404 from "pages/Error404.vue";
 
@@ -265,6 +269,17 @@ const routes = [
         component: OperatorTaskList,
       },
     ],
+  },
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: [
+      {
+        path: "dashboard",
+        meta: { title: "DASHBOARD" },
+        component: Adminadmindashboard,
+      }
+    ]
   },
   // ... other routes ...
   {
