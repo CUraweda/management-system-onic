@@ -782,6 +782,11 @@ export default {
     this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
+    this.intervalId = setInterval(() => {
+      this.fetchDeletedData();
+      this.fetchData();
+      this.fetchWaitedData();
+    }, 60000);
   },
   watch: {
     search: {

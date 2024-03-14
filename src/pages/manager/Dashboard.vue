@@ -587,6 +587,13 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+    this.intervalId = setInterval(() => {
+      this.fetchOpen();
+      this.fetchInProgress();
+      this.fetchCompleted();
+      this.fetchOverdue();
+      this.fetchTotal();
+    }, 60000);
   },
 
   methods: {

@@ -449,6 +449,9 @@ export default {
   },
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
     this.statusFilter = this.$route.query.status;
   },
 
