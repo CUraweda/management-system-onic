@@ -178,7 +178,7 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
@@ -336,7 +336,7 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
@@ -494,7 +494,7 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>

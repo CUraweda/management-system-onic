@@ -240,12 +240,12 @@
                   </q-btn>
                   <q-file
                     v-if="status !== 'Wait-app'"
-                    :disable="file_hasil !== null"
+                    :disable="fileHasil !== null"
                     color="teal"
                     filled
-                    v-model="file_hasil"
-                    :label="file_hasil ? file_hasil.name : 'Select file...'"
-                    :placeholder="file_hasil ? file_hasil.name : 'Select file...'"
+                    v-model="fileHasil"
+                    :label="fileHasil ? fileHasil.name : 'Select file...'"
+                    :placeholder="fileHasil ? fileHasil.name : 'Select file...'"
                   >
                     <template v-slot:prepend>
                       <q-icon name="cloud_upload" />
@@ -289,7 +289,6 @@
                       color="grey-3"
                       text-color="grey-7"
                       :disable="
-                        file_hasil !== null ||
                         status === 'Wait-app' ||
                         status === 'Deleted' ||
                         finished_at === null
@@ -342,7 +341,7 @@ export default {
 
   data() {
     return {
-      file_hasil: null,
+      fileHasil: null,
       fileName: null,
       chat: "",
       filter: "",
@@ -404,7 +403,7 @@ export default {
     },
 
     uploadFile() {
-      const file = this.file_hasil;
+      const file = this.fileHasil;
 
       const formData = new FormData();
       formData.append("file_hasil", file);
