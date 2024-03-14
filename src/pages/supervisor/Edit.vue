@@ -612,6 +612,9 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
 
   methods: {

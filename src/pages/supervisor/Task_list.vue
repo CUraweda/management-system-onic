@@ -64,11 +64,18 @@
       </div>
     </q-card>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
+    <q-expansion-item
+      class="text-h5 text-weight-bold"
+      popup
+      default-opened
+      icon=""
+    >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
-            <div class="text-h5 text-weight-bold text-blue">Task Wait Approval</div>
+            <div class="text-h5 text-weight-bold text-blue">
+              Task Wait Approval
+            </div>
           </q-card-section>
 
           <q-card-section class="q-pa-none">
@@ -178,14 +185,17 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
                   </q-td>
 
                   <q-td key="feed" :props="props">
-                    <div class="q-gutter-sm">
+                    <div
+                      class="q-gutter-sm"
+                      @click="openEmployeeDialog(props.row.id)"
+                    >
                       <q-btn
                         dense
                         class="under-title q-px-sm"
@@ -211,7 +221,6 @@
                             props.row.status !== 'Idle')
                         "
                       />
-                      @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
                 </q-tr>
@@ -222,7 +231,12 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
+    <q-expansion-item
+      class="text-h5 text-weight-bold"
+      popup
+      default-opened
+      icon=""
+    >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -336,14 +350,17 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
                   </q-td>
 
                   <q-td key="feed" :props="props">
-                    <div class="q-gutter-sm">
+                    <div
+                      class="q-gutter-sm"
+                      @click="openEmployeeDialog(props.row.id)"
+                    >
                       <q-btn
                         dense
                         class="under-title q-px-sm"
@@ -369,7 +386,6 @@
                             props.row.status !== 'Idle')
                         "
                       />
-                      @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
                 </q-tr>
@@ -380,7 +396,12 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
+    <q-expansion-item
+      class="text-h5 text-weight-bold"
+      popup
+      default-opened
+      icon=""
+    >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -494,14 +515,17 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
                   </q-td>
 
                   <q-td key="feed" :props="props">
-                    <div class="q-gutter-sm">
+                    <div
+                      class="q-gutter-sm"
+                      @click="openEmployeeDialog(props.row.id)"
+                    >
                       <q-btn
                         dense
                         class="under-title q-px-sm"
@@ -527,7 +551,6 @@
                             props.row.status !== 'Idle')
                         "
                       />
-                      @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
                 </q-tr>
@@ -561,7 +584,8 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -572,7 +596,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token:  ref(localStorage.getItem("token")),
+      token: ref(localStorage.getItem("token")),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -674,6 +698,12 @@ export default {
     this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
+
+    this.intervalId = setinterval(() => {
+      this.fetchDeletedData();
+      this.fetchData();
+      this.fetchWaitedData();
+    }, 6000);
   },
   watch: {
     search: {
@@ -696,7 +726,7 @@ export default {
             search: this.search,
           },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.data = response.data.sort(
@@ -737,7 +767,7 @@ export default {
             search: this.search,
           },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.waiting_data = response.data.sort(
@@ -758,7 +788,7 @@ export default {
             search: this.search,
           },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.deleted_data = response.data.sort(
@@ -779,7 +809,9 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+        this.options = stringOptions.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 

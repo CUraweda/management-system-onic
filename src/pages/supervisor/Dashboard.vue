@@ -587,6 +587,12 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+
+    this.intervalId = setinterval(() => {
+      this.fetchDeletedData();
+      this.fetchData();
+      this.fetchWaitedData();
+    }, 6000);
   },
 
   methods: {
@@ -600,7 +606,10 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "manager" && task.pic_title !== "supervisor"
+        );
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
@@ -625,7 +634,10 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "manager" && task.pic_title !== "supervisor"
+        );
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -650,7 +662,10 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "manager" && task.pic_title !== "supervisor"
+        );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -675,7 +690,10 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "manager" && task.pic_title !== "supervisor"
+        );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -702,7 +720,10 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" )  
+        const openedTasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "manager" && task.pic_title !== "supervisor"
+        );
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;
