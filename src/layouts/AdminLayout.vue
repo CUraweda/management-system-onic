@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "Vue";
+import { defineComponent, ref } from "vue";
 import { date } from "quasar";
 import profile from "./Profile.vue";
 import notification from "./Notification.vue";
