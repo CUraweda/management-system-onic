@@ -397,11 +397,10 @@ export default {
         const statusFilter = this.$route.query.status;
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            spv: username,
           },
         });
 

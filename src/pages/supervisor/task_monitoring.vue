@@ -19,13 +19,8 @@
                 placeholder="Search..."
               >
                 <template v-slot:prepend>
-                  <q-icon v-if="search === ''" name="search" text-color="black" />
-                  <q-icon
-                    v-else
-                    name="clear"
-                    class="cursor-pointer col"
-                    @click="search = ''"
-                  />
+                  <q-icon name="search" text-color="black" />
+                  <q-icon class="cursor-pointer col" />
                 </template>
               </q-input>
 
@@ -33,7 +28,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.start"
                 mask="date"
                 label="From"
               >
@@ -44,7 +39,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -54,7 +49,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.due"
                 mask="date"
                 label="To"
               >
@@ -65,7 +60,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -191,8 +186,8 @@
                 />
               </q-td>
 
-              <q-td key="Progress" :props="props">
-                <div>{{ props.row.progress }} %</div>
+              <q-td key="progress" :props="props">
+                <div>{{ props.row.progress }}%</div>
               </q-td>
 
               <q-td key="detail" :props="props">
@@ -225,13 +220,13 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
                     :disable="
                       props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' &&
                         props.row.status !== 'Idle') ||
                       props.row.spv !== username
                     "
+                    @click="openEmployeeDialog(props.row)"
                   />
                 </div>
               </q-td>
@@ -315,9 +310,9 @@
 <script>
 import { ref } from "vue";
 import { exportFile } from "quasar";
+import { store } from "../../store/store";
 import axios from "axios";
 // import Status from "components/Status"
-import { store } from "../../store/store";
 
 const stringOptions = [
   "Google",
@@ -332,7 +327,8 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -343,6 +339,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       username: localStorage.getItem("username"),
       id: ref(null),
       statusFilter: "",
@@ -351,7 +348,10 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {},
+      deposit: {
+        start: "",
+        due: "",
+      },
       options: stringOptions,
       employee_dialog: false,
       columns: [
@@ -453,7 +453,6 @@ export default {
 
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
       rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {},
@@ -521,7 +520,6 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            type: "positive",
             message: "Task Deleted",
           });
           this.fetchData();
@@ -551,74 +549,38 @@ export default {
 
     async Revise(id) {
       try {
-        // 1. Ambil data dari tugas yang akan direvisi
-        const taskToRevise = await this.fetchTaskById(id);
-        console.log(" task yang kudu di rv:" + taskToRevise.fileName);
+        let taskToRevise = await this.fetchTaskById(id);
+        taskToRevise.status = "Open";
+        taskToRevise.progress = 0;
+        taskToRevise.approved_at = null;
+        taskToRevise.approved_by = null;
+        taskToRevise.finished_at = null;
+        taskToRevise.finished_by = null;
+        taskToRevise.started_at = null;
+        taskToRevise.started_by = null;
 
-        // 2. Buat objek baru dengan status "open" dan progress 0
-        const revisedTaskData = {
-          task_type: taskToRevise.task_type,
-          task_title: taskToRevise.task_title,
-          priority: taskToRevise.priority,
-          iteration: taskToRevise.iteration,
-          start_date: new Date(taskToRevise.start_date).toISOString(),
-          due_date: new Date(taskToRevise.due_date).toISOString(),
-          description: taskToRevise.description,
-          pic_title: taskToRevise.pic_title,
-          pic: taskToRevise.pic,
-          spv: taskToRevise.spv,
-          approved_at: null,
-          approved_by: null,
-          started_at: null,
-          started_by: null,
-          finished_at: null,
-          finished_by: null,
-          status: "Open",
-          progress: 0,
-          fileName: taskToRevise.fileName,
-          filePath: taskToRevise.filePath,
-          fileSize: taskToRevise.fileSize,
-        };
-
-        // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!createTaskResponse.status === 200) {
-          throw new Error("Failed to create revised task");
-        }
-
-        // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
-        const updateTaskResponse = await this.$axios.put(
-          "/task/edit/" + id,
-          {
-            status: "Deleted",
-            deleted_at: new Date().toISOString(),
-          },
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          taskToRevise,
           {
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
+        if (!createTaskResponse.status === 200)
+          throw Error("Failed to create revised task");
 
-        if (updateTaskResponse.status === 200) {
-          this.$q.notify({
-            type: "positive",
-            message: "Task Revised",
-          });
-          this.fetchData();
-        } else {
-          this.$q.notify({
-            message: "Failed Revising Task",
-          });
-        }
+        await this.Delete(id);
+        this.$q.notify({
+          message: "Task Revised",
+        });
+        this.fetchData();
       } catch (error) {
         console.error("Error:", error);
+        return this.$q.notify(error.message);
       }
+      this.fetchData();
     },
 
     async fetchData() {
@@ -656,12 +618,6 @@ export default {
       return ""; // No background color for other statuses
     },
 
-    // submit() {
-    //   this.$q.notify({
-    //     message: 'Task Done',
-    //   })
-    // },
-
     async submit() {
       try {
         const data = {
@@ -676,7 +632,8 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -697,7 +654,9 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+        this.options = stringOptions.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 

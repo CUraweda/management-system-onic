@@ -430,6 +430,8 @@ export default {
   name: "SupervisorReport",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
+      username: localStorage.getItem("username"),
       chat: "",
       filter: "",
       mode: "list",
@@ -463,8 +465,7 @@ export default {
 
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
-      model: ref(0),
+      rate: ref(0),
       text: ref(""),
       ratingModel: ref(0),
       ratingColors: ["yellow"],
@@ -481,7 +482,7 @@ export default {
       try {
         // Mengganti URL dengan endpoint yang sesuai
         const response = await this.$axios.get("/image/" + this.fileName, {
-          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+          responseType: "blob",
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
@@ -809,7 +810,7 @@ export default {
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic,
+          pic: this.pic
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {

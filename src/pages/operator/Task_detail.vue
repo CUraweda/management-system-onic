@@ -404,7 +404,6 @@ export default {
 
     uploadFile() {
       const file = this.fileHasil;
-
       const formData = new FormData();
       formData.append("file_hasil", file);
 
@@ -412,10 +411,14 @@ export default {
         .put(`/task/file_hasil/${this.id}`, formData)
         .then((response) => {
           console.log("File berhasil diunggah:", response.data);
+          this.$q.notify({
+            message: "Progress Updated",
+          });
         })
         .catch((error) => {
           console.error("Terjadi kesalahan:", error);
         });
+        this.$router.push({ path: "/operator/task_list" });
     },
 
     formatLocalTime(utcTime) {

@@ -157,30 +157,6 @@
                   <q-card-section class="row q-gutter-sm q-pt-md  q-ml-sm q-mr-md items-center q-mb-xl">
                     <div class="col-xl-5 col-md-5 col-sm-12 col-xs-12">Employee Performance Monitoring</div>
                     <q-space></q-space>
-
-                    <q-input class=" bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.start_1" mask="date" label="From">
-
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.start_1" />
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-
-                    <q-input class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5" borderless dense
-                      v-model="deposit.due_1" mask="date" label="To">
-
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy ref="depositDateProxy" transition-show="scale" transition-hide="scale">
-                            <q-date v-model="deposit.due_1" />
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
                   </q-card-section>
                 </q-card>
                 <!-- overview -->

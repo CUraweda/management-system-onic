@@ -698,6 +698,7 @@ export default {
             search: this.search,
           },
           headers: {
+            "pic": username,
             "Authorization": `Bearer ${this.token}`,
           },
         });
@@ -739,6 +740,7 @@ export default {
             search: this.search,
           },
           headers: {
+            "pic": username,
             "Authorization": `Bearer ${this.token}`,
           },
         });
@@ -760,6 +762,7 @@ export default {
             search: this.search,
           },
           headers: {
+            "pic": username,
             "Authorization": `Bearer ${this.token}`,
           },
         });

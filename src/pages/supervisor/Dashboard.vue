@@ -44,7 +44,6 @@
           borderless
           dense
           v-model="deposit.start_2"
-          mask="date"
           label="From"
         >
           <template v-slot:append>
@@ -340,48 +339,6 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
-
-              <q-input
-                class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
-                borderless
-                dense
-                v-model="deposit.start_1"
-                mask="date"
-                label="From"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="depositDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="deposit.start_1" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-
-              <q-input
-                class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
-                borderless
-                dense
-                v-model="deposit.due_1"
-                mask="date"
-                label="To"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="depositDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="deposit.due_1" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
             </q-card-section>
 
             <q-card-section>
@@ -600,7 +557,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title === "operator" );
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
@@ -625,7 +582,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title === "operator" );
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
@@ -650,7 +607,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title === "operator" );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -675,7 +632,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" );
+        const openedTasks = response.data.filter(task => task.pic_title === "operator" );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -702,7 +659,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" )  
+        const openedTasks = response.data.filter(task => task.pic_title === "operator" )
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;

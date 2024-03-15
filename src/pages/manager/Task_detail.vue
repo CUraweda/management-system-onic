@@ -495,7 +495,7 @@ export default {
     },
 
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Operator: ${this.chat}`;
+      const updatedDescription = `${this.description} \n Manager: ${this.chat}`;
 
       const data = {
         progress: this.progress,
