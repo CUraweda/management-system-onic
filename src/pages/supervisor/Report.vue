@@ -230,8 +230,16 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null"> Download File </q-btn>
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
+                  <q-btn
+                    @click="downloadFile()"
+                    :disable="this.fileName === null"
+                  >
+                    Download File
+                  </q-btn>
+                  <q-btn
+                    @click="downloadFile()"
+                    :disable="this.fileName === null"
+                  >
                     Download Dokumen Hasil
                   </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
@@ -468,11 +476,19 @@ export default {
       ratingModel: ref(0),
       ratingColors: ["yellow"],
       picrate: ref([]),
+      rate: ref(),
+      spv: ref(),
+      pic: ref(),
+      username: ref(),
+      picoptions: ref(),
     };
   },
 
   mounted() {
     this.fetchData();
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
 
   methods: {
