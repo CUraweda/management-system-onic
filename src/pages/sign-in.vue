@@ -200,7 +200,7 @@ export default {
     },
 
     redirectUser: function (title) {
-      switch ("admin") {
+      switch (title) {
         case "manager":
           this.$router.push("manager/dashboard");
           break;
