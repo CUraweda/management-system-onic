@@ -62,7 +62,7 @@
                 <q-select
                   outlined
                   dense
-                  v-model="divisi"
+                  v-model="division"
                   :options="optionsDivisi"
                   label="Divisi"
                   class="col-grow"
@@ -207,7 +207,7 @@ export default defineComponent({
       token: ref(localStorage.getItem("token")),
       name: ref(),
       email: ref(),
-      divisi: ref(),
+      division: ref(),
       optionsDivisi: [
         { label: "Acc & Purchase", value: "Acc & Purchase" },
         { label: "Operasional Sales", value: "Operasional Sales" },
@@ -252,6 +252,11 @@ export default defineComponent({
     this.getData();
   },
   watch: {
+    division: {
+      handler(value) {
+        console.log(this.division.value);
+      }
+    },
     dialogUser: {
       handler(value) {
         // console.log(value);
@@ -270,7 +275,7 @@ export default defineComponent({
       this.uploadExcel = true;
     },
     openDialogUser(edit = false) {
-      this.divisi = this.optionsDivisi[0];
+      this.division = this.optionsDivisi[0];
       this.jabatan = this.optionsJabatan[0];
       this.dialogUser = true;
       this.passwordIf = true;
@@ -301,7 +306,7 @@ export default defineComponent({
         "email",
         "password",
         "jabatan",
-        "divisi",
+        "division",
         "confirmPassword",
       ];
       for (let index of listOfModel) {
@@ -354,7 +359,7 @@ export default defineComponent({
         this.confirmPasswordIf = false;
         this.name = data.u_name;
         this.email = data.u_email;
-        this.divisi = data.division;
+        this.division = data.division;
         this.jabatan = data.title;
       } catch (err) {
         console.log(err);
@@ -368,13 +373,14 @@ export default defineComponent({
           {
             u_name: this.name,
             u_email: this.email,
-            division: this.divisi,
-            title: this.jabatan,
+            division: this.division.value,
+            title: this.jabatan.value,
           }
         );
         if (status != 200) throw Error(data.message);
         console.log(this.jabatan.value);
-        this.dialogUser = true;
+        this.dialogUser = false;
+        this.getData();
         return this.$q.notify({ message: data.message });
       } catch (err) {
         console.log(err);
@@ -415,7 +421,7 @@ export default defineComponent({
             password: this.password,
             repassword: this.confirmPassword,
             title: this.jabatan.value,
-            divisi: this.divisi.value,
+            division: this.division.value,
           },
           {
             headers: {
@@ -426,6 +432,8 @@ export default defineComponent({
         if (status != 200)
           throw Error("Error while creating user please try again");
         //TODO: CLOSE DIALOG
+        this.dialogUser = false;
+        this.getData();
         return this.$q.notify({ message: "User created" });
       } catch (err) {
         console.log(err);

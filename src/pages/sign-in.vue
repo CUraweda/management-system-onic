@@ -161,21 +161,29 @@ export default {
 
         if (response.status === 200) {
           const accessToken = response.data.data.accessToken;
-          const id = response.data.data.id;
           const email = response.data.data.email;
           const name = response.data.data.name;
           const title = response.data.data.title;
+          const u_rate = response.data.data.u_rate;
+          const total_task = response.data.data.total_task;
+
+          const Avgrate = u_rate / total_task;
 
           // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
           localStorage.setItem("token", accessToken);
-          localStorage.setItem("id", id);
           localStorage.setItem("email", email);
           localStorage.setItem("username", name);
           localStorage.setItem("title", title);
+          if (title === "director") {
+            localStorage.setItem("rate", 5);
+          } else {
+            localStorage.setItem("rate", Avgrate);
+          }
 
           this.redirectUser(title);
 
           this.$q.notify({
+            color: "positive",
             message: "Login Successful.",
           });
         } else {

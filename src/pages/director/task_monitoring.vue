@@ -312,17 +312,6 @@ import { ref } from "vue";
 import { exportFile } from "quasar";
 import { store } from "../../store/store";
 import axios from "axios";
-// import Status from "components/Status"
-
-const stringOptions = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Apples1",
-  "Apples2",
-  "Oracle",
-];
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
