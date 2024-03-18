@@ -66,8 +66,6 @@
                 </template>
               </q-input>
 
-
-
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
                 color="cyan"
@@ -221,14 +219,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -276,14 +274,15 @@ export default {
   name: "TaskMonitoring3",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       filter: "",
       mode: "list",
       invoice: {},
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -344,7 +343,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -361,11 +360,18 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {},
     };
@@ -406,11 +412,18 @@ export default {
           params: {
             search: this.search,
           },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager");
-          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+          const filteredData = response.data.filter(
+            (item) => item.pic_title !== "manager"
+          );
+          this.data = filteredData.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+          );
         } else {
           console.error("Invalid response format:", response);
         }

@@ -1,28 +1,21 @@
 <template>
-  <apexchart type="bar" height="321"   :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="bar" height="321" :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
 export default {
-  name: 'ApexColumnChartsBasic',
+  name: 'TaskStatusChart',
+  props: {
+    taskStatusData: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
-      series: [{
-        name: 'Completed',
-        data: [90, 55, 57, 56]
-      }, {
-        name: 'In-progress',
-        data: [76, 85, 101, 98]
-      }, {
-        name: 'Overdue',
-        data: [35, 41, 36, 26]
-      },{
-        name: 'Opened',
-        data: [35, 41, 36, 26]
-      },
-    ],
+      series: [],
       chartOptions: {
-        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50'],
+        colors: ['#9C27B0', '#2196F3', '#FF9800', '#4CAF50', '#2816F3'],
         animations: {
           enabled: true,
           easing: 'easeinout',
@@ -82,11 +75,48 @@ export default {
         tooltip: {
           y: {
             formatter: function (val) {
-              return '$ ' + val + ' thousands'
+              return  val + ' Task'
             }
           }
         }
-      }
+      },
+    }
+  },
+  watch: {
+    taskStatusData: {
+      handler(newData) {
+        // Update the series with new data when taskStatusData changes
+        this.updateSeries(newData);
+        console.log(newData);
+      },
+      immediate: true // Trigger the handler immediately when the component is created
+    }
+  },
+  
+  methods: {
+    updateSeries(newData) {
+      this.series = [
+        {
+          name: 'Completed',
+          data: [newData.completed]
+        },
+        {
+          name: 'In-progress',
+          data: [newData.inProgress]
+        },
+        {
+          name: 'Overdue',
+          data: [newData.overdue]
+        },
+        {
+          name: 'Open',
+          data: [newData.open]
+        },
+        {
+          name: 'Total',
+          data: [newData.total]
+        }
+      ];
     }
   }
 }

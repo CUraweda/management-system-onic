@@ -24,7 +24,7 @@
                 <q-icon v-if="search === ''" name="search" text-color="black" />
                 <q-icon v-else name="clear" class="cursor-pointer col" @click="search = ''" />
               </template>
-            </q-input> -->
+</q-input> -->
             <!-- <q-btn round dense flat color="black" icon="notifications">
               <q-badge color="red" text-color="white" floating>
                 5
@@ -38,8 +38,9 @@
                 </q-list>
               </q-menu>
             </q-btn> -->
+            <notification />
 
-            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+            <!-- <q-btn flat round dense icon="question_mark" color="black" size="15px" /> -->
 
             <q-btn round dense flat>
               <q-avatar color="cyan-3" size="30px">
@@ -64,7 +65,24 @@
         <q-list padding>
 
           <q-item>
-            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+            <q-img class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+          </q-item>
+
+          <q-item class="text-center items-center">
+            <q-item-section avatar class="" clickable @click="miniState = true">
+              <q-avatar color="white" size="50px">
+                <img src="statics/Untitled.png" />
+              </q-avatar>
+            </q-item-section>
+            <q-item-section class="text-center items-center">
+              <div class="text-bold items-center">{{ username }}</div>
+              <div>{{ title }}</div>
+              <!-- <div class="">
+                <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
+                  icon-half="star_half" no-dimming hint="readonly" :dense="dense" readonly />
+                {{ rating }}
+              </div> -->
+            </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/operator/dashboard">
@@ -130,15 +148,39 @@ import profile from "./Profile.vue";
 export default {
   name: 'WorkerLayout',
 
-    components: {
-    // notification,
+  components: {
+    notification,
     profile,
   },
 
   data() {
     return {
       search: "",
+      left: false,
+      username: '',
+      title: '',
+      rating: 0
     };
+  },
+
+  mounted() {
+    const storedRating = parseFloat(localStorage.getItem('rate'));
+    this.rating = !isNaN(storedRating) ? storedRating : 0;
+    console.log(this.rating);
+    this.username = localStorage.getItem('username') || '';
+    this.title = localStorage.getItem('title') || '';
+  },
+
+
+  methods: {
+    RatingAve() {
+
+    },
+
+    keluar() {
+      localStorage.clear()
+      this.$router.push('/')
+    }
   },
 
   setup() {

@@ -346,7 +346,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Supervisor</q-item-label
+                    >Superior</q-item-label
                   >
                   <q-form
                     multiple
@@ -358,7 +358,6 @@
                       filled
                       v-model="selectedspv"
                       name="spv"
-                      disable
                       use-input
                       input-debounce="0"
                       :options="spvOptions"
@@ -469,7 +468,6 @@
                       type="submit"
                       v-close-popup
                       to="/director/task_monitoring"
-
                     />
                     <q-btn
                       unelevated
@@ -500,6 +498,7 @@ export default {
   name: "DirectorCreate",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       spv_id: "",
       pic_id: "",
       pic: [],
@@ -608,6 +607,9 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
 
   computed: {
@@ -625,31 +627,109 @@ export default {
         this.selectedpic = null;
       },
     },
+
+    selectedpic: {
+      handler(value) {
+        console.log("Selected PIC changed. Updating SPV options...");
+        console.log("PIC title:", value.title);
+
+        if (value.title) {
+          console.log(
+            "Ping:",
+            this.picOptions.find((user) => user.title === value.title)
+          );
+          // Perbarui opsi SPV berdasarkan peran PIC yang dipilih
+          const selectedpic = this.picOptions.find(
+            (user) => user.title === value.title
+          );
+          console.log("Selected pic:", selectedpic);
+
+          if (selectedpic) {
+            this.fetchSpvData();
+          }
+        }
+      },
+    },
   },
 
   methods: {
     async fetchData() {
       try {
-        const { status, data } = await this.$axios.get("/user/all");
-        if (status !== 200) throw Error("Error while fetching");
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
-        const listOfUser = data.map((user) => ({
-          label: user.u_name,
-          value: user.u_name,
-        }));
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        const supervisorIndex = listOfUser.findIndex(
-          (user) => user.label === localStorage.getItem("username")
+        const filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin"
         );
 
-        const supervisorList = listOfUser[supervisorIndex];
+        const listOfPic = filteredData.map((user) => ({
+          label: user.u_name,
+          value: user.u_name,
+          title: user.title,
+          id: user.u_id,
+        }));
 
-        listOfUser.splice(supervisorIndex, 1);
-
-        this.picOptions = listOfUser;
-        this.spvOptions = supervisorList;
+        this.picOptions = listOfPic;
         this.selectedpic = this.picOptions[0];
-        this.selectedspv = this.spvOptions;
+
+        const selectedpic = this.picOptions.title;
+        console.log("Selected pic:", selectedpic);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchSpvData() {
+      try {
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        if (status !== 200) throw Error("Error while fetching");
+
+        const listOfSpv = data.map((user) => ({
+          label: user.u_name,
+          value: user.u_name,
+          title: user.title,
+          id: user.u_id,
+        }));
+
+        const SelectedPic = this.selectedpic.title;
+
+        if (SelectedPic) {
+          const selectedTitleLowerCase = SelectedPic.toLowerCase();
+
+          if (selectedTitleLowerCase === "operator") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "supervisor"
+            );
+            console.log("Updating SPV options to supervisor.");
+            this.selectedspv = this.spvOptions[0];
+          } else if (selectedTitleLowerCase === "supervisor") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "manager"
+            );
+            console.log("Updating SPV options to manager.");
+            this.selectedspv = this.spvOptions[0];
+          } else if (selectedTitleLowerCase === "manager") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "director"
+            );
+            console.log("Updating SPV options to director.");
+            this.selectedspv = this.spvOptions[0];
+          } else {
+            this.spvOptions = null;
+            this.selectedspv = null;
+          }
+        }
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -689,7 +769,10 @@ export default {
 
     addToForm(properties, value) {
       // Check if the value is empty (undefined, null, or empty string)
-      if (properties !== 'bukti_tayang' && (value === undefined || value === null || value === "")) {
+      if (
+        properties !== "bukti_tayang" &&
+        (value === undefined || value === null || value === "")
+      ) {
         throw new Error(`Please fill all input`);
       } else {
         // Assign the value to the specified property in sendedForm
@@ -704,8 +787,8 @@ export default {
             ? this.selectedpic.value
             : this.selectedpic.map((user) => user.value).join(",");
         const spv = this.selectedspv.value;
-        this.addToForm("pic_id", pic);
-        this.addToForm("spv_id", spv);
+        this.addToForm("pic_id", this.selectedpic.id);
+        this.addToForm("spv_id", this.selectedspv.id);
         this.addToForm("task_type", this.task_type);
         this.addToForm("task_title", this.task_title);
         this.addToForm("priority", this.priority.value);
@@ -713,7 +796,7 @@ export default {
         this.addToForm("start_date", new Date(this.start_date).toISOString());
         this.addToForm("due_date", new Date(this.due_date).toISOString());
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", "manager");
+        this.addToForm("pic_title", this.selectedpic.title);
         this.addToForm(
           "created_by",
           localStorage.getItem("username") || "Unknown"
@@ -733,7 +816,9 @@ export default {
           this.$q.notify({
             message: "Task Created",
           });
-          this.SpvApp ? this.$router.push({ path: "/director/task_monitoring_2" }) : this.$router.push({ path: "/director/task_monitoring" })
+          this.SpvApp
+            ? this.$router.push({ path: "/director/task_monitoring_2" })
+            : this.$router.push({ path: "/director/task_monitoring" });
         } else {
           this.$q.notify({
             message: "Failed Creating task",

@@ -108,7 +108,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalCompleted}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalCompleted }}
+              </div>
               Increased by 6 this week
             </q-card-section>
           </q-card-section>
@@ -137,7 +139,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalInProgress}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalInProgress }}
+              </div>
               Decreased by 5 this week
             </q-card-section>
           </q-card-section>
@@ -166,7 +170,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalOverdue}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalOverdue }}
+              </div>
               Increased by 3 this week
             </q-card-section>
           </q-card-section>
@@ -195,7 +201,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalOpen}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalOpen }}
+              </div>
               Increased by 8 this week
             </q-card-section>
           </q-card-section>
@@ -224,7 +232,9 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">{{TotalTotal}}</div>
+              <div class="text-h4 text-weight-bold q-mt-none">
+                {{ TotalTotal }}
+              </div>
               Completion rate: 80%
             </q-card-section>
           </q-card-section>
@@ -329,48 +339,6 @@
                   </q-item>
                 </q-list>
               </q-btn-dropdown>
-
-              <q-input
-                class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
-                borderless
-                dense
-                v-model="deposit.start_1"
-                mask="date"
-                label="From"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="depositDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="deposit.start_1" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-
-              <q-input
-                class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
-                borderless
-                dense
-                v-model="deposit.due_1"
-                mask="date"
-                label="To"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      ref="depositDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date v-model="deposit.due_1" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
             </q-card-section>
 
             <q-card-section>
@@ -502,7 +470,15 @@
             <q-card-section>
               <CardBase>
                 <div class="col-12">
-                  <apex-column-charts-basic></apex-column-charts-basic>
+                  <apex-column-charts-basic
+                    :taskStatusData="{
+                      open: TotalOpen,
+                      inProgress: TotalInProgress,
+                      overdue: TotalOverdue,
+                      completed: TotalCompleted,
+                      total: TotalTotal,
+                    }"
+                  ></apex-column-charts-basic>
                 </div>
               </CardBase>
             </q-card-section>
@@ -517,6 +493,7 @@
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
+import { ref } from "vue";
 
 // Vue.component('IEcharts', IEcharts);
 
@@ -535,29 +512,28 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      TotalOpen: '0',
-      TotalInProgress: '0',
-      TotalOverdue: '0',
-      TotalCompleted: '0',
-      TotalTotal: '0',
+      TotalOpen: "0",
+      TotalInProgress: "0",
+      TotalOverdue: "0",
+      TotalCompleted: "0",
+      TotalTotal: "0",
       filter: "",
       mode: "list",
       search: "",
       deposit: {
-        start:"",
-        due:"",
-        start_1:"",
-        due_1:"",
-        start_2:"",
-        due_2:"",
+        start: "",
+        due: "",
+        start_1: "",
+        due_1: "",
+        start_2: "",
+        due_2: "",
       },
     };
   },
   setup() {
     return {
-      onItemClick() {
-        console.log("Clicked on an Item");
-      },
+      token: ref(localStorage.getItem("token")),
+      onItemClick() {},
     };
   },
 
@@ -567,27 +543,39 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+    this.intervalId = setInterval(() => {
+      this.fetchOpen();
+      this.fetchInProgress();
+      this.fetchCompleted();
+      this.fetchOverdue();
+      this.fetchTotal();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
     async fetchOpen() {
       try {
+        console.log(this.token);
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'Open', search: this.search },
+          params: { status: "Open", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Open');
-
-        // Log the length of opened tasks
+        const openedTasks = response.data.filter(
+          (task) => task.status === "Open"
+        );
         this.TotalOpen = openedTasks.length;
         console.log(openedTasks.length);
 
-        // You can use this value in your component or store it in a data property
         return openedTasks.length;
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
         return 0;
       }
     },
@@ -595,21 +583,21 @@ export default {
     async fetchCompleted() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'Close', search: this.search },
+          params: { status: "Close", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Close');
-
-        // Log the length of opened tasks
+        const openedTasks = response.data.filter(
+          (task) => task.status === "Close"
+        );
         this.TotalCompleted = openedTasks.length;
         console.log(openedTasks.length);
 
-        // You can use this value in your component or store it in a data property
         return openedTasks.length;
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
         return 0;
       }
     },
@@ -617,11 +605,16 @@ export default {
     async fetchInProgress() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'In-progress', search: this.search },
+          params: { status: "In-progress", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'In-progress');
+        const openedTasks = response.data.filter(
+          (task) => task.status === "In-progress"
+        );
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
@@ -639,11 +632,16 @@ export default {
     async fetchOverdue() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: 'Idle', search: this.search },
+          params: { status: "Idle", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.status === 'Idle');
+        const openedTasks = response.data.filter(
+          (task) => task.status === "Idle"
+        );
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
@@ -661,7 +659,10 @@ export default {
     async fetchTotal() {
       try {
         const response = await this.$axios.get("/task/all", {
-          params: { status: '', search: this.search },
+          params: { status: "", search: this.search },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Assuming response.data is an array of tasks

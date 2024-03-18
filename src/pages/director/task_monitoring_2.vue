@@ -65,8 +65,6 @@
                 </template>
               </q-input>
 
-
-
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
                 color="cyan"
@@ -220,14 +218,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -275,14 +273,15 @@ export default {
   name: "TaskMonitoring2",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
       filter: "",
       mode: "list",
       invoice: {},
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -343,7 +342,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -367,7 +366,15 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
   },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
     search: {
       handler(value) {
@@ -378,7 +385,7 @@ export default {
   },
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
       id: store.id,
       onItemClick() {
@@ -395,13 +402,19 @@ export default {
 
     async fetchData() {
       try {
-        const statusFilter = this.$route.query.status;
+        const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
           },
+          headers: {
+            spv: username,
+            Authorization: `Bearer ${this.token}`,
+          },
         });
-        this.data = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        this.data = response.data.sort(
+          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }

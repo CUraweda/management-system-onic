@@ -36,8 +36,9 @@
                 </q-list>
               </q-menu>
             </q-btn> -->
+            <notification/>
 
-            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+            <!-- <q-btn flat round dense icon="question_mark" color="black" size="15px" /> -->
 
             <q-btn round dense flat>
               <q-avatar color="cyan-3" size="30px">
@@ -64,6 +65,23 @@
 
           <q-item>
             <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+          </q-item>
+
+          <q-item class="text-center items-center">
+            <q-item-section avatar class="" clickable @click="miniState = true">
+              <q-avatar color="white" size="50px">
+                <img src="statics/Untitled.png" />
+              </q-avatar>
+            </q-item-section>
+            <q-item-section class="text-center items-center">
+              <div class="text-bold items-center">{{ username }}</div>
+              <div>{{ title }}</div>
+              <!-- <div class="">
+                <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
+                  icon-half="star_half" no-dimming hint="readonly" :dense="dense" readonly />
+                {{ rating }}
+              </div> -->
+            </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/director/dashboard">
@@ -150,14 +168,30 @@ export default {
   name: 'ManagerLayout',
 
   components: {
-    // notification,
+    notification,
     profile,
   },
 
   data() {
     return {
       search: "",
+      left: false,
+      username: '',
+      title: '',
     };
+  },
+
+  mounted() {
+    this.username = localStorage.getItem('username') || '';
+    this.title = localStorage.getItem('title') || '';
+    // this.userAccessToken = localStorage.getItem('token') || '';
+  },
+
+  methods: {
+    keluar() {
+      localStorage.clear()
+      this.$router.push('/')
+    }
   },
 
   setup() {

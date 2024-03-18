@@ -9,6 +9,7 @@ import SignUp from "src/pages/sign-up.vue";
 import DirectorLayout from "src/layouts/DirectorLayout.vue";
 import OperatorLayout from "src/layouts/OperatorLayout.vue";
 import ManagerLayout from "src/layouts/ManagerLayout.vue";
+import AdminLayout from "src/layouts/AdminLayout.vue";
 import SupervisorLayout from "src/layouts/SupervisorLayout.vue";
 
 // Director
@@ -31,6 +32,7 @@ import ManagerReport from "pages/manager/Report.vue";
 import ManagerTaskList from "pages/manager/Task_list.vue";
 import ManagerTaskDetail from "pages/manager/Task_detail.vue";
 import ManagerTaskDetail2 from "pages/manager/Task_detail_2.vue";
+import UploadManager from "pages/manager/upload.vue";
 
 // supervisor
 import SupervisorDashboard from "pages/supervisor/Dashboard.vue";
@@ -43,6 +45,7 @@ import SupervisorTaskList from "pages/supervisor/Task_list.vue";
 import SupervisorTaskDetail from "pages/supervisor/Task_detail.vue";
 import SupervisorTaskDetail2 from "pages/supervisor/Task_detail_2.vue";
 import SupervisorReport from "pages/supervisor/Report.vue";
+import UploadSupervisor from "pages/supervisor/upload.vue";
 
 // operator
 import OperatorDashboard from "pages/operator/Dashboard.vue";
@@ -50,6 +53,9 @@ import OperatorCreateTask from "pages/operator/Create_task.vue";
 import OperatorTaskDetail from "pages/operator/Task_detail.vue";
 import OperatorTaskDetail2 from "pages/operator/Task_detail_2.vue";
 import OperatorTaskList from "pages/operator/Task_list.vue";
+
+// admin
+import Adminadmindashboard from "pages/Admin/admindashboard.vue";
 
 import Error404 from "pages/Error404.vue";
 
@@ -157,6 +163,12 @@ const routes = [
         component: ManagerReport,
         props: true,
       },
+      {
+        path: "upload",
+        meta: { title: "UPLOAD" },
+        component: UploadManager,
+        props: true,
+      },
     ],
   },
   {
@@ -217,6 +229,12 @@ const routes = [
         component: SupervisorReport,
         props: true,
       },
+      {
+        path: "upload",
+        meta: { title: "UPLOAD" },
+        component: UploadSupervisor,
+        props: true,
+      },
     ],
   },
   {
@@ -251,6 +269,17 @@ const routes = [
         component: OperatorTaskList,
       },
     ],
+  },
+  {
+    path: "/admin",
+    component: AdminLayout,
+    children: [
+      {
+        path: "dashboard",
+        meta: { title: "DASHBOARD" },
+        component: Adminadmindashboard,
+      }
+    ]
   },
   // ... other routes ...
   {

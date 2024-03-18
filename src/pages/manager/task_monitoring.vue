@@ -66,8 +66,6 @@
                 </template>
               </q-input>
 
-
-
               <q-btn
                 class="under-title col-lg col-md col-sm-12 col-xs-12"
                 color="cyan"
@@ -211,6 +209,7 @@
                     color="red-2"
                     text-color="red"
                     label="Revise"
+                    :disable="props.row.spv !== username"
                     @click="Revise(props.row.id)"
                   />
                   <q-btn
@@ -221,6 +220,12 @@
                     rounded
                     text-color="blue"
                     label="OK"
+                    :disable="
+                      props.row.finished_at === null ||
+                      (props.row.status !== 'In-progress' &&
+                        props.row.status !== 'Idle') ||
+                      props.row.spv !== username
+                    "
                     @click="openEmployeeDialog(props.row)"
                   />
                 </div>
@@ -237,6 +242,7 @@
                     color="green-2"
                     rounded
                     label="Edit"
+                    :disable="props.row.spv !== username"
                     @click="Edit(props.row.id)"
                   />
                   <q-btn
@@ -247,6 +253,7 @@
                     color="red-2"
                     rounded
                     label="Delete"
+                    :disable="props.row.spv !== username"
                     @click="Delete(props.row.id)"
                   />
                 </div>
@@ -276,14 +283,14 @@
             <div class="q-gutter-md row items-center">
               <q-slider
                 class=""
-                v-model="model"
+                v-model="rate"
                 color="orange"
                 :min="0"
                 :max="5"
                 markers
-                :marker-labels="model"
+                :marker-labels="rate"
                 label-always
-                :label-value="model"
+                :label-value="rate"
               />
               <q-btn
                 class="q-px-sm bg-yellow-2 text-yellow-9"
@@ -303,7 +310,7 @@
 <script>
 import { ref } from "vue";
 import { exportFile } from "quasar";
-import { store } from "../../store/store"
+import { store } from "../../store/store";
 import axios from "axios";
 // import Status from "components/Status"
 
@@ -332,6 +339,8 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
+      username: localStorage.getItem("username"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -340,8 +349,8 @@ export default {
       selected: [],
       search: "",
       deposit: {
-        start:"",
-        due:"",
+        start: "",
+        due: "",
       },
       options: stringOptions,
       employee_dialog: false,
@@ -402,7 +411,7 @@ export default {
           field: "Progress",
           sortable: true,
         },
-                            {
+        {
           name: "progress",
           align: "left",
           label: "%",
@@ -439,16 +448,21 @@ export default {
   },
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
     this.statusFilter = this.$route.query.status;
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       yellow: ["yellow"],
-      onItemClick() {
-        // console.log('Clicked on an Item')
-      },
+      onItemClick() {},
     };
   },
 
@@ -464,6 +478,7 @@ export default {
   methods: {
     openEmployeeDialog(row) {
       this.id = row.id;
+      this.pic = row.pic;
       this.employee_dialog = true;
     },
 
@@ -488,13 +503,12 @@ export default {
     },
 
     Edit(id) {
-      store.id = id
+      store.id = id;
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
-      store.id = id
+      store.id = id;
       this.$router.push("report/");
     },
 
@@ -528,7 +542,11 @@ export default {
 
     async fetchTaskById(id) {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         return response.data;
       } catch (error) {
         console.error("Error fetching task by ID:", error);
@@ -569,7 +587,7 @@ export default {
         console.error("Error:", error);
         return this.$q.notify(error.message);
       }
-      // window.location.reload();
+      this.fetchData();
     },
 
     async fetchData() {
@@ -580,11 +598,18 @@ export default {
             status: statusFilter,
             search: this.search,
           },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         if (Array.isArray(response.data)) {
-          const filteredData = response.data.filter((item) => item.pic_title !== "Manager");
-          this.data = filteredData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+          const filteredData = response.data.filter(
+            (item) => item.pic_title !== "manager"
+          );
+          this.data = filteredData.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+          );
         } else {
           console.error("Invalid response format:", response);
         }
@@ -605,9 +630,11 @@ export default {
         const data = {
           status: "Close",
           approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic,
         };
 
-        const response = await this.$axios.put("/task/edit/" + this.id, data, {
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },

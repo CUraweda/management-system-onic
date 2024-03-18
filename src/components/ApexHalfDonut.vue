@@ -1,60 +1,65 @@
 <template>
-  <apexchart type="donut" height="300" width="650" :options="chartOptions" :series="series"></apexchart>
+  <div style="margin: 85px" class="q-ml-md q-mt-sm text-center">
+    <q-rating
+      v-model="Avgrate"
+      class="q-ml-md"
+      max="5"
+      size="5em"
+      color="yellow"
+      icon="star_border"
+      icon-selected="star"
+      icon-half="star_half"
+      no-dimming
+      hint="readonly"
+      :dense="dense"
+      readonly
+    />
+    <div class="text-h5">SKOR ANDA {{ Avgrate }}</div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'ApexHalfDonut',
+  name: "ApexHalfDonut",
   data() {
     return {
+      id: localStorage.getItem("id"),
+      left: false,
+      username: "",
+      title: localStorage.getItem("title"),
+      Avgrate: 0,
+    };
+  },
 
-      series: [5, 10, 40, 30, 20],
-      chartOptions: {
-        legend: {
-          show: true,
-          position: "bottom",
-          fontSize: '13px',
-        },
-        colors: ['#ECE9EA', '#F3C677', '#64C6C3', '#5876E0', '#2ED0A2'],
-        labels: ['Bad', 'Poor', 'Average', 'Good', 'Excelent'],
-        chart: {
-          type: 'donut',
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        plotOptions: {
-          pie: {
-            startAngle: -90,
-            endAngle: 90,
-            customScale: 1,
-          }
-        },
-        grid: {
-          padding: {
-            bottom: -80
-          }
-        },
-        title: {
-          text: 'Donut',
-          align: 'left',
-          style: {
-            color: '#FFF'
-          }
-        },
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 350
+  mounted() {
+    this.fetchData();
+  },
+
+  methods: {
+    async fetchData() {
+      try {
+        if (this.title === "director") {
+          this.Avgrate = 5;
+        } else {
+          const response = await this.$axios.get("/user/get-by-id/" + this.id, {
+            headers: {
+              "Content-Type": "application/json",
             },
-            legend: {
-              position: 'bottom'
-            }
+          });
+
+          if (response.data.total_task === 0) {
+            this.Avgrate = 0;
+          } else {
+          console.log(response.data.u_rate);
+          const Avgrate = response.data.u_rate / response.data.total_task;
+          this.Avgrate = Avgrate;
           }
-        }]
-      },
-    }
-  }
-}
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return 0;
+      }
+    },
+  },
+};
 </script>

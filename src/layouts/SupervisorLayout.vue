@@ -1,12 +1,14 @@
 <template>
   <q-layout view="lHh Lpr lff">
-
     <!-- header -->
     <q-header bordered class="bg-white">
       <div class="">
         <q-toolbar>
           <q-toolbar-title class="row">
-            <div class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer" @click="drawer = !drawer">
+            <div
+              class="text-h5 text-cyan q-my-sm text-weight-bold cursor-pointer"
+              @click="drawer = !drawer"
+            >
               {{ $route.meta.title }}
             </div>
 
@@ -36,8 +38,9 @@
                 </q-list>
               </q-menu>
             </q-btn> -->
+            <notification />
 
-            <q-btn flat round dense icon="question_mark" color="black" size="15px" />
+            <!-- <q-btn flat round dense icon="question_mark" color="black" size="15px" /> -->
 
             <q-btn round dense flat>
               <q-avatar color="cyan-3" size="30px">
@@ -57,13 +60,44 @@
     <!-- header -->
 
     <!-- sidebar -->
-    <q-drawer v-model="drawer" show-if-above :mini="!drawer || miniState" @click.capture="drawerClick" :width="200"
-      :breakpoint="500" :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-1'">
-      <q-scroll-area class="fit bg-grey-1" :horizontal-thumb-style="{ opacity: 0 }">
+    <q-drawer
+      v-model="drawer"
+      show-if-above
+      :mini="!drawer || miniState"
+      @click.capture="drawerClick"
+      :width="200"
+      :breakpoint="500"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-1'"
+    >
+      <q-scroll-area
+        class="fit bg-grey-1"
+        :horizontal-thumb-style="{ opacity: 0 }"
+      >
         <q-list padding>
-
           <q-item>
-            <q-img clickable @click="miniState = true" class="q-mx-md q-mt-none" src="statics/logo.jpg"></q-img>
+            <q-img
+              clickable
+              @click="miniState = true"
+              class="q-mx-md q-mt-none"
+              src="statics/logo.jpg"
+            ></q-img>
+          </q-item>
+
+          <q-item class="text-center items-center">
+            <q-item-section avatar class="" clickable @click="miniState = true">
+              <q-avatar color="white" size="50px">
+                <img src="statics/Untitled.png" />
+              </q-avatar>
+            </q-item-section>
+            <q-item-section class="text-center items-center">
+              <div class="text-bold items-center">{{ username }}</div>
+              <div>{{ title }}</div>
+              <!-- <div class="">
+                <q-rating v-model="rating" max="5" size="1.8em" color="yellow" icon="star_border" icon-selected="star"
+                  icon-half="star_half" no-dimming hint="readonly" :dense="dense" readonly />
+                {{ rating }}
+              </div> -->
+            </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/supervisor/dashboard">
@@ -76,12 +110,16 @@
 
           <q-item clickable v-ripple to="/supervisor/create">
             <q-item-section avatar>
-              <q-icon name="post_add" color="grey-7" class="flip-vertical" size="30px" />
+              <q-icon
+                name="post_add"
+                color="grey-7"
+                class="flip-vertical"
+                size="30px"
+              />
             </q-item-section>
 
             <q-item-section> Create Task </q-item-section>
           </q-item>
-
 
           <q-item clickable v-ripple to="/supervisor/task_list">
             <q-item-section avatar>
@@ -107,13 +145,20 @@
             <q-item-section> Task Approval</q-item-section>
           </q-item>
 
-
           <q-item clickable v-ripple to="/supervisor/task_monitoring_3">
             <q-item-section avatar>
               <q-icon name="recycling" color="grey-7" size="30px" />
             </q-item-section>
 
             <q-item-section> Deleted Task</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/supervisor/upload">
+            <q-item-section avatar>
+              <q-icon name="upload" color="grey-7" size="30px" />
+            </q-item-section>
+
+            <q-item-section> Upload Task</q-item-section>
           </q-item>
 
           <!-- <q-item disable>
@@ -145,7 +190,6 @@
       <router-view />
     </q-page-container>
     <!-- content -->
-
   </q-layout>
 </template>
 
@@ -156,17 +200,34 @@ import profile from "./Profile.vue";
 import { date } from "quasar";
 
 export default {
-  name: 'ManagerLayout',
+  name: "ManagerLayout",
 
   components: {
-    // notification,
+    notification,
     profile,
   },
 
   data() {
     return {
       search: "",
+      left: false,
+      username: "",
+      title: "",
+      rating: 3.8,
     };
+  },
+
+  mounted() {
+    this.username = localStorage.getItem("username") || "";
+    this.title = localStorage.getItem("title") || "";
+    // this.userAccessToken = localStorage.getItem('token') || '';
+  },
+
+  methods: {
+    keluar() {
+      localStorage.clear();
+      this.$router.push("/");
+    },
   },
 
   setup() {

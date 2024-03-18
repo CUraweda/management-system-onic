@@ -60,9 +60,7 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card
-            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
-          >
+          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
             <div
               v-for="(time, index) in timerData"
               :key="index"
@@ -166,12 +164,7 @@
                       <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item
-                    popup
-                    default-opened
-                    icon=""
-                    label="History"
-                  >
+                  <q-expansion-item popup default-opened icon="" label="History">
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -230,8 +223,14 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()"> Download File </q-btn>
-                  <q-btn @click="downloadFile()">
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
+                    <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
+                    Download File
+                  </q-btn>
+                  <q-btn @click="downloadFileHasil()" :disable="this.file_hasil === null">
+                    <q-tooltip v-if="this.file_hasil === null"
+                      >No file attached</q-tooltip
+                    >
                     Download Dokumen Hasil
                   </q-btn>
                   <!-- <q-uploader class="col-6" url="" label="File" color="grey" square flat bordered /> -->
@@ -254,9 +253,7 @@
                     >
                       <template v-slot:no-option>
                         <q-item>
-                          <q-item-section class="text-grey">
-                            No results
-                          </q-item-section>
+                          <q-item-section class="text-grey"> No results </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
@@ -268,6 +265,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
+                      :disable="spv !== username"
                       @click="Revise()"
                     />
                     <q-btn
@@ -278,6 +276,11 @@
                       label="OK"
                       no-caps
                       class="col-5"
+                      :disable="
+                        finished_at === null ||
+                        (status !== 'In-progress' && status !== 'Idle') ||
+                        spv !== username
+                      "
                       @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">
@@ -291,14 +294,14 @@
                       </div>
                       <q-slider
                         class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg"
-                        v-model="model"
+                        v-model="rate"
                         color="orange"
                         :min="0"
                         :max="5"
                         markers
-                        :marker-labels="model"
+                        :marker-labels="rate"
                         label-always
-                        :label-value="model"
+                        :label-value="rate"
                       />
                     </div>
                   </div>
@@ -351,6 +354,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
+                      :disable="spv !== username"
                       @click="Revise()"
                     />
                     <q-btn
@@ -361,6 +365,11 @@
                       label="OK"
                       no-caps
                       class="col-5"
+                      :disable="
+                        finished_at === null ||
+                        (status !== 'In-progress' && status !== 'Idle') ||
+                        spv !== username
+                      "
                       @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">
@@ -374,14 +383,14 @@
                       </div>
                       <q-slider
                         class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg"
-                        v-model="model"
+                        v-model="rate"
                         color="orange"
                         :min="0"
                         :max="5"
                         markers
-                        :marker-labels="model"
+                        :marker-labels="rate"
                         label-always
-                        :label-value="model"
+                        :label-value="rate"
                       />
                     </div>
                   </div>
@@ -406,8 +415,7 @@ import { store } from "../../store/store";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -418,6 +426,8 @@ export default {
   name: "SupervisorReport",
   data() {
     return {
+      token: ref(localStorage.getItem("token")),
+      username: localStorage.getItem("username"),
       chat: "",
       filter: "",
       mode: "list",
@@ -442,7 +452,8 @@ export default {
       history: "",
       description: "",
       task_type: "",
-      fileName: "",
+      fileName: null,
+      file_hasil: null,
       id: store.id,
       // Add other properties with default values
     };
@@ -450,7 +461,7 @@ export default {
 
   setup() {
     return {
-      model: ref(0),
+      rate: ref(0),
       text: ref(""),
       ratingModel: ref(0),
       ratingColors: ["yellow"],
@@ -459,7 +470,15 @@ export default {
   },
 
   mounted() {
+    this.startCountdown();
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
@@ -467,7 +486,10 @@ export default {
       try {
         // Mengganti URL dengan endpoint yang sesuai
         const response = await this.$axios.get("/image/" + this.fileName, {
-          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
         });
 
         // Membuat objek URL dari blob
@@ -477,6 +499,33 @@ export default {
         const link = document.createElement("a");
         link.href = url;
         link.download = this.fileName; // Set nama berkas yang diinginkan
+        document.body.appendChild(link);
+
+        // Simulasi klik pada elemen <a> untuk memulai unduhan
+        link.click();
+
+        // Membersihkan objek URL dan menghapus elemen <a>
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
+    async downloadFileHasil() {
+      try {
+        // Mengganti URL dengan endpoint yang sesuai
+        const response = await this.$axios.get("/image/" + this.file_hasil, {
+          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+        });
+
+        // Membuat objek URL dari blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        // Membuat elemen <a> untuk tautan unduhan
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = this.file_hasil; // Set nama berkas yang diinginkan
         document.body.appendChild(link);
 
         // Simulasi klik pada elemen <a> untuk memulai unduhan
@@ -529,8 +578,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: "Progress Updated",
+            message: "Text sended",
           });
+          this.chat = null;
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Updating task",
@@ -539,12 +590,16 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      window.location.reload();
     },
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        console.log(this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -558,6 +613,7 @@ export default {
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
         this.fileName = response.data.fileName;
+        this.file_hasil = response.data.file_hasil;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -567,21 +623,14 @@ export default {
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(
-          timeDifference / (24 * 60 * 60 * 1000)
-        );
+        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor(
-          (timeDifference % (60 * 1000)) / 1000
-        );
-
-        // Start the countdown
-        this.startCountdown();
+        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -605,8 +654,6 @@ export default {
           this.timerData[2].value = Math.floor((totalSeconds % (60 * 60)) / 60);
           this.timerData[3].value = totalSeconds % 60;
         } else {
-          console.log(totalSeconds);
-          console.log("Countdown reached 0");
           this.stopCountdown();
           this.UpdateStatus();
         }
@@ -651,7 +698,11 @@ export default {
       try {
         const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
-        const response = await this.$axios.get("/task/get-by-id/" + id);
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
         // 2. Buat objek baru dengan status "open" dan progress 0
         const revisedTaskData = {
@@ -674,20 +725,15 @@ export default {
           status: "Wait-app",
           progress: 0,
           fileName: response.data.fileName,
-          filePath: response.data.filePath,
-          fileSize: response.data.fileSize,
+          file_hasil: response.data.file_hasil,
         };
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post(
-          "/task/new",
-          revisedTaskData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (createTaskResponse.status !== 200) {
           throw new Error("Failed to create revised task");
@@ -720,7 +766,6 @@ export default {
       } catch (error) {
         console.error("Error:", error);
       }
-      // window.location.reload();
     },
 
     async Approve() {
@@ -753,31 +798,29 @@ export default {
     },
 
     async Ok() {
-      const data = {
-        status: "Close",
-        approved_at: new Date().toISOString(),
-      };
-
       try {
-        const response = await this.$axios.put("/task/edit/" + this.id, data, {
+        const data = {
+          status: "Close",
+          approved_at: new Date().toISOString(),
+          pic_rating: this.rate,
+          pic: this.pic,
+        };
+
+        const response = await this.$axios.put("/task/acc/" + this.id, data, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-
-        if (response.status === 200) {
-          this.$q.notify({
-            message: "Task Approved",
-          });
-          this.$router.push("/supervisor/task_monitoring");
-        } else {
-          this.$q.notify({
-            message: "Failed Approving Task",
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
+        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        this.$q.notify({
+          message: "Task Done",
+        });
+        this.fetchData();
+      } catch (err) {
+        console.log(err);
+        return this.$q.notify(error.message);
       }
+      this.$router.push({ path: "/supervisor/task_monitoring" });
     },
 
     async Cancel() {
