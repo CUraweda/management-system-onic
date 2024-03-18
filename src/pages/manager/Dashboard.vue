@@ -545,6 +545,18 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+
+    this.intervalId = setInterval(() => {
+      this.fetchOpen();
+      this.fetchInProgress();
+      this.fetchCompleted();
+      this.fetchOverdue();
+      this.fetchTotal();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
@@ -564,7 +576,6 @@ export default {
 
         // Log the length of opened tasks
         this.TotalOpen = openedTasks.length;
-        console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
@@ -591,7 +602,6 @@ export default {
 
         // Log the length of opened tasks
         this.TotalCompleted = openedTasks.length;
-        console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
@@ -618,7 +628,6 @@ export default {
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
-        console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
@@ -645,7 +654,6 @@ export default {
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
-        console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
@@ -672,7 +680,6 @@ export default {
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;
-        console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;

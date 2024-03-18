@@ -544,6 +544,12 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+
+    this.intervalId = setinterval(() => {
+      this.fetchDeletedData();
+      this.fetchData();
+      this.fetchWaitedData();
+    }, 6000);
   },
 
   methods: {
@@ -659,7 +665,7 @@ export default {
         });
 
         // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(task => task.pic_title === "operator" )
+        const openedTasks = response.data.filter(task => task.pic_title !== 'manager' && task.pic_title !== "supervisor" )
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;

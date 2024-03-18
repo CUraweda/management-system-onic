@@ -19,8 +19,17 @@
                 placeholder="Search..."
               >
                 <template v-slot:prepend>
-                  <q-icon name="search" text-color="black" />
-                  <q-icon class="cursor-pointer col" />
+                  <q-icon
+                    v-if="search === ''"
+                    name="search"
+                    text-color="black"
+                  />
+                  <q-icon
+                    v-else
+                    name="clear"
+                    class="cursor-pointer col"
+                    @click="search = ''"
+                  />
                 </template>
               </q-input>
 
@@ -449,8 +458,10 @@ export default {
   mounted() {
     this.fetchData();
     this.statusFilter = this.$route.query.status;
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
-
   setup() {
     return {
       rate: ref(0),
@@ -549,19 +560,57 @@ export default {
 
     async Revise(id) {
       try {
-        let taskToRevise = await this.fetchTaskById(id);
-        taskToRevise.status = "Open";
-        taskToRevise.progress = 0;
-        taskToRevise.approved_at = null;
-        taskToRevise.approved_by = null;
-        taskToRevise.finished_at = null;
-        taskToRevise.finished_by = null;
-        taskToRevise.started_at = null;
-        taskToRevise.started_by = null;
+        // 1. Ambil data dari tugas yang akan direvisi
+        const taskToRevise = await this.fetchTaskById(id);
+        console.log(" task yang kudu di rv:" + taskToRevise.fileName);
 
+        // 2. Buat objek baru dengan status "open" dan progress 0
+        const revisedTaskData = {
+          task_type: taskToRevise.task_type,
+          task_title: taskToRevise.task_title,
+          priority: taskToRevise.priority,
+          iteration: taskToRevise.iteration,
+          start_date: new Date(taskToRevise.start_date).toISOString(),
+          due_date: new Date(taskToRevise.due_date).toISOString(),
+          description: taskToRevise.description,
+          pic_title: taskToRevise.pic_title,
+          pic: taskToRevise.pic,
+          spv: taskToRevise.spv,
+          approved_at: null,
+          approved_by: null,
+          started_at: null,
+          started_by: null,
+          finished_at: null,
+          finished_by: null,
+          status: "Open",
+          progress: 0,
+          fileName: taskToRevise.fileName,
+          filePath: taskToRevise.filePath,
+          fileSize: taskToRevise.fileSize,
+        };
+
+        // 3. Kirim permintaan untuk membuat tugas baru
         const createTaskResponse = await this.$axios.post(
           "/task/new",
-          taskToRevise,
+          revisedTaskData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!createTaskResponse.status === 200) {
+          throw new Error("Failed to create revised task");
+        }
+
+        // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
+        const updateTaskResponse = await this.$axios.put(
+          "/task/edit/" + id,
+          {
+            status: "Deleted",
+            deleted_at: new Date().toISOString(),
+          },
           {
             headers: {
               "Content-Type": "application/json",

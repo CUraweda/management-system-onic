@@ -406,14 +406,14 @@
         </q-card>
       </div>
       <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-        <q-card
+        <!-- <q-card
           class="no-shadow fit row wrap items-start content-start"
           bordered
-        >
-          <q-card-section class="text-weight-bold text-h6 text-black">
+        > -->
+          <!-- <q-card-section class="text-weight-bold text-h6 text-black">
             Add to card
-          </q-card-section>
-          <div class="col-12">
+          </q-card-section> -->
+          <!-- <div class="col-12">
             <q-item>
               <q-item-section class="q-mb-xl">
                 <q-file
@@ -428,7 +428,7 @@
                 </q-file>
               </q-item-section>
             </q-item>
-          </div>
+          </div> -->
 
           <q-space></q-space>
 
@@ -451,20 +451,19 @@
                     <q-btn
                       unelevated
                       class="no-shadow"
-                      label="Create"
+                      label="Edit"
                       color="grey-3"
                       text-color="primary"
                       filled
                       type="submit"
                       @click="edit"
-                      to="/manager/task_monitoring"
                     />
                   </q-card-actions>
                 </div>
               </q-item-section>
             </q-item>
           </div>
-        </q-card>
+        <!-- </q-card> -->
       </div>
     </div>
   </q-page>
@@ -475,13 +474,14 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import { exportFile } from "quasar";
 import axios from "axios";
+import { store } from "../../store/store";
 
 export default {
   name: "ManagerEdit",
-  props: ["id"],
   data() {
     return {
       token: ref(localStorage.getItem("token")),
+      id: store.id,
       form: {
         task_type: "",
         task_title: "",
@@ -610,10 +610,18 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
     async fetchData() {
+      console.log(this.id);
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
@@ -641,11 +649,11 @@ export default {
         task_type: this.form.task_type,
         task_title: this.form.task_title,
         priority: this.form.priority.value,
-        start_date: this.form.start_date,
-        due_date: this.form.due_date,
+        start_date: new Date(this.form.start_date).toISOString(),
+        due_date: new Date(this.form.due_date).toISOString(),
         description: this.form.description,
-        pic: this.submitResultpic.map((item) => item.value).join(","),
-        spv: this.submitResultspv.map((item) => item.value).join(","),
+        pic: this.form.pic,
+        spv: this.form.spv,
       };
 
       try {

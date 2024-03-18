@@ -449,7 +449,14 @@ export default {
   },
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
     this.statusFilter = this.$route.query.status;
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   setup() {
@@ -501,7 +508,6 @@ export default {
     Edit(id) {
       store.id = id;
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {

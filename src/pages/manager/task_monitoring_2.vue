@@ -367,7 +367,15 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
   },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
     search: {
       handler(value) {
@@ -406,7 +414,7 @@ export default {
 
         if (Array.isArray(response.data)) {
           const filteredData = response.data.filter(
-            (item) => item.pic_title !== "Manager"
+            (item) => item.pic_title !== "manager"
           );
           this.data = filteredData.sort(
             (a, b) => new Date(b.updated_at) - new Date(a.updated_at)

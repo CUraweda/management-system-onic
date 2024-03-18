@@ -166,10 +166,10 @@ export default {
       },
     };
   },
-  
+
   setup() {
     return {
-      token:  ref(localStorage.getItem("token")),
+      token: ref(localStorage.getItem("token")),
       fileTask: ref(),
       data: ref([]),
       columns: [
@@ -214,80 +214,91 @@ export default {
   },
 
   mounted() {
-    this.fetchHistory()
+    this.fetchHistory();
+    this.intervalId = setInterval(() => {
+      this.fetchHistory();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   watch: {
     uploadTask: {
-      handler(value){
-        if(!value) this.fileTask = null
-      }
+      handler(value) {
+        if (!value) this.fileTask = null;
+      },
     },
-    search:{
-      handler(value){
-        this.search = value != "" ? value : ""
-        this.fetchHistory()
-      }
+    search: {
+      handler(value) {
+        this.search = value != "" ? value : "";
+        this.fetchHistory();
+      },
     },
     start: {
-      handler(value){
-        this.start = this.formatDashToSlash(value)
-        this.fetchHistory()
-      }
+      handler(value) {
+        this.start = this.formatDashToSlash(value);
+        this.fetchHistory();
+      },
     },
     end: {
-      handler(value){
-        this.end = this.formatDashToSlash(value)
-        this.fetchHistory()
-      }
-    }
+      handler(value) {
+        this.end = this.formatDashToSlash(value);
+        this.fetchHistory();
+      },
+    },
   },
 
   methods: {
-    formatDashToSlash(data){
-      return data.replace(/\//g, '-')
+    formatDashToSlash(data) {
+      return data.replace(/\//g, "-");
     },
     async fetchHistory() {
-      try{
-        const histories = await this.$axios.get('/upload/', {
+      try {
+        const histories = await this.$axios.get("/upload/", {
           params: {
             search: this.search,
-            ...(this.start && {from: this.start}),
-            ...(this.end &&{ to: this.end}),
-          }
-        })
-        this.data = histories.data.data
-        console.log(this.data)
-      }catch(err){
-        console.log(err)
+            ...(this.start && { from: this.start }),
+            ...(this.end && { to: this.end }),
+          },
+        });
+        this.data = histories.data.data;
+        console.log(this.data);
+      } catch (err) {
+        console.log(err);
         return this.$q.notify({
-          message: "Error occured while fetching data"
-        })
+          message: "Error occured while fetching data",
+        });
       }
     },
-    async importExcel(){
-      try{
-        if(!this.token) throw Error('You need to Log In first')
-        if(!this.fileTask) throw Error('Please include an Excel file')
-        const { status, data } = await this.$axios.post('/upload/store-excel/', { file: this.fileTask } ,{
-          headers: {
-            "Authorization": `Bearer ${this.token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        if(status != 200) throw Error(data.message)
-        this.fileTask = null
-        this.$router.push({path: '/manager/task_monitoring'})
+    async importExcel() {
+      try {
+        if (!this.token) throw Error("You need to Log In first");
+        if (!this.fileTask) throw Error("Please include an Excel file");
+        const { status, data } = await this.$axios.post(
+          "/upload/store-excel/",
+          { file: this.fileTask },
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (status != 200) throw Error(data.message);
+        this.fileTask = null;
+        this.$router.push({ path: "/manager/task_monitoring" });
         return this.$q.notify({
-          message: data.message
-        })
-      }catch(err){
-        console.log(err)
+          message: data.message,
+        });
+      } catch (err) {
+        console.log(err);
         return this.$q.notify({
-          message: err.message
-        })
+          message: err.message,
+        });
       }
-    }
+    },
   },
 };
 </script>

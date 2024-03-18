@@ -607,6 +607,9 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
 
   computed: {
@@ -642,29 +645,7 @@ export default {
           console.log("Selected pic:", selectedpic);
 
           if (selectedpic) {
-            const selectedTitleLowerCase = selectedpic.title.toLowerCase();
-
-            if (selectedTitleLowerCase === "operator") {
-              this.spvOptions = this.picOptions.filter(
-                (user) => user.title.toLowerCase() === "supervisor"
-              );
-              console.log("Updating SPV options to supervisor.");
-              this.selectedspv = this.spvOptions[0];
-            } else if (selectedTitleLowerCase === "supervisor") {
-              this.spvOptions = this.picOptions.filter(
-                (user) => user.title.toLowerCase() === "manager"
-              );
-              console.log("Updating SPV options to manager.");
-              this.selectedspv = this.spvOptions[0];
-            } else if (selectedTitleLowerCase === "manager") {
-              this.spvOptions = this.picOptions.filter(
-                (user) => user.title.toLowerCase() === "director"
-              );
-              console.log("Updating SPV options to director.");
-            } else {
-              this.spvOptions = null;
-              this.selectedspv = null;
-            }
+            this.fetchSpvData();
           }
         }
       },
@@ -679,50 +660,76 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        if (status !== 200) throw Error("Error while fetching");
 
-        const listOfUser = data.map((user) => ({
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        const filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin"
+        );
+
+        const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
           title: user.title,
-          id: user.u_id, // tambahkan properti title untuk menentukan peran pengguna
+          id: user.u_id,
         }));
 
-        const currentUser = listOfUser.find(
-          (user) => user.label === localStorage.getItem("username")
-        );
-
-        // Mengatur opsi SPV berdasarkan peran pengguna
-        if (currentUser && currentUser.title === "operator") {
-          // Jika peran pengguna adalah operator, pilih atasan langsung (supervisor)
-          const supervisorList = listOfUser.filter(
-            (user) => user.title === "supervisor"
-          );
-          this.spvOptions = supervisorList;
-          this.selectedspv = supervisorList[0];
-        } else if (currentUser && currentUser.title === "supervisor") {
-          // Jika peran pengguna adalah supervisor, pilih atasan langsung (manager)
-          const managerList = listOfUser.filter(
-            (user) => user.title === "manager"
-          );
-          this.spvOptions = managerList;
-          this.selectedspv = managerList[0];
-        } else {
-          // Untuk peran lain, gunakan seluruh opsi SPV
-          this.spvOptions = listOfUser;
-          this.selectedspv = listOfUser[0];
-        }
-
-        // Hapus pengguna saat ini dari opsi PIC (jika diperlukan)
-        const currentUserIndex = listOfUser.findIndex(
-          (user) => user.label === localStorage.getItem("username")
-        );
-        // if (currentUserIndex !== -1) {
-        //   listOfUser.splice(currentUserIndex, 1);
-        // }
-
-        this.picOptions = listOfUser;
+        this.picOptions = listOfPic;
         this.selectedpic = this.picOptions[0];
+
+        const selectedpic = this.picOptions.title;
+        console.log("Selected pic:", selectedpic);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchSpvData() {
+      try {
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        if (status !== 200) throw Error("Error while fetching");
+
+        const listOfSpv = data.map((user) => ({
+          label: user.u_name,
+          value: user.u_name,
+          title: user.title,
+          id: user.u_id,
+        }));
+
+        const SelectedPic = this.selectedpic.title;
+
+        if (SelectedPic) {
+          const selectedTitleLowerCase = SelectedPic.toLowerCase();
+
+          if (selectedTitleLowerCase === "operator") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "supervisor"
+            );
+            console.log("Updating SPV options to supervisor.");
+            this.selectedspv = this.spvOptions[0];
+          } else if (selectedTitleLowerCase === "supervisor") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "manager"
+            );
+            console.log("Updating SPV options to manager.");
+            this.selectedspv = this.spvOptions[0];
+          } else if (selectedTitleLowerCase === "manager") {
+            this.spvOptions = listOfSpv.filter(
+              (user) => user.title.toLowerCase() === "director"
+            );
+            console.log("Updating SPV options to director.");
+            this.selectedspv = this.spvOptions[0];
+          } else {
+            this.spvOptions = null;
+            this.selectedspv = null;
+          }
+        }
       } catch (error) {
         console.error("Error fetching users:", error);
       }

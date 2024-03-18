@@ -532,7 +532,7 @@ export default {
   },
   setup() {
     return {
-      token:  ref(localStorage.getItem("token")),
+      token: ref(localStorage.getItem("token")),
       onItemClick() {},
     };
   },
@@ -543,12 +543,23 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+    this.intervalId = setInterval(() => {
+      this.fetchOpen();
+      this.fetchInProgress();
+      this.fetchCompleted();
+      this.fetchOverdue();
+      this.fetchTotal();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
     async fetchOpen() {
       try {
-        console.log(this.token)
+        console.log(this.token);
         const response = await this.$axios.get("/task/all", {
           params: { status: "Open", search: this.search },
           headers: {
@@ -623,7 +634,7 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Idle", search: this.search },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
 
@@ -650,7 +661,7 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "", search: this.search },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
 

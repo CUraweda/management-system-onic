@@ -95,7 +95,6 @@ export default {
   
   methods: {
     updateSeries(newData) {
-      // Update the series with dynamic data
       this.series = [
         {
           name: 'Completed',

@@ -238,20 +238,32 @@
                   <q-btn @click="downloadFile()" :disable="this.fileName === null">
                     Download File
                   </q-btn>
-                  <q-file
-                    v-if="status !== 'Wait-app'"
-                    :disable="fileHasil !== null"
-                    color="teal"
-                    filled
-                    v-model="fileHasil"
-                    :label="fileHasil ? fileHasil.name : 'Select file...'"
-                    :placeholder="fileHasil ? fileHasil.name : 'Select file...'"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="cloud_upload" />
-                    </template>
-                  </q-file>
-                  <!-- <input type="file" ref="fileInput" @change="uploadFile"> -->
+                  <div class="row">
+                    <q-file
+                      v-if="status !== 'Wait-app'"
+                      :disable="file_hasil !== null"
+                      color="teal"
+                      filled
+                      v-model="file_hasil"
+                      :label="file_hasil ? file_hasil : 'Select file...'"
+                      :placeholder="file_hasil ? file_hasil : 'Select file...'"
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="cloud_upload" />
+                      </template>
+                    </q-file>
+
+                    <q-btn
+                      v-if="file_hasil !== null"
+                      dense
+                      flat
+                      color="red"
+                      size="15px"
+                      icon="close"
+                      @click="removefileHasil()"
+                    />
+                  </div>
+
                   <div class="q-pt-md row justify-between">
                     <q-btn
                       unelevated
@@ -341,8 +353,8 @@ export default {
 
   data() {
     return {
-      fileHasil: null,
       fileName: null,
+      file_hasil: null,
       chat: "",
       filter: "",
       mode: "list",
@@ -372,9 +384,21 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.startCountdown();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
+    removefileHasil() {
+      this.file_hasil = null;
+    },
+
     async downloadFile() {
       try {
         // Mengganti URL dengan endpoint yang sesuai
@@ -402,23 +426,20 @@ export default {
       }
     },
 
-    uploadFile() {
-      const file = this.fileHasil;
-      const formData = new FormData();
-      formData.append("file_hasil", file);
-
-      this.$axios
-        .put(`/task/file_hasil/${this.id}`, formData)
-        .then((response) => {
-          console.log("File berhasil diunggah:", response.data);
-          this.$q.notify({
-            message: "Progress Updated",
-          });
-        })
-        .catch((error) => {
-          console.error("Terjadi kesalahan:", error);
+    async uploadFile() {
+      try {
+        const file = this.file_hasil;
+        const formData = new FormData();
+        formData.append("file_hasil", file);
+        const response = await this.$axios.put(`/task/file_hasil/${this.id}`, formData);
+        console.log(this.file_hasil);
+        console.log("File berhasil diunggah:", response.data);
+        this.$q.notify({
+          message: "File Sended",
         });
-        this.$router.push({ path: "/operator/task_list" });
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+      }
     },
 
     formatLocalTime(utcTime) {
@@ -456,17 +477,17 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: "Progress Updated",
+            message: "Starting Task",
           });
+          this.fetchData();
         } else {
           this.$q.notify({
-            message: "Failed Updating task",
+            message: "Failed Starting task",
           });
         }
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/operator/task_list" });
     },
 
     async FinishTask() {
@@ -485,6 +506,7 @@ export default {
           this.$q.notify({
             message: "Progress Updated",
           });
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Updating task",
@@ -493,7 +515,6 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/operator/task_list" });
     },
 
     async SendUpdate() {
@@ -513,8 +534,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: "Progress Updated",
+            message: `Progress Updated ${this.progress} %`,
           });
+          this.chat = null;
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Updating task",
@@ -523,12 +546,15 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/operator/task_list" });
     },
 
     async fetchData() {
       try {
-        const response = await this.$axios.get("/task/get-by-id/" + this.id);
+        const response = await this.$axios.get("/task/get-by-id/" + this.id, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -540,8 +566,8 @@ export default {
         this.created_at = response.data.created_at;
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
-        this.fileName = response.data.fileName;
         this.file_hasil = response.data.file_hasil;
+        this.fileName = response.data.fileName;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -560,8 +586,6 @@ export default {
         );
         this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
 
-        // Start the countdown
-        // this.startCountdown();
       } catch (error) {
         console.error("Error fetching data:", error);
       }

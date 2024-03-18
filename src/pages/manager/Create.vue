@@ -607,6 +607,9 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
 
   computed: {
@@ -662,7 +665,9 @@ export default {
           throw Error("Error while fetching");
         }
 
-        const filteredData = data.filter((user) => user.title !== "director");
+        const filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin"
+        );
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
@@ -680,6 +685,7 @@ export default {
         console.error("Error fetching users:", error);
       }
     },
+
     async fetchSpvData() {
       try {
         const { status, data } = await this.$axios.get("/user/all", {

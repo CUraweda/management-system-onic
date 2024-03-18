@@ -64,11 +64,18 @@
       </div>
     </q-card>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
+    <q-expansion-item
+      class="text-h5 text-weight-bold"
+      popup
+      default-opened
+      icon=""
+    >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
-            <div class="text-h5 text-weight-bold text-blue">Task Wait Approval</div>
+            <div class="text-h5 text-weight-bold text-blue">
+              Task Wait Approval
+            </div>
           </q-card-section>
 
           <q-card-section class="q-pa-none">
@@ -205,7 +212,7 @@
                         rounded
                         text-color="blue"
                         label="OK"
-                        :disabled="
+                        :disable="
                           props.row.finished_at === null ||
                           (props.row.status !== 'In-progress' &&
                             props.row.status !== 'Idle')
@@ -214,6 +221,33 @@
                       @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
+
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
                 </q-tr>
               </template>
             </q-table>
@@ -222,7 +256,12 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
+    <q-expansion-item
+      class="text-h5 text-weight-bold"
+      popup
+      default-opened
+      icon=""
+    >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -363,7 +402,7 @@
                         rounded
                         text-color="blue"
                         label="OK"
-                        :disabled="
+                        :disable="
                           props.row.finished_at === null ||
                           (props.row.status !== 'In-progress' &&
                             props.row.status !== 'Idle')
@@ -372,6 +411,33 @@
                       @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
+
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
                 </q-tr>
               </template>
             </q-table>
@@ -380,7 +446,12 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
+    <q-expansion-item
+      class="text-h5 text-weight-bold"
+      popup
+      default-opened
+      icon=""
+    >
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -527,9 +598,43 @@
                             props.row.status !== 'Idle')
                         "
                       />
-                      @click="openEmployeeDialog(props.row.id)" />
+                      :disabled="props.row.finished_at === null ||
+                      (props.row.status !== 'In-progress' && props.row.status
+                      !== 'Idle')" /> :disabled="props.row.finished_at === null
+                      || (props.row.status !== 'In-progress' && props.row.status
+                      !== 'Idle')" /> :disabled="props.row.finished_at === null
+                      || (props.row.status !== 'In-progress' && props.row.status
+                      !== 'Idle')" /> @click="openEmployeeDialog(props.row.id)"
+                      />
                     </div>
                   </q-td>
+
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
                 </q-tr>
               </template>
             </q-table>
@@ -561,18 +666,19 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
-  return "${formatted}";
+  return `"${formatted}"`;
 }
 
 export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token:  ref(localStorage.getItem("token")),
+      token: ref(localStorage.getItem("token")),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -659,8 +765,8 @@ export default {
         },
       ],
       data: [],
-      waited_data: [],
       deleted_data: [],
+      waiting_data: [],
       pagination: {
         rowsPerPage: 5,
       },
@@ -676,7 +782,17 @@ export default {
     this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
+    this.intervalId = setInterval(() => {
+      this.fetchDeletedData();
+      this.fetchData();
+      this.fetchWaitedData();
+    }, 60000);
   },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
     search: {
       handler(value) {
@@ -694,11 +810,12 @@ export default {
         const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            // status: "Open",
             search: this.search,
           },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            pic: username,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.data = response.data.sort(
@@ -735,11 +852,11 @@ export default {
         const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            pic: username,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.waiting_data = response.data.sort(
@@ -756,11 +873,11 @@ export default {
         const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/deleted", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
-            "Authorization": `Bearer ${this.token}`,
+            pic: username,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.deleted_data = response.data.sort(
@@ -781,7 +898,9 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
+        this.options = stringOptions.filter(
+          (v) => v.toLowerCase().indexOf(needle) > -1
+        );
       });
     },
 

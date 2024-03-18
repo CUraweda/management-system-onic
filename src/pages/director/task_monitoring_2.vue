@@ -366,7 +366,15 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
   },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
     search: {
       handler(value) {
@@ -394,13 +402,13 @@ export default {
 
     async fetchData() {
       try {
-        const spv = localStorage.getItem("username");
+        const username = localStorage.getItem("username");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
           },
           headers: {
-            spv: spv,
+            spv: username,
             Authorization: `Bearer ${this.token}`,
           },
         });
