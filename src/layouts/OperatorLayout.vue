@@ -71,7 +71,7 @@
           <q-item class="text-center items-center">
             <q-item-section avatar class="" clickable @click="miniState = true">
               <q-avatar color="white" size="50px">
-                <img src="statics/untitled.png" />
+                <img src="statics/Untitled.png" />
               </q-avatar>
             </q-item-section>
             <q-item-section class="text-center items-center">

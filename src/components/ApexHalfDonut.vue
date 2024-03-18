@@ -47,9 +47,13 @@ export default {
             },
           });
 
+          if (response.data.total_task === 0) {
+            this.Avgrate = 0;
+          } else {
           console.log(response.data.u_rate);
           const Avgrate = response.data.u_rate / response.data.total_task;
           this.Avgrate = Avgrate;
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
