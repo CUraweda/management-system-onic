@@ -235,7 +235,8 @@
               <CardBase class="  ">
                 <div class="q-pa-md">
                   <div class="q-pt-md"></div>
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null" :color="this.fileName === null ? 'white text-black' : 'green'" >
+                    <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
                     Download File
                   </q-btn>
                   <div class="row">
@@ -666,4 +667,13 @@ export default {
 .border2 {
   border-radius: 8px;
 }
+
+.white-button {
+  color: white;
+}
+
+.green-button {
+  color: green;
+}
+
 </style>
