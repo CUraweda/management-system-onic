@@ -22,13 +22,24 @@
               style="display: flex; gap: 10px; width: 100%"
               class="col-grow"
             >
-              <div class="full-width">
+            <div class="full-width">
+                <div style="display: flex; gap: 10px">
+                  <q-select
+                    outlined
+                    dense
+                    v-model="branch"
+                    :options="optionsBranch"
+                    style="width: 70px"
+                    label="Cabang"
+                    class="col-grow"
+                  />
+                </div>
                 <q-input
                   dense
                   outlined
                   v-model="name"
                   label="Name"
-                  class="col-grow text-bold"
+                  class="col-grow text-bold q-mt-md"
                 />
                 <q-input
                   dense
@@ -152,6 +163,10 @@
               <div>{{ props.row.division }}</div>
             </q-td>
 
+            <q-td key="Cabang" :props="props">
+              <div>{{ props.row.branch }}</div>
+            </q-td>
+
             <q-td key="Jabatan" :props="props">
               <div>{{ props.row.title }}</div>
             </q-td>
@@ -207,7 +222,16 @@ export default defineComponent({
       token: ref(localStorage.getItem("token")),
       name: ref(),
       email: ref(),
+      branch: ref(),
       division: ref(),
+      optionsBranch: [
+        { label: "PT. RES", value: "PT. RES" },
+        { label: "Produksi RES", value: "Produksi RES" },
+        { label: "ONIC 1", value: "ONIC 1" },
+        { label: "ONIC 2", value: "ONIC 2" },
+        { label: "Sehatku", value: "Sehatku" },
+        { label: "ONIC KLP", value: "ONIC KLP" },
+      ],
       optionsDivisi: [
         { label: "Acc & Purchase", value: "Acc & Purchase" },
         { label: "Operasional Sales", value: "Operasional Sales" },
@@ -240,6 +264,7 @@ export default defineComponent({
     const columns = [
       { name: "Name", label: "Nama", align: "center", field: "u_name" },
       { name: "Divisi", label: "Divisi", align: "center", field: "division" },
+      { name: "Cabang", label: "Cabang", align: "center", field: "branch" },
       { name: "Jabatan", label: "Jabatan", align: "center", field: "title" },
       { name: "Email", label: "Email", align: "center", field: "u_email" },
       { name: "Action", label: "Action", align: "center", field: "id" },
@@ -329,6 +354,7 @@ export default defineComponent({
           this.rows = data.map((user) => ({
             id: user.u_id,
             u_name: user.u_name ? user.u_name : "",
+            branch: user.branch ? user.branch : "",
             division: user.division ? user.division : "",
             title: user.title ? user.title : "",
             u_email: user.u_email ? user.u_email : "",
@@ -359,6 +385,7 @@ export default defineComponent({
         this.confirmPasswordIf = false;
         this.name = data.u_name;
         this.email = data.u_email;
+        this.branch = data.branch;
         this.division = data.division;
         this.jabatan = data.title;
       } catch (err) {
@@ -373,6 +400,7 @@ export default defineComponent({
           {
             u_name: this.name,
             u_email: this.email,
+            branch: this.branch.value,
             division: this.division.value,
             title: this.jabatan.value,
           }
@@ -421,6 +449,7 @@ export default defineComponent({
             password: this.password,
             repassword: this.confirmPassword,
             title: this.jabatan.value,
+            branch: this.branch.value,
             division: this.division.value,
           },
           {

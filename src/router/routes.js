@@ -3,7 +3,6 @@ import VueRouter from "vue-router";
 
 // sign in & up (if needed)
 import SignIn from "src/pages/sign-in.vue";
-import SignUp from "src/pages/sign-up.vue";
 
 // layout
 import DirectorLayout from "src/layouts/DirectorLayout.vue";
@@ -61,7 +60,6 @@ import Error404 from "pages/Error404.vue";
 
 const routes = [
   { path: "/", component: SignIn },
-  { path: "/sign-up", component: SignUp },
   {
     path: "/director",
     component: DirectorLayout,

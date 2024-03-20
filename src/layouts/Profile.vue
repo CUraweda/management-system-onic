@@ -3,8 +3,8 @@
     <div class="no-wrap">
       <div class="col-5">
         <div class="items-center text-center">
-          <div class="text-bold items-center">{{ username }}</div>
-          <div>{{ title }}</div>
+          <div class="text-bold items-center">{{ branch }}</div>
+          <div>{{ division }}</div>
         </div>
       </div>
 
@@ -28,15 +28,15 @@ export default {
   data() {
     return {
       left: false,
-      username: '',
-      title: '',
+      branch: '',
+      division: '',
       rating: 1
       // userAccessToken: ''
     }
   },
   mounted() {
-    this.username = localStorage.getItem('username') || '';
-    this.title = localStorage.getItem('title') || '';
+    this.branch = localStorage.getItem('branch') || '';
+    this.division = localStorage.getItem('division') || '';
     // this.userAccessToken = localStorage.getItem('token') || '';
   },
 

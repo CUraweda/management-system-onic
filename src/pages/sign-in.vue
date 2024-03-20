@@ -9,21 +9,19 @@
                 <div class="col-md-4 col-xs-12">
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
-                    <div class="col items-center q-mt-md">
+                    <div class="col items-center q-mt-md q-mb-xl">
                       <q-img
                         src="/statics/logo.jpg"
                         width="300px"
                         class="q-mx-md q-my-xl"
                       ></q-img>
                       <div class="text-h5">Welcome Back!</div>
-                      <p class="">
-                        Enter your credentials to access your account
-                      </p>
+                      <p class="">Enter your credentials to access your account</p>
                     </div>
                     <!-- welcome section -->
 
                     <!-- button section -->
-                    <div class="row q-mb-xl">
+                    <!-- <div class="row q-mb-xl">
                       <q-btn
                         unelevated
                         class="q-qy-md icon q-mr-md col bg-red-2"
@@ -37,19 +35,38 @@
                       <q-btn unelevated class="q-qy-md icon col bg-grey-2"
                         ><q-img src="statics/Apple.svg" width="17px"></q-img
                       ></q-btn>
-                    </div>
+                    </div> -->
                     <!-- button section -->
 
                     <!-- form section -->
                     <q-form class="q-gutter-md" @submit="SignIn()">
+                      <q-select
+                        filled
+                        label="Cabang"
+                        v-model="branch"
+                        name="Cabang"
+                        use-input
+                        input-debounce="0"
+                        :options="optionsBranch"
+                        behavior="menu"
+                        class="col-5"
+                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+
                       <q-input
                         filled
                         v-model="email"
                         label="Email"
                         lazy-rules
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
+                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
                       />
 
                       <q-input
@@ -59,9 +76,7 @@
                         label="Password"
                         placeholder="Enter at least 8+ characters"
                         :dense="dense"
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
+                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
                       >
                         <template v-slot:append>
                           <q-icon
@@ -79,7 +94,7 @@
                           label="Keep me logged in"
                         />
                         <q-space></q-space>
-                        <a href="" style="color: #00bdd6"> forgot password?</a>
+                        <!-- <a href="" style="color: #00bdd6"> forgot password?</a> -->
                       </div>
 
                       <div>
@@ -99,10 +114,7 @@
 
                 <!-- gambar makanan -->
                 <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
-                  <q-img
-                    src="statics/makanan.png"
-                    class="makanan q-ml-xl"
-                  ></q-img>
+                  <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
                 </div>
                 <!-- gambar makanan -->
               </div>
@@ -123,8 +135,17 @@ export default {
 
   data() {
     return {
+      branch: null,
       email: "",
       password: "",
+      optionsBranch: [
+        { label: "PT. RES", value: "PT. RES" },
+        { label: "Produksi RES", value: "Produksi RES" },
+        { label: "ONIC 1", value: "ONIC 1" },
+        { label: "ONIC 2", value: "ONIC 2" },
+        { label: "Sehatku", value: "Sehatku" },
+        { label: "ONIC KLP", value: "ONIC KLP" },
+      ],
     };
   },
 
@@ -150,6 +171,7 @@ export default {
       const data = {
         email: this.email,
         password: this.password,
+        branch: this.branch.value
       };
 
       try {
@@ -162,24 +184,20 @@ export default {
         if (response.status === 200) {
           const accessToken = response.data.data.accessToken;
           const email = response.data.data.email;
+          const id = response.data.data.id;
           const name = response.data.data.name;
           const title = response.data.data.title;
-          const u_rate = response.data.data.u_rate;
-          const total_task = response.data.data.total_task;
-
-          const Avgrate = u_rate / total_task;
+          const division = response.data.data.division;
+          const branch = response.data.data.branch;
 
           // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
           localStorage.setItem("token", accessToken);
+          localStorage.setItem("id", id);
           localStorage.setItem("email", email);
           localStorage.setItem("username", name);
           localStorage.setItem("title", title);
-          if (title === "director") {
-            localStorage.setItem("rate", 5);
-          } else {
-            localStorage.setItem("rate", Avgrate);
-          }
-
+          localStorage.setItem("division", division);
+          localStorage.setItem("branch", branch);
           this.redirectUser(title);
 
           this.$q.notify({

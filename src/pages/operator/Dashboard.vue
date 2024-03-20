@@ -215,39 +215,7 @@
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
 
       <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-          <q-card flat>
-            <q-card-section>
-              <div class="bg-grey-3 q-pa-md text-center title-card">
-                Feedback Review
-              </div>
-            </q-card-section>
-
-            <q-card-section>
-              <card-base class="">
-                <!-- overview -->
-                <q-card flat>
-                  <q-card-section
-                    class="row q-gutter-sm q-pt-md q-ml-sm q-mr-md items-center q-mb-xl"
-                  >
-                    <div class="col-xl-5 col-md-5 col-sm-12 col-xs-12">
-                      Employee Performance Monitoring
-                    </div>
-                    <q-space></q-space>
-                  </q-card-section>
-                </q-card>
-                <!-- overview -->
-
-                <div class="row items-end justify-center">
-                  <div class="col-12">
-                    <apex-half-donut></apex-half-donut>
-                  </div>
-                </div>
-              </card-base>
-            </q-card-section>
-          </q-card>
-        </div>
-
+        <apex-half-donut></apex-half-donut>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
           <q-card flat>
             <q-card-section>
