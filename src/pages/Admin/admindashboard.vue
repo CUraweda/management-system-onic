@@ -197,6 +197,17 @@
                   label="Delete"
                   @click="setButton(props.row, 'delete')"
                 />
+                <q-btn
+                  dense
+                  class="under-title q-px-sm text-blue"
+                  rounded
+                  no-caps
+                  unelevated
+                  color="blue-2"
+                  label="Reset Password"
+                  @click="openDialogResetPassword(props.row, 'reset pass')"
+
+                 />
               </div>
             </q-td>
           </q-tr>
@@ -219,6 +230,9 @@ export default defineComponent({
       titleAddUser: ref(),
       passwordIf: ref(true),
       confirmPasswordIf: ref(true),
+      resetPasswordDialog: ref(true),
+      resetPasswordId: ref(null),
+      newPassword: ref(''),
       token: ref(localStorage.getItem("token")),
       name: ref(),
       email: ref(),
@@ -242,7 +256,7 @@ export default defineComponent({
       jabatan: ref(),
       optionsJabatan: [
         { label: "Admin", value: "admin" },
-        { label: "Direktur", value: "direktur" },
+        { label: "Direktur", value: "director" },
         { label: "Manager", value: "manager" },
         { label: "Supervisor", value: "supervisor" },
         { label: "Operator", value: "operator" },
@@ -309,12 +323,17 @@ export default defineComponent({
       this.addUser = edit ? "Edit User" : "Add User";
       this.editing = edit;
     },
+    openDialogResetPassword(rowData) {
+      this.resetPasswordId = rowData.id;
+      this.resetPasswordDialog = true;
+    },
     //Button Setter
     setButton(rowData, act) {
       this.currentShownId = rowData.id;
       console.log(this.currentShownId);
       act != "edit" ? "" : this.setEditUser();
       act != "delete" ? "" : this.deleteUser();
+      act != "reset pass" ? "" : this.openDialogResetPassword();
     },
     handleAction() {
       if (this.editing == true) {
@@ -494,6 +513,33 @@ export default defineComponent({
       }
     },
     //END UPLOAD
+
+      //START REPAS
+      async resetPassword() {
+      try {
+        const { status, data } = await axios.put(
+          `/user/reset-password/${this.resetPasswordId}`,
+          { newPassword: this.newPassword },
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+        if (status === 200) {
+          // Reset berhasil
+          this.resetPasswordDialog = false;
+          this.$q.notify({ message: data.message, color: 'positive' });
+        } else {
+          // Reset gagal
+          throw new Error(data.message);
+        }
+      } catch (error) {
+        console.error(error);
+        this.$q.notify({ message: error.message, color: 'negative' });
+      }
+    },
+      //END REPASS
   },
 });
 </script>

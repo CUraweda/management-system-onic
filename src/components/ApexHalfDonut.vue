@@ -10,11 +10,11 @@
           dense
           filled
           label="Division"
-          v-model="selectedpic"
-          name="pic"
+          v-model="divisi"
+          name="division"
           use-input
           input-debounce="0"
-          :options="picOptions"
+          :options="divisiOptions"
           behavior="menu"
           class="col-5"
           :rules="[(val) => (val !== null && val !== '') || 'Required']"
@@ -27,15 +27,14 @@
         </q-select>
 
         <q-select
-          :multiple="isMultitask"
           dense
           filled
-          v-model="selectedpic"
-          name="pic"
+          v-model="person"
+          name="person"
           label="Person"
           use-input
           input-debounce="0"
-          :options="picOptions"
+          :options="personOptions"
           behavior="menu"
           class="col-5"
           :rules="[(val) => (val !== null && val !== '') || 'Required']"
@@ -65,10 +64,9 @@
                   icon-half="star_half"
                   no-dimming
                   hint="readonly"
-                  :dense="dense"
                   readonly
                 />
-                <div class="text-h5">SKOR ANDA {{ Avgrate }}</div>
+                <div class="text-h5">SKOR {{ personName }} {{ Avgrate }}</div>
               </div>
             </div>
           </div>
@@ -80,6 +78,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import CardBase from "components/CardBase";
 export default {
   name: "ApexHalfDonut",
@@ -88,6 +87,7 @@ export default {
   },
   data() {
     return {
+      branch: localStorage.getItem("branch"),
       deposit: {
         start: "",
         due: "",
@@ -96,25 +96,135 @@ export default {
         start_2: "",
         due_2: "",
       },
+      divisi: null,
+      person: null,
       id: localStorage.getItem("id"),
       left: false,
       username: "",
+      // token: ref(localStorage.getItem("token")),
       title: localStorage.getItem("title"),
       Avgrate: 0,
     };
   },
 
-  mounted() {
-    this.fetchData();
+  setup() {
+    return {
+      // divisi:[],
+      // person:[],
+      personOptions: ref([]),
+      divisiOptions: ref([]),
+    }
   },
 
+  mounted() {
+    this.fetchData();
+    this.fetchDivisionData();
+  },
+
+  watch: {
+
+    person: {
+      handler(val) {
+        if (val){
+          this.fetchData();
+        }
+      },
+    },
+
+    divisi: {
+      handler(value) {
+        console.log("Selected PIC changed. Updating SPV options...");
+        console.log("PIC title:", value.label);
+
+        if (value) {
+            this.fetchPersonData();
+        }
+      },
+    },
+  },
+
+  computed: {
+  personName() {
+    return this.person ? this.person.label.toUpperCase() : "";
+  }
+},
+
+
   methods: {
-    async fetchData() {
+    async fetchDivisionData() {
       try {
-        if (this.title === "director") {
-          this.Avgrate = 5;
+        const { status, data } = await this.$axios.get("/divisi", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        console.log("DATA:", data.data);
+        const listOfDivisi = data.data.map((data) => ({
+          label: data.divisionName,
+          value: data.divisionName,
+        }));
+
+        this.divisiOptions = listOfDivisi;
+        this.divisi = this.divisiOptions[0];
+
+        const divisi = this.divisiOptions.divisionName;
+        console.log("Selected Divisi:", divisi);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchPersonData() {
+      try {
+        const { status, data } = await this.$axios.get("/user/division", {
+          params: {
+            division: this.divisi.value,
+            branch: this.branch
+          },
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        const filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin"
+        );
+
+        const listOfPerson = filteredData.map((data) => ({
+          label: data.u_name,
+          value: data.u_id,
+          title: data.title
+        }));
+
+        this.personOptions = listOfPerson;
+        this.person = this.personOptions[0];
+
+        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
+        console.log("Selected Person:", person);
+        this.fetchData(person);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchData(person) {
+      try {
+        if (person === null) {
+          this.Avgrate = 0;
         } else {
-          const response = await this.$axios.get("/user/get-by-id/" + this.id, {
+        const id = this.person.value
+        console.log("ini id " + id);
+
+          const response = await this.$axios.get("/user/get-by-id/" + id, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -123,7 +233,7 @@ export default {
           if (response.data.total_task === 0) {
             this.Avgrate = 0;
           } else {
-          console.log(response.data.u_rate);
+          console.log("hasil" + response.data.u_rate);
           const Avgrate = response.data.u_rate / response.data.total_task;
           this.Avgrate = Avgrate;
           }

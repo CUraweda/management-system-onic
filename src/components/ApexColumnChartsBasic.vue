@@ -12,7 +12,7 @@
           dense
           filled
           label="Division"
-          v-model="selectedDivisi"
+          v-model="divisi"
           use-input
           input-debounce="0"
           :options="divisiOptions"
@@ -111,13 +111,14 @@ export default {
   },
   data() {
     return {
+      branch: localStorage.getItem("branch"),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
       TotalCompleted: "0",
       TotalTotal: "0",
-      selectedDivisi:null,
-      selectedPerson:null,
+      divisi:null,
+      person:null,
       deposit: {
         start: "",
         due: "",
@@ -198,8 +199,8 @@ export default {
 
   setup() {
     return {
-      divisi:[],
-      person:[],
+      // divisi:[],
+      // person:[],
       divisiOptions: ref([]),
       personOptions: ref([]),
       token: ref(localStorage.getItem("token")),
@@ -233,11 +234,11 @@ export default {
   },
 
   watch: {
-    selectedDivisi: {
+    divisi: {
       handler(value) {
-        console.log("Selected Divisi changed. Updating SPV options...");
-        console.log("Divisi title:", value.title);
-          if (selectedDivisi) {
+        // console.log("Selected Divisi changed. Updating SPV options...");
+        // console.log("Divisi title:", value.title);
+          if (divisi) {
             this.fetchPersonData();
           }
         }
@@ -257,17 +258,17 @@ export default {
           throw Error("Error while fetching");
         }
 
-        console.log("DATA:", data.data);
+        // console.log("DATA:", data.data);
         const listOfDivisi = data.data.map((data) => ({
           label: data.divisionName,
           value: data.id,
         }));
 
         this.divisiOptions = listOfDivisi;
-        this.selectedDivisi = this.divisiOptions[0];
+        this.divisi = this.divisiOptions[0];
 
-        const selectedDivisi = this.divisiOptions.divisionName;
-        console.log("Selected Divisi:", selectedDivisi);
+        const divisi = this.divisiOptions.divisionName;
+        // console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -276,6 +277,9 @@ export default {
     async fetchPersonData() {
       try {
         const { status, data } = await this.$axios.get("/user/all", {
+          params: {
+            branch: this.branch,
+          },
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
@@ -297,7 +301,7 @@ export default {
     },
 
     updateSeries() {
-      console.log("ping" + this.TotalOpen)
+      // console.log("ping" + this.TotalOpen)
       this.series = [
         {
           name: 'Completed',
@@ -324,7 +328,7 @@ export default {
 
     async fetchOpen() {
       try {
-        console.log(this.token);
+        // console.log(this.token);
         const response = await this.$axios.get("/task/all", {
           params: { status: "Open", search: this.search },
           headers: {
@@ -334,7 +338,7 @@ export default {
 
         const openedTasks = response.data.filter((task) => task.status === "Open");
         this.TotalOpen = openedTasks.length;
-        console.log(openedTasks.length);
+        // console.log(openedTasks.length);
 
         return openedTasks.length;
       } catch (error) {
@@ -354,7 +358,7 @@ export default {
 
         const openedTasks = response.data.filter((task) => task.status === "Close");
         this.TotalCompleted = openedTasks.length;
-        console.log(openedTasks.length);
+        // console.log(openedTasks.length);
 
         return openedTasks.length;
       } catch (error) {
@@ -377,7 +381,7 @@ export default {
 
         // Log the length of opened tasks
         this.TotalInProgress = openedTasks.length;
-        console.log(openedTasks.length);
+        // console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
@@ -402,7 +406,7 @@ export default {
 
         // Log the length of opened tasks
         this.TotalOverdue = openedTasks.length;
-        console.log(openedTasks.length);
+        // console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
@@ -427,7 +431,7 @@ export default {
 
         // Log the length of opened tasks
         this.TotalTotal = openedTasks.length;
-        console.log(openedTasks.length);
+        // console.log(openedTasks.length);
 
         // You can use this value in your component or store it in a data property
         return openedTasks.length;
