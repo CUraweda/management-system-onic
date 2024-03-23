@@ -165,14 +165,14 @@ export default {
 
         console.log("DATA:", data.data);
         const listOfDivisi = data.data.map((data) => ({
-          label: data.divisionName,
-          value: data.divisionName,
+          label: data.d_name,
+          value: data.id,
         }));
 
         this.divisiOptions = listOfDivisi;
         this.divisi = this.divisiOptions[0];
 
-        const divisi = this.divisiOptions.divisionName;
+        const divisi = this.divisiOptions.d_name;
         console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -181,6 +181,7 @@ export default {
 
     async fetchPersonData() {
       try {
+        console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value)
         const { status, data } = await this.$axios.get("/user/division", {
           params: {
             division: this.divisi.value,

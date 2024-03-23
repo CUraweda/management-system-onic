@@ -8,6 +8,40 @@
           color="cyan"
           no-caps
         />
+        <q-btn
+          label="Add New Division"
+          @click="openDialogDivision()"
+          color="cyan"
+          no-caps
+        />
+        <q-dialog v-model="dialogDivision">
+          <q-card style="width: 700px">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">{{ titleAddUser }}</div>
+              <q-space />
+              <q-btn no-caps color="cyan" @click="handleAction()">{{
+                addUser
+              }}</q-btn>
+            </q-card-section>
+
+            <q-card-section
+              style="display: flex; gap: 10px; width: 100%"
+              class="col-grow"
+            >
+              <div class="full-width">
+                <q-input
+                  v-model="newDivisi"
+                  dense
+                  outlined
+                  label="New Division"
+                  class="q-mt-md"
+                  :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                >
+                </q-input>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
         <q-dialog v-model="dialogUser">
           <q-card style="width: 700px">
             <q-card-section class="row items-center q-pb-none">
@@ -224,6 +258,7 @@ import axios from "axios";
 export default defineComponent({
   data() {
     return {
+      newDivisi: ref(null),
       fileTask: ref(null),
       uploadExcel: ref(false),
       addUser: ref(),
@@ -296,6 +331,12 @@ export default defineComponent({
         console.log(this.division.value);
       }
     },
+    dialogDivision: {
+      handler(value) {
+        // console.log(value);
+        if (value != true) this.clearInput();
+      },
+    },
     dialogUser: {
       handler(value) {
         // console.log(value);
@@ -312,6 +353,11 @@ export default defineComponent({
     },
     openDialogImport() {
       this.uploadExcel = true;
+    },
+    openDialogDivision() {
+      this.division = this.optionsDivisi[0];
+      this.dialogDivision = true;
+      this.addUser =  "Add Division";
     },
     openDialogUser(edit = false) {
       this.division = this.optionsDivisi[0];

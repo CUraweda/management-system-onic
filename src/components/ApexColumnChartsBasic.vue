@@ -260,7 +260,7 @@ export default {
 
         // console.log("DATA:", data.data);
         const listOfDivisi = data.data.map((data) => ({
-          label: data.divisionName,
+          label: data.d_name,
           value: data.id,
         }));
 
