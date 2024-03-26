@@ -159,6 +159,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import notification from "./Notification.vue";
 import profile from "./Profile.vue";
@@ -174,6 +175,8 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       search: "",
       left: false,
       username: '',
@@ -182,14 +185,14 @@ export default {
   },
 
   mounted() {
-    this.username = localStorage.getItem('username') || '';
-    this.title = localStorage.getItem('title') || '';
-    // this.userAccessToken = localStorage.getItem('token') || '';
+    this.username = sessionStorage.getItem('username')? sessionStorage.getItem('username') : Cookies.get("username");
+    this.title = sessionStorage.getItem('title')? sessionStorage.getItem('title') : Cookies.get("title");
+    // this.userAccessToken = sessionStorage.getItem('token') || '';
   },
 
   methods: {
     keluar() {
-      localStorage.clear()
+      sessionStorage.clear()
       this.$router.push('/')
     }
   },

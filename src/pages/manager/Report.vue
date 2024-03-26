@@ -405,6 +405,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import Vue from "vue";
@@ -426,8 +427,10 @@ export default {
   name: "ManagerReport",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
-      username: localStorage.getItem("username"),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
       chat: "",
       filter: "",
       mode: "list",
@@ -461,6 +464,7 @@ export default {
 
   setup() {
     return {
+
       rate: ref(0),
       text: ref(""),
       ratingModel: ref(0),
@@ -488,6 +492,8 @@ export default {
         const response = await this.$axios.get("/image/" + this.fileName, {
           responseType: "blob",
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -597,6 +603,8 @@ export default {
         console.log(this.id);
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -700,6 +708,8 @@ export default {
         // 1. Ambil data dari tugas yang akan direvisi
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

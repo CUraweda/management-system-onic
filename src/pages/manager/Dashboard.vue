@@ -252,6 +252,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
@@ -273,7 +274,17 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -325,6 +336,8 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Open", search: this.search },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -349,6 +362,8 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Close", search: this.search },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -373,6 +388,8 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "In-progress", search: this.search },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -397,6 +414,8 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Idle", search: this.search },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -421,6 +440,8 @@ export default {
         const response = await this.$axios.get("/task/all", {
           params: { status: "", search: this.search },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

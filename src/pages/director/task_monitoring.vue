@@ -308,6 +308,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { exportFile } from "quasar";
 import { store } from "../../store/store";
@@ -338,8 +339,10 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
-      username: localStorage.getItem("username"),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -459,6 +462,7 @@ export default {
 
   setup() {
     return {
+
       rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {},
@@ -559,6 +563,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -612,6 +618,8 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

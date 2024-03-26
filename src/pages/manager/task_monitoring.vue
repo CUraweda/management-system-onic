@@ -308,6 +308,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import { ref } from "vue";
 import { exportFile } from "quasar";
 import { store } from "../../store/store";
@@ -327,8 +328,7 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -339,8 +339,20 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
-      username: localStorage.getItem("username"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
+      username: sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -544,6 +556,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -566,15 +580,11 @@ export default {
         taskToRevise.started_at = null;
         taskToRevise.started_by = null;
 
-        const createTaskResponse = await this.$axios.post(
-          "/task/new",
-          taskToRevise,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const createTaskResponse = await this.$axios.post("/task/new", taskToRevise, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         if (!createTaskResponse.status === 200)
           throw Error("Failed to create revised task");
 
@@ -599,6 +609,8 @@ export default {
             search: this.search,
           },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -639,8 +651,7 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200)
-          throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -661,9 +672,7 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
       });
     },
 

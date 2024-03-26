@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import axios from "axios";
 
@@ -48,9 +49,10 @@ export default {
   name: "Notification",
   setup() {
     return {
+
       messages: ref(),
       notifNumber: ref(),
-      token: ref(localStorage.getItem("token")),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       showBar: ref(false),
     };
   },
@@ -62,6 +64,8 @@ export default {
       try {
         const response = await this.$axios.get(`/notif`, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -84,6 +88,8 @@ export default {
         this.notifNumber > 0 ? (this.notifNumber = 0) : "";
         const response = await this.$axios.post(`/notif/read`, null, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

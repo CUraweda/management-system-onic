@@ -74,10 +74,10 @@
       </q-card-section>
     </q-card>
   </div>
-
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import { ref } from "vue";
 import CardBase from "components/CardBase";
 export default {
@@ -87,7 +87,15 @@ export default {
   },
   data() {
     return {
-      branch: localStorage.getItem("branch"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
+      branch: sessionStorage.getItem("branch")
+        ? sessionStorage.getItem("branch")
+        : Cookies.get("branch"),
       deposit: {
         start: "",
         due: "",
@@ -98,11 +106,17 @@ export default {
       },
       divisi: null,
       person: null,
-      id: localStorage.getItem("id"),
+      id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       left: false,
       username: "",
-      // token: ref(localStorage.getItem("token")),
-      title: localStorage.getItem("title"),
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
+      title: sessionStorage.getItem("title")
+        ? sessionStorage.getItem("title")
+        : Cookies.get("title"),
       Avgrate: 0,
     };
   },
@@ -113,7 +127,7 @@ export default {
       // person:[],
       personOptions: ref([]),
       divisiOptions: ref([]),
-    }
+    };
   },
 
   mounted() {
@@ -122,10 +136,9 @@ export default {
   },
 
   watch: {
-
     person: {
       handler(val) {
-        if (val){
+        if (val) {
           this.fetchData();
         }
       },
@@ -137,24 +150,26 @@ export default {
         console.log("PIC title:", value.label);
 
         if (value) {
-            this.fetchPersonData();
+          this.fetchPersonData();
         }
       },
     },
   },
 
   computed: {
-  personName() {
-    return this.person ? this.person.label.toUpperCase() : "";
-  }
-},
-
+    personName() {
+      return this.person ? this.person.label.toUpperCase() : "";
+    },
+  },
 
   methods: {
     async fetchDivisionData() {
       try {
         const { status, data } = await this.$axios.get("/divisi", {
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
+            title: this.title,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -181,13 +196,15 @@ export default {
 
     async fetchPersonData() {
       try {
-        console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value)
+        console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
         const { status, data } = await this.$axios.get("/user/division", {
           params: {
             division: this.divisi.value,
-            branch: this.branch
+            branch: this.branch,
           },
           headers: {
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -203,7 +220,7 @@ export default {
         const listOfPerson = filteredData.map((data) => ({
           label: data.u_name,
           value: data.u_id,
-          title: data.title
+          title: data.title,
         }));
 
         this.personOptions = listOfPerson;
@@ -222,8 +239,8 @@ export default {
         if (person === null) {
           this.Avgrate = 0;
         } else {
-        const id = this.person.value
-        console.log("ini id " + id);
+          const id = this.person.value;
+          console.log("ini id " + id);
 
           const response = await this.$axios.get("/user/get-by-id/" + id, {
             headers: {
@@ -234,9 +251,9 @@ export default {
           if (response.data.total_task === 0) {
             this.Avgrate = 0;
           } else {
-          console.log("hasil" + response.data.u_rate);
-          const Avgrate = response.data.u_rate / response.data.total_task;
-          this.Avgrate = Avgrate;
+            console.log("hasil" + response.data.u_rate);
+            const Avgrate = response.data.u_rate / response.data.total_task;
+            this.Avgrate = Avgrate;
           }
         }
       } catch (error) {

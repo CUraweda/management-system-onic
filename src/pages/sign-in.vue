@@ -127,6 +127,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import { ref } from "vue";
 import axios from "axios";
 
@@ -135,6 +136,8 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       branch: null,
       email: "",
       password: "",
@@ -166,19 +169,78 @@ export default {
     };
   },
 
+  mounted() {
+    this.created();
+  },
+
   methods: {
+    async refreshToken(oldToken) {
+    try {
+      // Lakukan permintaan ke server untuk memperbarui token
+      const response = await this.$axios.post("/user/refreshToken", { oldToken });
+
+      if (response.status === 200) {
+        const newToken = response.data.newToken;
+
+        // Simpan token baru di dalam cookie
+        Cookies.set("token", newToken);
+
+        // Lakukan apa pun yang perlu dilakukan setelah token diperbarui
+        // Misalnya, navigasi ke halaman tertentu atau menampilkan notifikasi
+        this.$q.notify({
+          color: "positive",
+          message: "Token refreshed.",
+        });
+      } else {
+        throw new Error("Failed to refresh token");
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+
+      // Handle error, misalnya dengan menampilkan pesan kepada pengguna
+      this.$q.notify({
+        color: "negative",
+        position: "top",
+        message: "Failed to refresh token",
+      });
+    }
+  },
+
+    created() {
+      // Saat halaman dimuat, periksa apakah ada cookies yang berisi data pengguna
+      const token = Cookies.get("token");
+      // if (token) {
+      //   // Lakukan permintaan ke server untuk memperbarui token
+      //   this.refreshToken(token);
+      // }
+      const email = Cookies.get("email");
+      const id = Cookies.get("id");
+      // Dan seterusnya untuk data lainnya
+      if (token && email && id) {
+        // Jika ada, lakukan autentikasi pengguna secara otomatis atau atur status login sesuai kebutuhan aplikasi Anda
+        this.SignIn(email);
+      }
+    },
+
     async SignIn() {
+      const email = Cookies.get("email")
       const data = {
-        email: this.email,
-        password: this.password,
-        branch: this.branch.value
+        email: this.email? this.email : email,
+        password: this.password || null,
+        branch: this.branch? this.branch.value : null,
       };
+      console.log("🚀 ~ SignIn ~ data.token:", data.token)
 
       try {
+        const token = Cookies.get("token")
+        console.log("🚀 ~ SignIn ~ token:", token)
         const response = await this.$axios.post("/user/login", data, {
           headers: {
             "Content-Type": "application/json",
           },
+          params: {
+            token: token? token : null
+          }
         });
 
         if (response.status === 200) {
@@ -189,15 +251,30 @@ export default {
           const title = response.data.data.title;
           const division = response.data.data.division;
           const branch = response.data.data.branch;
+          const division_id = response.data.data.division_id;
+          const branch_id = response.data.data.branch_id;
 
-          // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
-          localStorage.setItem("token", accessToken);
-          localStorage.setItem("id", id);
-          localStorage.setItem("email", email);
-          localStorage.setItem("username", name);
-          localStorage.setItem("title", title);
-          localStorage.setItem("division", division);
-          localStorage.setItem("branch", branch);
+          if (this.right) {
+            Cookies.set("token", accessToken, { expires: 365 }); // Cookie berlaku selama 1 tahun
+            Cookies.set("id", id, { expires: 365 });
+            Cookies.set("email", email, { expires: 365 });
+            Cookies.set("username", name, { expires: 365 });
+            Cookies.set("title", title, { expires: 365 });
+            Cookies.set("division", division, { expires: 365 });
+            Cookies.set("branch", branch, { expires: 365 });
+            Cookies.set("division_id", division_id, { expires: 365 });
+            Cookies.set("branch_id", branch_id, { expires: 365 });
+          } else {
+            sessionStorage.setItem("token", accessToken);
+            sessionStorage.setItem("id", id);
+            sessionStorage.setItem("email", email);
+            sessionStorage.setItem("username", name);
+            sessionStorage.setItem("title", title);
+            sessionStorage.setItem("division", division);
+            sessionStorage.setItem("branch", branch);
+            sessionStorage.setItem("division_id", division_id);
+            sessionStorage.setItem("branch_id", branch_id);
+          }
           this.redirectUser(title);
 
           this.$q.notify({

@@ -470,6 +470,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import { exportFile } from "quasar";
@@ -481,6 +482,8 @@ export default {
   // props: ["id"],
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       form: {
         task_type: "",
         task_title: "",
@@ -504,7 +507,7 @@ export default {
     const submitResultspv = ref([]);
 
     return {
-      token: ref(localStorage.getItem("token")),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       iteration: ref(""),
       task_type_options: [
         {
@@ -622,6 +625,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

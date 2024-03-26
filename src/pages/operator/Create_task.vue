@@ -492,6 +492,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { store } from "../../store/store.js";
 
@@ -499,7 +500,9 @@ export default {
   name: "ManagerCreate",
   data() {
     return {
-      username: localStorage.getItem("username"),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
       spv_id: "",
       pic_id: "",
       pic: [],
@@ -653,11 +656,11 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const { status, data } = await this.$axios.get("/user/all");
         if (status !== 200) throw Error("Error while fetching");
 
-        const filteredData = data.filter((user) => user.u_name === this.username);
+        const filteredData = data.filter((user) => user.u_id === this.id);
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
@@ -785,7 +788,7 @@ export default {
         this.addToForm("pic_title", this.selectedpic.title);
         this.addToForm(
           "created_by",
-          localStorage.getItem("username") || "Unknown"
+          sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username") || "Unknown"
         );
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);

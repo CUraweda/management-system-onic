@@ -323,6 +323,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import Vue from "vue";
 import { exportFile } from "quasar";
@@ -343,6 +344,7 @@ export default {
   name: "TaskDetail",
   setup() {
     return {
+
       rate: ref(0),
       text: ref(""),
       id: store.id,
@@ -354,6 +356,8 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       fileName: null,
       file_hasil: null,
       chat: "",
@@ -553,6 +557,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

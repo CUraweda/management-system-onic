@@ -646,6 +646,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -678,7 +679,9 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -774,6 +777,7 @@ export default {
   },
   setup() {
     return {
+
       onItemClick() {},
     };
   },
@@ -807,14 +811,14 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/all", {
           params: {
             // status: "Open",
             search: this.search,
           },
           headers: {
-            pic: username,
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -849,13 +853,13 @@ export default {
     async fetchWaitedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id= sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
           },
           headers: {
-            pic: username,
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -870,13 +874,13 @@ export default {
     async fetchDeletedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/deleted", {
           params: {
             search: this.search,
           },
           headers: {
-            pic: username,
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });

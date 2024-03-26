@@ -291,7 +291,7 @@ const routes = [
 // });
 
 // router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('token');
+//   const token = sessionStorage.getItem('token');
 
 //   if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
 //     next('/');

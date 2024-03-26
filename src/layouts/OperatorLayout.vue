@@ -140,6 +140,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { date } from "quasar";
 import notification from "./Notification.vue";
@@ -155,6 +156,8 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       search: "",
       left: false,
       username: '',
@@ -164,11 +167,11 @@ export default {
   },
 
   mounted() {
-    const storedRating = parseFloat(localStorage.getItem('rate'));
+    const storedRating = parseFloat(sessionStorage.getItem('rate'));
     this.rating = !isNaN(storedRating) ? storedRating : 0;
     console.log(this.rating);
-    this.username = localStorage.getItem('username') || '';
-    this.title = localStorage.getItem('title') || '';
+    this.username = sessionStorage.getItem('username')? sessionStorage.getItem('username') : Cookies.get("username");
+    this.title = sessionStorage.getItem('title')? sessionStorage.getItem('title') : Cookies.get("title");
   },
 
 
@@ -178,7 +181,7 @@ export default {
     },
 
     keluar() {
-      localStorage.clear()
+      sessionStorage.clear()
       this.$router.push('/')
     }
   },

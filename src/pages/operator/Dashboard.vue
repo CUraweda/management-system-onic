@@ -292,6 +292,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
@@ -314,7 +315,9 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -336,6 +339,7 @@ export default {
   },
   setup() {
     return {
+
       onItemClick() {
         console.log("Clicked on an Item");
       },
@@ -361,14 +365,14 @@ export default {
   methods: {
     async fetchOpen() {
       try {
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: "Open",
             search: this.search,
           },
           headers: {
-            pic: username,
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -389,7 +393,7 @@ export default {
 
     async fetchCompleted() {
       try {
-        const username = localStorage.getItem("username");
+        const username = sessionStorage.getItem("")? sessionStorage.getItem("username") : Cookies.get("username");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: "Close",
@@ -421,7 +425,7 @@ export default {
 
     async fetchInProgress() {
       try {
-        const username = localStorage.getItem("username");
+        const username = sessionStorage.getItem("")? sessionStorage.getItem("username") : Cookies.get("username");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: "In-progress",
@@ -453,7 +457,7 @@ export default {
 
     async fetchOverdue() {
       try {
-        const username = localStorage.getItem("username");
+        const username = sessionStorage.getItem("")? sessionStorage.getItem("username") : Cookies.get("username");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: "Idle",
@@ -485,7 +489,7 @@ export default {
 
     async fetchTotal() {
       try {
-        const username = localStorage.getItem("username");
+        const username = sessionStorage.getItem("")? sessionStorage.getItem("username") : Cookies.get("username");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: "",

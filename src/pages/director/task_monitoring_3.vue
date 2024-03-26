@@ -244,6 +244,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
@@ -274,7 +275,9 @@ export default {
   name: "TaskMonitoring3",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       filter: "",
       mode: "list",
       invoice: {},
@@ -371,6 +374,7 @@ export default {
 
   setup() {
     return {
+
       rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {},
@@ -393,7 +397,7 @@ export default {
       },
       // deep: true,
     },
-    
+
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
@@ -432,6 +436,8 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

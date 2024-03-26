@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { defineComponent } from 'vue'
 import axios from 'axios'
 import { ref, onMounted } from 'vue';
@@ -27,22 +28,29 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       left: false,
-      branch: '',
-      division: '',
-      rating: 1
+      rating: 1,
+      branch : sessionStorage.getItem("branch")? sessionStorage.getItem('branch') : Cookies.get("branch"),
+      division : sessionStorage.getItem("division")? sessionStorage.getItem('division') : Cookies.get("division"),
       // userAccessToken: ''
     }
   },
   mounted() {
-    this.branch = localStorage.getItem('branch') || '';
-    this.division = localStorage.getItem('division') || '';
-    // this.userAccessToken = localStorage.getItem('token') || '';
+    // console.log("HUHUHU" + sessionStorage.getItem(""))
+
+    // this.userAccessToken = sessionStorage.getItem('token') || '';
   },
 
   methods: {
     keluar() {
-      localStorage.clear()
+      sessionStorage.clear()
+      const cookies = Cookies.get();
+
+      for (const cookie in cookies) {
+        Cookies.remove(cookie);
+      }
       this.$router.push('/')
     }
   }
