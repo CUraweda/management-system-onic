@@ -15,7 +15,7 @@
           name="pic"
           use-input
           input-debounce="0"
-          :options="divisi1"
+          :options="divisiOptions"
           behavior="menu"
           class="col-2"
           :rules="[(val) => (val !== null && val !== '') || 'Required']"
@@ -241,7 +241,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
@@ -267,8 +267,12 @@ export default {
   },
   data() {
     return {
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -285,10 +289,13 @@ export default {
   },
   setup() {
     return {
-
-      divisi:[],
-      divisi1:[],
-      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      divisi: ref(),
+      divisi1: [],
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
       onItemClick() {},
     };
   },
@@ -299,6 +306,7 @@ export default {
     this.fetchCompleted();
     this.fetchOverdue();
     this.fetchTotal();
+    this.fetchDivisionData();
     this.intervalId = setInterval(() => {
       this.fetchOpen();
       this.fetchInProgress();
@@ -313,14 +321,45 @@ export default {
   },
 
   methods: {
+    async fetchDivisionData() {
+      try {
+        const { status, data } = await this.$axios.get("/divisi", {
+          headers: {
+            branch: this.branchId,
+            division: this.divisionId,
+            title: this.title,
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        console.log("DATA:", data.data);
+        const listOfDivisi = data.data.map((data) => ({
+          label: data.d_name,
+          value: data.id,
+        }));
+
+        this.divisiOptions = listOfDivisi;
+        this.divisi = this.divisiOptions[0];
+
+        const divisi = this.divisiOptions.d_name;
+        console.log("Selected Divisi:", divisi);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
     async fetchOpen() {
       try {
         console.log(this.token);
         const response = await this.$axios.get("/task/all", {
           params: { status: "Open", search: this.search },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -341,8 +380,8 @@ division: this.divisionId,
         const response = await this.$axios.get("/task/all", {
           params: { status: "Close", search: this.search },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -363,8 +402,8 @@ division: this.divisionId,
         const response = await this.$axios.get("/task/all", {
           params: { status: "In-progress", search: this.search },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -390,8 +429,8 @@ division: this.divisionId,
         const response = await this.$axios.get("/task/all", {
           params: { status: "Idle", search: this.search },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -417,8 +456,8 @@ division: this.divisionId,
         const response = await this.$axios.get("/task/all", {
           params: { status: "", search: this.search },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

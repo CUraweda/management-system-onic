@@ -393,7 +393,7 @@ export default defineComponent({
         params: {
           branch_id: this.branch.value,
         },
-      });
+      });''
 
       if (status !== 200) {
         throw Error("Error while fetching");
