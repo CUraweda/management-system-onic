@@ -87,6 +87,9 @@
         </q-input>
       </q-card-section>
 
+      <template>
+  <q-scroll-area class="horizontal-scrollbar" style="height: 500px;">
+    <div class="scroll-content" style="width: 1000px;">
       <q-card-section>
         <CardBase>
           <div class="col-12">
@@ -95,6 +98,7 @@
               height="321"
               :options="chartOptions"
               :series="series"
+              :pagination.sync="pagination"
             ></apexchart>
             <div>
               <!-- <q-btn @click="previousMonth" label="Previous" />
@@ -103,6 +107,12 @@
           </div>
         </CardBase>
       </q-card-section>
+    
+    </div>
+  </q-scroll-area>
+</template>
+
+ 
     </q-card>
   </div>
 </template>
@@ -145,7 +155,30 @@ export default {
         start_2: "",
         due_2: "",
       },
-      series: [],
+      series: [
+      {
+        name: 'Completed',
+        data: [10, 15, 8, 12, 20, 18] // Contoh data untuk bulan Januari-Juni
+      },
+      {
+        name: 'In-progress',
+        data: [5, 8, 6, 10, 15, 12]
+      },
+      {
+        name: 'Overdue',
+        data: [2, 4, 3, 5, 7, 6]
+      },
+      {
+        name: 'Open',
+        data: [8, 10, 7, 9, 12, 11]
+      },
+      {
+        name: 'Total',
+        data: [25, 37, 24, 36, 54, 47]
+      }
+
+
+      ],
       chartOptions: {
         colors: ["#9C27B0", "#2196F3", "#FF9800", "#4CAF50", "#2816F3"],
         animations: {
@@ -186,6 +219,8 @@ export default {
           width: 2,
           colors: ["transparent"],
         },
+    
+
         xaxis: {
           categories: [
             "January",
@@ -232,6 +267,9 @@ export default {
           },
         },
       },
+      pagination: {
+        rowsPerPage: 5,
+      },
     };
   },
 
@@ -250,26 +288,26 @@ export default {
     };
   },
 
-  mounted() {
-    Promise.all([
-      this.fetchData(),
-      this.fetchOpen(),
-      this.fetchInProgress(),
-      this.fetchCompleted(),
-      this.fetchOverdue(),
-      this.fetchTotal(),
-    ]).then(() => {
-      this.updateSeries();
-      this.intervalId = setInterval(() => {
-        this.fetchOpen();
-        this.fetchInProgress();
-        this.fetchCompleted();
-        this.fetchOverdue();
-        this.fetchTotal();
-        this.updateSeries();
-      }, 60000);
-    });
-  },
+  // mounted() {
+  //   Promise.all([
+  //     this.fetchData(),
+  //     this.fetchOpen(),
+  //     this.fetchInProgress(),
+  //     this.fetchCompleted(),
+  //     this.fetchOverdue(),
+  //     this.fetchTotal(),
+  //   ]).then(() => {
+  //     this.updateSeries();
+  //     this.intervalId = setInterval(() => {
+  //       this.fetchOpen();
+  //       this.fetchInProgress();
+  //       this.fetchCompleted();
+  //       this.fetchOverdue();
+  //       this.fetchTotal();
+  //       this.updateSeries();
+  //     }, 60000);
+  //   });
+  // },
 
   beforeDestroy() {
     clearInterval(this.intervalId);
@@ -544,5 +582,15 @@ export default {
 
 .bintang {
   border-radius: 18px;
+}
+
+
+.horizontal-scrollbar {
+  overflow-x: auto; /* Mengaktifkan scrollbar horizontal */
+  overflow-y: hidden; /* Menonaktifkan scrollbar vertikal */
+}
+
+.scroll-content {
+  white-space: nowrap; /* Membuat konten horizontal */
 }
 </style>
