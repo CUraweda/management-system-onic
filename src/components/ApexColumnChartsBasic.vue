@@ -121,6 +121,9 @@ export default {
     return {
       currentMonthIndex: 0,
       month: null,
+      title: sessionStorage.getItem("title")
+        ? sessionStorage.getItem("title")
+        : Cookies.get("title"),
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -252,12 +255,13 @@ export default {
 
   mounted() {
     Promise.all([
-      this.fetchData(),
       this.fetchOpen(),
       this.fetchInProgress(),
       this.fetchCompleted(),
       this.fetchOverdue(),
       this.fetchTotal(),
+      this.fetchPersonData(),
+      this.fetchDivisionData(),
     ]).then(() => {
       this.updateSeries();
       this.intervalId = setInterval(() => {
@@ -271,51 +275,78 @@ export default {
     });
   },
 
-  beforeDestroy() {
-    clearInterval(this.intervalId);
-  },
-
   watch: {
+    person: {
+      handler(val) {
+        if (val) {
+          const person = this.person.value;
+          console.log("Selected Person:", person);
+          this.fetchOpen(person);
+          this.fetchInProgress(person);
+          this.fetchOverdue(person);
+          this.fetchCompleted(person);
+          this.fetchTotal(person);
+          console.log("wowoowwo", this.series)
+        }
+      },
+    },
+
     divisi: {
       handler(value) {
-        // console.log("Selected Divisi changed. Updating SPV options...");
-        // console.log("Divisi title:", value.title);
-        if (divisi) {
+        console.log("Selected PIC changed. Updating SPV options...");
+        console.log("PIC title:", value.label);
+
+        if (value) {
           this.fetchPersonData();
         }
       },
     },
   },
 
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   methods: {
-    previousMonth() {
-      if (this.currentMonthIndex > 0) {
-        this.currentMonthIndex--;
-      }
-      // panggil fungsi untuk mengupdate grafik dengan data bulan yang baru
-      this.updateChart();
-    },
-
-    // fungsi untuk menampilkan bulan berikutnya
-    nextMonth() {
-      if (this.currentMonthIndex < this.monthlyData.length - 1) {
-        this.currentMonthIndex++;
-      }
-      // panggil fungsi untuk mengupdate grafik dengan data bulan yang baru
-      this.updateChart();
-    },
-
-    updateChart() {
-      const selectedMonthData = this.monthlyData[this.currentMonthIndex];
-      // update data grafik dengan data bulan yang dipilih
-      this.series = [{ data: selectedMonthData.data }];
-      // update label x-axis dengan bulan yang dipilih
-      this.chartOptions.xaxis.categories = selectedMonthData.month;
-    },
-
-    async fetchData() {
+    async fetchDivisionData() {
       try {
         const { status, data } = await this.$axios.get("/divisi", {
+          headers: {
+            branch: this.branchId,
+            division: this.divisionId,
+            title: this.title,
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        console.log("DATA:", data.data);
+        const listOfDivisi = data.data.map((data) => ({
+          label: data.d_name,
+          value: data.id,
+        }));
+
+        this.divisiOptions = listOfDivisi;
+        this.divisi = this.divisiOptions[0];
+
+        const divisi = this.divisiOptions.d_name;
+        console.log("Selected Divisi:", divisi);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchPersonData() {
+      try {
+        console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
+        const { status, data } = await this.$axios.get("/user/division", {
+          params: {
+            division: this.divisi.value,
+            branch: this.branch,
+          },
           headers: {
             branch: this.branchId,
             division: this.divisionId,
@@ -327,44 +358,18 @@ export default {
           throw Error("Error while fetching");
         }
 
-        // console.log("DATA:", data.data);
-        const listOfDivisi = data.data.map((data) => ({
-          label: data.d_name,
-          value: data.id,
+        const filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin"
+        );
+
+        const listOfPerson = filteredData.map((data) => ({
+          label: data.u_name,
+          value: data.u_id,
+          title: data.title,
         }));
 
-        this.divisiOptions = listOfDivisi;
-        this.divisi = this.divisiOptions[0];
-
-        const divisi = this.divisiOptions.divisionName;
-        // console.log("Selected Divisi:", divisi);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
-
-    async fetchPersonData() {
-      try {
-        const { status, data } = await this.$axios.get("/user/all", {
-          params: {
-            branch: this.branch,
-          },
-          headers: {
-            branch: this.branchId,
-            division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-        if (status !== 200) throw Error("Error while fetching");
-
-        const listOfSpv = data.map((user) => ({
-          label: user.u_name,
-          value: user.u_name,
-          title: user.title,
-          id: user.u_id,
-        }));
-
-        const SelectedPic = this.selectedpic.title;
+        this.personOptions = listOfPerson;
+        this.person = this.personOptions[0];
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -396,12 +401,13 @@ export default {
       ];
     },
 
-    async fetchOpen() {
+    async fetchOpen(pic) {
       try {
         // console.log(this.token);
         const response = await this.$axios.get("/task/all", {
           params: { status: "Open", search: this.search },
           headers: {
+            pic: pic,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
@@ -419,11 +425,12 @@ export default {
       }
     },
 
-    async fetchCompleted() {
+    async fetchCompleted(pic) {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Close", search: this.search },
           headers: {
+            pic: pic,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
@@ -441,11 +448,12 @@ export default {
       }
     },
 
-    async fetchInProgress() {
+    async fetchInProgress(pic) {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "In-progress", search: this.search },
           headers: {
+            pic: pic,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
@@ -468,11 +476,12 @@ export default {
       }
     },
 
-    async fetchOverdue() {
+    async fetchOverdue(pic) {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "Idle", search: this.search },
           headers: {
+            pic: pic,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
@@ -495,11 +504,12 @@ export default {
       }
     },
 
-    async fetchTotal() {
+    async fetchTotal(pic) {
       try {
         const response = await this.$axios.get("/task/all", {
           params: { status: "", search: this.search },
           headers: {
+            pic: pic,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
