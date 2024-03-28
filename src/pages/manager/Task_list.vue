@@ -64,18 +64,11 @@
       </div>
     </q-card>
 
-    <q-expansion-item
-      class="text-h5 text-weight-bold"
-      popup
-      default-opened
-      icon=""
-    >
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
-            <div class="text-h5 text-weight-bold text-blue">
-              Task Wait Approval
-            </div>
+            <div class="text-h5 text-weight-bold text-blue">Task Wait Approval</div>
           </q-card-section>
 
           <q-card-section class="q-pa-none">
@@ -256,12 +249,7 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item
-      class="text-h5 text-weight-bold"
-      popup
-      default-opened
-      icon=""
-    >
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -446,12 +434,7 @@
       </div>
     </q-expansion-item>
 
-    <q-expansion-item
-      class="text-h5 text-weight-bold"
-      popup
-      default-opened
-      icon=""
-    >
+    <q-expansion-item class="text-h5 text-weight-bold" popup default-opened icon="">
       <div class="q-mx-md">
         <q-card class="table-bg no-shadow" bordered>
           <q-card-section>
@@ -598,14 +581,13 @@
                             props.row.status !== 'Idle')
                         "
                       />
-                      :disabled="props.row.finished_at === null ||
-                      (props.row.status !== 'In-progress' && props.row.status
-                      !== 'Idle')" /> :disabled="props.row.finished_at === null
-                      || (props.row.status !== 'In-progress' && props.row.status
-                      !== 'Idle')" /> :disabled="props.row.finished_at === null
-                      || (props.row.status !== 'In-progress' && props.row.status
-                      !== 'Idle')" /> @click="openEmployeeDialog(props.row.id)"
-                      />
+                      :disabled="props.row.finished_at === null || (props.row.status !==
+                      'In-progress' && props.row.status !== 'Idle')" />
+                      :disabled="props.row.finished_at === null || (props.row.status !==
+                      'In-progress' && props.row.status !== 'Idle')" />
+                      :disabled="props.row.finished_at === null || (props.row.status !==
+                      'In-progress' && props.row.status !== 'Idle')" />
+                      @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
 
@@ -646,7 +628,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -667,8 +649,7 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -679,9 +660,20 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
-      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      userId: sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -777,7 +769,6 @@ export default {
   },
   setup() {
     return {
-
       onItemClick() {},
     };
   },
@@ -811,14 +802,17 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/all", {
           params: {
-            // status: "Open",
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
-            pic: id,
+            title: this.title,
+            branch: this.branchId,
+            division: this.divisionId,
+            pic: this.userId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -853,13 +847,14 @@ export default {
     async fetchWaitedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const id= sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
-            pic: id,
+            pic: this.userId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -874,13 +869,14 @@ export default {
     async fetchDeletedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/deleted", {
           params: {
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
-            pic: id,
+            pic: this.userId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -902,9 +898,7 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
       });
     },
 

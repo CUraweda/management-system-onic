@@ -814,10 +814,14 @@ export default {
         const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/all", {
           params: {
-            // status: "Open",
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
+            title: this.title,
+          branch: this.branchId,
+          division: this.divisionId,
             pic: id,
             Authorization: `Bearer ${this.token}`,
           },
@@ -857,6 +861,8 @@ export default {
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
             pic: id,
@@ -878,6 +884,8 @@ export default {
         const response = await this.$axios.get("/task/deleted", {
           params: {
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
             pic: id,

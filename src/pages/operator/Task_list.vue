@@ -723,8 +723,13 @@ export default {
           params: {
             status: statusFilter,
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
+            title: this.title,
+          branch: this.branchId,
+          division: this.divisionId,
             "pic": id,
             "Authorization": `Bearer ${this.token}`,
           },
@@ -765,6 +770,8 @@ export default {
           params: {
             status: "Wait-app",
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
             "pic": id,
@@ -787,6 +794,8 @@ export default {
           params: {
             status: "Deleted",
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
             "pic": id,

@@ -442,7 +442,7 @@ export default {
         this.$q.notify({
           message: "File Sended",
         });
-        this.$router.push("task_list/");
+        this.$router.push("/manager/task_list");
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
       }

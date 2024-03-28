@@ -80,6 +80,7 @@
 import Cookies from "js-cookie";
 import { ref } from "vue";
 import CardBase from "components/CardBase";
+
 export default {
   name: "ApexHalfDonut",
   components: {
@@ -108,7 +109,6 @@ export default {
       person: null,
       id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       left: false,
-      username: "",
       token: ref(
         sessionStorage.getItem("token")
           ? sessionStorage.getItem("token")
@@ -117,6 +117,9 @@ export default {
       title: sessionStorage.getItem("title")
         ? sessionStorage.getItem("title")
         : Cookies.get("title"),
+      username: sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username"),
       Avgrate: 0,
     };
   },
@@ -213,9 +216,24 @@ export default {
           throw Error("Error while fetching");
         }
 
-        const filteredData = data.filter(
+        let filteredData;
+        if(this.title === "director") {
+        filteredData = data.filter(
           (user) => user.title !== "director" && user.title !== "admin"
         );
+        }else if (this.title === "manager") {
+          filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin" && user.title !== "manager"
+        );
+        }else if (this.title === "supervisor") {
+          filteredData = data.filter(
+          (user) => user.title === "operator"
+        );
+        }else if (this.title === "operator") {
+          filteredData = data.filter(
+          (user) => user.u_name === this.username
+        );
+        }
 
         const listOfPerson = filteredData.map((data) => ({
           label: data.u_name,

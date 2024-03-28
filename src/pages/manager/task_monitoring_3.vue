@@ -381,6 +381,22 @@ export default {
     };
   },
   watch: {
+    "deposit.start": {
+      handler(value) {
+        this.deposit.start = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
+
+    "deposit.due": {
+      handler(value) {
+        this.deposit.due = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
+
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
@@ -415,6 +431,8 @@ export default {
         const response = await this.$axios.get("/task/deleted", {
           params: {
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
 branch: this.branchId,

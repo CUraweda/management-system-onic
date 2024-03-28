@@ -571,20 +571,7 @@ export default {
         submitEmptypic.value = data.length === 0;
       },
       spv: ref([]),
-      spvoptions: [
-        {
-          label: "Rian",
-          value: "Rian",
-        },
-        {
-          label: "Kusuma",
-          value: "Kusuma",
-        },
-        {
-          label: "Didit",
-          value: "Didit",
-        },
-      ],
+      spvoptions: [],
       submittedspv,
       submitEmptyspv,
       submitResultspv,
@@ -644,6 +631,8 @@ division: this.divisionId,
         this.form.description = response.data.description;
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
+        this.form.pic.value = response.data.pic_id;
+        this.form.spv.value = response.data.spv_id;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -657,8 +646,8 @@ division: this.divisionId,
         start_date: new Date(this.form.start_date).toISOString(),
         due_date: new Date(this.form.due_date).toISOString(),
         description: this.form.description,
-        pic: this.form.pic,
-        spv: this.form.spv,
+        pic: this.form.pic.value,
+        spv: this.form.spv.value,
       };
 
       try {

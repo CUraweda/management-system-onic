@@ -475,6 +475,22 @@ export default {
   },
 
   watch: {
+    "deposit.start": {
+      handler(value) {
+        this.deposit.start = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
+
+    "deposit.due": {
+      handler(value) {
+        this.deposit.due = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
+
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
@@ -645,9 +661,12 @@ division: this.divisionId,
           params: {
             status: statusFilter,
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
-            spv: this.Userid,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
