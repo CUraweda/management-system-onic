@@ -343,6 +343,7 @@ export default {
       branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
+      title: sessionStorage.getItem("title")? sessionStorage.getItem("title") : Cookies.get("title"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -618,10 +619,11 @@ division: this.divisionId,
             dueDate: this.deposit.due,
           },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
+          title: this.title,
+          branch: this.branchId,
+          division: this.divisionId,
+          Authorization: `Bearer ${this.token}`,
+        },
         });
 
         if (Array.isArray(response.data)) {

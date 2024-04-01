@@ -9,6 +9,12 @@
           color="cyan"
           no-caps
         />
+        <q-btn
+          label="Add New Position"
+          @click="openDialogPosition()"
+          color="cyan"
+          no-caps
+        />
         <q-dialog v-model="dialogPassword">
           <q-card style="width: 700px">
             <q-card-section class="row items-center q-pb-none">
@@ -55,6 +61,43 @@
                   dense
                   outlined
                   label="Divisi Baru"
+                  class="q-mt-md"
+                  :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                >
+                </q-input>
+
+                <q-select
+                  outlined
+                  dense
+                  v-model="branch"
+                  :options="optionsBranch"
+                  label="Cabang"
+                  class="col-grow"
+                />
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+        <q-dialog v-model="dialogPosition">
+          <q-card style="width: 700px">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Add Position</div>
+              <q-space />
+              <q-btn no-caps color="cyan" @click="createPosition()">{{
+                addPosition
+              }}</q-btn>
+            </q-card-section>
+
+            <q-card-section
+              style="display: flex; gap: 10px; width: 100%"
+              class="col-grow"
+            >
+              <div class="full-width">
+                <q-input
+                  v-model="newPosition"
+                  dense
+                  outlined
+                  label="Jabatan Baru"
                   class="q-mt-md"
                   :rules="[(val) => (val !== null && val !== '') || 'Required']"
                 >
@@ -144,8 +187,19 @@
                   <q-select
                     outlined
                     dense
-                    v-model="jabatan"
-                    :options="optionsJabatan"
+                    v-model="role"
+                    :options="optionsRole"
+                    style="width: 70px"
+                    label="Role"
+                    class="col-grow"
+                  />
+                </div>
+                <div class="q-mt-md" style="display: flex; gap: 10px">
+                  <q-select
+                    outlined
+                    dense
+                    v-model="position"
+                    :options="optionsPosition"
                     style="width: 70px"
                     label="Jabatan"
                     class="col-grow"
@@ -212,19 +266,26 @@
       >
         <template v-slot:body="props">
           <q-tr :props="props">
+            <q-td key="Id" :props="props">
+              <div>{{ props.row.u_id }}</div>
+            </q-td>
             <q-td key="Name" :props="props">
               <div>{{ props.row.u_name }}</div>
-            </q-td>
-
-            <q-td key="Divisi" :props="props">
-              <div>{{ props.row.division }}</div>
             </q-td>
 
             <q-td key="Cabang" :props="props">
               <div>{{ props.row.branch }}</div>
             </q-td>
 
-            <q-td key="Jabatan" :props="props">
+            <q-td key="Divisi" :props="props">
+              <div>{{ props.row.division }}</div>
+            </q-td>
+
+            <q-td key="Position" :props="props">
+              <div>{{ props.row.position }}</div>
+            </q-td>
+
+            <q-td key="Role" :props="props">
               <div>{{ props.row.title }}</div>
             </q-td>
 
@@ -290,19 +351,23 @@ export default defineComponent({
       title: sessionStorage.getItem("title")
         ? sessionStorage.getItem("title")
         : Cookies.get("title"),
+      grid: false,
       division_id: null,
       branch_id: null,
+      newPosition: ref(null),
       newDivisi: ref(null),
       fileTask: ref(null),
       uploadExcel: ref(false),
       changePassword: ref(),
       addDivision: ref(),
+      addPosition: ref(),
       addUser: ref(),
       titleAddUser: ref(),
       titleAddDivision: ref(),
       passwordIf: ref(true),
       confirmPasswordIf: ref(true),
       dialogPassword: ref(false),
+      dialogPosition: ref(false),
       resetPasswordId: ref(null),
       newPassword: ref(""),
       token: ref(
@@ -314,10 +379,12 @@ export default defineComponent({
       email: ref(),
       optionsBranch: ref([]),
       optionsDivisi: ref([]),
+      optionsPosition: ref([]),
       branch: ref(),
       division: ref(),
-      jabatan: ref(),
-      optionsJabatan: [
+      position: ref(),
+      role: ref(),
+      optionsRole: [
         { label: "Admin", value: "admin" },
         { label: "Direktur", value: "director" },
         { label: "Manager", value: "manager" },
@@ -328,6 +395,7 @@ export default defineComponent({
       isConfirmPwd: true,
       password: ref(),
       divisionAdd: false,
+      positionAdd: false,
       PasswordChange: false,
       editing: false,
       confirmPassword: ref(),
@@ -343,10 +411,12 @@ export default defineComponent({
   },
   setup() {
     const columns = [
+      { name: "Id", label: "Id", align: "center", field: "u_id" },
       { name: "Name", label: "Nama", align: "center", field: "u_name" },
-      { name: "Divisi", label: "Divisi", align: "center", field: "division" },
       { name: "Cabang", label: "Cabang", align: "center", field: "branch" },
-      { name: "Jabatan", label: "Jabatan", align: "center", field: "title" },
+      { name: "Divisi", label: "Divisi", align: "center", field: "division" },
+      { name: "Position", label: "Jabatan", align: "center", field: "position" },
+      { name: "Role", label: "Role", align: "center", field: "title" },
       { name: "Email", label: "Email", align: "center", field: "u_email" },
       { name: "Action", label: "Action", align: "center", field: "id" },
     ];
@@ -355,8 +425,9 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.getDivision();
-    this.getBranch();
+    // this.getPosition();
+    // this.getDivision();
+    // this.getBranch();
     this.getData();
   },
   watch: {
@@ -364,12 +435,12 @@ export default defineComponent({
       handler(value) {
         if (value) {
           this.getDivision(value.value, this.division_id);
+          this.getPosition(value.value, this.position_id);
         }
       },
     },
     dialogDivision: {
       handler(value) {
-        // console.log(value);
         if (value != true) this.clearInput();
       },
     },
@@ -382,24 +453,57 @@ export default defineComponent({
   },
 
   methods: {
+    async getPosition(branch_id, position_id) {
+      try {
+        console.log("🚀 ~ getPosition ~ position_id:", position_id);
+        const { status, data } = await this.$axios.get("/position", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            branch: this.branchId,
+            title: this.title,
+          },
+          params: {
+            branch_id: this.branch.value,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching positions");
+        }
+
+        console.log("DATA:", data);
+        const listOfPosition = data.data.map((data) => ({
+          label: data.p_name,
+          value: data.id,
+        }));
+
+        this.optionsPosition = listOfPosition;
+        const selectedPosition = this.optionsPosition.find(
+          (position) => position.value === position_id
+        );
+        this.position = selectedPosition || this.optionsPosition[0];
+      } catch (error) {
+        console.error("Error in getPosition:", error);
+        // Handle error appropriately, maybe set a default position or display an error message
+      }
+    },
     async getDivision(branch_id, division_id) {
       console.log("🚀 ~ getDivision ~ division_id-id-id:", division_id);
       const { status, data } = await this.$axios.get("/divisi", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           branch: this.branchId,
-          title: this.title
+          title: this.title,
         },
         params: {
           branch_id: this.branch.value,
         },
-      });''
+      });
 
       if (status !== 200) {
         throw Error("Error while fetching");
       }
 
-      console.log("🚀 ~ getDivision ~ this.branch.value:", this.branch.value)
       console.log("DATA:", data.data);
       const listOfDivisi = data.data.map((data) => ({
         label: data.d_name,
@@ -450,16 +554,24 @@ export default defineComponent({
     openDialogDivision() {
       this.division = null;
       this.dialogDivision = true;
-      this.getDivision();
       this.getBranch();
       this.addDivision = "Add Division";
       this.titleAddUser = "Add Division";
       this.divisionAdd = true;
     },
+    openDialogPosition() {
+      this.position = null;
+      this.dialogPosition = true;
+      this.getBranch();
+      this.addPosition = "Add Position";
+      this.titleAddUser = "Add Position";
+      this.positionAdd = true;
+    },
     openDialogUser(edit = false) {
-      this.jabatan = this.optionsJabatan[0];
+      this.role = this.optionsRole[0];
       this.getDivision();
       this.getBranch();
+      this.getPosition();
       this.dialogUser = true;
       this.passwordIf = true;
       this.confirmPasswordIf = true;
@@ -478,7 +590,7 @@ export default defineComponent({
     },
     //Button Setter
     setButton(rowData, act) {
-      this.currentShownId = rowData.id;
+      this.currentShownId = rowData.u_id;
       console.log(this.currentShownId);
       act != "edit" ? "" : this.setEditUser();
       act != "delete" ? "" : this.deleteUser();
@@ -501,7 +613,8 @@ export default defineComponent({
         "newDivisi",
         "PasswordChange",
         "newPassword",
-        "jabatan",
+        "role",
+        "position",
         "division",
         "branch",
         "confirmPassword",
@@ -526,12 +639,13 @@ export default defineComponent({
         if (response.status === 200) {
           const { data } = response;
           this.rows = data.map((user) => ({
-            id: user.u_id,
+            u_id: user.u_id,
             u_name: user.u_name ? user.u_name : "",
             branch: user.branch ? user.branch : "",
             division: user.division ? user.division : "",
             title: user.title ? user.title : "",
             u_email: user.u_email ? user.u_email : "",
+            position: user.position ? user.position : "",
           }));
         }
       } catch (err) {
@@ -560,11 +674,12 @@ export default defineComponent({
         this.confirmPasswordIf = false;
         this.name = data.u_name;
         this.email = data.u_email;
-        this.jabatan = data.title;
+        this.role = data.title;
         this.division_id = data.division_id;
         this.branch_id = data.branch_id;
         this.getBranch(this.branch_id, this.division_id);
         this.getDivision(null, this.division_id);
+        this.getPosition(null, this.position_id);
       } catch (err) {
         console.log(err);
         return this.$q.notify({ message: err.message });
@@ -579,11 +694,12 @@ export default defineComponent({
             u_email: this.email,
             division_id: this.division.value,
             branch_id: this.branch.value,
-            title: this.jabatan.value,
+            position_id: this.position.value,
+            title: this.role.value,
           }
         );
         if (status != 200) throw Error(data.message);
-        console.log(this.jabatan.value);
+        console.log(this.role.value);
         this.dialogUser = false;
         this.getData();
         return this.$q.notify({ message: data.message });
@@ -624,7 +740,7 @@ export default defineComponent({
             email: this.email,
             password: this.password,
             repassword: this.confirmPassword,
-            title: this.jabatan.value,
+            title: this.role.value,
             division_id: this.division.value,
             branch_id: this.branch.value,
           },
@@ -646,6 +762,30 @@ export default defineComponent({
     },
 
     //END CREATE
+    async createPosition() {
+      try {
+        const { status, data } = await this.$axios.post(
+          "/position/create",
+          {
+            p_name: this.newPosition,
+            branch_id: this.branch.value,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+        if (status != 200) throw Error("Error while creating Position please try again");
+        //TODO: CLOSE DIALOG
+        this.dialogPosition = false;
+        this.getPosition();
+        return this.$q.notify({ message: "Position created" });
+      } catch (err) {
+        console.log(err);
+        return this.$q.notify({ message: err.message });
+      }
+    },
     async createDivision() {
       try {
         const { status, data } = await this.$axios.post(

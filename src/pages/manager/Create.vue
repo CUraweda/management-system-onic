@@ -502,6 +502,7 @@ export default {
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
       branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      username: ref(sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username")),
       spv_id: "",
       pic_id: "",
       pic: [],
@@ -660,8 +661,8 @@ export default {
       try {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
