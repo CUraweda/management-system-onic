@@ -185,7 +185,7 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
@@ -348,7 +348,7 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
@@ -511,7 +511,7 @@
 
                   <q-td key="detail" :props="props">
                     <div class="q-gutter-sm">
-                      <q-btn dense unelevated @click="Report(props.row.id)">
+                      <q-btn dense unelevated @click="Detail(props.row.id)">
                         <q-icon name="img:/statics/reportc.svg" />
                       </q-btn>
                     </div>
@@ -558,6 +558,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -590,7 +591,9 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -677,6 +680,8 @@ export default {
         },
       ],
       data: [],
+      waiting_data: [],
+      deleted_data: [],
       pagination: {
         rowsPerPage: 5,
       },
@@ -684,6 +689,7 @@ export default {
   },
   setup() {
     return {
+
       onItemClick() {},
     };
   },
@@ -712,14 +718,15 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/all", {
           params: {
             status: statusFilter,
             search: this.search,
           },
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            "pic": id,
+            "Authorization": `Bearer ${this.token}`,
           },
         });
         this.data = response.data.sort(
@@ -753,14 +760,15 @@ export default {
     async fetchWaitedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
+            status: "Wait-app",
             search: this.search,
           },
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            "pic": id,
+            "Authorization": `Bearer ${this.token}`,
           },
         });
         this.waiting_data = response.data.sort(
@@ -774,14 +782,15 @@ export default {
     async fetchDeletedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/deleted", {
           params: {
-            status: statusFilter,
+            status: "Deleted",
             search: this.search,
           },
           headers: {
-            Authorization: `Bearer ${this.token}`,
+            "pic": id,
+            "Authorization": `Bearer ${this.token}`,
           },
         });
         this.deleted_data = response.data.sort(

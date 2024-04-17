@@ -243,6 +243,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
@@ -274,6 +275,9 @@ export default {
   name: "TaskMonitoring2",
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       filter: "",
       mode: "list",
       invoice: {},
@@ -366,9 +370,13 @@ export default {
 
   mounted() {
     this.fetchData();
-    this.intervalId = setinterval(() => {
+    this.intervalId = setInterval(() => {
       this.fetchData();
-    }, 6000);
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   watch: {
@@ -381,8 +389,8 @@ export default {
   },
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
-      model: ref(0),
+
+      rate: ref(0),
       yellow: ["yellow"],
       id: store.id,
       onItemClick() {},
@@ -397,14 +405,13 @@ export default {
 
     async fetchData() {
       try {
-        const username = localStorage.getItem("username");
-        const statusFilter = this.$route.query.status;
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
+            spv: id,
             Authorization: `Bearer ${this.token}`,
           },
         });

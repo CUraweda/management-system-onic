@@ -279,6 +279,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import Vue from "vue";
 import { exportFile } from "quasar";
@@ -298,13 +299,16 @@ export default {
   name: "TaskDetail2",
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
+
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       slide: ref(15),
     };
   },
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       filter: "",
       mode: "list",
       timerData: [

@@ -243,6 +243,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
@@ -274,7 +275,9 @@ export default {
   name: "TaskMonitoring2",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       filter: "",
       mode: "list",
       invoice: {},
@@ -386,6 +389,7 @@ export default {
   },
   setup() {
     return {
+
       rate: ref(0),
       yellow: ["yellow"],
       id: store.id,
@@ -401,20 +405,20 @@ export default {
 
     async fetchData() {
       try {
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
           },
           headers: {
-            spv: username,
+            spv: id,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
         if (Array.isArray(response.data)) {
           const filteredData = response.data.filter(
-            (item) => item.pic_title !== "Manager"
+            (item) => item.pic_title !== "manager"
           );
           this.data = filteredData.sort(
             (a, b) => new Date(b.updated_at) - new Date(a.updated_at)

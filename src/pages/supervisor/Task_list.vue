@@ -192,10 +192,7 @@
                   </q-td>
 
                   <q-td key="feed" :props="props">
-                    <div
-                      class="q-gutter-sm"
-                      @click="openEmployeeDialog(props.row.id)"
-                    >
+                    <div class="q-gutter-sm">
                       <q-btn
                         dense
                         class="under-title q-px-sm"
@@ -215,14 +212,42 @@
                         rounded
                         text-color="blue"
                         label="OK"
-                        :disabled="
+                        :disable="
                           props.row.finished_at === null ||
                           (props.row.status !== 'In-progress' &&
                             props.row.status !== 'Idle')
                         "
                       />
+                      @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
+
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
                 </q-tr>
               </template>
             </q-table>
@@ -357,10 +382,7 @@
                   </q-td>
 
                   <q-td key="feed" :props="props">
-                    <div
-                      class="q-gutter-sm"
-                      @click="openEmployeeDialog(props.row.id)"
-                    >
+                    <div class="q-gutter-sm">
                       <q-btn
                         dense
                         class="under-title q-px-sm"
@@ -380,14 +402,42 @@
                         rounded
                         text-color="blue"
                         label="OK"
-                        :disabled="
+                        :disable="
                           props.row.finished_at === null ||
                           (props.row.status !== 'In-progress' &&
                             props.row.status !== 'Idle')
                         "
                       />
+                      @click="openEmployeeDialog(props.row.id)" />
                     </div>
                   </q-td>
+
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
                 </q-tr>
               </template>
             </q-table>
@@ -522,10 +572,7 @@
                   </q-td>
 
                   <q-td key="feed" :props="props">
-                    <div
-                      class="q-gutter-sm"
-                      @click="openEmployeeDialog(props.row.id)"
-                    >
+                    <div class="q-gutter-sm">
                       <q-btn
                         dense
                         class="under-title q-px-sm"
@@ -551,8 +598,43 @@
                             props.row.status !== 'Idle')
                         "
                       />
+                      :disabled="props.row.finished_at === null ||
+                      (props.row.status !== 'In-progress' && props.row.status
+                      !== 'Idle')" /> :disabled="props.row.finished_at === null
+                      || (props.row.status !== 'In-progress' && props.row.status
+                      !== 'Idle')" /> :disabled="props.row.finished_at === null
+                      || (props.row.status !== 'In-progress' && props.row.status
+                      !== 'Idle')" /> @click="openEmployeeDialog(props.row.id)"
+                      />
                     </div>
                   </q-td>
+
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
                 </q-tr>
               </template>
             </q-table>
@@ -564,6 +646,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
@@ -589,14 +672,16 @@ function wrapCsvValue(val, formatFn) {
 
   formatted = formatted.split('"').join('""');
 
-  return "${formatted}";
+  return `"${formatted}"`;
 }
 
 export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -683,6 +768,8 @@ export default {
         },
       ],
       data: [],
+      deleted_data: [],
+      waiting_data: [],
       pagination: {
         rowsPerPage: 5,
       },
@@ -690,6 +777,7 @@ export default {
   },
   setup() {
     return {
+
       onItemClick() {},
     };
   },
@@ -698,13 +786,17 @@ export default {
     this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
-
-    this.intervalId = setinterval(() => {
+    this.intervalId = setInterval(() => {
       this.fetchDeletedData();
       this.fetchData();
       this.fetchWaitedData();
-    }, 6000);
+    }, 60000);
   },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
+
   watch: {
     search: {
       handler(value) {
@@ -719,13 +811,14 @@ export default {
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/all", {
           params: {
-            status: statusFilter,
+            // status: "Open",
             search: this.search,
           },
           headers: {
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -760,13 +853,13 @@ export default {
     async fetchWaitedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id= sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/waited", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -781,13 +874,13 @@ export default {
     async fetchDeletedData() {
       try {
         const statusFilter = this.$route.query.status;
-        const username = localStorage.getItem("username");
+        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
         const response = await this.$axios.get("/task/deleted", {
           params: {
-            status: statusFilter,
             search: this.search,
           },
           headers: {
+            pic: id,
             Authorization: `Bearer ${this.token}`,
           },
         });

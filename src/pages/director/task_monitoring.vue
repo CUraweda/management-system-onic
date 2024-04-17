@@ -209,8 +209,8 @@
                     color="red-2"
                     text-color="red"
                     label="Revise"
-                    @click="Revise(props.row.id)"
                     :disable="props.row.spv !== username"
+                    @click="Revise(props.row.id)"
                   />
                   <q-btn
                     dense
@@ -220,13 +220,13 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row)"
                     :disable="
                       props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' &&
                         props.row.status !== 'Idle') ||
                       props.row.spv !== username
                     "
+                    @click="openEmployeeDialog(props.row)"
                   />
                 </div>
               </q-td>
@@ -242,8 +242,8 @@
                     color="green-2"
                     rounded
                     label="Edit"
-                    @click="Edit(props.row.id)"
                     :disable="props.row.spv !== username"
+                    @click="Edit(props.row.id)"
                   />
                   <q-btn
                     dense
@@ -253,8 +253,8 @@
                     color="red-2"
                     rounded
                     label="Delete"
-                    @click="Delete(props.row.id)"
                     :disable="props.row.spv !== username"
+                    @click="Delete(props.row.id)"
                   />
                 </div>
               </q-td>
@@ -308,6 +308,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { exportFile } from "quasar";
 import { store } from "../../store/store";
@@ -327,8 +328,7 @@ const stringOptions = [
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -339,9 +339,11 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
       id: ref(null),
-      username: localStorage.getItem("username"),
       statusFilter: "",
       filter: "",
       mode: "list",
@@ -444,7 +446,6 @@ export default {
       pagination: {
         rowsPerPage: 5,
       },
-      pic: "",
     };
   },
   mounted() {
@@ -461,15 +462,30 @@ export default {
 
   setup() {
     return {
+
       rate: ref(0),
       yellow: ["yellow"],
-      onItemClick() {
-        // console.log('Clicked on an Item')
-      },
+      onItemClick() {},
     };
   },
 
   watch: {
+    "deposit.start": {
+      handler(value) {
+        this.deposit.start = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
+
+    "deposit.due": {
+      handler(value) {
+        this.deposit.due = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
+
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
@@ -508,7 +524,6 @@ export default {
     Edit(id) {
       store.id = id;
       this.$router.push("edit/");
-      // console.log(id);
     },
 
     Report(id) {
@@ -548,6 +563,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -570,15 +587,11 @@ export default {
         taskToRevise.started_at = null;
         taskToRevise.started_by = null;
 
-        const createTaskResponse = await this.$axios.post(
-          "/task/new",
-          taskToRevise,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const createTaskResponse = await this.$axios.post("/task/new", taskToRevise, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         if (!createTaskResponse.status === 200)
           throw Error("Failed to create revised task");
 
@@ -591,7 +604,7 @@ export default {
         console.error("Error:", error);
         return this.$q.notify(error.message);
       }
-      // window.location.reload();
+      this.fetchData();
     },
 
     async fetchData() {
@@ -601,14 +614,23 @@ export default {
           params: {
             status: statusFilter,
             search: this.search,
+            startDate: this.deposit.start,
+            dueDate: this.deposit.due,
           },
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
-        this.data = response.data.sort(
-          (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-        );
+
+        if (Array.isArray(response.data)) {
+          this.data = response.data.sort(
+            (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+          );
+        } else {
+          console.error("Invalid response format:", response);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -635,8 +657,7 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200)
-          throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
@@ -657,9 +678,7 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase();
-        this.options = stringOptions.filter(
-          (v) => v.toLowerCase().indexOf(needle) > -1
-        );
+        this.options = stringOptions.filter((v) => v.toLowerCase().indexOf(needle) > -1);
       });
     },
 
@@ -704,7 +723,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .my-card {
   width: 175px;

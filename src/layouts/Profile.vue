@@ -3,13 +3,8 @@
     <div class="no-wrap">
       <div class="col-5">
         <div class="items-center text-center">
-          <div class="text-bold items-center">{{ username }}</div>
-          <div>{{ title }}</div>
-          <!-- <div class="">
-            <q-rating v-model="rating" max="1" size="2.5em" color="yellow" icon="star_border" icon-selected="star"
-              icon-half="star_half" no-dimming  />
-            {{ rating }}
-          </div> -->
+          <div class="text-bold items-center">{{ branch }}</div>
+          <div>{{ division }}</div>
         </div>
       </div>
 
@@ -23,6 +18,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { defineComponent } from 'vue'
 import axios from 'axios'
 import { ref, onMounted } from 'vue';
@@ -32,22 +28,29 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       left: false,
-      username: '',
-      title: '',
-      rating: 1
+      rating: 1,
+      branch : sessionStorage.getItem("branch")? sessionStorage.getItem('branch') : Cookies.get("branch"),
+      division : sessionStorage.getItem("division")? sessionStorage.getItem('division') : Cookies.get("division"),
       // userAccessToken: ''
     }
   },
   mounted() {
-    this.username = localStorage.getItem('username') || '';
-    this.title = localStorage.getItem('title') || '';
-    // this.userAccessToken = localStorage.getItem('token') || '';
+    // console.log("HUHUHU" + sessionStorage.getItem(""))
+
+    // this.userAccessToken = sessionStorage.getItem('token') || '';
   },
 
   methods: {
     keluar() {
-      localStorage.clear()
+      sessionStorage.clear()
+      const cookies = Cookies.get();
+
+      for (const cookie in cookies) {
+        Cookies.remove(cookie);
+      }
       this.$router.push('/')
     }
   }
