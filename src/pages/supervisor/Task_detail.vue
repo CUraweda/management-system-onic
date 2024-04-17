@@ -60,9 +60,7 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card
-            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
-          >
+          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
             <div
               v-for="(time, index) in timerData"
               :key="index"
@@ -128,9 +126,7 @@
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
                             <q-slider
-                              :disable="
-                                status === 'Wait-app' || status === 'Deleted'
-                              "
+                              :disable="status === 'Wait-app' || status === 'Deleted'"
                               v-model="progress"
                               color="blue"
                               track-color="light-blue-1"
@@ -168,12 +164,7 @@
                       <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item
-                    popup
-                    default-opened
-                    icon=""
-                    label="History"
-                  >
+                  <q-expansion-item popup default-opened icon="" label="History">
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -226,7 +217,11 @@
                       flat
                       icon="send"
                       @click="SendUpdate()"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        started_at === null
+                      "
                     />
                   </template>
                 </q-input>
@@ -239,23 +234,37 @@
             <q-card-section class="row">
               <CardBase class="  ">
                 <div class="q-pa-md">
-                  <q-uploader
-                    url=""
-                    label="File"
-                    color="grey"
-                    square
-                    flat
-                    bordered
-                    style="max-width: 300px"
-                  />
                   <div class="q-pt-md"></div>
-                  <q-uploader
-                    style="max-width: 300px"
-                    url=""
-                    label="Dokumen Hasil"
-                    multiple
-                    color="grey"
-                  />
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null" :color="this.fileName === null ? 'white text-black' : 'green'">
+                    <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
+                    Download File
+                  </q-btn>
+                  <div class="row">
+                    <q-file
+                      v-if="status !== 'Wait-app'"
+                      :disable="file_hasil !== null"
+                      color="teal"
+                      filled
+                      v-model="file_hasil"
+                      :label="file_hasil ? file_hasil : 'Select file...'"
+                      :placeholder="file_hasil ? file_hasil : 'Select file...'"
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="cloud_upload" />
+                      </template>
+                    </q-file>
+
+                    <q-btn
+                      v-if="file_hasil !== null"
+                      dense
+                      flat
+                      color="red"
+                      size="15px"
+                      icon="close"
+                      @click="removefileHasil()"
+                    />
+                  </div>
+
                   <div class="q-pt-md row justify-between">
                     <q-btn
                       unelevated
@@ -265,14 +274,22 @@
                       :text-color="started_at ? 'red' : 'blue'"
                       :label="started_at ? 'Finish' : 'Start'"
                       @click="started_at ? FinishTask() : StartTask()"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null
+                      "
                     />
                     <q-btn
                       unelevated
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null
+                      "
                       label="Send To Other PIC"
                       no-caps
                       @click="send"
@@ -284,10 +301,14 @@
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      :disable="status === 'Wait-app' || status === 'Deleted'"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at === null
+                      "
                       label="Submit To Superior"
                       no-caps
-                      @click="submitToSuperior"
+                      @click="uploadFile"
                       v-else-if="task_type === 'Single'"
                     />
                   </div>
@@ -302,6 +323,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import Vue from "vue";
 import { exportFile } from "quasar";
@@ -311,8 +333,7 @@ import { store } from "../../store/store";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -321,12 +342,12 @@ function wrapCsvValue(val, formatFn) {
 
 export default {
   name: "TaskDetail",
-  // props: ["id"]'',
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
-      model: ref(0),
+
+      rate: ref(0),
       text: ref(""),
+      id: store.id,
       ratingModel: ref(0),
       ratingColors: ["yellow"],
       // pic: ref(''),
@@ -335,6 +356,10 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      fileName: null,
+      file_hasil: null,
       chat: "",
       filter: "",
       mode: "list",
@@ -347,9 +372,8 @@ export default {
       countdown: null,
       task_title: "",
       status: "",
-      priority: "",
       pic: "",
-      id: store.id,
+      priority: "",
       due_date: "",
       progress: 0,
       started_at: "",
@@ -365,12 +389,64 @@ export default {
 
   mounted() {
     this.fetchData();
-    this.intervalId = setinterval(() => {
+    this.startCountdown();
+    this.intervalId = setInterval(() => {
       this.fetchData();
-    }, 6000);
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   methods: {
+    removefileHasil() {
+      this.file_hasil = null;
+    },
+
+    async downloadFile() {
+      try {
+        // Mengganti URL dengan endpoint yang sesuai
+        const response = await this.$axios.get("/image/" + this.fileName, {
+          responseType: "blob", // Menggunakan responseType 'blob' untuk menghandle file
+        });
+
+        // Membuat objek URL dari blob
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        // Membuat elemen <a> untuk tautan unduhan
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = this.fileName; // Set nama berkas yang diinginkan
+        document.body.appendChild(link);
+
+        // Simulasi klik pada elemen <a> untuk memulai unduhan
+        link.click();
+
+        // Membersihkan objek URL dan menghapus elemen <a>
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error downloading file:", error);
+      }
+    },
+
+    async uploadFile() {
+      try {
+        const file = this.file_hasil;
+        const formData = new FormData();
+        formData.append("file_hasil", file);
+        const response = await this.$axios.put(`/task/file_hasil/${this.id}`, formData);
+        console.log(this.file_hasil);
+        console.log("File berhasil diunggah:", response.data);
+        this.$q.notify({
+          message: "File Sended",
+        });
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+      }
+    },
+
     formatLocalTime(utcTime) {
       if (utcTime === null) {
         return ""; // Jika utcTime null, kembalikan string kosong
@@ -406,17 +482,17 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: "Progress Updated",
+            message: "Starting Task",
           });
+          this.fetchData()
         } else {
           this.$q.notify({
-            message: "Failed Updating task",
+            message: "Failed Starting task",
           });
         }
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/supervisor/task_list" });
     },
 
     async FinishTask() {
@@ -426,7 +502,6 @@ export default {
 
       try {
         const response = await this.$axios.put("/task/edit/" + this.id, data, {
-          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -434,8 +509,9 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: "Progress Updated",
+            message: "Task Finish",
           });
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Updating task",
@@ -444,7 +520,6 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/supervisor/task_list" });
     },
 
     async SendUpdate() {
@@ -464,8 +539,10 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            message: "Progress Updated",
+            message: `Progress Updated ${this.progress} %`,
           });
+          this.chat = null;
+          this.fetchData();
         } else {
           this.$q.notify({
             message: "Failed Updating task",
@@ -474,13 +551,14 @@ export default {
       } catch (error) {
         console.error("EROR:", error);
       }
-      this.$router.push({ path: "/supervisor/task_list" });
     },
 
     async fetchData() {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -495,6 +573,8 @@ export default {
         this.created_at = response.data.created_at;
         this.due_date = response.data.due_date;
         this.finished_at = response.data.finished_at;
+        this.file_hasil = response.data.file_hasil;
+        this.fileName = response.data.fileName;
 
         this.description = response.data.description;
         this.pic = response.data.pic;
@@ -504,21 +584,15 @@ export default {
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(
-          timeDifference / (24 * 60 * 60 * 1000)
-        );
+        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor(
-          (timeDifference % (60 * 1000)) / 1000
-        );
+        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
 
-        // Start the countdown
-        this.startCountdown();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -564,6 +638,7 @@ export default {
             headers: {
               "Content-Type": "application/json",
             },
+            body: JSON.stringify(data),
           });
         } catch (error) {
           console.error("EROR:", error);
@@ -576,8 +651,7 @@ export default {
     },
 
     send() {
-      store.id = this.id;
-      this.$router.push("/supervisor/task_detail_2/");
+      this.$router.push("/operator/task_detail_2/" + this.id);
     },
   },
 };

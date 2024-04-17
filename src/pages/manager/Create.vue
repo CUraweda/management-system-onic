@@ -491,6 +491,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { store } from "../../store/store.js";
 
@@ -498,15 +499,17 @@ export default {
   name: "ManagerCreate",
   data() {
     return {
-      token: ref(localStorage.getItem("token")),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       spv_id: "",
       pic_id: "",
       pic: [],
       selectedpic: null,
       spv: [],
       selectedspv: {
-        label: localStorage.getItem("username"),
-        value: localStorage.getItem("username"),
+        label: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
+        value: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
       },
       iteration: "daily",
       isMultitask: ref(false),
@@ -607,6 +610,9 @@ export default {
 
   mounted() {
     this.fetchData();
+    this.intervalId = setinterval(() => {
+      this.fetchData();
+    }, 6000);
   },
 
   computed: {
@@ -654,6 +660,8 @@ export default {
       try {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -662,7 +670,9 @@ export default {
           throw Error("Error while fetching");
         }
 
-        const filteredData = data.filter((user) => user.title !== "director");
+        const filteredData = data.filter(
+          (user) => user.title !== "director" && user.title !== "admin"
+        );
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
@@ -680,10 +690,13 @@ export default {
         console.error("Error fetching users:", error);
       }
     },
+
     async fetchSpvData() {
       try {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -793,7 +806,7 @@ export default {
         this.addToForm("pic_title", this.selectedpic.title);
         this.addToForm(
           "created_by",
-          localStorage.getItem("username") || "Unknown"
+          sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username") || "Unknown"
         );
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);

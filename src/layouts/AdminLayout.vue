@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import { defineComponent, ref } from "vue";
 import { date } from "quasar";
 import profile from "./Profile.vue";

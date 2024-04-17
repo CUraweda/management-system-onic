@@ -491,21 +491,25 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { store } from "../../store/store.js";
 
 export default {
-  name: "ManagerCreate",
+  name: "SupervisorCreate",
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       spv_id: "",
       pic_id: "",
       pic: [],
       selectedpic: null,
       spv: [],
       selectedspv: {
-        label: localStorage.getItem("username"),
-        value: localStorage.getItem("username"),
+        label: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
+        value: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
       },
       iteration: "daily",
       isMultitask: ref(false),
@@ -524,7 +528,6 @@ export default {
 
     return {
       SpvApp,
-      token: ref(localStorage.getItem("token")),
       picOptions: ref([]),
       spvOptions: ref([]),
       task_type: ref("Single"),
@@ -657,13 +660,18 @@ export default {
       try {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
-        if (status !== 200) throw Error("Error while fetching");
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
         const filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "manager"
+          (user) => user.title !== "director" && user.title !== "admin" && user.title !== "manager"
         );
 
         const listOfPic = filteredData.map((user) => ({
@@ -685,7 +693,13 @@ export default {
 
     async fetchSpvData() {
       try {
-        const { status, data } = await this.$axios.get("/user/all");
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+branch: this.branchId,
+division: this.divisionId,
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
         if (status !== 200) throw Error("Error while fetching");
 
         const listOfSpv = data.map((user) => ({
@@ -766,15 +780,10 @@ export default {
         properties !== "bukti_tayang" &&
         (value === undefined || value === null || value === "")
       ) {
-        if (
-          properties !== "bukti_tayang" &&
-          (value === undefined || value === null || value === "")
-        ) {
-          throw new Error(`Please fill all input`);
-        } else {
-          // Assign the value to the specified property in sendedForm
-          this.sendedForm[properties] = value;
-        }
+        throw new Error(`Please fill all input`);
+      } else {
+        // Assign the value to the specified property in sendedForm
+        this.sendedForm[properties] = value;
       }
     },
 
@@ -797,7 +806,7 @@ export default {
         this.addToForm("pic_title", this.selectedpic.title);
         this.addToForm(
           "created_by",
-          localStorage.getItem("username") || "Unknown"
+          sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username") || "Unknown"
         );
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);
@@ -806,7 +815,6 @@ export default {
 
         const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {
-            Authorization: `Bearer ${this.token}`,
             "Content-Type": "multipart/form-data",
           },
         });

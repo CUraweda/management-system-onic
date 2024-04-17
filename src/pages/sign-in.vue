@@ -9,21 +9,19 @@
                 <div class="col-md-4 col-xs-12">
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
-                    <div class="col items-center q-mt-md">
+                    <div class="col items-center q-mt-md q-mb-xl">
                       <q-img
                         src="/statics/logo.jpg"
                         width="300px"
                         class="q-mx-md q-my-xl"
                       ></q-img>
                       <div class="text-h5">Welcome Back!</div>
-                      <p class="">
-                        Enter your credentials to access your account
-                      </p>
+                      <p class="">Enter your credentials to access your account</p>
                     </div>
                     <!-- welcome section -->
 
                     <!-- button section -->
-                    <div class="row q-mb-xl">
+                    <!-- <div class="row q-mb-xl">
                       <q-btn
                         unelevated
                         class="q-qy-md icon q-mr-md col bg-red-2"
@@ -37,19 +35,38 @@
                       <q-btn unelevated class="q-qy-md icon col bg-grey-2"
                         ><q-img src="statics/Apple.svg" width="17px"></q-img
                       ></q-btn>
-                    </div>
+                    </div> -->
                     <!-- button section -->
 
                     <!-- form section -->
                     <q-form class="q-gutter-md" @submit="SignIn()">
+                      <q-select
+                        filled
+                        label="Cabang"
+                        v-model="branch"
+                        name="Cabang"
+                        use-input
+                        input-debounce="0"
+                        :options="optionsBranch"
+                        behavior="menu"
+                        class="col-5"
+                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              No results
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
+
                       <q-input
                         filled
                         v-model="email"
                         label="Email"
                         lazy-rules
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
+                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
                       />
 
                       <q-input
@@ -59,9 +76,7 @@
                         label="Password"
                         placeholder="Enter at least 8+ characters"
                         :dense="dense"
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
+                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
                       >
                         <template v-slot:append>
                           <q-icon
@@ -79,7 +94,7 @@
                           label="Keep me logged in"
                         />
                         <q-space></q-space>
-                        <a href="" style="color: #00bdd6"> forgot password?</a>
+                        <!-- <a href="" style="color: #00bdd6"> forgot password?</a> -->
                       </div>
 
                       <div>
@@ -99,10 +114,7 @@
 
                 <!-- gambar makanan -->
                 <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
-                  <q-img
-                    src="statics/makanan.png"
-                    class="makanan q-ml-xl"
-                  ></q-img>
+                  <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
                 </div>
                 <!-- gambar makanan -->
               </div>
@@ -115,6 +127,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import { ref } from "vue";
 import axios from "axios";
 
@@ -123,8 +136,19 @@ export default {
 
   data() {
     return {
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      branch: null,
       email: "",
       password: "",
+      optionsBranch: [
+        { label: "PT. RES", value: "PT. RES" },
+        { label: "Produksi RES", value: "Produksi RES" },
+        { label: "ONIC 1", value: "ONIC 1" },
+        { label: "ONIC 2", value: "ONIC 2" },
+        { label: "Sehatku", value: "Sehatku" },
+        { label: "ONIC KLP", value: "ONIC KLP" },
+      ],
     };
   },
 
@@ -145,44 +169,116 @@ export default {
     };
   },
 
+  mounted() {
+    this.created();
+  },
+
   methods: {
+    async refreshToken(oldToken) {
+    try {
+      // Lakukan permintaan ke server untuk memperbarui token
+      const response = await this.$axios.post("/user/refreshToken", { oldToken });
+
+      if (response.status === 200) {
+        const newToken = response.data.newToken;
+
+        // Simpan token baru di dalam cookie
+        Cookies.set("token", newToken);
+
+        // Lakukan apa pun yang perlu dilakukan setelah token diperbarui
+        // Misalnya, navigasi ke halaman tertentu atau menampilkan notifikasi
+        this.$q.notify({
+          color: "positive",
+          message: "Token refreshed.",
+        });
+      } else {
+        throw new Error("Failed to refresh token");
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+
+      // Handle error, misalnya dengan menampilkan pesan kepada pengguna
+      this.$q.notify({
+        color: "negative",
+        position: "top",
+        message: "Failed to refresh token",
+      });
+    }
+  },
+
+    created() {
+      // Saat halaman dimuat, periksa apakah ada cookies yang berisi data pengguna
+      const token = Cookies.get("token");
+      // if (token) {
+      //   // Lakukan permintaan ke server untuk memperbarui token
+      //   this.refreshToken(token);
+      // }
+      const email = Cookies.get("email");
+      const id = Cookies.get("id");
+      // Dan seterusnya untuk data lainnya
+      if (token && email && id) {
+        // Jika ada, lakukan autentikasi pengguna secara otomatis atau atur status login sesuai kebutuhan aplikasi Anda
+        this.SignIn(email);
+      }
+    },
+
     async SignIn() {
+      const email = Cookies.get("email")
       const data = {
-        email: this.email,
-        password: this.password,
+        email: this.email? this.email : email,
+        password: this.password || null,
+        branch: this.branch? this.branch.value : null,
       };
+      console.log("🚀 ~ SignIn ~ data.token:", data.token)
 
       try {
+        const token = Cookies.get("token")
+        console.log("🚀 ~ SignIn ~ token:", token)
         const response = await this.$axios.post("/user/login", data, {
           headers: {
             "Content-Type": "application/json",
           },
+          params: {
+            token: token? token : null
+          }
         });
 
         if (response.status === 200) {
           const accessToken = response.data.data.accessToken;
           const email = response.data.data.email;
+          const id = response.data.data.id;
           const name = response.data.data.name;
           const title = response.data.data.title;
-          const u_rate = response.data.data.u_rate;
-          const total_task = response.data.data.total_task;
+          const division = response.data.data.division;
+          const branch = response.data.data.branch;
+          const division_id = response.data.data.division_id;
+          const branch_id = response.data.data.branch_id;
 
-          const Avgrate = u_rate / total_task;
-
-          // Simpan token di localStorage atau gunakan cara penyimpanan sesi yang sesuai
-          localStorage.setItem("token", accessToken);
-          localStorage.setItem("email", email);
-          localStorage.setItem("username", name);
-          localStorage.setItem("title", title);
-          if (title === "director") {
-            localStorage.setItem("rate", 5);
+          if (this.right) {
+            Cookies.set("token", accessToken, { expires: 365 }); // Cookie berlaku selama 1 tahun
+            Cookies.set("id", id, { expires: 365 });
+            Cookies.set("email", email, { expires: 365 });
+            Cookies.set("username", name, { expires: 365 });
+            Cookies.set("title", title, { expires: 365 });
+            Cookies.set("division", division, { expires: 365 });
+            Cookies.set("branch", branch, { expires: 365 });
+            Cookies.set("division_id", division_id, { expires: 365 });
+            Cookies.set("branch_id", branch_id, { expires: 365 });
           } else {
-            localStorage.setItem("rate", Avgrate);
+            sessionStorage.setItem("token", accessToken);
+            sessionStorage.setItem("id", id);
+            sessionStorage.setItem("email", email);
+            sessionStorage.setItem("username", name);
+            sessionStorage.setItem("title", title);
+            sessionStorage.setItem("division", division);
+            sessionStorage.setItem("branch", branch);
+            sessionStorage.setItem("division_id", division_id);
+            sessionStorage.setItem("branch_id", branch_id);
           }
-
           this.redirectUser(title);
 
           this.$q.notify({
+            color: "positive",
             message: "Login Successful.",
           });
         } else {

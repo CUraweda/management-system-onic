@@ -148,6 +148,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import axios from "axios";
 import { ref } from "vue";
 import { exportFile } from "quasar";
@@ -158,6 +159,12 @@ export default {
   name: "TaskMonitoring3",
   data() {
     return {
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
       search: ref(""),
       start: ref(),
       end: ref(),
@@ -169,7 +176,11 @@ export default {
 
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
       fileTask: ref(),
       data: ref([]),
       columns: [
@@ -215,6 +226,13 @@ export default {
 
   mounted() {
     this.fetchHistory();
+    this.intervalId = setInterval(() => {
+      this.fetchHistory();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
   },
 
   watch: {

@@ -37,7 +37,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.start"
                 mask="date"
                 label="From"
               >
@@ -48,7 +48,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -58,7 +58,7 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.date"
+                v-model="deposit.due"
                 mask="date"
                 label="To"
               >
@@ -69,7 +69,7 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="deposit.date" />
+                      <q-date v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -195,8 +195,8 @@
                 />
               </q-td>
 
-              <q-td key="Progress" :props="props">
-                <div>{{ props.row.progress }} %</div>
+              <q-td key="progress" :props="props">
+                <div>{{ props.row.progress }}%</div>
               </q-td>
 
               <q-td key="detail" :props="props">
@@ -229,13 +229,13 @@
                     rounded
                     text-color="blue"
                     label="OK"
-                    @click="openEmployeeDialog(props.row.id)"
                     :disable="
                       props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' &&
                         props.row.status !== 'Idle') ||
                       props.row.spv !== username
                     "
+                    @click="openEmployeeDialog(props.row)"
                   />
                 </div>
               </q-td>
@@ -317,11 +317,12 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 import { ref } from "vue";
 import { exportFile } from "quasar";
+import { store } from "../../store/store";
 import axios from "axios";
 // import Status from "components/Status"
-import { store } from "../../store/store";
 
 const stringOptions = [
   "Google",
@@ -348,7 +349,10 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
-      username: localStorage.getItem("username"),
+    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      Userid: sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id"),
       id: ref(null),
       statusFilter: "",
       filter: "",
@@ -356,7 +360,10 @@ export default {
       invoice: {},
       selected: [],
       search: "",
-      deposit: {},
+      deposit: {
+        start: "",
+        due: "",
+      },
       options: stringOptions,
       employee_dialog: false,
       columns: [
@@ -460,7 +467,7 @@ export default {
   },
   setup() {
     return {
-      token: ref(localStorage.getItem("token")),
+
       rate: ref(0),
       yellow: ["yellow"],
       onItemClick() {},
@@ -528,7 +535,6 @@ export default {
 
         if (response.status === 200) {
           this.$q.notify({
-            type: "positive",
             message: "Task Deleted",
           });
           this.fetchData();
@@ -546,6 +552,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
+branch: this.branchId,
+division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -615,21 +623,19 @@ export default {
             },
           }
         );
+        if (!createTaskResponse.status === 200)
+          throw Error("Failed to create revised task");
 
-        if (updateTaskResponse.status === 200) {
-          this.$q.notify({
-            type: "positive",
-            message: "Task Revised",
-          });
-          this.fetchData();
-        } else {
-          this.$q.notify({
-            message: "Failed Revising Task",
-          });
-        }
+        await this.Delete(id);
+        this.$q.notify({
+          message: "Task Revised",
+        });
+        this.fetchData();
       } catch (error) {
         console.error("Error:", error);
+        return this.$q.notify(error.message);
       }
+      this.fetchData();
     },
 
     async fetchData() {
@@ -641,6 +647,7 @@ export default {
             search: this.search,
           },
           headers: {
+            spv: this.Userid,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -666,12 +673,6 @@ export default {
       }
       return ""; // No background color for other statuses
     },
-
-    // submit() {
-    //   this.$q.notify({
-    //     message: 'Task Done',
-    //   })
-    // },
 
     async submit() {
       try {
