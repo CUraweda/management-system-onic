@@ -101,7 +101,7 @@ export default {
       const response = await this.$axios.get("/task/all", {
         params: { startDate: this.deposit.start, dueDate: this.deposit.due },
         headers: {
-          title: this.title,
+          title: this.title.toLowerCase(),
           branch: this.branchId,
           division: this.divisionId,
           Authorization: `Bearer ${this.token}`,
@@ -120,10 +120,10 @@ export default {
       try {
         const { status, data } = await this.$axios.get("/divisi", {
           headers: {
-            title: this.title,
+            title: this.title.toLowerCase(),
             branch: this.branchId,
             division: this.divisionId,
-            title: this.title,
+            title: this.title.toLowerCase(),
             Authorization: `Bearer ${this.token}`,
           },
         });

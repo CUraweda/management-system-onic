@@ -639,11 +639,11 @@ export default {
         if (value.title) {
           console.log(
             "Ping:",
-            this.picOptions.find((user) => user.title === value.title)
+            this.picOptions.find((user) => user.title.toLowerCase()=== value.title)
           );
           // Perbarui opsi SPV berdasarkan peran PIC yang dipilih
           const selectedpic = this.picOptions.find(
-            (user) => user.title === value.title
+            (user) => user.title.toLowerCase()=== value.title
           );
           console.log("Selected pic:", selectedpic);
 
@@ -671,13 +671,13 @@ division: this.divisionId,
         }
 
         const filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "admin" && user.title !== "manager"
+          (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin" && user.title.toLowerCase()!== "manager"
         );
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
-          title: user.title,
+          title: user.title.toLowerCase(),
           id: user.u_id,
         }));
 
@@ -705,7 +705,7 @@ division: this.divisionId,
         const listOfSpv = data.map((user) => ({
           label: user.u_name,
           value: user.u_name,
-          title: user.title,
+          title: user.title.toLowerCase(),
           id: user.u_id,
         }));
 
@@ -728,7 +728,7 @@ division: this.divisionId,
             this.selectedspv = this.spvOptions[0];
           } else if (selectedTitleLowerCase === "manager") {
             this.spvOptions = listOfSpv.filter(
-              (user) => user.title.toLowerCase() === "director"
+              (user) => user.title.toLowerCase() === "director" || "direktur"
             );
             console.log("Updating SPV options to director.");
             this.selectedspv = this.spvOptions[0];

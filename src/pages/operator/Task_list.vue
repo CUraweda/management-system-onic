@@ -727,7 +727,7 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
-            title: this.title,
+            title: this.title.toLowerCase(),
           branch: this.branchId,
           division: this.divisionId,
             "pic": id,

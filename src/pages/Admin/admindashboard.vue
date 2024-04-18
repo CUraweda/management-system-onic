@@ -269,8 +269,13 @@
             <q-td key="Id" :props="props">
               <div>{{ props.row.u_id }}</div>
             </q-td>
+
             <q-td key="Name" :props="props">
               <div>{{ props.row.u_name }}</div>
+            </q-td>
+
+            <q-td key="gender" :props="props">
+              <div>{{ props.row.gender }}</div>
             </q-td>
 
             <q-td key="Cabang" :props="props">
@@ -411,14 +416,45 @@ export default defineComponent({
   },
   setup() {
     const columns = [
-      { name: "Id", label: "Id", align: "center", field: "u_id" },
-      { name: "Name", label: "Nama", align: "center", field: "u_name" },
-      { name: "Cabang", label: "Cabang", align: "center", field: "branch" },
-      { name: "Divisi", label: "Divisi", align: "center", field: "division" },
-      { name: "Position", label: "Jabatan", align: "center", field: "position" },
-      { name: "Role", label: "Role", align: "center", field: "title" },
-      { name: "Email", label: "Email", align: "center", field: "u_email" },
-      { name: "Action", label: "Action", align: "center", field: "id" },
+      { name: "Id", label: "Id", align: "center", field: "u_id", sortable: true },
+      { name: "Name", label: "Nama", align: "center", field: "u_name", sortable: true },
+      {
+        name: "gender",
+        label: "Gender",
+        align: "center",
+        field: "gender",
+        sortable: true,
+      },
+      {
+        name: "Cabang",
+        label: "Cabang",
+        align: "center",
+        field: "branch",
+        sortable: true,
+      },
+      {
+        name: "Divisi",
+        label: "Divisi",
+        align: "center",
+        field: "division",
+        sortable: true,
+      },
+      {
+        name: "Position",
+        label: "Jabatan",
+        align: "center",
+        field: "position",
+        sortable: true,
+      },
+      { name: "Role", label: "Role", align: "center", field: "title", sortable: true },
+      {
+        name: "Email",
+        label: "Email",
+        align: "center",
+        field: "u_email",
+        sortable: true,
+      },
+      { name: "Action", label: "Action", align: "center", field: "id", sortable: false },
     ];
     return {
       columns,
@@ -460,7 +496,7 @@ export default defineComponent({
           headers: {
             Authorization: `Bearer ${this.token}`,
             branch: this.branchId,
-            title: this.title,
+            title: this.title.toLowerCase(),
           },
           params: {
             branch_id: this.branch.value,
@@ -493,7 +529,7 @@ export default defineComponent({
         headers: {
           Authorization: `Bearer ${this.token}`,
           branch: this.branchId,
-          title: this.title,
+          title: this.title.toLowerCase(),
         },
         params: {
           branch_id: this.branch.value,
@@ -580,12 +616,11 @@ export default defineComponent({
       this.editing = edit;
     },
     openDialogResetPassword(rowData) {
+      // console.log("WEGOWEGO", rowData);
       this.changePassword = "Change Password";
-      this.resetPasswordId = rowData.id;
+      this.resetPasswordId = rowData.u_id;
       this.dialogPassword = true;
-      this.getDivision();
-      this.getBranch();
-      this.newPassword = null;
+      thid = null;
       this.PasswordChange = true;
     },
     //Button Setter
@@ -630,6 +665,7 @@ export default defineComponent({
         if (!this.token) throw Error("You must be log in");
         const response = await this.$axios.get(`/user/all`, {
           headers: {
+            title: this.title,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
@@ -641,9 +677,10 @@ export default defineComponent({
           this.rows = data.map((user) => ({
             u_id: user.u_id,
             u_name: user.u_name ? user.u_name : "",
+            gender: user.gender ? user.gender : "",
             branch: user.branch ? user.branch : "",
             division: user.division ? user.division : "",
-            title: user.title ? user.title : "",
+            title: user.title ? user.title.toLowerCase() : "",
             u_email: user.u_email ? user.u_email : "",
             position: user.position ? user.position : "",
           }));
@@ -685,6 +722,7 @@ export default defineComponent({
         return this.$q.notify({ message: err.message });
       }
     },
+
     async sendEdit() {
       try {
         const { data, status } = await this.$axios.put(
@@ -826,11 +864,17 @@ export default defineComponent({
             },
           }
         );
-        if (status != 200) throw Error(data.message);
-        //TODO: CLOSE DIALOG
+        if (status != 200) {
+          this.uploadExcel = false;
+          throw new Error(data.message);
+        }
+        this.uploadExcel = false;
+        this.getData();
         return this.$q.notify({ message: data.message });
       } catch (err) {
         console.log(err);
+        this.uploadExcel = false;
+        this.getData();
         return this.$q.notify({ message: err.message });
       }
     },
@@ -839,6 +883,7 @@ export default defineComponent({
     //START REPAS
     async resetPassword() {
       try {
+        console.log("ID: ", this.resetPasswordId)
         const { status, data } = await this.$axios.put(
           `/user/update-password/${this.resetPasswordId}`,
           { newPassword: this.newPassword },
@@ -850,7 +895,7 @@ export default defineComponent({
         );
         if (status === 200) {
           // Reset berhasil
-          this.dialogPassword = false;
+          this.uploadExcel = false;
           this.$q.notify({ message: data.message, color: "positive" });
         } else {
           // Reset gagal

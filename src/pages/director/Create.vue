@@ -572,10 +572,12 @@ export default {
         if (value.title) {
           console.log(
             "Ping:",
-            this.picOptions.find((user) => user.title === value.title)
+            this.picOptions.find((user) => user.title.toLowerCase() === value.title)
           );
           // Perbarui opsi SPV berdasarkan peran PIC yang dipilih
-          const selectedpic = this.picOptions.find((user) => user.title === value.title);
+          const selectedpic = this.picOptions.find(
+            (user) => user.title.toLowerCase() === value.title
+          );
           console.log("Selected pic:", selectedpic);
 
           if (selectedpic) {
@@ -600,7 +602,7 @@ export default {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
             branch: this.branchId,
-            division: this.divisionId,
+            // division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -609,14 +611,21 @@ export default {
           throw Error("Error while fetching");
         }
 
-        const filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "admin"
-        );
+        const filteredData = data.filter((user) => {
+          const titleLowerCase = user.title.toLowerCase();
+          return (
+            titleLowerCase !== "director" &&
+            titleLowerCase !== "direktur" &&
+            titleLowerCase !== "admin"
+          );
+        });
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
-          title: user.title,
+          title: user.title.toLowerCase(),
+          division: user.division_id,
+          branch: user.branch_id,
           id: user.u_id,
         }));
 
@@ -634,8 +643,8 @@ export default {
       try {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
-            branch: this.branchId,
-            division: this.divisionId,
+            branch: this.selectedpic.branch || this.branchId,
+            division: this.selectedpic.division || this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -644,7 +653,7 @@ export default {
         const listOfSpv = data.map((user) => ({
           label: user.u_name,
           value: user.u_name,
-          title: user.title,
+          title: user.title.toLowerCase(),
           id: user.u_id,
         }));
 
@@ -654,21 +663,24 @@ export default {
           const selectedTitleLowerCase = SelectedPic.toLowerCase();
 
           if (selectedTitleLowerCase === "operator") {
-            this.spvOptions = listOfSpv.filter(
-              (user) => user.title.toLowerCase() === "supervisor"
-            );
+            this.spvOptions = listOfSpv.filter((user) => {
+              const titleLowerCase = user.title.toLowerCase();
+              return titleLowerCase === "supervisor";
+            });
             console.log("Updating SPV options to supervisor.");
             this.selectedspv = this.spvOptions[0];
           } else if (selectedTitleLowerCase === "supervisor") {
-            this.spvOptions = listOfSpv.filter(
-              (user) => user.title.toLowerCase() === "manager"
-            );
+            this.spvOptions = listOfSpv.filter((user) => {
+              const titleLowerCase = user.title.toLowerCase();
+              return titleLowerCase === "manager";
+            });
             console.log("Updating SPV options to manager.");
             this.selectedspv = this.spvOptions[0];
           } else if (selectedTitleLowerCase === "manager") {
-            this.spvOptions = listOfSpv.filter(
-              (user) => user.title.toLowerCase() === "director"
-            );
+            this.spvOptions = listOfSpv.filter((user) => {
+              const titleLowerCase = user.title.toLowerCase();
+              return titleLowerCase === "director" || titleLowerCase === "direktur";
+            });
             console.log("Updating SPV options to director.");
             this.selectedspv = this.spvOptions[0];
           } else {

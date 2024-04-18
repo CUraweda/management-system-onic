@@ -172,7 +172,7 @@ export default {
           headers: {
             branch: this.branchId,
             division: this.divisionId,
-            title: this.title,
+            title: this.title.toLowerCase(),
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -217,19 +217,19 @@ export default {
         }
 
         let filteredData;
-        if(this.title === "director") {
+        if(this.title.toLowerCase() === "director" || "direktur") {
         filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "admin"
+          (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
         );
-        }else if (this.title === "manager") {
+        }else if (this.title.toLowerCase() === "manager") {
           filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "admin" && user.title !== "manager"
+          (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin" && user.title.toLowerCase()!== "manager"
         );
-        }else if (this.title === "supervisor") {
+        }else if (this.title.toLowerCase() === "supervisor") {
           filteredData = data.filter(
-          (user) => user.title === "operator"
+          (user) => user.title.toLowerCase()=== "operator"
         );
-        }else if (this.title === "operator") {
+        }else if (this.title.toLowerCase() === "operator") {
           filteredData = data.filter(
           (user) => user.u_name === this.username
         );

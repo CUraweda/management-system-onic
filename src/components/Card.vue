@@ -294,7 +294,8 @@ export default {
 
     divisi: {
       handler(value) {
-        this.divisi = value != "" ? value : "";
+        console.log("WAKWAW");
+        console.log("UWAW: ", value.label);
         this.fetchData();
       },
     },
@@ -316,46 +317,54 @@ export default {
       const response = await this.$axios.get("/task/all", {
         params: { startDate: this.deposit.start, dueDate: this.deposit.due },
         headers: {
-          title: this.title,
+          title: this.title.toLowerCase(),
           branch: this.branchId,
           division: this.divisi.value,
           Authorization: `Bearer ${this.token}`,
         },
       });
 
+      console.log("walawe: ", this.divisi.value);
       let tasks;
-        if(this.title === "director") {
+      const role =  this.title.toLowerCase();
+      if (
+        role === "director" ||
+        role === "direktur"
+      ) {
         tasks = response.data.filter(
-          (task) => task.pic_title !== "director" && task.pic_title !== "admin"
+          (task) =>
+            task.pic_title !== "director" &&
+            task.pic_title !== "direktur" &&
+            task.pic_title !== "admin"
         );
-        }else if (this.title === "manager") {
-          tasks = response.data.filter(
-          (task) => task.pic_title !== "director" && task.pic_title !== "admin" && task.pic_title !== "manager"
+      } else if (this.title.toLowerCase() === "manager") {
+        tasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "director" ||
+            ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
         );
-        }else if (this.title === "supervisor") {
-          tasks = response.data.filter(
-          (task) => task.pic_title === "operator"
-        );
-        }else if (this.title === "operator") {
-          tasks = response.data.filter(
-          (task) => task.u_name === this.username
-        );
-        }
+      } else if (this.title.toLowerCase() === "supervisor") {
+        tasks = response.data.filter((task) => task.pic_title === "operator");
+      } else if (this.title.toLowerCase() === "operator") {
+        tasks = response.data.filter((task) => task.u_name === this.username);
+      }
       this.TotalOpen = tasks.filter((task) => task.status === "Open").length;
       this.TotalCompleted = tasks.filter((task) => task.status === "Close").length;
       this.TotalInProgress = tasks.filter((task) => task.status === "In-progress").length;
       this.TotalOverdue = tasks.filter((task) => task.status === "Idle").length;
       this.TotalTotal = tasks.length;
+
+      console.log("NGGAH", this.TotalTotal);
     },
 
     async fetchDivisionData() {
       try {
         const { status, data } = await this.$axios.get("/divisi", {
           headers: {
-            title: this.title,
+            title: this.title.toLowerCase(),
             branch: this.branchId,
             division: this.divisionId,
-            title: this.title,
+            title: this.title.toLowerCase(),
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -380,13 +389,22 @@ export default {
     },
 
     redirectToTaskMonitoring(statusFilter) {
-      if(this.title === "operator"){this.$router.push({
-        path: `/${this.title}/task_list`,
-        query: { status: statusFilter },
-      });} else {this.$router.push({
-        path: `/${this.title}/task_monitoring`,
-        query: { status: statusFilter },
-      });}
+      if (this.title.toLowerCase() === "operator") {
+        this.$router.push({
+          path: `/${this.title.toLowerCase()}/task_list`,
+          query: { status: statusFilter },
+        });
+      } else if (this.title.toLowerCase() === "direktur") {
+        this.$router.push({
+          path: "/director/task_monitoring",
+          query: { status: statusFilter },
+        });
+      } else {
+        this.$router.push({
+          path: `/${this.title.toLowerCase()}/task_monitoring`,
+          query: { status: statusFilter },
+        });
+      }
     },
   },
 };
@@ -411,4 +429,5 @@ export default {
 
 .bintang {
   border-radius: 18px;
-}</style>
+}
+</style>

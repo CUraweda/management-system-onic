@@ -42,13 +42,7 @@
           </template>
         </q-select>
 
-        <q-input
-          filled
-          label="From"
-          dense
-          v-model="deposit.start"
-          class="col-2"
-        >
+        <q-input filled label="From" dense v-model="deposit.start" class="col-2">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -62,13 +56,7 @@
           </template>
         </q-input>
 
-        <q-input
-          filled
-          label="To"
-          dense
-          v-model="deposit.due"
-          class="col-2"
-        >
+        <q-input filled label="To" dense v-model="deposit.due" class="col-2">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -111,6 +99,7 @@
 </template>
 
 <script>
+const { DateTime } = require("luxon");
 import Cookies from "js-cookie";
 import Vue from "vue";
 import CardBase from "components/CardBase";
@@ -122,6 +111,7 @@ export default {
   },
   data() {
     return {
+      monthlyStatusCounts: {},
       currentMonthIndex: 0,
       month: null,
       username: sessionStorage.getItem("username")
@@ -274,7 +264,7 @@ export default {
     ]).then(() => {
       this.updateSeries();
       this.intervalId = setInterval(() => {
-        this.fetchData();
+        // this.fetchData();
         // this.fetchInProgress();
         // this.fetchCompleted();
         // this.fetchOverdue();
@@ -328,10 +318,14 @@ export default {
   methods: {
     async fetchData(person) {
       const response = await this.$axios.get("/task/all", {
-        params: { search: this.search, startDate: this.deposit.start, dueDate: this.deposit.due },
+        params: {
+          search: this.search,
+          startDate: this.deposit.start,
+          dueDate: this.deposit.due,
+        },
         headers: {
-          title: this.title,
-          pic: person || undefined,
+          title: this.title.toLowerCase(),
+          pic: this.person.value || undefined,
           branch: this.branchId,
           division: this.divisionId,
           Authorization: `Bearer ${this.token}`,
@@ -339,12 +333,51 @@ export default {
       });
 
       const tasks = response.data;
-      this.TotalOpen = tasks.filter((task) => task.status === "Open").length;
-      this.TotalCompleted = tasks.filter((task) => task.status === "Close").length;
-      this.TotalInProgress = tasks.filter((task) => task.status === "In-progress").length;
-      this.TotalOverdue = tasks.filter((task) => task.status === "Idle").length;
-      this.TotalTotal = tasks.length;
-      this.updateSeries()
+
+      const monthsTasks = {
+        January: [],
+        February: [],
+        March: [],
+        April: [],
+        May: [],
+        June: [],
+        July: [],
+        August: [],
+        September: [],
+        October: [],
+        November: [],
+        December: [],
+      };
+
+      tasks.forEach((task) => {
+        // Parse tanggal jatuh tempo dari tugas
+        const dueDate = DateTime.fromISO(task.start_date);
+
+        // Ambil nama bulan dari tanggal jatuh tempo
+        const month = dueDate.monthLong;
+        console.log("🚀 ~ tasks.forEach ~ month:", month);
+
+        // Masukkan tugas ke dalam objek monthsTasks
+        monthsTasks[month].push(task);
+      });
+
+      console.log("LOL");
+      console.log(tasks.start_date);
+      // const january = tasks.filter((task) => task.status.getMonth() === "01");
+
+      Object.keys(monthsTasks).forEach((month) => {
+        const tasksOfMonth = monthsTasks[month];
+        const statusCounts = {
+          Open: tasksOfMonth.filter((task) => task.status === "Open").length,
+          Completed: tasksOfMonth.filter((task) => task.status === "Close").length,
+          InProgress: tasksOfMonth.filter((task) => task.status === "In-progress").length,
+          Overdue: tasksOfMonth.filter((task) => task.status === "Idle").length,
+          Total: tasksOfMonth.length,
+        };
+        this.monthlyStatusCounts[month] = statusCounts;
+      });
+      console.log("🚀 ~ fetchData ~ monthlyStatusCounts:", this.monthlyStatusCounts);
+      this.updateSeries();
 
       // console.log("Jumlah Tugas Terbuka:", this.TotalOpen);
       // console.log("Jumlah Tugas Selesai:", this.TotalCompleted);
@@ -359,7 +392,7 @@ export default {
           headers: {
             branch: this.branchId,
             division: this.divisionId,
-            title: this.title,
+            title: this.title.toLowerCase(),
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -404,22 +437,21 @@ export default {
         }
 
         let filteredData;
-        if(this.title === "director") {
-        filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "admin"
-        );
-        }else if (this.title === "manager") {
+        if (this.title.toLowerCase() === "director" || "direktur") {
           filteredData = data.filter(
-          (user) => user.title !== "director" && user.title !== "admin" && user.title !== "manager"
-        );
-        }else if (this.title === "supervisor") {
+            (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
+          );
+        } else if (this.title.toLowerCase() === "manager") {
           filteredData = data.filter(
-          (user) => user.title === "operator"
-        );
-        }else if (this.title === "operator") {
-          filteredData = data.filter(
-          (user) => user.u_name === this.username
-        );
+            (user) =>
+              user.title.toLowerCase()!== "director" || "direktur" &&
+              user.title.toLowerCase()!== "admin" &&
+              user.title.toLowerCase()!== "manager"
+          );
+        } else if (this.title.toLowerCase() === "supervisor") {
+          filteredData = data.filter((user) => user.title.toLowerCase()=== "operator");
+        } else if (this.title.toLowerCase() === "operator") {
+          filteredData = data.filter((user) => user.u_name === this.username);
         }
 
         const listOfPerson = filteredData.map((data) => ({
@@ -436,161 +468,74 @@ export default {
     },
 
     updateSeries() {
-      // console.log("ping" + this.TotalOpen)
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      // Memperbarui data series untuk grafik berdasarkan jumlah tugas per status
       this.series = [
         {
           name: "Completed",
-          data: [this.TotalCompleted],
+          data: months.map(
+            function (month) {
+              return this.monthlyStatusCounts[month]
+                ? this.monthlyStatusCounts[month].Completed || 0
+                : 0;
+            }.bind(this)
+          ),
         },
         {
           name: "In-progress",
-          data: [this.TotalInProgress],
+          data: months.map(
+            function (month) {
+              return this.monthlyStatusCounts[month]
+                ? this.monthlyStatusCounts[month].InProgress || 0
+                : 0;
+            }.bind(this)
+          ),
         },
         {
           name: "Overdue",
-          data: [this.TotalOverdue],
+          data: months.map(
+            function (month) {
+              return this.monthlyStatusCounts[month]
+                ? this.monthlyStatusCounts[month].Overdue || 0
+                : 0;
+            }.bind(this)
+          ),
         },
         {
           name: "Open",
-          data: [this.TotalOpen],
+          data: months.map(
+            function (month) {
+              return this.monthlyStatusCounts[month]
+                ? this.monthlyStatusCounts[month].Open || 0
+                : 0;
+            }.bind(this)
+          ),
         },
         {
           name: "Total",
-          data: [this.TotalTotal],
+          data: months.map(
+            function (month) {
+              return this.monthlyStatusCounts[month]
+                ? this.monthlyStatusCounts[month].Total || 0
+                : 0;
+            }.bind(this)
+          ),
         },
       ];
     },
-
-    // async fetchOpen(pic) {
-    //   try {
-    //     // console.log(this.token);
-    //     const response = await this.$axios.get("/task/all", {
-    //       params: { status: "Open", search: this.search },
-    //       headers: {
-    //         pic: pic,
-    //         branch: this.branchId,
-    //         division: this.divisionId,
-    //         Authorization: `Bearer ${this.token}`,
-    //       },
-    //     });
-
-    //     const openedTasks = response.data.filter((task) => task.status === "Open");
-    //     this.TotalOpen = openedTasks.length;
-    //     // console.log(openedTasks.length);
-
-    //     return openedTasks.length;
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //     return 0;
-    //   }
-    // },
-
-    // async fetchCompleted(pic) {
-    //   try {
-    //     const response = await this.$axios.get("/task/all", {
-    //       params: { status: "Close", search: this.search },
-    //       headers: {
-    //         pic: pic,
-    //         branch: this.branchId,
-    //         division: this.divisionId,
-    //         Authorization: `Bearer ${this.token}`,
-    //       },
-    //     });
-
-    //     const openedTasks = response.data.filter((task) => task.status === "Close");
-    //     this.TotalCompleted = openedTasks.length;
-    //     // console.log(openedTasks.length);
-
-    //     return openedTasks.length;
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //     return 0;
-    //   }
-    // },
-
-    // async fetchInProgress(pic) {
-    //   try {
-    //     const response = await this.$axios.get("/task/all", {
-    //       params: { status: "In-progress", search: this.search },
-    //       headers: {
-    //         pic: pic,
-    //         branch: this.branchId,
-    //         division: this.divisionId,
-    //         Authorization: `Bearer ${this.token}`,
-    //       },
-    //     });
-
-    //     // Assuming response.data is an array of tasks
-    //     const openedTasks = response.data.filter((task) => task.status === "In-progress");
-
-    //     // Log the length of opened tasks
-    //     this.TotalInProgress = openedTasks.length;
-    //     // console.log(openedTasks.length);
-
-    //     // You can use this value in your component or store it in a data property
-    //     return openedTasks.length;
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //     // Handle the error as needed, maybe set a default value or show an error message
-    //     return 0;
-    //   }
-    // },
-
-    // async fetchOverdue(pic) {
-    //   try {
-    //     const response = await this.$axios.get("/task/all", {
-    //       params: { status: "Idle", search: this.search },
-    //       headers: {
-    //         pic: pic,
-    //         branch: this.branchId,
-    //         division: this.divisionId,
-    //         Authorization: `Bearer ${this.token}`,
-    //       },
-    //     });
-
-    //     // Assuming response.data is an array of tasks
-    //     const openedTasks = response.data.filter((task) => task.status === "Idle");
-
-    //     // Log the length of opened tasks
-    //     this.TotalOverdue = openedTasks.length;
-    //     // console.log(openedTasks.length);
-
-    //     // You can use this value in your component or store it in a data property
-    //     return openedTasks.length;
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //     // Handle the error as needed, maybe set a default value or show an error message
-    //     return 0;
-    //   }
-    // },
-
-    // async fetchTotal(pic) {
-    //   try {
-    //     const response = await this.$axios.get("/task/all", {
-    //       params: { status: "", search: this.search },
-    //       headers: {
-    //         pic: pic,
-    //         branch: this.branchId,
-    //         division: this.divisionId,
-    //         Authorization: `Bearer ${this.token}`,
-    //       },
-    //     });
-
-    //     // Assuming response.data is an array of tasks
-    //     const openedTasks = response.data;
-
-    //     // Log the length of opened tasks
-    //     this.TotalTotal = openedTasks.length;
-    //     // console.log(openedTasks.length);
-
-    //     // You can use this value in your component or store it in a data property
-    //     return openedTasks.length;
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //     // Handle the error as needed, maybe set a default value or show an error message
-    //     return 0;
-    //   }
-    // },
   },
 };
 </script>

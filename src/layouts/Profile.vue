@@ -5,6 +5,7 @@
         <div class="items-center text-center">
           <div class="text-bold items-center">{{ branch }}</div>
           <div>{{ division }}</div>
+          <div>{{ position }}</div>
         </div>
       </div>
 
@@ -33,6 +34,7 @@ export default {
       left: false,
       rating: 1,
       branch : sessionStorage.getItem("branch")? sessionStorage.getItem('branch') : Cookies.get("branch"),
+      position : sessionStorage.getItem("position")? sessionStorage.getItem('position') : Cookies.get("position"),
       division : sessionStorage.getItem("division")? sessionStorage.getItem('division') : Cookies.get("division"),
       // userAccessToken: ''
     }

@@ -619,7 +619,7 @@ division: this.divisionId,
             dueDate: this.deposit.due,
           },
           headers: {
-          title: this.title,
+          title: this.title.toLowerCase(),
           branch: this.branchId,
           division: this.divisionId,
           Authorization: `Bearer ${this.token}`,
