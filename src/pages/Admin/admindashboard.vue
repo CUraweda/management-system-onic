@@ -297,6 +297,15 @@
             <q-td key="Email" :props="props">
               <div>{{ props.row.u_email }}</div>
             </q-td>
+
+            <q-td key="Status" :props="props">
+              <q-toggle
+                v-model="props.row.deleted"
+                :color="props.row.deleted ? 'negative' : 'positive'"
+                @input="toggleDelete(props.row)"
+              />
+            </q-td>
+
             <q-td key="Action" :props="props" style="width: 10px">
               <div class="q-gutter-sm">
                 <q-btn
@@ -309,17 +318,7 @@
                   label="Edit"
                   @click="setButton(props.row, 'edit')"
                 />
-                <q-btn
-                  dense
-                  class="under-title q-px-sm text-red"
-                  rounded
-                  no-caps
-                  unelevated
-                  color="red-2"
-                  text-color="red"
-                  label="Delete"
-                  @click="setButton(props.row, 'delete')"
-                />
+
                 <q-btn
                   dense
                   class="under-title q-px-sm text-blue"
@@ -454,6 +453,7 @@ export default defineComponent({
         field: "u_email",
         sortable: true,
       },
+      { name: "Status", label: "Status", align: "center", field: "id", sortable: false },
       { name: "Action", label: "Action", align: "center", field: "id", sortable: false },
     ];
     return {
@@ -489,6 +489,49 @@ export default defineComponent({
   },
 
   methods: {
+    async toggleDelete(rowData) {
+      try {
+        if (rowData.deleted === false) {
+          const { status, data } = await this.$axios.delete(
+          `/user/activate-user/${rowData.u_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+        if (status === 200) {
+          // Berhasil membalikkan nilai deleted
+          rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
+          this.$q.notify({ message: `${rowData.u_name} Account Activated`, color: "positive" });
+          this.getData()
+        } else {
+          throw new Error(data.message);
+        }
+      } else {
+        const { status, data } = await this.$axios.delete(
+          `/user/delete-user/${rowData.u_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        );
+        if (status === 200) {
+          // Berhasil membalikkan nilai deleted
+          rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
+          this.$q.notify({ message: `${rowData.u_name} Account Deactivated`, color: "negative" });
+          this.getData()
+        } else {
+          throw new Error(data.message);
+        }
+      }
+      } catch (error) {
+        console.error(error);
+        this.$q.notify({ message: error.message, color: "negative" });
+      }
+    },
+
     async getPosition(branch_id, position_id) {
       try {
         console.log("🚀 ~ getPosition ~ position_id:", position_id);
@@ -683,6 +726,7 @@ export default defineComponent({
             title: user.title ? user.title.toLowerCase() : "",
             u_email: user.u_email ? user.u_email : "",
             position: user.position ? user.position : "",
+            deleted: user.deleted,
           }));
         }
       } catch (err) {
@@ -883,7 +927,7 @@ export default defineComponent({
     //START REPAS
     async resetPassword() {
       try {
-        console.log("ID: ", this.resetPasswordId)
+        console.log("ID: ", this.resetPasswordId);
         const { status, data } = await this.$axios.put(
           `/user/update-password/${this.resetPasswordId}`,
           { newPassword: this.newPassword },
