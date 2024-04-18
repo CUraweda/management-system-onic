@@ -16,6 +16,91 @@
                         class="q-mx-md q-my-xl"
                       ></q-img>
                       <div class="text-h5">Code Verification</div>
+                      <!-- <q-input
+                        filled
+                        fill-mask
+                        style="text-align: center"
+                        class="q-py-md"
+                        v-model="id"
+                        mask="###-###"
+                        unmasked-value
+                      /> -->
+                      <div
+                        class="otp-inputs"
+                        style="
+                          display: flex;
+                          justify-content: center;
+                          gap: 10px;
+                          max-width: 500px;
+                          margin-top: 15px;
+                          margin-bottom: 15px;
+                        "
+                      >
+                        <q-input
+                          standout="bg-blue-grey-3 text-white"
+                          style="text-align: center; width: 32px"
+                          maxlength="1"
+                          type="tel"
+                          dense
+                          v-model="otp1"
+                          @input="moveFocus($event, 2)"
+                        />
+                        <q-input
+                          standout="bg-blue-grey-3 text-white"
+                          style="text-align: center; width: 32px"
+                          maxlength="1"
+                          type="tel"
+                          dense
+                          v-model="otp2"
+                          @input="moveFocus($event, 3)"
+                        />
+                        <q-input
+                          standout="bg-blue-grey-3 text-white"
+                          style="text-align: center; width: 32px"
+                          maxlength="1"
+                          type="tel"
+                          dense
+                          v-model="otp3"
+                          @input="moveFocus($event, 4)"
+                        />
+                        <div
+                          style="
+                            font-weight: bold;
+                            font-size: large;
+                            padding-inline: 5px;
+                            align-items: center;
+                          "
+                        >
+                          -
+                        </div>
+                        <q-input
+                          standout="bg-blue-grey-3 text-white"
+                          style="text-align: center; width: 32px"
+                          maxlength="1"
+                          dense
+                          type="tel"
+                          v-model="otp4"
+                          @input="moveFocus($event, 5)"
+                        />
+                        <q-input
+                          standout="bg-blue-grey-3 text-white"
+                          style="text-align: center; width: 32px"
+                          maxlength="1"
+                          type="tel"
+                          dense
+                          v-model="otp5"
+                          @input="moveFocus($event, 6)"
+                        />
+                        <q-input
+                          standout="bg-blue-grey-3 text-white"
+                          style="text-align: center; width: 32px"
+                          maxlength="1"
+                          type="tel"
+                          dense
+                          v-model="otp6"
+                          @input="moveFocus($event, null)"
+                        />
+                      </div>
                       <p class="">
                         Enter the verification code we just sent on your email
                         address
@@ -57,10 +142,10 @@
 
 <script>
 import Cookies from "js-cookie";
-import { ref } from "vue";
+import { ref, defineComponent } from "vue";
 import axios from "axios";
 
-export default {
+export default defineComponent({
   name: "SignIn",
 
   data() {
@@ -74,6 +159,13 @@ export default {
       branch: null,
       email: "",
       password: "",
+      otp1: ref(),
+      otp2: ref(),
+      otp3: ref(),
+      otp4: ref(),
+      otp5: ref(),
+      otp6: ref(),
+      id: ref(),
       optionsBranch: [
         { label: "PT. RES", value: "PT. RES" },
         { label: "Produksi RES", value: "Produksi RES" },
@@ -107,6 +199,12 @@ export default {
   },
 
   methods: {
+    moveFocus(event, nextInputRef) {
+      if (event.target.value.length === 1 && nextInputRef) {
+        this.$refs["otp" + nextInputRef].focus();
+        console.log(event);
+      }
+    },
     async refreshToken(oldToken) {
       try {
         // Lakukan permintaan ke server untuk memperbarui token
@@ -254,7 +352,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style>
