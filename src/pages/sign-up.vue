@@ -15,8 +15,10 @@
                         width="300px"
                         class="q-mx-md q-my-xl"
                       ></q-img>
-                      <div class="text-h5">Welcome Back!</div>
-                      <p class="">Enter your credentials to access your account</p>
+                      <div class="text-h5">Welcome!</div>
+                      <p class="">
+                        Create your account to access your credentials
+                      </p>
                     </div>
                     <!-- welcome section -->
 
@@ -50,7 +52,9 @@
                         :options="optionsBranch"
                         behavior="menu"
                         class="col-5"
-                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                        :rules="[
+                          (val) => (val !== null && val !== '') || 'Required',
+                        ]"
                       >
                         <template v-slot:no-option>
                           <q-item>
@@ -66,7 +70,9 @@
                         v-model="email"
                         label="Email"
                         lazy-rules
-                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                        :rules="[
+                          (val) => (val !== null && val !== '') || 'Required',
+                        ]"
                       />
 
                       <q-input
@@ -76,7 +82,9 @@
                         label="Password"
                         placeholder="Enter at least 8+ characters"
                         :dense="dense"
-                        :rules="[(val) => (val !== null && val !== '') || 'Required']"
+                        :rules="[
+                          (val) => (val !== null && val !== '') || 'Required',
+                        ]"
                       >
                         <template v-slot:append>
                           <q-icon
@@ -100,7 +108,7 @@
                       <div>
                         <q-btn
                           class="full-width"
-                          label="Sign In"
+                          label="Sign Up"
                           color="cyan"
                           type="submit"
                         />
@@ -114,7 +122,10 @@
 
                 <!-- gambar makanan -->
                 <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
-                  <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
+                  <q-img
+                    src="statics/makanan.png"
+                    class="makanan q-ml-xl"
+                  ></q-img>
                 </div>
                 <!-- gambar makanan -->
               </div>
@@ -136,8 +147,12 @@ export default {
 
   data() {
     return {
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
       branch: null,
       email: "",
       password: "",
@@ -175,36 +190,38 @@ export default {
 
   methods: {
     async refreshToken(oldToken) {
-    try {
-      // Lakukan permintaan ke server untuk memperbarui token
-      const response = await this.$axios.post("/user/refreshToken", { oldToken });
-
-      if (response.status === 200) {
-        const newToken = response.data.newToken;
-
-        // Simpan token baru di dalam cookie
-        Cookies.set("token", newToken);
-
-        // Lakukan apa pun yang perlu dilakukan setelah token diperbarui
-        // Misalnya, navigasi ke halaman tertentu atau menampilkan notifikasi
-        this.$q.notify({
-          color: "positive",
-          message: "Token refreshed.",
+      try {
+        // Lakukan permintaan ke server untuk memperbarui token
+        const response = await this.$axios.post("/user/refreshToken", {
+          oldToken,
         });
-      } else {
-        throw new Error("Failed to refresh token");
-      }
-    } catch (error) {
-      console.error("Error refreshing token:", error);
 
-      // Handle error, misalnya dengan menampilkan pesan kepada pengguna
-      this.$q.notify({
-        color: "negative",
-        position: "top",
-        message: "Failed to refresh token",
-      });
-    }
-  },
+        if (response.status === 200) {
+          const newToken = response.data.newToken;
+
+          // Simpan token baru di dalam cookie
+          Cookies.set("token", newToken);
+
+          // Lakukan apa pun yang perlu dilakukan setelah token diperbarui
+          // Misalnya, navigasi ke halaman tertentu atau menampilkan notifikasi
+          this.$q.notify({
+            color: "positive",
+            message: "Token refreshed.",
+          });
+        } else {
+          throw new Error("Failed to refresh token");
+        }
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+
+        // Handle error, misalnya dengan menampilkan pesan kepada pengguna
+        this.$q.notify({
+          color: "negative",
+          position: "top",
+          message: "Failed to refresh token",
+        });
+      }
+    },
 
     created() {
       // Saat halaman dimuat, periksa apakah ada cookies yang berisi data pengguna
@@ -223,24 +240,24 @@ export default {
     },
 
     async SignIn() {
-      const email = Cookies.get("email")
+      const email = Cookies.get("email");
       const data = {
-        email: this.email? this.email : email,
+        email: this.email ? this.email : email,
         password: this.password || null,
-        branch: this.branch? this.branch.value : null,
+        branch: this.branch ? this.branch.value : null,
       };
-      console.log("🚀 ~ SignIn ~ data.token:", data.token)
+      console.log("🚀 ~ SignIn ~ data.token:", data.token);
 
       try {
-        const token = Cookies.get("token")
-        console.log("🚀 ~ SignIn ~ token:", token)
+        const token = Cookies.get("token");
+        console.log("🚀 ~ SignIn ~ token:", token);
         const response = await this.$axios.post("/user/login", data, {
           headers: {
             "Content-Type": "application/json",
           },
           params: {
-            token: token? token : null
-          }
+            token: token ? token : null,
+          },
         });
 
         if (response.status === 200) {
