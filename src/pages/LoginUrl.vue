@@ -5,24 +5,16 @@
 <script>
 export default {
     name: "urlLogin",
-    setup() {
-        return {
-            encryptedData: this.$route.params.encryptedData
-        };
-    },
     mounted() {
         this.login();
     },
     methods: {
         async login() {
             try {
-                const response = await this.$axios.post(`/user/login/${this.encryptedData}`, null, {
+                const response = await this.$axios.post(`/user/login/${this.$route.params.encryptedData}`, {}, {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    params: {
-                        token: token ? token : null
-                    }
                 });
                 if (response.status != 200) throw new Error("Invalid email or password");
                 const accessToken = response.data.data.accessToken;

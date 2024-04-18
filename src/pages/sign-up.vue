@@ -163,9 +163,8 @@ export default {
   watch: {
     email: {
       handler(val) {
-        if (val.split('@')[1]) {
+        if (val != null && val.split('@')[1]) {
           this.checkEmail()
-          console.log('FUCK NDKASDJK')
         }
       }
     }
@@ -180,10 +179,7 @@ export default {
         })
         if (response.status != 200) {
           this.email = null
-          return this.$q.notify({
-            color: "negative",
-            message: "Email Already in Used",
-          })
+          throw Error('Email already in used')
         }
         return this.$q.notify({
           color: "positive",
@@ -191,6 +187,10 @@ export default {
         })
       } catch (err) {
         console.log(err)
+        return this.$q.notify({
+          color: "negative",
+          message: "Email Already in Used",
+        })
       }
     },
     async fetchData() {
@@ -222,7 +222,7 @@ export default {
             "Content-Type": "application/json",
           }
         })
-        if (response.status != 200) throw Error('Something wrong, please try again')
+        if (response.status != 200) throw Error(response.data.message)
         this.$router.replace('/')
         return this.$q.notify({
           color: "positive",
@@ -230,6 +230,10 @@ export default {
         });
       } catch (err) {
         console.log(err)
+        return this.$q.notify({
+          color: "negative",
+          message: err.message,
+        });
       }
     }
   },
