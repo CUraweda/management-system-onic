@@ -4,9 +4,7 @@
       <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
         <q-card class="no-shadow" bordered>
           <div class="row q-mb-md">
-            <q-card-section
-              class="text-center text-h6 text-black text-weight-bold"
-            >
+            <q-card-section class="text-center text-h6 text-black text-weight-bold">
               <q-img src="statics/info.svg" width="25px" class="q-mr-sm" />
               General Information
             </q-card-section>
@@ -24,9 +22,7 @@
             <div class="col-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Task Type</q-item-label
-                  >
+                  <q-item-label class="q-pb-xs text-weight-bold">Task Type</q-item-label>
                   <div class="no-shadow">
                     <q-btn-toggle
                       v-model="task_type"
@@ -46,9 +42,7 @@
             <div class="col-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Task Title</q-item-label
-                  >
+                  <q-item-label class="q-pb-xs text-weight-bold">Task Title</q-item-label>
                   <q-input
                     dense
                     autogrow
@@ -56,9 +50,7 @@
                     class="full-width"
                     placeholder="Type name"
                     v-model="task_title"
-                    :rules="[
-                      (val) => (val !== null && val !== '') || 'Required',
-                    ]"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                   />
                 </q-item-section>
               </q-item>
@@ -67,9 +59,7 @@
             <div class="col-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Priority</q-item-label
-                  >
+                  <q-item-label class="q-pb-xs text-weight-bold">Priority</q-item-label>
                   <q-select
                     dense
                     filled
@@ -77,9 +67,7 @@
                     v-model="priority"
                     :options="opsipriority"
                     stack-label
-                    :rules="[
-                      (val) => (val !== null && val !== '') || 'Required',
-                    ]"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                     options-dense
                   ></q-select>
                 </q-item-section>
@@ -93,16 +81,8 @@
                   <div class="q-gutter-sm">
                     <q-radio v-model="iteration" val="daily" label="Daily" />
                     <q-radio v-model="iteration" val="weekly" label="Weekly" />
-                    <q-radio
-                      v-model="iteration"
-                      val="monthly"
-                      label="Monthly"
-                    />
-                    <q-radio
-                      v-model="iteration"
-                      val="insidental"
-                      label="Insidental"
-                    />
+                    <q-radio v-model="iteration" val="monthly" label="Monthly" />
+                    <q-radio v-model="iteration" val="insidental" label="Insidental" />
                   </div>
                 </q-item-section>
               </q-item>
@@ -111,16 +91,12 @@
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Start Date</q-item-label
-                  >
+                  <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
                   <q-input
                     filled
                     dense
                     v-model="start_date"
-                    :rules="[
-                      (val) => (val !== null && val !== '') || 'Required',
-                    ]"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                   >
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
@@ -131,12 +107,7 @@
                         >
                           <q-date v-model="start_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -150,18 +121,9 @@
                           transition-show="scale"
                           transition-hide="scale"
                         >
-                          <q-time
-                            v-model="start_date"
-                            mask="YYYY-MM-DD HH:mm"
-                            format24h
-                          >
+                          <q-time v-model="start_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -175,16 +137,12 @@
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Due Date</q-item-label
-                  >
+                  <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
                   <q-input
                     filled
                     dense
                     v-model="due_date"
-                    :rules="[
-                      (val) => (val !== null && val !== '') || 'Required',
-                    ]"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                   >
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
@@ -195,12 +153,7 @@
                         >
                           <q-date v-model="due_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -214,18 +167,9 @@
                           transition-show="scale"
                           transition-hide="scale"
                         >
-                          <q-time
-                            v-model="due_date"
-                            mask="YYYY-MM-DD HH:mm"
-                            format24h
-                          >
+                          <q-time v-model="due_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -247,9 +191,7 @@
                     filled
                     type="textarea"
                     placeholder="Give some example"
-                    :rules="[
-                      (val) => (val !== null && val !== '') || 'Required',
-                    ]"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                   />
                 </q-item-section>
               </q-item>
@@ -259,14 +201,9 @@
             <div class="col-12">
               <q-item>
                 <q-item-selection class="row items-center">
-                  <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >PIC</q-item-label
-                  >
+                  <q-item-label class="text-weight-bold q-pb-xs col-12">PIC</q-item-label>
 
-                  <q-form
-                    @submit="onSubmitpic"
-                    class="row q-gutter-sm items-center"
-                  >
+                  <q-form @submit="onSubmitpic" class="row q-gutter-sm items-center">
                     <q-select
                       :multiple="isMultitask"
                       dense
@@ -279,15 +216,11 @@
                       :options="picOptions"
                       behavior="menu"
                       class="col-6"
-                      :rules="[
-                        (val) => (val !== null && val !== '') || 'Required',
-                      ]"
+                      :rules="[(val) => (val !== null && val !== '') || 'Required']"
                     >
                       <template v-slot:no-option>
                         <q-item>
-                          <q-item-section class="text-grey">
-                            No results
-                          </q-item-section>
+                          <q-item-section class="text-grey"> No results </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
@@ -364,15 +297,11 @@
                       :options="spvOptions"
                       behavior="menu"
                       class="col-6"
-                      :rules="[
-                        (val) => (val !== null && val !== '') || 'Required',
-                      ]"
+                      :rules="[(val) => (val !== null && val !== '') || 'Required']"
                     >
                       <template v-slot:no-option>
                         <q-item>
-                          <q-item-section class="text-grey">
-                            No results
-                          </q-item-section>
+                          <q-item-section class="text-grey"> No results </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
@@ -427,10 +356,7 @@
         </q-card>
       </div>
       <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-        <q-card
-          class="no-shadow fit row wrap items-start content-start"
-          bordered
-        >
+        <q-card class="no-shadow fit row wrap items-start content-start" bordered>
           <q-card-section class="text-weight-bold text-h6 text-black">
             Add to card
           </q-card-section>
@@ -438,12 +364,7 @@
           <div class="col-12">
             <q-item>
               <q-item-section class="q-mb-xl">
-                <q-file
-                  outlined
-                  v-model="model"
-                  label="Upload File"
-                  class="q-mb-xl"
-                >
+                <q-file outlined v-model="model" label="Upload File" class="q-mb-xl">
                   <template v-slot:append>
                     <q-icon name="ios_share" />
                   </template>
@@ -492,7 +413,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { ref } from "vue";
 import { store } from "../../store/store.js";
 
@@ -500,9 +421,15 @@ export default {
   name: "ManagerCreate",
   data() {
     return {
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
-      username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
+      username: sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username"),
       spv_id: "",
       pic_id: "",
       pic: [],
@@ -637,11 +564,11 @@ export default {
         if (value.title) {
           console.log(
             "Ping:",
-            this.picOptions.find((user) => user.title.toLowerCase()=== value.title)
+            this.picOptions.find((user) => user.title.toLowerCase() === value.title)
           );
           // Perbarui opsi SPV berdasarkan peran PIC yang dipilih
           const selectedpic = this.picOptions.find(
-            (user) => user.title.toLowerCase()=== value.title
+            (user) => user.title.toLowerCase() === value.title
           );
           console.log("Selected pic:", selectedpic);
 
@@ -656,24 +583,36 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
-        const { status, data } = await this.$axios.get("/user/all");
-        if (status !== 200) throw Error("Error while fetching");
+        const id = parseInt(sessionStorage.getItem("id") || Cookies.get("id"), 10);
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+            branch: this.branchId,
+            division: this.divisionId,
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
-        const filteredData = data.filter((user) => user.u_id === this.id);
+        if (status !== 200) {
+          throw new Error("Error while fetching");
+        }
+
+        console.log("🚀 ~ fetchData ~ id:", id)
+        console.log("🚀 ~ fetchData ~ data:", data)
+        const filteredData = data.filter((user) => user.u_id === id);
+        console.log("Filtered Data:", filteredData);
 
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
-          title: user.title.toLowerCase(),
+          title: user.title.toLowerCase(), // Jika 'title' adalah properti yang valid pada objek 'user'
           id: user.u_id,
         }));
 
         this.picOptions = listOfPic;
-        this.selectedpic = this.picOptions[0];
+        this.selectedpic = this.picOptions[0]; // Atur selectedpic dengan nilai default
 
-        const selectedpic = this.picOptions.title;
-        console.log("Selected pic:", selectedpic);
+        const selectedpic = this.selectedpic.title; // Ambil 'title' dari selectedpic yang dipilih
+        console.log("Selected pic Title:", selectedpic);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -681,8 +620,17 @@ export default {
 
     async fetchSpvData() {
       try {
-        const { status, data } = await this.$axios.get("/user/all");
-        if (status !== 200) throw Error("Error while fetching");
+        const { status, data } = await this.$axios.get("/user/all", {
+          headers: {
+            branch: this.branchId,
+            division: this.divisionId,
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
         const listOfSpv = data.map((user) => ({
           label: user.u_name,
@@ -727,9 +675,7 @@ export default {
     // Metode untuk mengambil pic_id dari opsi pic yang dipilih
     getSelectedPicId() {
       if (this.selectedPic) {
-        const selectedPic = this.pic.find(
-          (pic) => pic.u_id === this.selectedPic.value
-        );
+        const selectedPic = this.pic.find((pic) => pic.u_id === this.selectedPic.value);
         if (selectedPic) {
           this.pic_id = selectedPic.u_id;
         }
@@ -739,9 +685,7 @@ export default {
     // Metode untuk mengambil spv_id dari opsi spv yang dipilih
     getSelectedSpvId() {
       if (this.selectedSpv) {
-        const selectedSpv = this.spv.find(
-          (spv) => spv.u_id === this.selectedSpv.value
-        );
+        const selectedSpv = this.spv.find((spv) => spv.u_id === this.selectedSpv.value);
         if (selectedSpv) {
           this.spv_id = selectedSpv.u_id;
         }
@@ -788,7 +732,9 @@ export default {
         this.addToForm("pic_title", this.selectedpic.title);
         this.addToForm(
           "created_by",
-          sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username") || "Unknown"
+          sessionStorage.getItem("username")
+            ? sessionStorage.getItem("username")
+            : Cookies.get("username") || "Unknown"
         );
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);

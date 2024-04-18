@@ -819,7 +819,7 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
-            title: this.title.toLowerCase(),
+            title: this.title,
           branch: this.branchId,
           division: this.divisionId,
             pic: id,
