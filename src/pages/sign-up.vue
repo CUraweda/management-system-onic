@@ -10,11 +10,7 @@
                   <div class="q-pa-md text-center">
                     <!-- welcome section -->
                     <div class="col items-center q-mt-md q-mb-xl">
-                      <q-img
-                        src="/statics/logo.jpg"
-                        width="300px"
-                        class="q-mx-md q-my-xl"
-                      ></q-img>
+                      <q-img src="/statics/logo.jpg" width="300px" class="q-mx-md q-my-xl"></q-img>
                       <div class="text-h5">Welcome!</div>
                       <p class="">
                         Create your account to access your credentials
@@ -41,89 +37,73 @@
                     <!-- button section -->
 
                     <!-- form section -->
-                    <q-form class="q-gutter-md" @submit="SignUp()">
-                      <q-select
-                        filled
-                        label="Cabang"
-                        v-model="branch"
-                        name="Cabang"
-                        use-input
-                        input-debounce="0"
-                        :options="optionsBranch"
-                        behavior="menu"
-                        class="col-5"
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
-                      >
-                        <template v-slot:no-option>
-                          <q-item>
-                            <q-item-section class="text-grey">
-                              No results
-                            </q-item-section>
-                          </q-item>
-                        </template>
-                      </q-select>
+                    <q-select filled label="Cabang" v-model="branch" name="Cabang" use-input input-debounce="0"
+                      :options="branchDataList" behavior="menu" class="col-5" :rules="[
+                      (val) => (val !== null && val !== '') || 'Required',
+                    ]">
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
 
-                      <q-input
-                        filled
-                        v-model="email"
-                        label="Email"
-                        lazy-rules
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
-                      />
+                    <q-select filled label="Divisi" v-model="divisi" name="Divisi" use-input input-debounce="0"
+                      :options="divisionDataList" behavior="menu" class="col-5" :rules="[
+                      (val) => (val !== null && val !== '') || 'Required',
+                    ]">
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
 
-                      <q-input
-                        v-model="password"
-                        filled
-                        :type="isPwd ? 'password' : 'text'"
-                        label="Password"
-                        placeholder="Enter at least 8+ characters"
-                        :dense="dense"
-                        :rules="[
-                          (val) => (val !== null && val !== '') || 'Required',
-                        ]"
-                      >
-                        <template v-slot:append>
-                          <q-icon
-                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                            class="cursor-pointer"
-                            @click="togglePwdVisibility"
-                          />
-                        </template>
-                      </q-input>
+                    <q-select filled label="Title" v-model="title" name="Title" use-input input-debounce="0"
+                      :options="titleDataList" behavior="menu" class="col-5" :rules="[
+                      (val) => (val !== null && val !== '') || 'Required',
+                    ]">
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
 
-                      <div class="items-center justify-center row">
-                        <q-checkbox
-                          v-model="right"
-                          color="blue"
-                          label="Keep me logged in"
-                        />
-                        <q-space></q-space>
-                        <!-- <a href="" style="color: #00bdd6"> forgot password?</a> -->
-                      </div>
+                    <q-input filled v-model="email" label="Email" :rules="[
+                      (val) => (val !== null && val !== '') || 'Required',
+                    ]" />
 
-                      <div>
-                        <q-btn
-                          class="full-width"
-                          label="Sign Up"
-                          color="cyan"
-                          type="submit"
-                        />
-                      </div>
-                    </q-form>
+                    <q-input filled v-model="name" label="Full Name" lazy-rules :rules="[
+                      (val) => (val !== null && val !== '') || 'Required',
+                    ]" />
+
+                    <q-input v-model="password" filled :type="isPwd ? 'password' : 'text'" label="Password"
+                      placeholder="Enter at least 8+ characters" :dense="dense" :rules="[
+                      (val) => (val !== null && val !== '') || 'Required',
+                    ]">
+                      <template v-slot:append>
+                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                          @click="togglePwdVisibility" />
+                      </template>
+                    </q-input>
+
+                    <div>
+                      <q-btn class="full-width" label="Sign Up" color="cyan" type="submit" @click="SignUp()" />
+                    </div>
                     <!-- form section -->
                   </div>
                 </div>
 
                 <!-- gambar makanan -->
                 <div class="col-md-6 col-xs-12 q-ml-xl desktop-only">
-                  <q-img
-                    src="statics/makanan.png"
-                    class="makanan q-ml-xl"
-                  ></q-img>
+                  <q-img src="statics/makanan.png" class="makanan q-ml-xl"></q-img>
                 </div>
                 <!-- gambar makanan -->
               </div>
@@ -136,33 +116,28 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import { ref } from "vue";
 import axios from "axios";
 
 export default {
   name: "SignIn",
-
   data() {
     return {
-      divisionId: sessionStorage.getItem("division_id")
-        ? sessionStorage.getItem("division_id")
-        : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")
-        ? sessionStorage.getItem("branch_id")
-        : Cookies.get("branch_id"),
-      branch: null,
-      email: "",
-      password: "",
-      optionsBranch: [
-        { label: "PT. RES", value: "PT. RES" },
-        { label: "Produksi RES", value: "Produksi RES" },
-        { label: "ONIC 1", value: "ONIC 1" },
-        { label: "ONIC 2", value: "ONIC 2" },
-        { label: "Sehatku", value: "Sehatku" },
-        { label: "ONIC KLP", value: "ONIC KLP" },
-      ],
-    };
+      email: ref(),
+      name: ref(),
+      password: ref(),
+      title: ref(),
+      branch: ref(),
+      divisi: ref(),
+      branchDataList: ref([]),
+      divisionDataList: ref([]),
+      titleDataList: [
+        { label: 'Director', value: 'director' },
+        { label: 'Manager', value: 'manager' },
+        { label: 'Supervisor', value: 'supervisor' },
+        { label: 'Operator', value: 'operator' },
+      ]
+    }
   },
 
   setup() {
@@ -183,93 +158,80 @@ export default {
   },
 
   mounted() {
-    this.created();
+    this.fetchData();
   },
-
-  methods: {
-    async refreshToken(oldToken) {
-      try {
-        // Lakukan permintaan ke server untuk memperbarui token
-        const response = await this.$axios.post("/user/refreshToken", {
-          oldToken,
-        });
-
-        if (response.status === 200) {
-          const newToken = response.data.newToken;
-
-          // Simpan token baru di dalam cookie
-          Cookies.set("token", newToken);
-
-          // Lakukan apa pun yang perlu dilakukan setelah token diperbarui
-          // Misalnya, navigasi ke halaman tertentu atau menampilkan notifikasi
-          this.$q.notify({
-            color: "positive",
-            message: "Token refreshed.",
-          });
-        } else {
-          throw new Error("Failed to refresh token");
+  watch: {
+    email: {
+      handler(val) {
+        if (val.split('@')[1]) {
+          this.checkEmail()
+          console.log('FUCK NDKASDJK')
         }
-      } catch (error) {
-        console.error("Error refreshing token:", error);
-
-        // Handle error, misalnya dengan menampilkan pesan kepada pengguna
-        this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Failed to refresh token",
-        });
+      }
+    }
+  },
+  methods: {
+    async checkEmail() {
+      try {
+        const response = await this.$axios.get(`/user/check-email/`, {
+          headers: {
+            "X-Email": this.email
+          }
+        })
+        if (response.status != 200) {
+          this.email = null
+          return this.$q.notify({
+            color: "negative",
+            message: "Email Already in Used",
+          })
+        }
+        return this.$q.notify({
+          color: "positive",
+          message: "Email Available To Use",
+        })
+      } catch (err) {
+        console.log(err)
       }
     },
-
-    created() {
-      // Saat halaman dimuat, periksa apakah ada cookies yang berisi data pengguna
-      const token = Cookies.get("token");
-      // if (token) {
-      //   // Lakukan permintaan ke server untuk memperbarui token
-      //   this.refreshToken(token);
-      // }
-      const email = Cookies.get("email");
-      const id = Cookies.get("id");
-      // Dan seterusnya untuk data lainnya
-      if (token && email && id) {
-        // Jika ada, lakukan autentikasi pengguna secara otomatis atau atur status login sesuai kebutuhan aplikasi Anda
-        this.SignIn(email);
+    async fetchData() {
+      try {
+        const response = await this.$axios.get('/user/helper-register')
+        if (response.status != 200) throw Error('Something wrong, please try again')
+        this.branchDataList = response.data.data.brances.map((branch) => ({
+          label: branch.b_name, value: branch.id
+        }))
+        this.divisionDataList = response.data.data.division.map(divisi => ({
+          label: divisi.d_name, value: divisi.id
+        }))
+      } catch (err) {
+        console.log(err)
       }
     },
-
-    //function signup
     async SignUp() {
-      const email = Cookies.get("email");
-      const data = {
-        email: this.email ? this.email : email,
-        password: this.password || null,
-        branch: this.branch ? this.branch.value : null,
-      };
-    },
-
-    redirectUser: function (title) {
-      switch (title) {
-        case "manager":
-          this.$router.push("manager/dashboard");
-          break;
-        case "admin":
-          this.$router.push("admin/dashboard");
-          break;
-        case "operator":
-          this.$router.push("operator/dashboard");
-          break;
-        case "supervisor":
-          this.$router.push("supervisor/dashboard");
-          break;
-        case "director":
-          this.$router.push("director/dashboard");
-          break;
-        default:
-          this.$q.notify({
-            message: "Wrong Email or Password",
-          });
+      try {
+        const data = {
+          email: this.email,
+          name: this.name,
+          password: this.password,
+          title: this.title.value,
+          branch_id: this.branch.value,
+          division_id: this.divisi.value
+        };
+        const response = await this.$axios.post('/user/register', data, {
+          headers: {
+            "Content-Type": "application/json",
+          }
+        })
+        if (response.status != 200) throw Error('Something wrong, please try again')
+        this.$router.replace('/')
+        return this.$q.notify({
+          color: "positive",
+          message: "Please See Your Email for Confirmation.",
+        });
+      } catch (err) {
+        console.log(err)
       }
-    },
+    }
   },
 };
 </script>

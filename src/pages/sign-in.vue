@@ -255,7 +255,7 @@ export default {
           const branch_id = response.data.data.branch_id;
 
           if (this.right) {
-            Cookies.set("token", accessToken, { expires: 365 }); // Cookie berlaku selama 1 tahun
+            Cookies.set("token", accessToken, { expires: 365 }); // Cookie berlaku selama 1 tahunv
             Cookies.set("id", id, { expires: 365 });
             Cookies.set("email", email, { expires: 365 });
             Cookies.set("username", name, { expires: 365 });

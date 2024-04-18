@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 // sign in & up (if needed)
 import SignIn from "src/pages/sign-in.vue";
 import SignUp from "src/pages/sign-up.vue";
+import urlLogin from "src/pages/LoginUrl.vue";
 import OTP from "src/pages/otp.vue";
 
 // layout
@@ -63,6 +64,7 @@ import Error404 from "pages/Error404.vue";
 const routes = [
   { path: "/", component: SignIn },
   { path: "/signup", component: SignUp },
+  { path: '/auth/:encryptedData', component: urlLogin },
   { path: "/otp", component: OTP },
 
   {
