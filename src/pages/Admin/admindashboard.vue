@@ -2,7 +2,12 @@
   <q-layout view="lHh Lpr lff">
     <div class="q-pa-md">
       <div class="flex items-center q-gutter-sm q-pb-md">
-        <q-btn label="Add New User" @click="openDialogUser()" color="cyan" no-caps />
+        <q-btn
+          label="Add New User"
+          @click="openDialogUser()"
+          color="cyan"
+          no-caps
+        />
         <q-btn
           label="Add New Division"
           @click="openDialogDivision()"
@@ -20,7 +25,9 @@
             <q-card-section class="row items-center q-pb-none">
               <div class="text-h6">Change Password</div>
               <q-space />
-              <q-btn no-caps color="cyan" @click="resetPassword()">Change Password</q-btn>
+              <q-btn no-caps color="cyan" @click="resetPassword()"
+                >Change Password</q-btn
+              >
             </q-card-section>
 
             <q-card-section
@@ -120,7 +127,9 @@
             <q-card-section class="row items-center q-pb-none">
               <div class="text-h6">{{ titleAddUser }}</div>
               <q-space />
-              <q-btn no-caps color="cyan" @click="handleAction()">{{ addUser }}</q-btn>
+              <q-btn no-caps color="cyan" @click="handleAction()">{{
+                addUser
+              }}</q-btn>
             </q-card-section>
 
             <q-card-section
@@ -228,7 +237,12 @@
             </q-card-section>
           </q-card>
         </q-dialog>
-        <q-btn label="Import From Excel" @click="openDialogImport" color="cyan" no-caps />
+        <q-btn
+          label="Import From Excel"
+          @click="openDialogImport"
+          color="cyan"
+          no-caps
+        />
         <q-dialog v-model="uploadExcel">
           <q-card>
             <q-card-section class="row items-center q-pb-none">
@@ -259,6 +273,7 @@
       <q-table
         class="no-shadow q-ml-md"
         :data="rows"
+        row-key="name"
         :rows-per-page-options="[0]"
         hide-bottom
         :hide-header="grid"
@@ -335,6 +350,204 @@
         </template>
       </q-table>
     </div>
+    <q-dialog v-model="adduser" persistent>
+      <q-card class="q-pa-md" style="min-width: 600px">
+        <q-bar class="bg-white text-grey-9 rounded-borders q-pa-xs">
+          <div class="cursor-pointer non-selectable q-px-md">
+            Create New User
+          </div>
+          <q-space />
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            v-close-popup
+            @click="clearInput()"
+          />
+        </q-bar>
+        <q-form class="q-pa-md q-mx-auto">
+          <div style="width: 100%; gap: 5px; display: block" class="row">
+            <div
+              style="width: 100%; gap: 5px; display: flex; padding: 5px"
+              class="col"
+            >
+              <q-input
+                type="text"
+                v-model="inputName"
+                dense
+                outlined
+                style="width: 50%"
+                placeholder="Name"
+              />
+
+              <q-select
+                outlined
+                v-model="selectDivisi"
+                :options="DivisiOpt"
+                dense
+                style="width: 50%"
+                :label="'Divisi'"
+                dropdown-icon="expand_more"
+              />
+            </div>
+            <div
+              style="width: 100%; gap: 5px; display: flex; padding: 5px"
+              class="col"
+            >
+              <q-input
+                type="email"
+                v-model="inputEmail"
+                dense
+                outlined
+                style="width: 50%"
+                placeholder="Email"
+              />
+              <div style="width: 100%; gap: 5px; display: flex" class="col">
+                <q-select
+                  outlined
+                  v-model="selectJabatan"
+                  :options="JabatanOpt"
+                  dense
+                  style="width: 100%"
+                  :label="'Jabatan'"
+                  dropdown-icon="expand_more"
+                />
+                <q-select
+                  outlined
+                  v-model="selectGender"
+                  :options="genderOpt"
+                  dense
+                  style="width: 100%"
+                  :label="'Gender'"
+                  dropdown-icon="expand_more"
+                />
+              </div>
+            </div>
+            <div
+              style="width: 100%; gap: 5px; display: flex; padding: 5px"
+              class="col"
+            >
+              <q-input
+                v-model="password"
+                label="password"
+                dense
+                style="width: 50%"
+                outlined
+                type="password"
+              />
+              <q-input
+                v-model="confirmpassword"
+                label="Confirm Password"
+                dense
+                style="width: 50%"
+                outlined
+                type="password"
+              />
+            </div>
+          </div>
+          <q-card-section class="row items-center q-gutter-sm">
+            <q-btn
+              dense
+              color="primary"
+              @click="createUser()"
+              no-caps
+              style="border-radius: 8px"
+              class="q-px-xl"
+              >Create</q-btn
+            >
+          </q-card-section>
+        </q-form>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="edituser" persistent>
+      <q-card class="q-pa-md" style="min-width: 600px">
+        <q-bar class="bg-white text-grey-9 rounded-borders q-pa-xs">
+          <div class="cursor-pointer non-selectable q-px-md">Edit User</div>
+          <q-space />
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            v-close-popup
+            @click="clearInput()"
+          />
+        </q-bar>
+        <q-form class="q-pa-md q-mx-auto">
+          <div style="width: 100%; gap: 5px; display: block" class="row">
+            <div
+              style="width: 100%; gap: 5px; display: flex; padding: 5px"
+              class="col"
+            >
+              <q-input
+                type="text"
+                v-model="inputName"
+                dense
+                outlined
+                style="width: 50%"
+                placeholder="Name"
+              />
+
+              <q-select
+                outlined
+                v-model="selectDivisi"
+                :options="DivisiOpt"
+                dense
+                style="width: 50%"
+                :label="'Divisi'"
+                dropdown-icon="expand_more"
+              />
+            </div>
+            <div
+              style="width: 100%; gap: 5px; display: flex; padding: 5px"
+              class="col"
+            >
+              <q-input
+                type="email"
+                v-model="inputEmail"
+                dense
+                outlined
+                style="width: 50%"
+                placeholder="Email"
+              />
+              <div style="width: 100%; gap: 5px; display: flex" class="col">
+                <q-select
+                  outlined
+                  v-model="selectJabatan"
+                  :options="JabatanOpt"
+                  dense
+                  style="width: 100%"
+                  :label="'Jabatan'"
+                  dropdown-icon="expand_more"
+                />
+                <q-select
+                  outlined
+                  v-model="selectGender"
+                  :options="genderOpt"
+                  dense
+                  style="width: 100%"
+                  :label="'Gender'"
+                  dropdown-icon="expand_more"
+                />
+              </div>
+            </div>
+          </div>
+          <q-card-section class="row items-center q-gutter-sm">
+            <q-btn
+              dense
+              color="primary"
+              @click="sendEdit()"
+              no-caps
+              style="border-radius: 8px"
+              class="q-px-xl"
+              >Update</q-btn
+            >
+          </q-card-section>
+        </q-form>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
 
@@ -397,7 +610,6 @@ export default defineComponent({
       ],
       isPwd: true,
       isConfirmPwd: true,
-      password: ref(),
       divisionAdd: false,
       positionAdd: false,
       PasswordChange: false,
@@ -410,7 +622,29 @@ export default defineComponent({
         page: 1,
         rowsPerPage: 0, // jumlah item per halaman
       },
-      rows: ref(),
+      inputName: ref(""),
+      inputEmail: ref(""),
+      selectDivisi: ref(""),
+      selectJabatan: ref(""),
+      password: ref(""),
+      rows: ref([]),
+      confirmpassword: ref(""),
+      DivisiOpt: ref([
+        "Oprasional Sales",
+        "Acc & Purches",
+        "Produksi",
+        "HRD & GA",
+        "Marketing",
+      ]),
+      JabatanOpt: ref([
+        "admin",
+        "supervisor",
+        "direktur",
+        "manager",
+        "operator",
+      ]),
+      selectGender: ref(),
+      genderOpt: ref(["Laki - Laki", "Perempuan"]),
     };
   },
   setup() {
@@ -456,7 +690,11 @@ export default defineComponent({
       { name: "Status", label: "Status", align: "center", field: "id", sortable: false },
       { name: "Action", label: "Action", align: "center", field: "id", sortable: false },
     ];
+
     return {
+      edituser: ref(false),
+      uploadTask: ref(false),
+      adduser: ref(false),
       columns,
     };
   },
@@ -731,6 +969,7 @@ export default defineComponent({
         }
       } catch (err) {
         console.error(err);
+        throw err;
       }
     },
 
@@ -832,7 +1071,8 @@ export default defineComponent({
             },
           }
         );
-        if (status != 200) throw Error("Error while creating user please try again");
+        if (status != 200)
+          throw Error("Error while creating user please try again");
         //TODO: CLOSE DIALOG
         this.dialogUser = false;
         this.getData();
@@ -882,7 +1122,8 @@ export default defineComponent({
             },
           }
         );
-        if (status != 200) throw Error("Error while creating Division please try again");
+        if (status != 200)
+          throw Error("Error while creating Division please try again");
         //TODO: CLOSE DIALOG
         this.dialogDivision = false;
         this.getDivision();
