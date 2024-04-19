@@ -57,7 +57,7 @@ import OperatorTaskDetail2 from "pages/operator/Task_detail_2.vue";
 import OperatorTaskList from "pages/operator/Task_list.vue";
 
 // admin
-import AdminadminDashboard from "pages/Admin/adminDashboard.vue";
+import adminadmindashboard from "pages/Admin/adminDashboard.vue";
 
 import Error404 from "pages/Error404.vue";
 
@@ -282,7 +282,7 @@ const routes = [
       {
         path: "dashboard",
         meta: { title: "DASHBOARD" },
-        component: AdminadminDashboard,
+        component: adminadmindashboard,
       }
     ]
   },

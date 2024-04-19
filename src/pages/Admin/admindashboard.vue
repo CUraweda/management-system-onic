@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lff">
     <div class="q-pa-md">
       <div class="flex items-center q-gutter-sm q-pb-md">
-        <q-btn
+        <!-- <q-btn
           label="Add New User"
           @click="openDialogUser()"
           color="cyan"
@@ -19,15 +19,13 @@
           @click="openDialogPosition()"
           color="cyan"
           no-caps
-        />
+        /> -->
         <q-dialog v-model="dialogPassword">
           <q-card style="width: 700px">
             <q-card-section class="row items-center q-pb-none">
               <div class="text-h6">Change Password</div>
               <q-space />
-              <q-btn no-caps color="cyan" @click="resetPassword()"
-                >Change Password</q-btn
-              >
+              <q-btn no-caps color="cyan" @click="resetPassword()">Change Password</q-btn>
             </q-card-section>
 
             <q-card-section
@@ -99,8 +97,8 @@
               style="display: flex; gap: 10px; width: 100%"
               class="col-grow"
             >
-              <div class="full-width">
-                <q-input
+              <!-- <div class="full-width"> -->
+              <!-- <q-input
                   v-model="newPosition"
                   dense
                   outlined
@@ -117,8 +115,8 @@
                   :options="optionsBranch"
                   label="Cabang"
                   class="col-grow"
-                />
-              </div>
+                /> -->
+              <!-- </div> -->
             </q-card-section>
           </q-card>
         </q-dialog>
@@ -127,18 +125,24 @@
             <q-card-section class="row items-center q-pb-none">
               <div class="text-h6">{{ titleAddUser }}</div>
               <q-space />
-              <q-btn no-caps color="cyan" @click="handleAction()">{{
-                addUser
-              }}</q-btn>
+              <q-btn no-caps color="cyan" @click="handleAction()">{{ addUser }}</q-btn>
             </q-card-section>
 
             <q-card-section
-              style="display: flex; gap: 10px; width: 100%"
-              class="col-grow"
+            style=""
+            class=""
             >
+            <q-select
+              outlined
+              dense
+              v-model="role"
+              :options="optionsRole"
+              label="Role"
+              class="q-px-md"
+            />
               <div class="full-width">
                 <div style="display: flex; gap: 10px">
-                  <q-select
+                  <!-- <q-select
                     outlined
                     dense
                     v-model="branch"
@@ -146,24 +150,24 @@
                     style="width: 70px"
                     label="Cabang"
                     class="col-grow"
-                  />
+                  /> -->
                 </div>
-                <q-input
+                <!-- <q-input
                   dense
                   outlined
                   v-model="name"
                   label="Name"
                   class="col-grow text-bold q-mt-md"
-                />
-                <q-input
+                /> -->
+                <!-- <q-input
                   dense
                   outlined
                   v-model="email"
                   label="Email"
                   class="col-grow text-bold q-mt-md"
-                />
+                /> -->
 
-                <q-input
+                <!-- <q-input
                   v-model="password"
                   dense
                   outlined
@@ -181,30 +185,20 @@
                       @click="togglePwdVisibility"
                     />
                   </template>
-                </q-input>
+                </q-input> -->
               </div>
               <div class="full-width">
-                <q-select
+                <!-- <q-select
                   outlined
                   dense
                   v-model="division"
                   :options="optionsDivisi"
                   label="Divisi"
                   class="col-grow"
-                />
+                /> -->
+                <div class="q-mt-md" style="display: flex"></div>
                 <div class="q-mt-md" style="display: flex; gap: 10px">
-                  <q-select
-                    outlined
-                    dense
-                    v-model="role"
-                    :options="optionsRole"
-                    style="width: 70px"
-                    label="Role"
-                    class="col-grow"
-                  />
-                </div>
-                <div class="q-mt-md" style="display: flex; gap: 10px">
-                  <q-select
+                  <!-- <q-select
                     outlined
                     dense
                     v-model="position"
@@ -212,9 +206,9 @@
                     style="width: 70px"
                     label="Jabatan"
                     class="col-grow"
-                  />
+                  /> -->
                 </div>
-                <q-input
+                <!-- <q-input
                   v-model="confirmPassword"
                   dense
                   outlined
@@ -231,18 +225,18 @@
                       class="cursor-pointer"
                       @click="toggleConfirmPwdVisibility"
                     />
-                  </template>
-                </q-input>
+                  </template> -->
+                <!-- </q-input> -->
               </div>
             </q-card-section>
           </q-card>
         </q-dialog>
-        <q-btn
+        <!-- <q-btn
           label="Import From Excel"
           @click="openDialogImport"
           color="cyan"
           no-caps
-        />
+        /> -->
         <q-dialog v-model="uploadExcel">
           <q-card>
             <q-card-section class="row items-center q-pb-none">
@@ -313,13 +307,13 @@
               <div>{{ props.row.u_email }}</div>
             </q-td>
 
-            <q-td key="Status" :props="props">
+            <!-- <q-td key="Status" :props="props">
               <q-toggle
                 v-model="props.row.deleted"
                 :color="props.row.deleted ? 'negative' : 'positive'"
                 @input="toggleDelete(props.row)"
               />
-            </q-td>
+            </q-td> -->
 
             <q-td key="Action" :props="props" style="width: 10px">
               <div class="q-gutter-sm">
@@ -334,7 +328,7 @@
                   @click="setButton(props.row, 'edit')"
                 />
 
-                <q-btn
+                <!-- <q-btn
                   dense
                   class="under-title q-px-sm text-blue"
                   rounded
@@ -343,7 +337,7 @@
                   color="blue-2"
                   label="Reset Password"
                   @click="openDialogResetPassword(props.row, 'reset pass')"
-                />
+                /> -->
               </div>
             </q-td>
           </q-tr>
@@ -353,25 +347,13 @@
     <q-dialog v-model="adduser" persistent>
       <q-card class="q-pa-md" style="min-width: 600px">
         <q-bar class="bg-white text-grey-9 rounded-borders q-pa-xs">
-          <div class="cursor-pointer non-selectable q-px-md">
-            Create New User
-          </div>
+          <div class="cursor-pointer non-selectable q-px-md">Create New User</div>
           <q-space />
-          <q-btn
-            icon="close"
-            flat
-            round
-            dense
-            v-close-popup
-            @click="clearInput()"
-          />
+          <q-btn icon="close" flat round dense v-close-popup @click="clearInput()" />
         </q-bar>
         <q-form class="q-pa-md q-mx-auto">
           <div style="width: 100%; gap: 5px; display: block" class="row">
-            <div
-              style="width: 100%; gap: 5px; display: flex; padding: 5px"
-              class="col"
-            >
+            <div style="width: 100%; gap: 5px; display: flex; padding: 5px" class="col">
               <q-input
                 type="text"
                 v-model="inputName"
@@ -391,10 +373,7 @@
                 dropdown-icon="expand_more"
               />
             </div>
-            <div
-              style="width: 100%; gap: 5px; display: flex; padding: 5px"
-              class="col"
-            >
+            <div style="width: 100%; gap: 5px; display: flex; padding: 5px" class="col">
               <q-input
                 type="email"
                 v-model="inputEmail"
@@ -424,10 +403,7 @@
                 />
               </div>
             </div>
-            <div
-              style="width: 100%; gap: 5px; display: flex; padding: 5px"
-              class="col"
-            >
+            <div style="width: 100%; gap: 5px; display: flex; padding: 5px" class="col">
               <q-input
                 v-model="password"
                 label="password"
@@ -466,22 +442,12 @@
         <q-bar class="bg-white text-grey-9 rounded-borders q-pa-xs">
           <div class="cursor-pointer non-selectable q-px-md">Edit User</div>
           <q-space />
-          <q-btn
-            icon="close"
-            flat
-            round
-            dense
-            v-close-popup
-            @click="clearInput()"
-          />
+          <q-btn icon="close" flat round dense v-close-popup @click="clearInput()" />
         </q-bar>
         <q-form class="q-pa-md q-mx-auto">
           <div style="width: 100%; gap: 5px; display: block" class="row">
-            <div
-              style="width: 100%; gap: 5px; display: flex; padding: 5px"
-              class="col"
-            >
-              <q-input
+            <div style="width: 100%; gap: 5px; display: flex; padding: 5px" class="col">
+              <!-- <q-input
                 type="text"
                 v-model="inputName"
                 dense
@@ -498,22 +464,19 @@
                 style="width: 50%"
                 :label="'Divisi'"
                 dropdown-icon="expand_more"
-              />
+              /> -->
             </div>
-            <div
-              style="width: 100%; gap: 5px; display: flex; padding: 5px"
-              class="col"
-            >
-              <q-input
+            <div style="width: 100%; gap: 5px; display: flex; padding: 5px" class="col">
+              <!-- <q-input
                 type="email"
                 v-model="inputEmail"
                 dense
                 outlined
                 style="width: 50%"
                 placeholder="Email"
-              />
+              /> -->
               <div style="width: 100%; gap: 5px; display: flex" class="col">
-                <q-select
+                <!-- <q-select
                   outlined
                   v-model="selectJabatan"
                   :options="JabatanOpt"
@@ -530,7 +493,7 @@
                   style="width: 100%"
                   :label="'Gender'"
                   dropdown-icon="expand_more"
-                />
+                /> -->
               </div>
             </div>
           </div>
@@ -636,13 +599,7 @@ export default defineComponent({
         "HRD & GA",
         "Marketing",
       ]),
-      JabatanOpt: ref([
-        "admin",
-        "supervisor",
-        "direktur",
-        "manager",
-        "operator",
-      ]),
+      JabatanOpt: ref(["admin", "supervisor", "direktur", "manager", "operator"]),
       selectGender: ref(),
       genderOpt: ref(["Laki - Laki", "Perempuan"]),
     };
@@ -687,7 +644,7 @@ export default defineComponent({
         field: "u_email",
         sortable: true,
       },
-      { name: "Status", label: "Status", align: "center", field: "id", sortable: false },
+      // { name: "Status", label: "Status", align: "center", field: "id", sortable: false },
       { name: "Action", label: "Action", align: "center", field: "id", sortable: false },
     ];
 
@@ -731,39 +688,45 @@ export default defineComponent({
       try {
         if (rowData.deleted === false) {
           const { status, data } = await this.$axios.delete(
-          `/user/activate-user/${rowData.u_id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
+            `/user/activate-user/${rowData.u_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.token}`,
+              },
+            }
+          );
+          if (status === 200) {
+            // Berhasil membalikkan nilai deleted
+            rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
+            this.$q.notify({
+              message: `${rowData.u_name} Account Activated`,
+              color: "positive",
+            });
+            this.getData();
+          } else {
+            throw new Error(data.message);
           }
-        );
-        if (status === 200) {
-          // Berhasil membalikkan nilai deleted
-          rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
-          this.$q.notify({ message: `${rowData.u_name} Account Activated`, color: "positive" });
-          this.getData()
         } else {
-          throw new Error(data.message);
-        }
-      } else {
-        const { status, data } = await this.$axios.delete(
-          `/user/delete-user/${rowData.u_id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
+          const { status, data } = await this.$axios.delete(
+            `/user/delete-user/${rowData.u_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.token}`,
+              },
+            }
+          );
+          if (status === 200) {
+            // Berhasil membalikkan nilai deleted
+            rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
+            this.$q.notify({
+              message: `${rowData.u_name} Account Deactivated`,
+              color: "negative",
+            });
+            this.getData();
+          } else {
+            throw new Error(data.message);
           }
-        );
-        if (status === 200) {
-          // Berhasil membalikkan nilai deleted
-          rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
-          this.$q.notify({ message: `${rowData.u_name} Account Deactivated`, color: "negative" });
-          this.getData()
-        } else {
-          throw new Error(data.message);
         }
-      }
       } catch (error) {
         console.error(error);
         this.$q.notify({ message: error.message, color: "negative" });
@@ -990,16 +953,16 @@ export default defineComponent({
         }
         console.log("🚀 ~ setEditUser ~ data:", data);
         this.openDialogUser(true);
-        this.passwordIf = false;
-        this.confirmPasswordIf = false;
-        this.name = data.u_name;
-        this.email = data.u_email;
+        // this.passwordIf = false;
+        // this.confirmPasswordIf = false;
+        // this.name = data.u_name;
+        // this.email = data.u_email;
         this.role = data.title;
-        this.division_id = data.division_id;
-        this.branch_id = data.branch_id;
-        this.getBranch(this.branch_id, this.division_id);
-        this.getDivision(null, this.division_id);
-        this.getPosition(null, this.position_id);
+        // this.division_id = data.division_id;
+        // this.branch_id = data.branch_id;
+        // this.getBranch(this.branch_id, this.division_id);
+        // this.getDivision(null, this.division_id);
+        // this.getPosition(null, this.position_id);
       } catch (err) {
         console.log(err);
         return this.$q.notify({ message: err.message });
@@ -1011,11 +974,11 @@ export default defineComponent({
         const { data, status } = await this.$axios.put(
           `/user/update-user/${this.currentShownId}`,
           {
-            u_name: this.name,
-            u_email: this.email,
-            division_id: this.division.value,
-            branch_id: this.branch.value,
-            position_id: this.position.value,
+            // u_name: this.name,
+            // u_email: this.email,
+            // division_id: this.division.value,
+            // branch_id: this.branch.value,
+            // position_id: this.position.value,
             title: this.role.value,
           }
         );
@@ -1071,8 +1034,7 @@ export default defineComponent({
             },
           }
         );
-        if (status != 200)
-          throw Error("Error while creating user please try again");
+        if (status != 200) throw Error("Error while creating user please try again");
         //TODO: CLOSE DIALOG
         this.dialogUser = false;
         this.getData();
@@ -1122,8 +1084,7 @@ export default defineComponent({
             },
           }
         );
-        if (status != 200)
-          throw Error("Error while creating Division please try again");
+        if (status != 200) throw Error("Error while creating Division please try again");
         //TODO: CLOSE DIALOG
         this.dialogDivision = false;
         this.getDivision();
