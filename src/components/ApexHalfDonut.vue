@@ -6,7 +6,7 @@
       </q-card-section>
 
       <q-card-section class="row q-gutter-sm q-pt-none justify-between">
-        <q-select
+        <!-- <q-select
           dense
           filled
           label="Division"
@@ -24,9 +24,9 @@
               <q-item-section class="text-grey"> No results </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
 
-        <q-select
+        <!-- <q-select
           dense
           filled
           v-model="person"
@@ -44,7 +44,7 @@
               <q-item-section class="text-grey"> No results </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
       </q-card-section>
 
       <q-card-section>
@@ -77,8 +77,9 @@
 </template>
 
 <script>
+import { eventBus } from '../event-bus.js';
 import Cookies from "js-cookie";
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import CardBase from "components/CardBase";
 
 export default {
@@ -88,6 +89,7 @@ export default {
   },
   data() {
     return {
+      person: 0,
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -106,7 +108,6 @@ export default {
         due_2: "",
       },
       divisi: null,
-      person: null,
       id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       left: false,
       token: ref(
@@ -126,16 +127,20 @@ export default {
 
   setup() {
     return {
-      // divisi:[],
-      // person:[],
       personOptions: ref([]),
       divisiOptions: ref([]),
     };
   },
 
   mounted() {
-    this.fetchData();
-    this.fetchDivisionData();
+    eventBus.$on('person-selected', person => {
+      this.person = person;
+      // console.log('Person yang dipilih:', this.person);
+    });
+    // this.fetchData();
+
+    // this.fetchDivisionData();
+    // console.log("wong: ", this.person);
   },
 
   watch: {
@@ -147,16 +152,16 @@ export default {
       },
     },
 
-    divisi: {
-      handler(value) {
-        console.log("Selected PIC changed. Updating SPV options...");
-        console.log("PIC title:", value.label);
+    // divisi: {
+    //   handler(value) {
+    //     console.log("Selected PIC changed. Updating SPV options...");
+    //     console.log("PIC title:", value.label);
 
-        if (value) {
-          this.fetchPersonData();
-        }
-      },
-    },
+    //     if (value) {
+    //       this.fetchPersonData();
+    //     }
+    //   },
+    // },
   },
 
   computed: {
@@ -181,7 +186,7 @@ export default {
           throw Error("Error while fetching");
         }
 
-        console.log("DATA:", data.data);
+        // console.log("DATA:", data.data);
         const listOfDivisi = data.data.map((data) => ({
           label: data.d_name,
           value: data.id,
@@ -191,74 +196,74 @@ export default {
         this.divisi = this.divisiOptions[0];
 
         const divisi = this.divisiOptions.d_name;
-        console.log("Selected Divisi:", divisi);
+        // console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     },
 
-    async fetchPersonData() {
+    // async fetchPersonData() {
+    //   try {
+    //     console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
+    //     const { status, data } = await this.$axios.get("/user/division", {
+    //       params: {
+    //         division: this.divisi.value,
+    //         branch: this.branch,
+    //       },
+    //       headers: {
+    //         branch: this.branchId,
+    //         division: this.divisionId,
+    //         Authorization: `Bearer ${this.token}`,
+    //       },
+    //     });
+
+    //     if (status !== 200) {
+    //       throw Error("Error while fetching");
+    //     }
+
+    //     let filteredData;
+    //     if(this.title.toLowerCase() === "director" || "direktur") {
+    //     filteredData = data.filter(
+    //       (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
+    //     );
+    //     }else if (this.title.toLowerCase() === "manager") {
+    //       filteredData = data.filter(
+    //       (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin" && user.title.toLowerCase()!== "manager"
+    //     );
+    //     }else if (this.title.toLowerCase() === "supervisor") {
+    //       filteredData = data.filter(
+    //       (user) => user.title.toLowerCase()=== "operator"
+    //     );
+    //     }else if (this.title.toLowerCase() === "operator") {
+    //       filteredData = data.filter(
+    //       (user) => user.u_name === this.username
+    //     );
+    //     }
+
+    //     const listOfPerson = filteredData.map((data) => ({
+    //       label: data.u_name,
+    //       value: data.u_id,
+    //       title: data.title,
+    //     }));
+
+    //     this.personOptions = listOfPerson;
+    //     this.person = this.personOptions[0];
+
+    //     const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
+    //     console.log("Selected Person:", person);
+    //     this.fetchData(person);
+    //   } catch (error) {
+    //     console.error("Error fetching users:", error);
+    //   }
+    // },
+
+    async fetchData() {
       try {
-        console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
-        const { status, data } = await this.$axios.get("/user/division", {
-          params: {
-            division: this.divisi.value,
-            branch: this.branch,
-          },
-          headers: {
-            branch: this.branchId,
-            division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        if (status !== 200) {
-          throw Error("Error while fetching");
-        }
-
-        let filteredData;
-        if(this.title.toLowerCase() === "director" || "direktur") {
-        filteredData = data.filter(
-          (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
-        );
-        }else if (this.title.toLowerCase() === "manager") {
-          filteredData = data.filter(
-          (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin" && user.title.toLowerCase()!== "manager"
-        );
-        }else if (this.title.toLowerCase() === "supervisor") {
-          filteredData = data.filter(
-          (user) => user.title.toLowerCase()=== "operator"
-        );
-        }else if (this.title.toLowerCase() === "operator") {
-          filteredData = data.filter(
-          (user) => user.u_name === this.username
-        );
-        }
-
-        const listOfPerson = filteredData.map((data) => ({
-          label: data.u_name,
-          value: data.u_id,
-          title: data.title,
-        }));
-
-        this.personOptions = listOfPerson;
-        this.person = this.personOptions[0];
-
-        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
-        console.log("Selected Person:", person);
-        this.fetchData(person);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
-
-    async fetchData(person) {
-      try {
-        if (person === null) {
+        if (!this.person) {
           this.Avgrate = 0;
         } else {
           const id = this.person.value;
-          console.log("ini id " + id);
+          // console.log("ini id " + id);
 
           const response = await this.$axios.get("/user/get-by-id/" + id, {
             headers: {
@@ -269,9 +274,9 @@ export default {
           if (response.data.total_task === 0) {
             this.Avgrate = 0;
           } else {
-            console.log("hasil" + response.data.u_rate);
+            // console.log("hasil" + response.data.u_rate);
             const Avgrate = response.data.u_rate / response.data.total_task;
-            this.Avgrate = Avgrate;
+            this.Avgrate = parseFloat(Avgrate.toFixed(2));
           }
         }
       } catch (error) {

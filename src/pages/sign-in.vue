@@ -40,7 +40,7 @@
 
                     <!-- form section -->
                     <q-form class="q-gutter-md" @submit="SignIn()">
-                      <q-select
+                      <!-- <q-select
                         filled
                         label="Cabang"
                         v-model="branch"
@@ -59,7 +59,7 @@
                             </q-item-section>
                           </q-item>
                         </template>
-                      </q-select>
+                      </q-select> -->
 
                       <q-input
                         filled

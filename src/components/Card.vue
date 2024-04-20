@@ -1,58 +1,6 @@
 <template>
   <q-card flat>
-    <q-card-section class="row q-gutter-sm q-pt-md q-ml-sm q-mr-md items-center">
-      <div class="text-h6 q-mt-xs q-ml-md col-md-5 col-sm-11 col-xs-11">
-        Feedback Review
-      </div>
-      <q-space></q-space>
 
-      <q-select
-        dense
-        filled
-        label="Division"
-        v-model="divisi"
-        name="pic"
-        use-input
-        input-debounce="0"
-        :options="divisiOptions"
-        behavior="menu"
-        class="col-2"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey"> No results </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-
-      <q-input filled label="From" dense v-model="deposit.start" class="col-2">
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-
-      <q-input filled label="To" dense v-model="deposit.due" class="col-2">
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-    </q-card-section>
     <!-- task card  -->
     <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
       <!-- completed task -->
@@ -80,7 +28,7 @@
               <div class="text-h4 text-weight-bold q-mt-none">
                 {{ TotalCompleted }}
               </div>
-              Increased by 6 this week
+              <!-- Increased by 6 this week -->
             </q-card-section>
           </q-card-section>
         </q-card>
@@ -111,7 +59,7 @@
               <div class="text-h4 text-weight-bold q-mt-none">
                 {{ TotalInProgress }}
               </div>
-              Decreased by 5 this week
+              <!-- Decreased by 5 this week -->
             </q-card-section>
           </q-card-section>
         </q-card>
@@ -142,7 +90,7 @@
               <div class="text-h4 text-weight-bold q-mt-none">
                 {{ TotalOverdue }}
               </div>
-              Increased by 3 this week
+              <!-- Increased by 3 this week -->
             </q-card-section>
           </q-card-section>
         </q-card>
@@ -173,7 +121,7 @@
               <div class="text-h4 text-weight-bold q-mt-none">
                 {{ TotalOpen }}
               </div>
-              Increased by 8 this week
+              <!-- Increased by 8 this week -->
             </q-card-section>
           </q-card-section>
         </q-card>
@@ -204,7 +152,7 @@
               <div class="text-h4 text-weight-bold q-mt-none">
                 {{ TotalTotal }}
               </div>
-              Completion rate: 80%
+              <!-- Completion rate: 80% -->
             </q-card-section>
           </q-card-section>
         </q-card>
@@ -216,6 +164,7 @@
 </template>
 
 <script>
+import { eventBus } from '../event-bus.js';
 import Cookies from "js-cookie";
 import Vue from "vue";
 import { exportFile } from "quasar";
@@ -237,6 +186,7 @@ export default {
   props: {},
   data() {
     return {
+      person: null,
       username: sessionStorage.getItem("username")
         ? sessionStorage.getItem("username")
         : Cookies.get("username"),
@@ -294,75 +244,81 @@ export default {
 
     divisi: {
       handler(value) {
-        console.log("WAKWAW");
-        console.log("UWAW: ", value.label);
+        // console.log("WAKWAW");
+        // console.log("UWAW: ", value.label);
         this.fetchData();
       },
     },
   },
 
   mounted() {
-    this.fetchData();
-    this.fetchDivisionData();
-    this.intervalId = setInterval(() => {
+    eventBus.$on('person-selected', person => {
+      this.person = person;
+      // console.log('Person yang dipilih:', this.person);
       this.fetchData();
-    }, 60000);
+    });
+
+    // this.fetchBranchData();
+    // this.fetchDivisionData();
+    // this.fetchData();
+    // this.intervalId = setInterval(() => {
+    //   this.fetchData();
+    // }, 60000);
   },
 
   beforeDestroy() {
     clearInterval(this.intervalId);
   },
+
   methods: {
     async fetchData() {
       const response = await this.$axios.get("/task/all", {
-        params: { startDate: this.deposit.start, dueDate: this.deposit.due },
+        // params: { startDate: this.deposit.start, dueDate: this.deposit.due },
         headers: {
-          title: this.title.toLowerCase(),
-          branch: this.branchId,
-          division: this.divisi.value,
+          pic: this.person.value,
           Authorization: `Bearer ${this.token}`,
         },
       });
+      // console.log("HAHAHAHA:", response)
 
-      console.log("walawe: ", this.divisi.value);
-      let tasks;
-      const role =  this.title.toLowerCase();
-      if (
-        role === "director" ||
-        role === "direktur"
-      ) {
-        tasks = response.data.filter(
-          (task) =>
-            task.pic_title !== "director" &&
-            task.pic_title !== "direktur" &&
-            task.pic_title !== "admin"
-        );
-      } else if (this.title.toLowerCase() === "manager") {
-        tasks = response.data.filter(
-          (task) =>
-            task.pic_title !== "director" ||
-            ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
-        );
-      } else if (this.title.toLowerCase() === "supervisor") {
-        tasks = response.data.filter((task) => task.pic_title === "operator");
-      } else if (this.title.toLowerCase() === "operator") {
-        tasks = response.data.filter((task) => task.u_name === this.username);
-      }
-      this.TotalOpen = tasks.filter((task) => task.status === "Open").length;
-      this.TotalCompleted = tasks.filter((task) => task.status === "Close").length;
-      this.TotalInProgress = tasks.filter((task) => task.status === "In-progress").length;
-      this.TotalOverdue = tasks.filter((task) => task.status === "Idle").length;
-      this.TotalTotal = tasks.length;
+      // console.log("walawe: ", this.divisi.value);
+      // let tasks;
+      // const role =  this.title.toLowerCase();
+      // if (
+      //   role === "director" ||
+      //   role === "direktur"
+      // ) {
+      //   tasks = response.data.filter(
+      //     (task) =>
+      //       task.pic_title !== "director" &&
+      //       task.pic_title !== "direktur" &&
+      //       task.pic_title !== "admin"
+      //   );
+      // } else if (this.title.toLowerCase() === "manager") {
+      //   tasks = response.data.filter(
+      //     (task) =>
+      //       task.pic_title !== "director" ||
+      //       ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
+      //   );
+      // } else if (this.title.toLowerCase() === "supervisor") {
+      //   tasks = response.data.filter((task) => task.pic_title === "operator");
+      // } else if (this.title.toLowerCase() === "operator") {
+      //   tasks = response.data.filter((task) => task.u_name === this.username);
+      // }
+      this.TotalOpen = response.data.filter((task) => task.status === "Open").length;
+      this.TotalCompleted = response.data.filter((task) => task.status === "Close").length;
+      this.TotalInProgress = response.data.filter((task) => task.status === "In-progress").length;
+      this.TotalOverdue = response.data.filter((task) => task.status === "Idle").length;
+      this.TotalTotal = response.data.length;
 
-      console.log("NGGAH", this.TotalTotal);
+      // console.log("NGGAH", this.TotalTotal);
     },
 
     async fetchDivisionData() {
       try {
         const { status, data } = await this.$axios.get("/divisi", {
           headers: {
-            title: this.title.toLowerCase(),
-            branch: this.branchId,
+            branch: this.branch.value,
             division: this.divisionId,
             title: this.title.toLowerCase(),
             Authorization: `Bearer ${this.token}`,
@@ -382,7 +338,35 @@ export default {
         this.divisi = this.divisiOptions[0];
 
         const divisi = this.divisiOptions.d_name;
-        console.log("Selected Divisi:", divisi);
+        // console.log("Selected Divisi:", divisi);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchBranchData() {
+      try {
+        const { status, data } = await this.$axios.get("/branch", {
+          headers: {
+            title: this.title.toLowerCase(),
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        const listOfDivisi = data.data.map((data) => ({
+          label: data.d_name,
+          value: data.id,
+        }));
+
+        this.divisiOptions = listOfDivisi;
+        this.divisi = this.divisiOptions[0];
+
+        const divisi = this.divisiOptions.d_name;
+        // console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
       }

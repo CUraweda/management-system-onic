@@ -6,7 +6,7 @@
       </q-card-section>
 
       <q-card-section class="row q-gutter-sm q-py-none q-mb-md justify-between">
-        <q-select
+        <!-- <q-select
           dense
           filled
           label="Division"
@@ -22,9 +22,9 @@
               <q-item-section class="text-grey"> No results </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
 
-        <q-select
+        <!-- <q-select
           dense
           filled
           label="Person"
@@ -40,9 +40,9 @@
               <q-item-section class="text-grey"> No results </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
 
-        <q-input filled label="From" dense v-model="deposit.start" class="col-2">
+        <!-- <q-input filled label="From" dense v-model="deposit.start" class="col-2">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -54,9 +54,9 @@
               </q-popup-proxy>
             </q-icon>
           </template>
-        </q-input>
+        </q-input> -->
 
-        <q-input filled label="To" dense v-model="deposit.due" class="col-2">
+        <!-- <q-input filled label="To" dense v-model="deposit.due" class="col-2">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -68,7 +68,7 @@
               </q-popup-proxy>
             </q-icon>
           </template>
-        </q-input>
+        </q-input> -->
       </q-card-section>
 
       <template>
@@ -99,11 +99,12 @@
 </template>
 
 <script>
+import { eventBus } from '../event-bus.js';
 const { DateTime } = require("luxon");
 import Cookies from "js-cookie";
 import Vue from "vue";
 import CardBase from "components/CardBase";
-import { ref } from "vue";
+import { ref, inject } from "vue";
 export default {
   name: "TaskStatusChart",
   components: {
@@ -253,14 +254,19 @@ export default {
   },
 
   mounted() {
+    eventBus.$on('person-selected', person => {
+      this.person = person;
+      // console.log('Person yang dipilih:', this.person);
+    });
+
     Promise.all([
       this.fetchData(),
       // this.fetchInProgress(),
       // this.fetchCompleted(),
       // this.fetchOverdue(),
       // this.fetchTotal(),
-      this.fetchPersonData(),
-      this.fetchDivisionData(),
+      // this.fetchPersonData(),
+      // this.fetchDivisionData(),
     ]).then(() => {
       this.updateSeries();
       this.intervalId = setInterval(() => {
@@ -288,24 +294,25 @@ export default {
         this.fetchData();
       },
     },
+
     person: {
       handler(val) {
         if (val) {
           const person = this.person.value;
-          console.log("Selected Person:", person);
+          // console.log("Selected Person:", person);
           this.fetchData(person);
-          console.log("wowoowwo", this.series);
+          // console.log("wowoowwo", this.series);
         }
       },
     },
 
     divisi: {
       handler(value) {
-        console.log("Selected PIC changed. Updating SPV options...");
-        console.log("PIC title:", value.label);
+        // console.log("Selected PIC changed. Updating SPV options...");
+        // console.log("PIC title:", value.label);
 
         if (value) {
-          this.fetchPersonData();
+          // this.fetchPersonData();
         }
       },
     },
@@ -355,14 +362,14 @@ export default {
 
         // Ambil nama bulan dari tanggal jatuh tempo
         const month = dueDate.monthLong;
-        console.log("🚀 ~ tasks.forEach ~ month:", month);
+        // console.log("🚀 ~ tasks.forEach ~ month:", month);
 
         // Masukkan tugas ke dalam objek monthsTasks
         monthsTasks[month].push(task);
       });
 
-      console.log("LOL");
-      console.log(tasks.start_date);
+      // console.log("LOL");
+      // console.log(tasks.start_date);
       // const january = tasks.filter((task) => task.status.getMonth() === "01");
 
       Object.keys(monthsTasks).forEach((month) => {
@@ -376,7 +383,7 @@ export default {
         };
         this.monthlyStatusCounts[month] = statusCounts;
       });
-      console.log("🚀 ~ fetchData ~ monthlyStatusCounts:", this.monthlyStatusCounts);
+      // console.log("🚀 ~ fetchData ~ monthlyStatusCounts:", this.monthlyStatusCounts);
       this.updateSeries();
 
       // console.log("Jumlah Tugas Terbuka:", this.TotalOpen);
@@ -401,7 +408,7 @@ export default {
           throw Error("Error while fetching");
         }
 
-        console.log("DATA:", data.data);
+        // console.log("DATA:", data.data);
         const listOfDivisi = data.data.map((data) => ({
           label: data.d_name,
           value: data.id,
@@ -411,61 +418,61 @@ export default {
         this.divisi = this.divisiOptions[0];
 
         const divisi = this.divisiOptions.d_name;
-        console.log("Selected Divisi:", divisi);
+        // console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     },
 
-    async fetchPersonData() {
-      try {
-        console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
-        const { status, data } = await this.$axios.get("/user/division", {
-          params: {
-            division: this.divisi.value,
-            branch: this.branch,
-          },
-          headers: {
-            branch: this.branchId,
-            division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+    // // async fetchPersonData() {
+    //   try {
+    //     console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
+    //     const { status, data } = await this.$axios.get("/user/division", {
+    //       params: {
+    //         division: this.divisi.value,
+    //         branch: this.branch,
+    //       },
+    //       headers: {
+    //         branch: this.branchId,
+    //         division: this.divisionId,
+    //         Authorization: `Bearer ${this.token}`,
+    //       },
+    //     });
 
-        if (status !== 200) {
-          throw Error("Error while fetching");
-        }
+    //     if (status !== 200) {
+    //       throw Error("Error while fetching");
+    //     }
 
-        let filteredData;
-        if (this.title.toLowerCase() === "director" || "direktur") {
-          filteredData = data.filter(
-            (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
-          );
-        } else if (this.title.toLowerCase() === "manager") {
-          filteredData = data.filter(
-            (user) =>
-              user.title.toLowerCase()!== "director" || "direktur" &&
-              user.title.toLowerCase()!== "admin" &&
-              user.title.toLowerCase()!== "manager"
-          );
-        } else if (this.title.toLowerCase() === "supervisor") {
-          filteredData = data.filter((user) => user.title.toLowerCase()=== "operator");
-        } else if (this.title.toLowerCase() === "operator") {
-          filteredData = data.filter((user) => user.u_name === this.username);
-        }
+    //     let filteredData;
+    //     if (this.title.toLowerCase() === "director" || "direktur") {
+    //       filteredData = data.filter(
+    //         (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
+    //       );
+    //     } else if (this.title.toLowerCase() === "manager") {
+    //       filteredData = data.filter(
+    //         (user) =>
+    //           user.title.toLowerCase()!== "director" || "direktur" &&
+    //           user.title.toLowerCase()!== "admin" &&
+    //           user.title.toLowerCase()!== "manager"
+    //       );
+    //     } else if (this.title.toLowerCase() === "supervisor") {
+    //       filteredData = data.filter((user) => user.title.toLowerCase()=== "operator");
+    //     } else if (this.title.toLowerCase() === "operator") {
+    //       filteredData = data.filter((user) => user.u_name === this.username);
+    //     }
 
-        const listOfPerson = filteredData.map((data) => ({
-          label: data.u_name,
-          value: data.u_id,
-          title: data.title,
-        }));
+    //     const listOfPerson = filteredData.map((data) => ({
+    //       label: data.u_name,
+    //       value: data.u_id,
+    //       title: data.title,
+    //     }));
 
-        this.personOptions = listOfPerson;
-        this.person = this.personOptions[0];
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
+    //     this.personOptions = listOfPerson;
+    //     this.person = this.personOptions[0];
+    //   } catch (error) {
+    //     console.error("Error fetching users:", error);
+    //   }
+    // },
 
     updateSeries() {
       const months = [
