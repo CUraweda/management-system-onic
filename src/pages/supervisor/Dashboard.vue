@@ -1,12 +1,110 @@
 <template>
   <q-page>
+    <q-card-section class="row q-gutter-sm q-pt-md q-ml-sm items-center">
+      <div class="text-h6 q-mt-xs q-ml-md">Feedback Review</div>
+      <q-space></q-space>
+      <q-select
+        dense
+        filled
+        label="Cabang"
+        v-model="branch"
+        name="Cabang"
+        use-input
+        input-debounce="0"
+        :options="branchOptions"
+        behavior="menu"
+        class="col-2"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
+        dense
+        filled
+        label="Division"
+        v-model="divisi"
+        name="Division"
+        use-input
+        input-debounce="0"
+        :options="divisiOptions"
+        behavior="menu"
+        class="col-2"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
 
+      <q-select
+        dense
+        filled
+        label="Person"
+        v-model="person"
+        name="Person"
+        use-input
+        input-debounce="0"
+        :options="personOptions"
+        behavior="menu"
+        class="col-2"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+
+      <q-input
+        filled
+        label="From"
+        dense
+        v-model="deposit.start"
+        class=""
+        style="width: 155px"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-date v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+
+      <q-input
+        filled
+        label="To"
+        dense
+        v-model="deposit.due"
+        class=""
+        style="width: 155px"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-date v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+    </q-card-section>
     <Card></Card>
-
     <div>
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
-
-      <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
+      <div class="row q-col-gutter-sm q-mt-xs">
         <apex-half-donut></apex-half-donut>
         <apex-column-charts-basic></apex-column-charts-basic>
       </div>
@@ -15,30 +113,34 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import { eventBus } from "../../event-bus.js";
+import Cookies from "js-cookie";
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
 import { ref } from "vue";
 
-// Vue.component('IEcharts', IEcharts);
-
-function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0 ? formatFn(val) : val;
-
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
-
-  formatted = formatted.split('"').join('""');
-
-  return `"${formatted}"`;
-}
-
 export default {
   name: "Dashboard",
+  components: {
+    Card: () => import("components/Card"),
+    ApexHalfDonut: () => import("components/ApexHalfDonut"),
+    ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
+  },
   data() {
     return {
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      username: sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username"),
+      title: sessionStorage.getItem("title")
+        ? sessionStorage.getItem("title")
+        : Cookies.get("title"),
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -47,230 +149,238 @@ export default {
       filter: "",
       mode: "list",
       search: "",
-      rating: ref(2.5),
       deposit: {
         start: "",
         due: "",
-        start_1: "",
-        due_1: "",
-        start_2: "",
-        due_2: "",
       },
     };
   },
   setup() {
     return {
-
-      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      branch: ref(),
+      divisi: ref(),
+      person: ref(),
+      divisi1: [],
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
       onItemClick() {},
     };
   },
 
-  mounted() {
-    this.fetchOpen();
-    this.fetchInProgress();
-    this.fetchCompleted();
-    this.fetchOverdue();
-    this.fetchTotal();
+  watch: {
+    "deposit.start": {
+      handler(value) {
+        this.deposit.start = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
 
-    this.intervalId = setinterval(() => {
-      this.fetchDeletedData();
-      this.fetchData();
-      this.fetchWaitedData();
-    }, 6000);
+    "deposit.due": {
+      handler(value) {
+        this.deposit.due = value != "" ? value : "";
+        this.fetchData();
+      },
+    },
+
+    divisi: {
+      handler(value) {
+        // console.log("WAKWAW");
+        // console.log("UWAW: ", value.label);
+        this.fetchPersonData();
+      },
+    },
+
+    person: {
+      handler(value) {
+        // console.log("OWIGH");
+        // console.log("LASOA: ", value.label);
+        eventBus.$emit("person-selected", this.person);
+      },
+    },
+
+    branch: {
+      handler(value) {
+        // console.log("UWEY");
+        // console.log("OOOOP: ", value.label);
+        this.fetchDivisionData();
+      },
+    },
   },
 
+  mounted() {
+    this.fetchBranchData();
+    this.fetchDivisionData();
+    this.fetchPersonData();
+    this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
   methods: {
-    async fetchOpen() {
+    async fetchData() {
+      const response = await this.$axios.get("/task/all", {
+        params: { startDate: this.deposit.start, dueDate: this.deposit.due },
+        headers: {
+          title: this.title.toLowerCase(),
+          branch: this.branchId,
+          division: this.divisi.value,
+          Authorization: `Bearer ${this.token}`,
+        },
+      });
+
+      // console.log("walawe: ", this.divisi.value);
+      let tasks;
+      const role = this.title.toLowerCase();
+      if (role === "director" || role === "direktur") {
+        tasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "director" &&
+            task.pic_title !== "direktur" &&
+            task.pic_title !== "admin"
+        );
+      } else if (this.title.toLowerCase() === "manager") {
+        tasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "director" ||
+            ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
+        );
+      } else if (this.title.toLowerCase() === "supervisor") {
+        tasks = response.data.filter((task) => task.pic_title === "operator");
+      } else if (this.title.toLowerCase() === "operator") {
+        tasks = response.data.filter((task) => task.u_name === this.username);
+      }
+      this.TotalOpen = tasks.filter((task) => task.status === "Open").length;
+      this.TotalCompleted = tasks.filter((task) => task.status === "Close").length;
+      this.TotalInProgress = tasks.filter((task) => task.status === "In-progress").length;
+      this.TotalOverdue = tasks.filter((task) => task.status === "Idle").length;
+      this.TotalTotal = tasks.length;
+
+      // console.log("NGGAH", this.TotalTotal);
+    },
+
+    async fetchDivisionData() {
       try {
-        const response = await this.$axios.get("/task/all", {
-          params: { status: "Open", search: this.search },
+        const { status, data } = await this.$axios.get("/divisi", {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branch.value,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title === "operator");
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        // Log the length of opened tasks
-        this.TotalOpen = openedTasks.length;
-        console.log(openedTasks.length);
+        const listOfDivisi = data.data.map((data) => ({
+          label: data.d_name,
+          value: data.id,
+        }));
 
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
+        this.divisiOptions = listOfDivisi;
+        this.divisi = this.divisiOptions[0];
+
+        const divisi = this.divisiOptions.d_name;
+        // console.log("Selected Divisi:", divisi);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
+        console.error("Error fetching users:", error);
       }
     },
 
-    async fetchCompleted() {
+    async fetchPersonData() {
       try {
-        const response = await this.$axios.get("/task/all", {
-          params: { status: "Close", search: this.search },
+        // console.log("🚀 ~ listOfDivisi ~ value:", this.divisi.value);
+        const { status, data } = await this.$axios.get("/user/division", {
+          params: {
+            division: this.divisi.value,
+            branch: this.branch,
+          },
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title === "operator");
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        // Log the length of opened tasks
-        this.TotalCompleted = openedTasks.length;
-        console.log(openedTasks.length);
-
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
-      }
-    },
-
-    async fetchInProgress() {
-      try {
-        const response = await this.$axios.get("/task/all", {
-          params: { status: "In-progress", search: this.search },
-          headers: {
-branch: this.branchId,
-division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title === "operator");
-
-        // Log the length of opened tasks
-        this.TotalInProgress = openedTasks.length;
-        console.log(openedTasks.length);
-
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
-      }
-    },
-
-    async fetchOverdue() {
-      try {
-        const response = await this.$axios.get("/task/all", {
-          params: { status: "Idle", search: this.search },
-          headers: {
-branch: this.branchId,
-division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic_title === "operator");
-
-        // Log the length of opened tasks
-        this.TotalOverdue = openedTasks.length;
-        console.log(openedTasks.length);
-
-        console.log(openedTasks.length);
-
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
-      }
-    },
-
-    async fetchTotal() {
-      try {
-        const response = await this.$axios.get("/task/all", {
-          params: { status: "", search: this.search },
-          headers: {
-branch: this.branchId,
-division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(
-          (task) => task.pic_title !== "manager" && task.pic_title !== "supervisor"
+        const filteredData = data.filter(
+          (user) =>
+            user.title !== "director" && user.title !== "direktur" && user.title !== "admin" && user.title !== "manager"
         );
 
-        // Log the length of opened tasks
-        this.TotalTotal = openedTasks.length;
-        console.log(openedTasks.length);
+        const listOfPerson = filteredData.map((data) => ({
+          label: data.u_name,
+          value: data.u_id,
+          title: data.title,
+        }));
 
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
+        this.personOptions = listOfPerson;
+        this.person = this.personOptions[0];
+
+        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
+        // console.log("Selected Person:", person);
+        eventBus.$emit("person-selected", this.person);
+        this.fetchData(person);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async fetchBranchData() {
+      try {
+        const { status, data } = await this.$axios.get("/branch", {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        const listOfBranch = data.data.map((data) => ({
+          label: data.b_name,
+          value: data.id,
+        }));
+
+        this.branchOptions = listOfBranch;
+        this.branch = this.branchOptions[0];
+
+        const branch = this.branchOptions.d_name;
+        // console.log("Selected Branch:", branch);
+      } catch (error) {
+        console.error("Error fetching users:", error);
       }
     },
 
     redirectToTaskMonitoring(statusFilter) {
-      this.$router.push({
-        path: "/supervisor/task_monitoring",
-        query: { status: statusFilter },
-      });
-    },
-
-    SaveImage(type) {
-      const linkSource = this.$refs[type].getDataURL();
-      const downloadLink = document.createElement("a");
-      document.body.appendChild(downloadLink);
-      downloadLink.href = linkSource;
-      downloadLink.target = "_self";
-      downloadLink.download = type + ".png";
-      downloadLink.click();
-    },
-    exportTable() {
-      // naive encoding to csv format
-      const content = [this.columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          this.data.map((row) =>
-            this.columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
-
-      const status = exportFile("activity.csv", content, "text/csv");
-
-      if (status !== true) {
-        this.$q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
+      if (this.title.toLowerCase() === "operator") {
+        this.$router.push({
+          path: `/${this.title.toLowerCase()}/task_list`,
+          query: { status: statusFilter },
+        });
+      } else if (this.title.toLowerCase() === "direktur") {
+        this.$router.push({
+          path: "/director/task_monitoring",
+          query: { status: statusFilter },
+        });
+      } else {
+        this.$router.push({
+          path: `/${this.title.toLowerCase()}/task_monitoring`,
+          query: { status: statusFilter },
         });
       }
     },
-  },
-  name: "PageIndex",
-  components: {
-    Card: () => import("components/Card"),
-    ApexHalfDonut: () => import("components/ApexHalfDonut"),
-    ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
   },
 };
 </script>

@@ -1,257 +1,146 @@
 <template>
   <q-page>
-    <!-- overview -->
-    <q-card flat>
-      <q-card-section class="row q-gutter-sm q-pt-md q-ml-sm q-mr-md items-center">
-        <div class="text-h6 q-mt-xs q-ml-md col-md-5 col-sm-11 col-xs-11">
-          Feedback Review
-        </div>
-        <q-space></q-space>
+    <q-card-section class="row q-gutter-sm q-pt-md q-ml-sm items-center">
+      <div class="text-h6 q-mt-xs q-ml-md">Feedback Review</div>
+      <q-space></q-space>
+      <q-select
+        dense
+        filled
+        label="Cabang"
+        v-model="branch"
+        name="Cabang"
+        use-input
+        input-debounce="0"
+        :options="branchOptions"
+        behavior="menu"
+        class="col-2"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+      <q-select
+        dense
+        filled
+        label="Division"
+        v-model="divisi"
+        name="Division"
+        use-input
+        input-debounce="0"
+        :options="divisiOptions"
+        behavior="menu"
+        class="col-2"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
 
-        <q-input
-          class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-5 col-xs-5"
-          borderless
-          dense
-          v-model="deposit.start_2"
-          mask="date"
-          label="From"
-        >
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                ref="depositDateProxy"
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date v-model="deposit.start_2" />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
+      <q-select
+        dense
+        filled
+        label="Person"
+        v-model="person"
+        name="Person"
+        use-input
+        input-debounce="0"
+        :options="personOptions"
+        behavior="menu"
+        class="col-2"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
 
-        <q-input
-          class="bg-grey-3 q-px-md under-title col-lg-1 col-md-1 col-sm-5 col-xs-5"
-          borderless
-          dense
-          v-model="deposit.due_2"
-          mask="date"
-          label="To"
-        >
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                ref="depositDateProxy"
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date v-model="deposit.due_2" />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </q-card-section>
-    </q-card>
-    <!-- overview -->
+      <q-input
+        filled
+        label="From"
+        dense
+        v-model="deposit.start"
+        class=""
+        style="width: 155px"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-date v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
 
-    <!-- task card  -->
-    <div class="row q-col-gutter-sm q-ma-xs q-mr-sm justify-around items-stretch">
-      <!-- completed task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card
-          class="no-shadow cursor-pointer q-hoverable"
-          v-ripple
-          clickable
-          @click="redirectToTaskList('Close')"
-        >
-          <q-card-section
-            style="height: 270px"
-            :class="$q.dark.isActive ? 'blue_dark' : 'bg-purple-1'"
-            class="text-black"
-          >
-            <q-card-section class="row items-center justify-center q-gutter-md">
-              <div class="bg-purple q-px-sm q-pt-xs card-icon q-mb-sm">
-                <img width="35px" src="statics/check.svg" />
-              </div>
-              <div class="text-weight-bold text-center">Completed Tasks</div>
-            </q-card-section>
-            <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">
-                {{ TotalCompleted }}
-              </div>
-              Increased by 6 this week
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- completed task -->
-
-      <!-- in progres task -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card
-          class="no-shadow cursor-pointer q-hoverable"
-          v-ripple
-          clickable
-          @click="redirectToTaskList('In-progress')"
-        >
-          <q-card-section
-            style="height: 270px"
-            :class="$q.dark.isActive ? 'blue_dark' : 'bg-blue-1'"
-            class="text-black"
-          >
-            <q-card-section class="row items-center justify-center q-gutter-md">
-              <div class="bg-blue q-px-sm q-pt-xs card-icon q-mb-sm">
-                <img width="35px" src="statics/Load.svg" />
-              </div>
-              <div class="text-weight-bold text-center">In Progress Tasks</div>
-            </q-card-section>
-            <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">
-                {{ TotalInProgress }}
-              </div>
-              Decreased by 5 this week
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- in progres task -->
-
-      <!-- overdue -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card
-          class="no-shadow cursor-pointer q-hoverable"
-          v-ripple
-          clickable
-          @click="redirectToTaskList('Idle')"
-        >
-          <q-card-section
-            style="height: 270px"
-            :class="$q.dark.isActive ? 'blue_dark' : 'bg-orange-1'"
-            class="text-black"
-          >
-            <q-card-section class="row items-center justify-center q-gutter-md">
-              <div class="bg-orange q-px-sm q-pt-xs card-icon q-mb-sm">
-                <img width="35px" src="statics/Jam.svg" />
-              </div>
-              <div class="text-weight-bold text-center">Overdue Tasks</div>
-            </q-card-section>
-            <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">
-                {{ TotalOverdue }}
-              </div>
-              Increased by 3 this week
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- overdue -->
-
-      <!-- opened -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card
-          class="no-shadow cursor-pointer q-hoverable"
-          v-ripple
-          clickable
-          @click="redirectToTaskList('Open')"
-        >
-          <q-card-section
-            style="height: 270px"
-            :class="$q.dark.isActive ? 'blue_dark' : 'bg-green-1'"
-            class="text-black"
-          >
-            <q-card-section class="row items-center justify-center q-gutter-md">
-              <div class="bg-green q-px-sm q-pt-xs card-icon q-mb-sm">
-                <img width="35px" src="statics/check.svg" />
-              </div>
-              <div class="text-weight-bold text-center">Opened Tasks</div>
-            </q-card-section>
-            <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">
-                {{ TotalOpen }}
-              </div>
-              Increased by 8 this week
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- opened -->
-
-      <!-- total -->
-      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
-        <q-card
-          class="no-shadow cursor-pointer q-hoverable"
-          v-ripple
-          clickable
-          @click="redirectToTaskList()"
-        >
-          <q-card-section
-            style="height: 270px"
-            :class="$q.dark.isActive ? 'blue_dark' : 'bg-cyan-1'"
-            class="text-black"
-          >
-            <q-card-section class="row items-center justify-center q-gutter-md">
-              <div class="bg-cyan q-px-sm q-pt-xs card-icon q-mb-sm">
-                <img width="35px" src="statics/list.svg" />
-              </div>
-              <div class="text-weight-bold text-center">Total Tasks</div>
-            </q-card-section>
-            <q-card-section class="text-center">
-              <div class="text-h4 text-weight-bold q-mt-none">
-                {{ TotalTotal }}
-              </div>
-              Completion rate: 80%
-            </q-card-section>
-          </q-card-section>
-        </q-card>
-      </div>
-      <!-- total -->
-    </div>
-    <!-- task card  -->
-
+      <q-input
+        filled
+        label="To"
+        dense
+        v-model="deposit.due"
+        class=""
+        style="width: 155px"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-date v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+    </q-card-section>
+    <Card></Card>
     <div>
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
-
-      <div class="row q-col-gutter-sm q-ma-xs q-pt-none q-mt-none">
+      <div class="row q-col-gutter-sm q-mt-xs">
         <apex-half-donut></apex-half-donut>
-        <apex-coulmn-chart-basic></apex-coulmn-chart-basic>
+        <apex-column-charts-basic></apex-column-charts-basic>
       </div>
     </div>
   </q-page>
 </template>
 
 <script>
+import { eventBus } from "../../event-bus.js";
 import Cookies from "js-cookie";
 import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
 import { ref } from "vue";
 
-// Vue.component('IEcharts', IEcharts);
-
-function wrapCsvValue(val, formatFn) {
-  let formatted = formatFn !== void 0 ? formatFn(val) : val;
-
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
-
-  formatted = formatted.split('"').join('""');
-
-  return `"${formatted}"`;
-}
-
 export default {
   name: "Dashboard",
+  components: {
+    Card: () => import("components/Card"),
+    ApexHalfDonut: () => import("components/ApexHalfDonut"),
+    ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
+  },
   data() {
     return {
+      username: sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username"),
+      title: sessionStorage.getItem("title")
+        ? sessionStorage.getItem("title")
+        : Cookies.get("title"),
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
       branchId: sessionStorage.getItem("branch_id")
         ? sessionStorage.getItem("branch_id")
         : Cookies.get("branch_id"),
-      token: ref(
-        sessionStorage.getItem("token")
-          ? sessionStorage.getItem("token")
-          : Cookies.get("token")
-      ),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -259,251 +148,253 @@ export default {
       TotalTotal: "0",
       filter: "",
       mode: "list",
-      rating: ref(2.5),
       search: "",
       deposit: {
         start: "",
         due: "",
-        start_1: "",
-        due_1: "",
-        start_2: "",
-        due_2: "",
       },
     };
   },
   setup() {
     return {
-      onItemClick() {
-        console.log("Clicked on an Item");
-      },
+      branch: ref(),
+      divisi: ref(),
+      person: ref(),
+      divisi1: [],
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
+      onItemClick() {},
     };
   },
 
-  mounted() {
-    this.fetchOpen();
-    this.fetchInProgress();
-    this.fetchCompleted();
-    this.fetchOverdue();
-    this.fetchTotal();
+  watch: {
+    "deposit.start": {
+      handler(value) {
+        this.deposit.start = value != "" ? value : "";
+        this.fetchData();
+      },
+      // deep: true,
+    },
 
-    this.intervalId = setinterval(() => {
-      this.fetchOpen();
-      this.fetchInProgress();
-      this.fetchCompleted();
-      this.fetchOverdue();
-      this.fetchTotal();
-    });
+    "deposit.due": {
+      handler(value) {
+        this.deposit.due = value != "" ? value : "";
+        this.fetchData();
+      },
+    },
+
+    divisi: {
+      handler(value) {
+        // console.log("WAKWAW");
+        // console.log("UWAW: ", value.label);
+        this.fetchPersonData();
+      },
+    },
+
+    person: {
+      handler(value) {
+        // console.log("OWIGH");
+        // console.log("LASOA: ", value.label);
+        eventBus.$emit("person-selected", this.person);
+      },
+    },
+
+    branch: {
+      handler(value) {
+        // console.log("UWEY");
+        // console.log("OOOOP: ", value.label);
+        this.fetchDivisionData();
+      },
+    },
   },
 
+  mounted() {
+    this.fetchBranchData();
+    this.fetchDivisionData();
+    this.fetchPersonData();
+    this.fetchData();
+    this.intervalId = setInterval(() => {
+      this.fetchData();
+    }, 60000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.intervalId);
+  },
   methods: {
-    async fetchOpen() {
-      try {
-        const id = sessionStorage.getItem("")
-          ? sessionStorage.getItem("id")
-          : Cookies.get("id");
-        const response = await this.$axios.get("/task/all", {
-          params: {
-            status: "Open",
-            search: this.search,
-          },
-          headers: {
-            pic: id,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+    async fetchData() {
+      const response = await this.$axios.get("/task/all", {
+        params: { startDate: this.deposit.start, dueDate: this.deposit.due },
+        headers: {
+          title: this.title.toLowerCase(),
+          branch: this.branchId,
+          division: this.divisi.value,
+          Authorization: `Bearer ${this.token}`,
+        },
+      });
 
-        const openedTasks = response.data.filter((task) => task.pic.title !== "Open");
-
-        this.TotalOpen = openedTasks.length;
-        console.log(openedTasks.length);
-
-        return openedTasks.length;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        return 0;
+      // console.log("walawe: ", this.divisi.value);
+      let tasks;
+      const role = this.title.toLowerCase();
+      if (role === "director" || role === "direktur") {
+        tasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "director" &&
+            task.pic_title !== "direktur" &&
+            task.pic_title !== "admin"
+        );
+      } else if (this.title.toLowerCase() === "manager") {
+        tasks = response.data.filter(
+          (task) =>
+            task.pic_title !== "director" ||
+            ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
+        );
+      } else if (this.title.toLowerCase() === "supervisor") {
+        tasks = response.data.filter((task) => task.pic_title === "operator");
+      } else if (this.title.toLowerCase() === "operator") {
+        tasks = response.data.filter((task) => task.u_name === this.username);
       }
+      this.TotalOpen = tasks.filter((task) => task.status === "Open").length;
+      this.TotalCompleted = tasks.filter((task) => task.status === "Close").length;
+      this.TotalInProgress = tasks.filter((task) => task.status === "In-progress").length;
+      this.TotalOverdue = tasks.filter((task) => task.status === "Idle").length;
+      this.TotalTotal = tasks.length;
+
+      // console.log("NGGAH", this.TotalTotal);
     },
 
-    async fetchCompleted() {
+    async fetchDivisionData() {
       try {
-        const username = sessionStorage.getItem("")
-          ? sessionStorage.getItem("username")
-          : Cookies.get("username");
-        const response = await this.$axios.get("/task/all", {
-          params: {
-            status: "Close",
-            search: this.search,
-          },
+        const divisionId = parseInt(this.divisionId)
+
+        const { status, data } = await this.$axios.get("/divisi", {
           headers: {
-            pic: username,
+            branch: this.branch.value,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic.title !== "Close");
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        // Log the length of opened tasks
-        this.TotalCompleted = openedTasks.length;
-        console.log(openedTasks.length);
-
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
-      }
-    },
-
-    async fetchInProgress() {
-      try {
-        const username = sessionStorage.getItem("")
-          ? sessionStorage.getItem("username")
-          : Cookies.get("username");
-        const response = await this.$axios.get("/task/all", {
-          params: {
-            status: "In-progress",
-            search: this.search,
-          },
-          headers: {
-            pic: username,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter(
-          (task) => task.pic.title !== "In-progress"
+        const filteredData = data.data.filter(
+          (divisi) =>
+            divisi.id === divisionId
         );
 
-        // Log the length of opened tasks
-        this.TotalInProgress = openedTasks.length;
-        console.log(openedTasks.length);
+        const listOfDivisi = filteredData.map((data) => ({
+          label: data.d_name,
+          value: data.id,
+        }));
 
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
+        this.divisiOptions = listOfDivisi;
+        this.divisi = this.divisiOptions[0];
+
+        const divisi = this.divisiOptions.d_name;
+        // console.log("Selected Divisi:", divisi);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
+        console.error("Error fetching users:", error);
       }
     },
 
-    async fetchOverdue() {
+    async fetchPersonData() {
       try {
-        const username = sessionStorage.getItem("")
-          ? sessionStorage.getItem("username")
-          : Cookies.get("username");
-        const response = await this.$axios.get("/task/all", {
+        const id = parseInt(sessionStorage.getItem("id") || Cookies.get("id"), 10);
+        const { status, data } = await this.$axios.get("/user/division", {
           params: {
-            status: "Idle",
-            search: this.search,
+            division: this.divisi.value,
+            branch: this.branch,
           },
           headers: {
-            pic: username,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data.filter((task) => task.pic.title !== "Operator");
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        // Log the length of opened tasks
-        this.TotalOverdue = openedTasks.length;
-        console.log(openedTasks.length);
 
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
+        const filteredData = data.filter(
+          (user) =>
+            user.u_id === id
+        );
+
+        const listOfPerson = filteredData.map((data) => ({
+          label: data.u_name,
+          value: data.u_id,
+          title: data.title,
+        }));
+
+        this.personOptions = listOfPerson;
+        this.person = this.personOptions[0];
+
+        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
+        // console.log("Selected Person:", person);
+        eventBus.$emit("person-selected", this.person);
+        this.fetchData(person);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
+        console.error("Error fetching users:", error);
       }
     },
 
-    async fetchTotal() {
+    async fetchBranchData() {
       try {
-        const username = sessionStorage.getItem("")
-          ? sessionStorage.getItem("username")
-          : Cookies.get("username");
-        const response = await this.$axios.get("/task/all", {
-          params: {
-            status: "",
-            search: this.search,
-          },
+        const branchId = parseInt(this.branchId)
+        const { status, data } = await this.$axios.get("/branch", {
           headers: {
-            pic: username,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        // Assuming response.data is an array of tasks
-        const openedTasks = response.data;
+        if (status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        // Log the length of opened tasks
-        this.TotalTotal = openedTasks.length;
-        console.log(openedTasks.length);
+        const filteredBranch = data.data.filter(
+          (branch) =>
+            branch.id === branchId
+        );
 
-        // You can use this value in your component or store it in a data property
-        return openedTasks.length;
+        const listOfBranch = filteredBranch.map((data) => ({
+          label: data.b_name,
+          value: data.id,
+        }));
+
+        this.branchOptions = listOfBranch;
+        this.branch = this.branchOptions[0];
+
+        const branch = this.branchOptions.d_name;
+        // console.log("Selected Branch:", branch);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed, maybe set a default value or show an error message
-        return 0;
+        console.error("Error fetching users:", error);
       }
     },
 
-    redirectToTaskList(statusFilter) {
-      this.$router.push({
-        path: "/operator/task_list",
-        query: { status: statusFilter },
-      });
-    },
-
-    SaveImage(type) {
-      const linkSource = this.$refs[type].getDataURL();
-      const downloadLink = document.createElement("a");
-      document.body.appendChild(downloadLink);
-      downloadLink.href = linkSource;
-      downloadLink.target = "_self";
-      downloadLink.download = type + ".png";
-      downloadLink.click();
-    },
-    exportTable() {
-      // naive encoding to csv format
-      const content = [this.columns.map((col) => wrapCsvValue(col.label))]
-        .concat(
-          this.data.map((row) =>
-            this.columns
-              .map((col) =>
-                wrapCsvValue(
-                  typeof col.field === "function"
-                    ? col.field(row)
-                    : row[col.field === void 0 ? col.name : col.field],
-                  col.format
-                )
-              )
-              .join(",")
-          )
-        )
-        .join("\r\n");
-
-      const status = exportFile("activity.csv", content, "text/csv");
-
-      if (status !== true) {
-        this.$q.notify({
-          message: "Browser denied file download...",
-          color: "negative",
-          icon: "warning",
+    redirectToTaskMonitoring(statusFilter) {
+      if (this.title.toLowerCase() === "operator") {
+        this.$router.push({
+          path: `/${this.title.toLowerCase()}/task_list`,
+          query: { status: statusFilter },
+        });
+      } else if (this.title.toLowerCase() === "direktur") {
+        this.$router.push({
+          path: "/director/task_monitoring",
+          query: { status: statusFilter },
+        });
+      } else {
+        this.$router.push({
+          path: `/${this.title.toLowerCase()}/task_monitoring`,
+          query: { status: statusFilter },
         });
       }
     },
-  },
-  name: "PageIndex",
-  components: {
-    ApexHalfDonut: () => import("components/ApexHalfDonut"),
-    apexCoulmnChartBasic: () => import("components/ApexColumnChartsBasic"),
   },
 };
 </script>

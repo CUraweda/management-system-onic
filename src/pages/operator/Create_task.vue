@@ -623,7 +623,6 @@ export default {
         const { status, data } = await this.$axios.get("/user/all", {
           headers: {
             branch: this.branchId,
-            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
