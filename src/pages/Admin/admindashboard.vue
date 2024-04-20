@@ -231,12 +231,12 @@
             </q-card-section>
           </q-card>
         </q-dialog>
-        <q-btn
+        <!-- <q-btn
           label="Import From Excel"
           @click="openDialogImport"
           color="cyan"
           no-caps
-        />
+        /> -->
         <q-dialog v-model="uploadExcel">
           <q-card>
             <q-card-section class="row items-center q-pb-none">
