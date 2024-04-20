@@ -231,12 +231,12 @@
             </q-card-section>
           </q-card>
         </q-dialog>
-        <!-- <q-btn
+        <q-btn
           label="Import From Excel"
           @click="openDialogImport"
           color="cyan"
           no-caps
-        /> -->
+        />
         <q-dialog v-model="uploadExcel">
           <q-card>
             <q-card-section class="row items-center q-pb-none">
@@ -910,8 +910,8 @@ export default defineComponent({
         const response = await this.$axios.get(`/user/all`, {
           headers: {
             title: this.title,
-            branch: this.branchId,
-            division: this.divisionId,
+            // branch: this.branchId,
+            // division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });

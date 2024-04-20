@@ -207,6 +207,7 @@ export default {
         // console.log("UWEY");
         // console.log("OOOOP: ", value.label);
         this.fetchDivisionData();
+        this.fetchPersonData();
       },
     },
   },
@@ -300,11 +301,11 @@ export default {
         const { status, data } = await this.$axios.get("/user/division", {
           params: {
             division: this.divisi.value,
-            branch: this.branch,
+            branch: this.branch.value,
           },
           headers: {
-            branch: this.branchId,
-            division: this.divisionId,
+            // branch: this.branch.value,
+            // division: this.branch.value,
             Authorization: `Bearer ${this.token}`,
           },
         });
