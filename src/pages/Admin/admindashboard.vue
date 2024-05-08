@@ -49,7 +49,7 @@
         <q-dialog v-model="dialogDivision">
           <q-card style="width: 700px">
             <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">{{ titleAddUser }}</div>
+              <div class="text-h6">{{ roleAddUser }}</div>
               <q-space />
               <q-btn no-caps color="cyan" @click="createDivision()">{{
                 addDivision
@@ -74,8 +74,8 @@
                 <q-select
                   outlined
                   dense
-                  v-model="branch"
-                  :options="optionsBranch"
+                  v-model="company_name"
+                  :options="optionscompany_name"
                   label="Cabang"
                   class="col-grow"
                 />
@@ -111,8 +111,8 @@
                 <q-select
                   outlined
                   dense
-                  v-model="branch"
-                  :options="optionsBranch"
+                  v-model="company_name"
+                  :options="optionscompany_name"
                   label="Cabang"
                   class="col-grow"
                 /> -->
@@ -123,30 +123,46 @@
         <q-dialog v-model="dialogUser">
           <q-card style="width: 700px">
             <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">{{ titleAddUser }}</div>
+              <div class="text-h6">{{ roleAddUser }}</div>
               <q-space />
               <q-btn no-caps color="cyan" @click="handleAction()">{{ addUser }}</q-btn>
             </q-card-section>
 
-            <q-card-section
-            style=""
-            class=""
-            >
-            <q-select
-              outlined
-              dense
-              v-model="role"
-              :options="optionsRole"
-              label="Role"
-              class="q-px-md"
-            />
+            <q-card-section style="" class="">
+              <!-- <h2>List Cabang</h2> -->
+
+              <q-select
+                outlined
+                dense
+                v-model="role"
+                :options="optionsRole"
+                label="Role"
+                class="q-px-md"
+              />
               <div class="full-width">
                 <div style="display: flex; gap: 10px">
+                  <v-row>
+                    <v-col
+                      v-for="company_nameList in company_nameList"
+                      :key="company_nameList.id"
+                    >
+                      <div class="company_name-item">
+                        <span>{{ company_nameList.b_name }}</span>
+                        <span>{{ company_nameList.id }}</span>
+                        <v-switch
+                          v-model="selectedcompany_nameIds"
+                          :value="company_nameList.id"
+                          @change="togglecompany_nameAccess"
+                        />
+                        <q-toggle />
+                      </div>
+                    </v-col>
+                  </v-row>
                   <!-- <q-select
                     outlined
                     dense
-                    v-model="branch"
-                    :options="optionsBranch"
+                    v-model="company_name"
+                    :options="optionscompany_name"
                     style="width: 70px"
                     label="Cabang"
                     class="col-grow"
@@ -276,11 +292,11 @@
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td key="Id" :props="props">
-              <div>{{ props.row.u_id }}</div>
+              <div>{{ props.row.id }}</div>
             </q-td>
 
             <q-td key="Name" :props="props">
-              <div>{{ props.row.u_name }}</div>
+              <div>{{ props.row.name }}</div>
             </q-td>
 
             <q-td key="gender" :props="props">
@@ -288,7 +304,7 @@
             </q-td>
 
             <q-td key="Cabang" :props="props">
-              <div>{{ props.row.branch }}</div>
+              <div>{{ props.row.company_name }}</div>
             </q-td>
 
             <q-td key="Divisi" :props="props">
@@ -300,12 +316,10 @@
             </q-td>
 
             <q-td key="Role" :props="props">
-              <div>{{ props.row.title }}</div>
+              <div>{{ props.row.role }}</div>
             </q-td>
 
-            <q-td key="Email" :props="props">
-              <div>{{ props.row.u_email }}</div>
-            </q-td>
+            <q-td key="Email" :props="props"> </q-td>
 
             <!-- <q-td key="Status" :props="props">
               <q-toggle
@@ -319,7 +333,7 @@
               <div class="q-gutter-sm">
                 <q-btn
                   dense
-                  class="under-title q-px-sm text-green"
+                  class="under-role q-px-sm text-green"
                   rounded
                   no-caps
                   unelevated
@@ -330,7 +344,7 @@
 
                 <!-- <q-btn
                   dense
-                  class="under-title q-px-sm text-blue"
+                  class="under-role q-px-sm text-blue"
                   rounded
                   no-caps
                   unelevated
@@ -522,18 +536,20 @@ import axios from "axios";
 export default defineComponent({
   data() {
     return {
+      Roles: [],
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")
-        ? sessionStorage.getItem("branch_id")
-        : Cookies.get("branch_id"),
-      title: sessionStorage.getItem("title")
-        ? sessionStorage.getItem("title")
-        : Cookies.get("title"),
+      company_nameId: sessionStorage.getItem("company_name_id")
+        ? sessionStorage.getItem("company_name_id")
+        : Cookies.get("company_name_id"),
+      // role: sessionStorage.getItem("role")
+      //   ? sessionStorage.getItem("role")
+      //   : Cookies.get("role"),
       grid: false,
+      selectedcompany_nameIds: [],
       division_id: null,
-      branch_id: null,
+      company_name_id: null,
       newPosition: ref(null),
       newDivisi: ref(null),
       fileTask: ref(null),
@@ -542,8 +558,8 @@ export default defineComponent({
       addDivision: ref(),
       addPosition: ref(),
       addUser: ref(),
-      titleAddUser: ref(),
-      titleAddDivision: ref(),
+      roleAddUser: ref(),
+      roleAddDivision: ref(),
       passwordIf: ref(true),
       confirmPasswordIf: ref(true),
       dialogPassword: ref(false),
@@ -557,10 +573,11 @@ export default defineComponent({
       ),
       name: ref(),
       email: ref(),
-      optionsBranch: ref([]),
+      optionscompany_name: ref([]),
       optionsDivisi: ref([]),
       optionsPosition: ref([]),
-      branch: ref(),
+      company_name: ref(),
+      company_nameList: ref(),
       division: ref(),
       position: ref(),
       role: ref(),
@@ -596,7 +613,7 @@ export default defineComponent({
         "Oprasional Sales",
         "Acc & Purches",
         "Produksi",
-        "HRD & GA",
+        "HRD & GA",
         "Marketing",
       ]),
       JabatanOpt: ref(["admin", "supervisor", "direktur", "manager", "operator"]),
@@ -606,8 +623,8 @@ export default defineComponent({
   },
   setup() {
     const columns = [
-      { name: "Id", label: "Id", align: "center", field: "u_id", sortable: true },
-      { name: "Name", label: "Nama", align: "center", field: "u_name", sortable: true },
+      { name: "Id", label: "Id", align: "center", field: "id", sortable: true },
+      { name: "Name", label: "Nama", align: "center", field: "name", sortable: true },
       {
         name: "gender",
         label: "Gender",
@@ -619,7 +636,7 @@ export default defineComponent({
         name: "Cabang",
         label: "Cabang",
         align: "center",
-        field: "branch",
+        field: "company_name",
         sortable: true,
       },
       {
@@ -636,15 +653,7 @@ export default defineComponent({
         field: "position",
         sortable: true,
       },
-      { name: "Role", label: "Role", align: "center", field: "title", sortable: true },
-      {
-        name: "Email",
-        label: "Email",
-        align: "center",
-        field: "u_email",
-        sortable: true,
-      },
-      // { name: "Status", label: "Status", align: "center", field: "id", sortable: false },
+      { name: "Role", label: "Role", align: "center", field: "role", sortable: true },
       { name: "Action", label: "Action", align: "center", field: "id", sortable: false },
     ];
 
@@ -658,11 +667,12 @@ export default defineComponent({
   mounted() {
     // this.getPosition();
     // this.getDivision();
-    // this.getBranch();
+    // this.getcompany_nameList();
+    this.getRole();
     this.getData();
   },
   watch: {
-    branch: {
+    company_name: {
       handler(value) {
         if (value) {
           this.getDivision(value.value, this.division_id);
@@ -688,7 +698,7 @@ export default defineComponent({
       try {
         if (rowData.deleted === false) {
           const { status, data } = await this.$axios.delete(
-            `/user/activate-user/${rowData.u_id}`,
+            `/user/activate-user/${rowData.id}`,
             {
               headers: {
                 Authorization: `Bearer ${this.token}`,
@@ -699,7 +709,7 @@ export default defineComponent({
             // Berhasil membalikkan nilai deleted
             rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
             this.$q.notify({
-              message: `${rowData.u_name} Account Activated`,
+              message: `${rowData.name} Account Activated`,
               color: "positive",
             });
             this.getData();
@@ -708,7 +718,7 @@ export default defineComponent({
           }
         } else {
           const { status, data } = await this.$axios.delete(
-            `/user/delete-user/${rowData.u_id}`,
+            `/user/delete-user/${rowData.id}`,
             {
               headers: {
                 Authorization: `Bearer ${this.token}`,
@@ -719,7 +729,7 @@ export default defineComponent({
             // Berhasil membalikkan nilai deleted
             rowData.deleted = !rowData.deleted; // Perubahan nilai deleted sesuai dengan respons server
             this.$q.notify({
-              message: `${rowData.u_name} Account Deactivated`,
+              message: `${rowData.name} Account Deactivated`,
               color: "negative",
             });
             this.getData();
@@ -733,17 +743,17 @@ export default defineComponent({
       }
     },
 
-    async getPosition(branch_id, position_id) {
+    async getPosition(company_name_id, position_id) {
       try {
         console.log("🚀 ~ getPosition ~ position_id:", position_id);
         const { status, data } = await this.$axios.get("/position", {
           headers: {
             Authorization: `Bearer ${this.token}`,
-            branch: this.branchId,
-            title: this.title.toLowerCase(),
+            company_name: this.company_nameId || undifined,
+            role: this.role.toLowerCase(),
           },
           params: {
-            branch_id: this.branch.value,
+            company_name_id: this.company_name.value || undifined,
           },
         });
 
@@ -767,16 +777,17 @@ export default defineComponent({
         // Handle error appropriately, maybe set a default position or display an error message
       }
     },
-    async getDivision(branch_id, division_id) {
+
+    async getDivision(company_name_id, division_id) {
       console.log("🚀 ~ getDivision ~ division_id-id-id:", division_id);
       const { status, data } = await this.$axios.get("/divisi", {
         headers: {
           Authorization: `Bearer ${this.token}`,
-          branch: this.branchId,
-          title: this.title.toLowerCase(),
+          company_name: this.company_nameId,
+          role: this.role.toLowerCase(),
         },
         params: {
-          branch_id: this.branch.value,
+          company_name_id: this.company_name.value || undefined,
         },
       });
 
@@ -797,11 +808,35 @@ export default defineComponent({
       this.division = selectedDivisi || this.optionsDivisi[0];
     },
 
-    async getBranch(branch_id, division_id) {
-      const { status, data } = await this.$axios.get("/branch", {
+    async togglecompany_nameAccess() {
+      console.log("Selected company_name IDs:", this.selectedcompany_nameIds);
+    },
+
+    async getcompany_nameList() {
+      const { status, data } = await this.$axios.get("/company_name", {
         headers: {
           Authorization: `Bearer ${this.token}`,
-          branch: this.branchId,
+        },
+      });
+
+      if (status !== 200) {
+        throw Error("Error while fetching");
+      }
+
+      console.log("company_name DATA:", data.data);
+
+      this.company_nameList = data.data;
+      console.log(
+        "🚀 ~ getcompany_nameList ~ this.company_nameList:",
+        this.company_nameList
+      );
+    },
+
+    async getcompany_name(company_name_id, division_id) {
+      const { status, data } = await this.$axios.get("/company_name", {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          company_name: this.company_nameId || undifined,
         },
       });
 
@@ -810,16 +845,16 @@ export default defineComponent({
       }
 
       console.log("DATA:", data.data);
-      const listOfBranch = data.data.map((data) => ({
+      const listOfcompany_name = data.data.map((data) => ({
         label: data.b_name,
         value: data.id,
       }));
 
-      this.optionsBranch = listOfBranch;
-      const selectedBranch = this.optionsBranch.find(
-        (branch) => branch.value === branch_id
+      this.optionscompany_name = listOfcompany_name;
+      const selectedcompany_name = this.optionscompany_name.find(
+        (company_name) => company_name.value === company_name_id
       );
-      this.branch = selectedBranch || this.optionsBranch[0];
+      this.company_name = selectedcompany_name || this.optionscompany_name[0];
     },
 
     togglePwdVisibility() {
@@ -834,42 +869,42 @@ export default defineComponent({
     openDialogDivision() {
       this.division = null;
       this.dialogDivision = true;
-      this.getBranch();
+      this.getcompany_name();
       this.addDivision = "Add Division";
-      this.titleAddUser = "Add Division";
+      this.roleAddUser = "Add Division";
       this.divisionAdd = true;
     },
     openDialogPosition() {
       this.position = null;
       this.dialogPosition = true;
-      this.getBranch();
+      this.getcompany_name();
       this.addPosition = "Add Position";
-      this.titleAddUser = "Add Position";
+      this.roleAddUser = "Add Position";
       this.positionAdd = true;
     },
     openDialogUser(edit = false) {
       this.role = this.optionsRole[0];
       this.getDivision();
-      this.getBranch();
+      this.getcompany_name();
       this.getPosition();
       this.dialogUser = true;
       this.passwordIf = true;
       this.confirmPasswordIf = true;
-      this.titleAddUser = edit ? "Edit User" : "Add User";
+      this.roleAddUser = edit ? "Edit User" : "Add User";
       this.addUser = edit ? "Edit User" : "Add User";
       this.editing = edit;
     },
     openDialogResetPassword(rowData) {
       // console.log("WEGOWEGO", rowData);
       this.changePassword = "Change Password";
-      this.resetPasswordId = rowData.u_id;
+      this.resetPasswordId = rowData.id;
       this.dialogPassword = true;
       thid = null;
       this.PasswordChange = true;
     },
     //Button Setter
     setButton(rowData, act) {
-      this.currentShownId = rowData.u_id;
+      this.currentShownId = rowData.id;
       console.log(this.currentShownId);
       act != "edit" ? "" : this.setEditUser();
       act != "delete" ? "" : this.deleteUser();
@@ -895,7 +930,7 @@ export default defineComponent({
         "role",
         "position",
         "division",
-        "branch",
+        "company_name",
         "confirmPassword",
       ];
       for (let index of listOfModel) {
@@ -904,28 +939,65 @@ export default defineComponent({
       }
     },
 
-    async getData() {
+    async getRole() {
       try {
-        if (!this.token) throw Error("You must be log in");
-        const response = await this.$axios.get(`/user/all`, {
+        // console.log("bangbang")
+        const response = await this.$axios.get(`/role`, {
           headers: {
-            title: this.title,
-            // branch: this.branchId,
-            // division: this.divisionId,
+            "Content-Type": "application/json",
+            Accept: "application/json",
             Authorization: `Bearer ${this.token}`,
           },
         });
 
+        this.roles = response.data.data;
+        console.log("🚀 ~ getRole ~ ole:", this.roles);
+
+        return role;
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
+    async getData() {
+      try {
+        console.log("bang");
+        const Url = "https://office.onic.co.id/api/master/employee/active";
+        const response = await fetch(Url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        this.getRole()
+        const resData = await response.json();
+        // console.log("🚀 ~ getData ~ response:", response)
+        // console.log("🚀 ~ getData ~ resData:", resData)
+
         if (response.status === 200) {
-          const { data } = response;
-          this.rows = data.map((user) => ({
-            u_id: user.u_id,
-            u_name: user.u_name ? user.u_name : "",
+          const data = resData.data;
+          console.log("🚀 ~ getRole ~ ole:", this.roles);
+
+          // Menyiapkan objek untuk mapping user.id ke roles
+          const userRolesMap = {};
+
+          this.getRole()
+          // Mengisi userRolesMap dengan roles berdasarkan user.id
+          this.roles.forEach((role) => {
+            userRolesMap[role.u_id] = role; // Menyimpan role ke dalam userRolesMap berdasarkan user_id
+          });
+
+          this.rows = data.map((user, index) => ({
+            id: user.id,
+            name: user.name ? user.name : "",
             gender: user.gender ? user.gender : "",
-            branch: user.branch ? user.branch : "",
+            company_name: user.company_name ? user.company_name : "",
             division: user.division ? user.division : "",
-            title: user.title ? user.title.toLowerCase() : "",
-            u_email: user.u_email ? user.u_email : "",
+            role: user.id && userRolesMap[user.id] ? userRolesMap[user.id].role : "", // Mengambil name dari role jika role ditemukan
             position: user.position ? user.position : "",
             deleted: user.deleted,
           }));
@@ -938,9 +1010,10 @@ export default defineComponent({
 
     //EDIT START
     async setEditUser() {
+      console.log("🚀 ~ setEditUser ~ this.currentShownId:", this.currentShownId);
       try {
         const { data, status } = await this.$axios.get(
-          `/user/get-by-id/${this.currentShownId}`,
+          `/role/get-by-id/${this.currentShownId}`,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -955,12 +1028,12 @@ export default defineComponent({
         this.openDialogUser(true);
         // this.passwordIf = false;
         // this.confirmPasswordIf = false;
-        // this.name = data.u_name;
-        // this.email = data.u_email;
-        this.role = data.title;
+        // this.name = data.name;
+        this.role = data.data.role;
+        console.log("🚀 ~ setEditUser ~ role:", this.role);
         // this.division_id = data.division_id;
-        // this.branch_id = data.branch_id;
-        // this.getBranch(this.branch_id, this.division_id);
+        // this.company_name_id = data.company_name_id;
+        // this.getcompany_name(this.company_name_id, this.division_id);
         // this.getDivision(null, this.division_id);
         // this.getPosition(null, this.position_id);
       } catch (err) {
@@ -972,20 +1045,16 @@ export default defineComponent({
     async sendEdit() {
       try {
         const { data, status } = await this.$axios.put(
-          `/user/update-user/${this.currentShownId}`,
+          `/role/edit/${this.currentShownId}`,
           {
-            // u_name: this.name,
-            // u_email: this.email,
-            // division_id: this.division.value,
-            // branch_id: this.branch.value,
-            // position_id: this.position.value,
-            title: this.role.value,
+            role: this.role.value,
           }
         );
         if (status != 200) throw Error(data.message);
         console.log(this.role.value);
         this.dialogUser = false;
         this.getData();
+        this.getRole();
         return this.$q.notify({ message: data.message });
       } catch (err) {
         console.log(err);
@@ -1024,9 +1093,9 @@ export default defineComponent({
             email: this.email,
             password: this.password,
             repassword: this.confirmPassword,
-            title: this.role.value,
+            role: this.role.value,
             division_id: this.division.value,
-            branch_id: this.branch.value,
+            company_name_id: this.company_name.value,
           },
           {
             headers: {
@@ -1052,7 +1121,7 @@ export default defineComponent({
           "/position/create",
           {
             p_name: this.newPosition,
-            branch_id: this.branch.value,
+            company_name_id: this.company_name.value,
           },
           {
             headers: {
@@ -1076,7 +1145,7 @@ export default defineComponent({
           "/divisi/create",
           {
             d_name: this.newDivisi,
-            branch_id: this.branch.value,
+            company_name_id: this.company_name.value,
           },
           {
             headers: {

@@ -131,6 +131,7 @@ import Cookies from "js-cookie";
 import { ref } from "vue";
 import axios from "axios";
 
+// axios.defaults.withCredentials = true;
 export default {
   name: "SignIn",
 
@@ -227,76 +228,92 @@ export default {
     },
 
     async SignIn() {
-      const email = Cookies.get("email");
-      const data = {
-        email: this.email ? this.email : email,
-        password: this.password || null,
-        branch: this.branch ? this.branch.value : null,
-      };
-      console.log("🚀 ~ SignIn ~ data.token:", data.token);
+      const loginUrl = "https://office.onic.co.id/api/auth/login";
 
+      // Define the data object containing the required parameters
+      const data = {
+        u_email: "developer@mail.com",
+        u_password: "onic2021",
+      };
+
+      // Make the POST request using fetch
       try {
-        const token = Cookies.get("token");
-        console.log("🚀 ~ SignIn ~ token:", token);
-        const response = await this.$axios.post("/user/login", data, {
+        const response = await axios.post(loginUrl, data, {
           headers: {
             "Content-Type": "application/json",
-          },
-          params: {
-            token: token ? token : null,
+            Accept: "application/json",
           },
         });
 
-        if (response.status === 200) {
-          const accessToken = response.data.data.accessToken;
-          const email = response.data.data.email;
-          const id = response.data.data.id;
-          const name = response.data.data.name;
-          const title = response.data.data.title;
-          const division = response.data.data.division;
-          const branch = response.data.data.branch;
-          const position = response.data.data.position;
-          const position_id = response.data.data.position_id;
-          const division_id = response.data.data.division_id;
-          const branch_id = response.data.data.branch_id;
+        const ResDat = await response.data;
+        console.log("🚀 ~ SignIn ~ ResDat:", ResDat)
+        const ResponseData = await ResDat.data.data;
+        const UserData = await ResponseData.user;
+        const AucData = await ResponseData.active_user_company;
+        const DivisionData = await AucData.division;
+        const BranchData = await AucData.company;
+        const PositionData = await AucData.position;
+        // Handle Data based on the server's response
 
-          if (this.right) {
-            Cookies.set("token", accessToken, { expires: 365 }); // Cookie berlaku selama 1 tahunv
-            Cookies.set("id", id, { expires: 365 });
-            Cookies.set("email", email, { expires: 365 });
-            Cookies.set("username", name, { expires: 365 });
-            Cookies.set("title", title, { expires: 365 });
-            Cookies.set("division", division, { expires: 365 });
-            Cookies.set("branch", branch, { expires: 365 });
-            Cookies.set("position", position, { expires: 365 });
-            Cookies.set("position_id", position_id, { expires: 365 });
-            Cookies.set("division_id", division_id, { expires: 365 });
-            Cookies.set("branch_id", branch_id, { expires: 365 });
-          } else {
-            sessionStorage.setItem("token", accessToken);
-            sessionStorage.setItem("id", id);
-            sessionStorage.setItem("email", email);
-            sessionStorage.setItem("username", name);
-            sessionStorage.setItem("title", title);
-            sessionStorage.setItem("division", division);
-            sessionStorage.setItem("branch", branch);
-            sessionStorage.setItem("position", position);
-            sessionStorage.setItem("position_id", position_id);
-            sessionStorage.setItem("division_id", division_id);
-            sessionStorage.setItem("branch_id", branch_id);
-          }
-          this.redirectUser(title);
+        // Mendapatkan role berdasarkan user ID
+        const userId = UserData.u_id;
+        console.log("🚀 ~ SignIn ~ userId:", userId)
+        const roleData = await this.$axios.get(`/role/get-by-id/${userId}`);
 
-          this.$q.notify({
-            color: "positive",
-            message: "Login Successful.",
-          });
-        } else {
-          throw new Error("Invalid email or password");
-        }
+        // const accessToken = Data.accessToken;
+        const email = UserData.u_email;
+        const id = UserData.u_id;
+        const name = UserData.u_name;
+        const division = DivisionData.d_name;
+        const role = roleData.data.data.role;
+        const branch = BranchData.c_name;
+        const position = PositionData.p_name;
+        const position_id = PositionData.p_id;
+        const division_id = DivisionData.d_id;
+        const branch_id = BranchData.c_id;
+        const token = ResDat.data.credential;
+        console.log("🚀 ~ SignIn ~ token:", token)
+
+        // const laravelSessionCookie = cookies.find((cookie) =>
+        //   cookie.startsWith("laravel_session")
+        // );
+        // if (laravel SessionCookie) {
+        //   // Simpan nilai cookie di variabel lokal
+        //   laravelSession = laravelSessionCookie.split(";")[0].split("=")[1];
+        // }
+
+        // if (this.right) {
+        //   Cookies.set("token", accessToken, { expires: 365 }); // Cookie berlaku selama 1 tahun
+        //   Cookies.set("id", id, { expires: 365 });
+        //   Cookies.set("email", email, { expires: 365 });
+        //   Cookies.set("username", name, { expires: 365 });
+        // Cookies.set("role", role, { expires: 365 });
+        //   Cookies.set("division", division, { expires: 365 });
+        //   Cookies.set("branch", branch, { expires: 365 });
+        //   Cookies.set("position", position, { expires: 365 });
+        //   Cookies.set("position_id", position_id, { expires: 365 });
+        //   Cookies.set("division_id", division_id, { expires: 365 });
+        //   Cookies.set("branch_id", branch_id, { expires: 365 });
+        // } else {
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("id", id);
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("username", name);
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem("division", division);
+        sessionStorage.setItem("branch", branch);
+        sessionStorage.setItem("position", position);
+        sessionStorage.setItem("position_id", position_id);
+        sessionStorage.setItem("division_id", division_id);
+        sessionStorage.setItem("branch_id", branch_id);
+        // }
+        this.redirectUser(role);
+
+        this.$q.notify({
+          color: "positive",
+          message: "Login Successful.",
+        });
       } catch (error) {
-        console.error("Error signing in:", error);
-
         this.$q.notify({
           color: "negative",
           position: "top",
@@ -305,8 +322,8 @@ export default {
       }
     },
 
-    redirectUser: function (title) {
-      switch (title.toLowerCase()) {
+    redirectUser: function (role) {
+      switch (role.toLowerCase()) {
         case "manager":
           this.$router.push("manager/dashboard");
           break;
