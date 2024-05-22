@@ -412,6 +412,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import Cookies from "js-cookie";
 import { ref } from "vue";
 import { store } from "../../store/store.js";
@@ -420,12 +421,12 @@ export default {
   name: "DirectorCreate",
   data() {
     return {
-      divisionId: sessionStorage.getItem("division_id")
-        ? sessionStorage.getItem("division_id")
-        : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")
-        ? sessionStorage.getItem("branch_id")
-        : Cookies.get("branch_id"),
+      division: sessionStorage.getItem("division")
+        ? sessionStorage.getItem("division")
+        : Cookies.get("division"),
+      branch: sessionStorage.getItem("branch")
+        ? sessionStorage.getItem("branch")
+        : Cookies.get("branch"),
       token: ref(
         sessionStorage.getItem("token")
           ? sessionStorage.getItem("token")
@@ -461,6 +462,8 @@ export default {
 
     return {
       SpvApp,
+      role: ref(),
+      roles: [],
       picOptions: ref([]),
       spvOptions: ref([]),
       task_type: ref("Single"),
@@ -542,10 +545,8 @@ export default {
   },
 
   mounted() {
+    this.getRole();
     this.fetchData();
-    this.intervalId = setinterval(() => {
-      this.fetchData();
-    }, 6000);
   },
 
   computed: {
@@ -566,70 +567,79 @@ export default {
 
     selectedpic: {
       handler(value) {
-        console.log("Selected PIC changed. Updating SPV options...");
-        console.log("PIC title:", value.title);
-
-        if (value.title) {
-          console.log(
-            "Ping:",
-            this.picOptions.find((user) => user.title.toLowerCase() === value.title)
-          );
-          // Perbarui opsi SPV berdasarkan peran PIC yang dipilih
-          const selectedpic = this.picOptions.find(
-            (user) => user.title.toLowerCase() === value.title
-          );
-          console.log("Selected pic:", selectedpic);
-
-          if (selectedpic) {
-            this.fetchSpvData();
-          }
-        }
+        this.fetchSpvData();
       },
     },
   },
 
   methods: {
-    async fetchUserData() {
-      const response = await this.$axios.get("/user/get-by-id/" + id, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    },
-
-    async fetchData() {
+    async getRole() {
       try {
-        const { status, data } = await this.$axios.get("/user/all", {
+        console.log("bangbang");
+        const response = await this.$axios.get(`/role`, {
           headers: {
-            branch: this.branchId,
-            // division: this.divisionId,
+            "Content-Type": "application/json",
+            Accept: "application/json",
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        if (status !== 200) {
+        this.roles = response.data.data;
+        // console.log("🚀 ~ getRole ~ ole:", this.roles);
+
+        // return role;
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
+    async fetchData() {
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+
+      // Make the POST request using fetch
+      try {
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        console.log("🚀 ~ fetchData ~ response:", response);
+
+        if (response.status !== 200) {
           throw Error("Error while fetching");
         }
 
-        const filteredData = data.filter((user) => {
-          const titleLowerCase = user.title.toLowerCase();
-          return (
-            titleLowerCase !== "director" &&
-            titleLowerCase !== "direktur" &&
-            titleLowerCase !== "admin"
-          );
+        const filteredCompany = response.data.data.filter(
+          (user) => user.company_name === this.branch
+        );
+
+        console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
         });
 
-        const listOfPic = filteredData.map((user) => ({
-          label: user.u_name,
-          value: user.u_name,
-          title: user.title.toLowerCase(),
-          division: user.division_id,
-          branch: user.branch_id,
-          id: user.u_id,
+        const listOfPic = filteredCompany.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          division: user.division,
+          branch: user.company_name,
+          id: user.id,
         }));
 
-        this.picOptions = listOfPic;
+        const filteredData = listOfPic.filter((user) => {
+          return user.title !== "director" && user.title !== "admin";
+        });
+
+        this.picOptions = filteredData;
+        console.log("🚀 ~ fetchData ~ filteredData:", filteredData);
         this.selectedpic = this.picOptions[0];
 
         const selectedpic = this.picOptions.title;
@@ -640,54 +650,128 @@ export default {
     },
 
     async fetchSpvData() {
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+
+      // Make the POST request using fetch
+      console.log("kabom");
       try {
-        const { status, data } = await this.$axios.get("/user/all", {
+        const response = await axios.get(loginUrl, {
           headers: {
-            branch: this.selectedpic.branch || this.branchId,
-            division: this.selectedpic.division || this.divisionId,
+            "Content-Type": "application/json",
+            Accept: "application/json",
             Authorization: `Bearer ${this.token}`,
           },
         });
-        if (status !== 200) throw Error("Error while fetching");
+        console.log("🚀 ~ fetchSpvData ~ response:", response);
 
-        const listOfSpv = data.map((user) => ({
-          label: user.u_name,
-          value: user.u_name,
-          title: user.title.toLowerCase(),
-          id: user.u_id,
+        if (response.status !== 200) throw Error("Error while fetching");
+
+        const filteredCompany = response.data.data.filter(
+          (user) =>
+            user.company_name === this.selectedpic.branch &&
+            user.division === this.selectedpic.division
+        );
+
+        console.log("🚀 ~ fetchSpvData ~ filteredCompany:", filteredCompany);
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
+        });
+
+        const listOfSpv = filteredCompany.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
         }));
 
+        console.log("🚀 ~ listOfSpv ~ listOfSpv:", listOfSpv);
+
         const SelectedPic = this.selectedpic.title;
+        let supervisors;
+        console.log(
+          "🚀 ~ fetchSpvData ~ this.selectedpic.title:",
+          this.selectedpic.label
+        );
 
-        if (SelectedPic) {
-          const selectedTitleLowerCase = SelectedPic.toLowerCase();
-
-          if (selectedTitleLowerCase === "operator") {
-            this.spvOptions = listOfSpv.filter((user) => {
-              const titleLowerCase = user.title.toLowerCase();
-              return titleLowerCase === "supervisor";
-            });
-            console.log("Updating SPV options to supervisor.");
-            this.selectedspv = this.spvOptions[0];
-          } else if (selectedTitleLowerCase === "supervisor") {
-            this.spvOptions = listOfSpv.filter((user) => {
-              const titleLowerCase = user.title.toLowerCase();
-              return titleLowerCase === "manager";
-            });
-            console.log("Updating SPV options to manager.");
-            this.selectedspv = this.spvOptions[0];
-          } else if (selectedTitleLowerCase === "manager") {
-            this.spvOptions = listOfSpv.filter((user) => {
-              const titleLowerCase = user.title.toLowerCase();
-              return titleLowerCase === "director" || titleLowerCase === "direktur";
-            });
-            console.log("Updating SPV options to director.");
-            this.selectedspv = this.spvOptions[0];
-          } else {
-            this.spvOptions = null;
-            this.selectedspv = null;
-          }
+        if (SelectedPic === "operator") {
+          supervisors = listOfSpv.filter((user) => {
+            const titleLowerCase = user.title;
+            return titleLowerCase === "supervisor";
+          });
+          console.log("titel nya op");
+        } else if (SelectedPic === "supervisor") {
+          supervisors = listOfSpv.filter((user) => {
+            const titleLowerCase = user.title;
+            return titleLowerCase === "manager";
+          });
+          console.log("titel nya spv");
+        } else if (SelectedPic === "manager") {
+          supervisors = listOfSpv.filter((user) => {
+            const titleLowerCase = user.title;
+            return titleLowerCase === "director";
+          });
+          console.log("titel nya manager");
         }
+
+        console.log("dadakan ", supervisors);
+
+        const listCompany = response.data.data.filter(
+          (user) => user.company_name === this.selectedpic.branch
+        );
+
+        const listOfDirec = listCompany.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+        }));
+
+        console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
+        const listSupervisor = listOfDirec.filter((user) => {
+          const title = user.title;
+          return (
+            title !== "admin" &&
+            title !== "operator" &&
+            user.id !== this.selectedpic.id &&
+            title !== this.selectedpic.title
+          );
+        });
+
+        this.spvOptions =
+          supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
+        this.selectedspv = this.spvOptions[0];
+        // if (SelectedPic) {
+        //   const selectedTitleLowerCase = SelectedPic;
+
+        //   if (selectedTitleLowerCase === "operator") {
+        //     this.spvOptions = listOfSpv.filter((user) => {
+        //       const titleLowerCase = user.title;
+        //       return titleLowerCase === "supervisor";
+        //     });
+        //     console.log("Updating SPV options to supervisor.");
+        //     this.selectedspv = this.spvOptions[0];
+        //   } else if (selectedTitleLowerCase === "supervisor") {
+        //     this.spvOptions = listOfSpv.filter((user) => {
+        //       const titleLowerCase = user.title;
+        //       return titleLowerCase === "manager";
+        //     });
+        //     console.log("Updating SPV options to manager.");
+        //     this.selectedspv = this.spvOptions[0];
+        //   } else if (selectedTitleLowerCase === "manager") {
+        //     this.spvOptions = listOfSpv.filter((user) => {
+        //       const titleLowerCase = user.title;
+        //       return titleLowerCase === "director" || titleLowerCase === "direktur";
+        //     });
+        //     console.log("Updating SPV options to director.");
+        //     this.selectedspv = this.spvOptions[0];
+        //   } else {
+        //     this.spvOptions = null;
+        //     this.selectedspv = null;
+        //   }
+        // }
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -728,6 +812,7 @@ export default {
         (value === undefined || value === null || value === "")
       ) {
         throw new Error(`Please fill all input`);
+        console.log(value);
       } else {
         // Assign the value to the specified property in sendedForm
         this.sendedForm[properties] = value;
@@ -741,6 +826,7 @@ export default {
             ? this.selectedpic.value
             : this.selectedpic.map((user) => user.value).join(",");
         const spv = this.selectedspv.value;
+
         this.addToForm("pic_id", this.selectedpic.id);
         this.addToForm("spv_id", this.selectedspv.id);
         this.addToForm("task_type", this.task_type);
@@ -759,8 +845,8 @@ export default {
         );
         this.addToForm("bukti_tayang", this.model);
         this.addToForm("iteration", this.iteration);
-        this.addToForm("pic", pic);
-        this.addToForm("spv", spv);
+        this.addToForm("pic", this.selectedpic.label);
+        this.addToForm("spv", this.selectedspv.label);
 
         const response = await this.$axios.post("/task/new", this.sendedForm, {
           headers: {

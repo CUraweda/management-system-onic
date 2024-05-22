@@ -604,7 +604,7 @@ export default {
         const listOfPic = filteredData.map((user) => ({
           label: user.u_name,
           value: user.u_name,
-          title: user.title.toLowerCase(), // Jika 'title' adalah properti yang valid pada objek 'user'
+          title: user.title, // Jika 'title' adalah properti yang valid pada objek 'user'
           id: user.u_id,
         }));
 

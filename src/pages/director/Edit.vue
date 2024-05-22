@@ -615,11 +615,12 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
+          branch: this.branchId,
+          division: this.divisionId,
+          Authorization: `Bearer ${this.token}`,
           },
         });
+
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
@@ -629,6 +630,7 @@ division: this.divisionId,
         ).toLocaleString();
         this.form.due_date = new Date(response.data.due_date).toLocaleString();
         this.form.description = response.data.description;
+        this.form.pic_title = response.data.pic_title;
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
         this.form.pic.value = response.data.pic_id;

@@ -169,6 +169,7 @@ export default {
       }
     }
   },
+
   methods: {
     async checkEmail() {
       try {
@@ -193,6 +194,7 @@ export default {
         })
       }
     },
+    
     async fetchData() {
       try {
         const response = await this.$axios.get('/user/helper-register')
@@ -207,6 +209,7 @@ export default {
         console.log(err)
       }
     },
+
     async SignUp() {
       try {
         const data = {

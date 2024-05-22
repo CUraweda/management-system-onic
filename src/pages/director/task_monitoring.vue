@@ -117,8 +117,8 @@
                 <div>{{ props.row.pic }}</div>
               </q-td>
 
-              <q-td key="pic_title" :props="props">
-                <div>{{ props.row.pic_title }}</div>
+              <q-td key="pic_role" :props="props">
+                <div>{{ props.row.pic_role }}</div>
               </q-td>
 
               <q-td key="start_date" :props="props">
@@ -380,10 +380,10 @@ export default {
           sortable: true,
         },
         {
-          name: "pic_title",
+          name: "pic_role",
           align: "left",
           label: "Title",
-          field: "pic_title",
+          field: "pic_role",
           sortable: true,
         },
         {
@@ -564,8 +564,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -619,7 +619,7 @@ division: this.divisionId,
             dueDate: this.deposit.due,
           },
           headers: {
-          title: this.title.toLowerCase(),
+          title: this.title,
           branch: this.branchId,
           division: this.divisionId,
           Authorization: `Bearer ${this.token}`,

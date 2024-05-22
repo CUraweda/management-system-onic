@@ -190,9 +190,9 @@ export default {
       username: sessionStorage.getItem("username")
         ? sessionStorage.getItem("username")
         : Cookies.get("username"),
-      title: sessionStorage.getItem("title")
-        ? sessionStorage.getItem("title")
-        : Cookies.get("title"),
+      role: sessionStorage.getItem("role")
+        ? sessionStorage.getItem("role")
+        : Cookies.get("role"),
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -283,7 +283,7 @@ export default {
 
       // console.log("walawe: ", this.divisi.value);
       // let tasks;
-      // const role =  this.title.toLowerCase();
+      // const role =  this.role;
       // if (
       //   role === "director" ||
       //   role === "direktur"
@@ -294,15 +294,15 @@ export default {
       //       task.pic_title !== "direktur" &&
       //       task.pic_title !== "admin"
       //   );
-      // } else if (this.title.toLowerCase() === "manager") {
+      // } else if (this.role === "manager") {
       //   tasks = response.data.filter(
       //     (task) =>
       //       task.pic_title !== "director" ||
       //       ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
       //   );
-      // } else if (this.title.toLowerCase() === "supervisor") {
+      // } else if (this.role === "supervisor") {
       //   tasks = response.data.filter((task) => task.pic_title === "operator");
-      // } else if (this.title.toLowerCase() === "operator") {
+      // } else if (this.role === "operator") {
       //   tasks = response.data.filter((task) => task.u_name === this.username);
       // }
       this.TotalOpen = response.data.filter((task) => task.status === "Open").length;
@@ -313,79 +313,21 @@ export default {
 
       // console.log("NGGAH", this.TotalTotal);
     },
-
-    async fetchDivisionData() {
-      try {
-        const { status, data } = await this.$axios.get("/divisi", {
-          headers: {
-            branch: this.branch.value,
-            division: this.divisionId,
-            title: this.title.toLowerCase(),
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        if (status !== 200) {
-          throw Error("Error while fetching");
-        }
-
-        const listOfDivisi = data.data.map((data) => ({
-          label: data.d_name,
-          value: data.id,
-        }));
-
-        this.divisiOptions = listOfDivisi;
-        this.divisi = this.divisiOptions[0];
-
-        const divisi = this.divisiOptions.d_name;
-        // console.log("Selected Divisi:", divisi);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
-
-    async fetchBranchData() {
-      try {
-        const { status, data } = await this.$axios.get("/branch", {
-          headers: {
-            title: this.title.toLowerCase(),
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-
-        if (status !== 200) {
-          throw Error("Error while fetching");
-        }
-
-        const listOfDivisi = data.data.map((data) => ({
-          label: data.d_name,
-          value: data.id,
-        }));
-
-        this.divisiOptions = listOfDivisi;
-        this.divisi = this.divisiOptions[0];
-
-        const divisi = this.divisiOptions.d_name;
-        // console.log("Selected Divisi:", divisi);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
-
+    
     redirectToTaskMonitoring(statusFilter) {
-      if (this.title.toLowerCase() === "operator") {
+      if (this.role === "operator") {
         this.$router.push({
-          path: `/${this.title.toLowerCase()}/task_list`,
+          path: `/${this.role}/task_list`,
           query: { status: statusFilter },
         });
-      } else if (this.title.toLowerCase() === "direktur") {
+      } else if (this.role === "direktur") {
         this.$router.push({
           path: "/director/task_monitoring",
           query: { status: statusFilter },
         });
       } else {
         this.$router.push({
-          path: `/${this.title.toLowerCase()}/task_monitoring`,
+          path: `/${this.role}/task_monitoring`,
           query: { status: statusFilter },
         });
       }
@@ -403,11 +345,11 @@ export default {
   width: 175px;
 }
 
-.title-card {
+.role-card {
   border-radius: 20px;
 }
 
-.under-title {
+.under-role {
   border-radius: 8px;
 }
 

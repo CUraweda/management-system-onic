@@ -119,9 +119,10 @@ import Vue from "vue";
 import { exportFile } from "quasar";
 import CardBase from "components/CardBase";
 import { ref } from "vue";
+import axios from "axios";
 
 export default {
-  name: "Dashboard",
+  name: "DashboardManager",
   components: {
     Card: () => import("components/Card"),
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
@@ -129,6 +130,12 @@ export default {
   },
   data() {
     return {
+      email: sessionStorage.getItem("email")
+        ? sessionStorage.getItem("email")
+        : Cookies.get("email"),
+      password: sessionStorage.getItem("password")
+        ? sessionStorage.getItem("password")
+        : Cookies.get("password"),
       username: sessionStorage.getItem("username")
         ? sessionStorage.getItem("username")
         : Cookies.get("username"),
@@ -153,13 +160,20 @@ export default {
         start: "",
         due: "",
       },
+      roles: [],
+      // branches: [],
     };
   },
+
   setup() {
     return {
+      // role: ref(),
       branch: ref(),
       divisi: ref(),
       person: ref(),
+      personOptions: [],
+      divisiOptions: [],
+      branchOptions: [],
       divisi1: [],
       token: ref(
         sessionStorage.getItem("token")
@@ -190,6 +204,7 @@ export default {
       handler(value) {
         // console.log("WAKWAW");
         // console.log("UWAW: ", value.label);
+        sessionStorage.setItem("divisi1", this.divisi.label);
         this.fetchPersonData();
       },
     },
@@ -206,89 +221,127 @@ export default {
       handler(value) {
         // console.log("UWEY");
         // console.log("OOOOP: ", value.label);
-        this.fetchDivisionData();
+        // this.fetchDivisionData();
+        this.changeCompany();
+        this.fetchPersonData();
       },
     },
   },
 
   mounted() {
+    this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
-    this.fetchPersonData();
-    this.fetchData();
-    this.intervalId = setInterval(() => {
-      this.fetchData();
-    }, 60000);
+    // this.fetchPersonData();
+    // this.fetchData();
   },
 
   beforeDestroy() {
     clearInterval(this.intervalId);
   },
+
   methods: {
-    async fetchData() {
-      const response = await this.$axios.get("/task/all", {
-        params: { startDate: this.deposit.start, dueDate: this.deposit.due },
-        headers: {
-          title: this.title.toLowerCase(),
-          branch: this.branchId,
-          division: this.divisi.value,
-          Authorization: `Bearer ${this.token}`,
-        },
-      });
+    async changeCompany() {
+      const data = {
+        u_email: this.email,
+        u_password: this.password,
+        uc_company_id: this.branch.value,
+      };
 
-      // console.log("walawe: ", this.divisi.value);
-      let tasks;
-      const role = this.title.toLowerCase();
-      if (role === "director" || role === "direktur") {
-        tasks = response.data.filter(
-          (task) =>
-            task.pic_title !== "director" &&
-            task.pic_title !== "direktur" &&
-            task.pic_title !== "admin"
-        );
-      } else if (this.title.toLowerCase() === "manager") {
-        tasks = response.data.filter(
-          (task) =>
-            task.pic_title !== "director" ||
-            ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
-        );
-      } else if (this.title.toLowerCase() === "supervisor") {
-        tasks = response.data.filter((task) => task.pic_title === "operator");
-      } else if (this.title.toLowerCase() === "operator") {
-        tasks = response.data.filter((task) => task.u_name === this.username);
+      const loginUrl = "https://office.onic.co.id/api/auth/login";
+
+      try {
+        const response = await axios.post(loginUrl, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
+        if (response.status !== 200) {
+          console.log("err");
+        }
+
+        const ResDat = await response.data;
+        const ResponseData = await ResDat.data.data;
+        const AucData = await ResponseData.active_user_company;
+        const DivisionData = await AucData.division;
+        const BranchData = await AucData.company;
+        const PositionData = await AucData.position;
+
+        const division = DivisionData.d_name;
+        const branch = BranchData.c_name;
+        const position = PositionData.p_name;
+        const position_id = PositionData.p_id;
+        const division_id = DivisionData.d_id;
+        const branch_id = BranchData.c_id;
+
+        const dataData = {
+          division,
+          branch,
+          position,
+          position_id,
+          division_id,
+          branch_id,
+        };
+
+        console.log("🚀 ~ changeCompany ~ dataData:", dataData)
+
+        sessionStorage.setItem("division", division);
+        sessionStorage.setItem("branch", branch);
+        sessionStorage.setItem("position", position);
+        sessionStorage.setItem("position_id", position_id);
+        sessionStorage.setItem("division_id", division_id);
+        sessionStorage.setItem("branch_id", branch_id);
+
+        console.log("Diganti ", response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
       }
-      this.TotalOpen = tasks.filter((task) => task.status === "Open").length;
-      this.TotalCompleted = tasks.filter((task) => task.status === "Close").length;
-      this.TotalInProgress = tasks.filter((task) => task.status === "In-progress").length;
-      this.TotalOverdue = tasks.filter((task) => task.status === "Idle").length;
-      this.TotalTotal = tasks.length;
-
-      // console.log("NGGAH", this.TotalTotal);
     },
 
-    async fetchDivisionData() {
+    async getRole() {
       try {
-        const divisionId = parseInt(this.divisionId)
-
-        const { status, data } = await this.$axios.get("/divisi", {
+        // console.log("bangbang")
+        const response = await this.$axios.get(`/role`, {
           headers: {
-            branch: this.branch.value,
+            "Content-Type": "application/json",
+            Accept: "application/json",
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        if (status !== 200) {
+        this.roles = response.data.data;
+        // console.log("🚀 ~ getRole ~ ole:", this.roles);
+
+        // return role;
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+    async fetchDivisionData() {
+      const loginUrl = "https://office.onic.co.id/api/master/division";
+
+      // Make the POST request using fetch
+      try {
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        // console.log("🚀 ~ fetchDivisionData ~ response:", response)
+
+        if (response.status !== 200) {
           throw Error("Error while fetching");
         }
 
-        const filteredData = data.data.filter(
-          (divisi) =>
-            divisi.id === divisionId
-        );
-
-        const listOfDivisi = filteredData.map((data) => ({
+        const listOfDivisi = response.data.data.map((data) => ({
           label: data.d_name,
-          value: data.id,
+          value: data.d_id,
         }));
 
         this.divisiOptions = listOfDivisi;
@@ -302,76 +355,85 @@ export default {
     },
 
     async fetchPersonData() {
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+
+      // Make the POST request using fetch
       try {
-        const id = parseInt(sessionStorage.getItem("id") || Cookies.get("id"), 10);
-        const { status, data } = await this.$axios.get("/user/division", {
-          params: {
-            division: this.divisi.value,
-            branch: this.branch,
-          },
+        const response = await axios.get(loginUrl, {
           headers: {
-            branch: this.branchId,
-            division: this.divisionId,
+            "Content-Type": "application/json",
+            Accept: "application/json",
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        if (status !== 200) {
+        // console.log("🚀 ~ fetchPersonData ~ response:", response)
+
+        if (response.status !== 200) {
           throw Error("Error while fetching");
         }
 
+        const branch = this.branch.label;
+        const division = this.divisi.label;
 
-        const filteredData = data.filter(
-          (user) =>
-            user.u_id === id
+        const filteredData = response.data.data.filter(
+          (user) => user.company_name === branch && user.division === division
         );
 
+        // console.log("🚀 ~ fetchPersonData ~ filteredData:", filteredData)
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
+        });
+
         const listOfPerson = filteredData.map((data) => ({
-          label: data.u_name,
-          value: data.u_id,
-          title: data.title,
+          label: data.name,
+          value: data.id,
+          title: userRolesMap[data.id] ? userRolesMap[data.id].role : "",
         }));
 
-        this.personOptions = listOfPerson;
+        const filteredTitle = listOfPerson.filter(
+          (user) =>
+            user.title !== "director" &&
+            user.title !== "direktur" &&
+            user.title !== "admin"
+        );
+
+        this.personOptions = filteredTitle;
         this.person = this.personOptions[0];
 
         const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
         // console.log("Selected Person:", person);
         eventBus.$emit("person-selected", this.person);
-        this.fetchData(person);
+        // this.fetchData(person);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     },
 
     async fetchBranchData() {
-      try {
-        const branchId = parseInt(this.branchId)
-        const { status, data } = await this.$axios.get("/branch", {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+      // const loginUrl = "https://office.onic.co.id/api/master/company-entity?status=null";
 
-        if (status !== 200) {
-          throw Error("Error while fetching");
+      try {
+        const branches = sessionStorage.getItem("branches");
+        if (branches) {
+          this.branches = JSON.parse(branches);
         }
 
-        const filteredBranch = data.data.filter(
-          (branch) =>
-            branch.id === branchId
-        );
+        // console.log("🚀 DATA:", this.branches);
 
-        const listOfBranch = filteredBranch.map((data) => ({
-          label: data.b_name,
-          value: data.id,
+        const listOfBranch = this.branches.map((branch) => ({
+          label: branch.company.c_name,
+          value: branch.company.c_id,
         }));
 
         this.branchOptions = listOfBranch;
         this.branch = this.branchOptions[0];
 
-        const branch = this.branchOptions.d_name;
-        // console.log("Selected Branch:", branch);
+        // const branch = this.branchOptions.d_name;
+        // console.log("Selected Branch:", this.branch);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -385,7 +447,7 @@ export default {
         });
       } else if (this.title.toLowerCase() === "direktur") {
         this.$router.push({
-          path: "/director/task_monitoring",
+          path: "/operator/task_monitoring",
           query: { status: statusFilter },
         });
       } else {

@@ -129,35 +129,31 @@
             </q-card-section>
 
             <q-card-section style="" class="">
-              <!-- <h2>List Cabang</h2> -->
 
               <q-select
-                outlined
-                dense
-                v-model="role"
-                :options="optionsRole"
-                label="Role"
-                class="q-px-md"
+              outlined
+              dense
+              v-model="role"
+              :options="optionsRole"
+              label="Role"
+              class="q-px-md q-mb-sm"
               />
+
+              <!-- <h2>List Cabang</h2> -->
+
+              <v-row>
+                <v-col
+                  v-for="company in companies"
+                  :key="company.id"
+                >
+                  <div class="company_name-item q-ml-md q-mx-md">
+                    <span>{{ company.label }}</span>
+                  </div>
+                </v-col>
+              </v-row>
               <div class="full-width">
                 <div style="display: flex; gap: 10px">
-                  <v-row>
-                    <v-col
-                      v-for="company_nameList in company_nameList"
-                      :key="company_nameList.id"
-                    >
-                      <div class="company_name-item">
-                        <span>{{ company_nameList.b_name }}</span>
-                        <span>{{ company_nameList.id }}</span>
-                        <v-switch
-                          v-model="selectedcompany_nameIds"
-                          :value="company_nameList.id"
-                          @change="togglecompany_nameAccess"
-                        />
-                        <q-toggle />
-                      </div>
-                    </v-col>
-                  </v-row>
+                  <!-- grrra -->
                   <!-- <q-select
                     outlined
                     dense
@@ -547,6 +543,7 @@ export default defineComponent({
       //   ? sessionStorage.getItem("role")
       //   : Cookies.get("role"),
       grid: false,
+      companies: ref(),
       selectedcompany_nameIds: [],
       division_id: null,
       company_name_id: null,
@@ -813,22 +810,40 @@ export default defineComponent({
     },
 
     async getcompany_nameList() {
-      const { status, data } = await this.$axios.get("/company_name", {
+      const url = `https://office.onic.co.id/api/master/employee/show/${this.currentShownId}`
+
+      const response = await axios.get(url, {
         headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
           Authorization: `Bearer ${this.token}`,
         },
       });
 
-      if (status !== 200) {
+      if (response.status !== 200) {
         throw Error("Error while fetching");
       }
 
-      console.log("company_name DATA:", data.data);
+      console.log("DATA:", response);
+      const branches = response.data.data.user_companies;
+      console.log("🚀 ~ getcompany_nameList ~ branches:", branches)
+      const listOfcompany_name = branches.map((data) => ({
+        label: data.company.c_name,
+        value: data.company.c_id,
+      }));
 
-      this.company_nameList = data.data;
+      this.optionscompany_name = listOfcompany_name;
+      // const selectedcompany_name = this.optionscompany_name.find(
+      //   (company_name) => company_name.value === company_name_id
+      // );
+      // this.company_name = selectedcompany_name || this.optionscompany_name[0];
+
+      // console.log("company_name DATA:", response.data.data);
+
+      this.companies = listOfcompany_name;
       console.log(
         "🚀 ~ getcompany_nameList ~ this.company_nameList:",
-        this.company_nameList
+        this.companies
       );
     },
 
@@ -884,9 +899,10 @@ export default defineComponent({
     },
     openDialogUser(edit = false) {
       this.role = this.optionsRole[0];
-      this.getDivision();
-      this.getcompany_name();
+      // this.getDivision();
+      // this.getcompany_name();
       this.getPosition();
+      this.getcompany_nameList();
       this.dialogUser = true;
       this.passwordIf = true;
       this.confirmPasswordIf = true;
@@ -973,7 +989,6 @@ export default defineComponent({
           },
         });
 
-        this.getRole()
         const resData = await response.json();
         // console.log("🚀 ~ getData ~ response:", response)
         // console.log("🚀 ~ getData ~ resData:", resData)
@@ -982,13 +997,11 @@ export default defineComponent({
           const data = resData.data;
           console.log("🚀 ~ getRole ~ ole:", this.roles);
 
-          // Menyiapkan objek untuk mapping user.id ke roles
           const userRolesMap = {};
 
           this.getRole()
-          // Mengisi userRolesMap dengan roles berdasarkan user.id
           this.roles.forEach((role) => {
-            userRolesMap[role.u_id] = role; // Menyimpan role ke dalam userRolesMap berdasarkan user_id
+            userRolesMap[role.u_id] = role;
           });
 
           this.rows = data.map((user, index) => ({
@@ -997,7 +1010,7 @@ export default defineComponent({
             gender: user.gender ? user.gender : "",
             company_name: user.company_name ? user.company_name : "",
             division: user.division ? user.division : "",
-            role: user.id && userRolesMap[user.id] ? userRolesMap[user.id].role : "", // Mengambil name dari role jika role ditemukan
+            role: userRolesMap[user.id] ? userRolesMap[user.id].role : "", // Mengambil name dari role jika role ditemukan
             position: user.position ? user.position : "",
             deleted: user.deleted,
           }));

@@ -265,17 +265,20 @@ export default {
           const id = this.person.value;
           // console.log("ini id " + id);
 
-          const response = await this.$axios.get("/user/get-by-id/" + id, {
+          const response = await this.$axios.get("/rating/get-by-id/" + id, {
             headers: {
               "Content-Type": "application/json",
             },
           });
 
-          if (response.data.total_task === 0) {
+          console.log("🚀 ~ fetchData ~ response:", response)
+
+          if (!response.data.total_rating) {
             this.Avgrate = 0;
           } else {
             // console.log("hasil" + response.data.u_rate);
-            const Avgrate = response.data.u_rate / response.data.total_task;
+            const Avgrate = response.data.data.total_rating / response.data.data.total_task;
+            console.log("🚀 ~ fetchData ~ Avgrate:", Avgrate)
             this.Avgrate = parseFloat(Avgrate.toFixed(2));
           }
         }

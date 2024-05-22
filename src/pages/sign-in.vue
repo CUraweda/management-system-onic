@@ -232,8 +232,8 @@ export default {
 
       // Define the data object containing the required parameters
       const data = {
-        u_email: "developer@mail.com",
-        u_password: "onic2021",
+        u_email: this.email,
+        u_password: this.password,
       };
 
       // Make the POST request using fetch
@@ -246,7 +246,6 @@ export default {
         });
 
         const ResDat = await response.data;
-        console.log("🚀 ~ SignIn ~ ResDat:", ResDat)
         const ResponseData = await ResDat.data.data;
         const UserData = await ResponseData.user;
         const AucData = await ResponseData.active_user_company;
@@ -257,7 +256,6 @@ export default {
 
         // Mendapatkan role berdasarkan user ID
         const userId = UserData.u_id;
-        console.log("🚀 ~ SignIn ~ userId:", userId)
         const roleData = await this.$axios.get(`/role/get-by-id/${userId}`);
 
         // const accessToken = Data.accessToken;
@@ -267,12 +265,12 @@ export default {
         const division = DivisionData.d_name;
         const role = roleData.data.data.role;
         const branch = BranchData.c_name;
+        const branches = UserData.user_companies;
         const position = PositionData.p_name;
         const position_id = PositionData.p_id;
         const division_id = DivisionData.d_id;
         const branch_id = BranchData.c_id;
         const token = ResDat.data.credential;
-        console.log("🚀 ~ SignIn ~ token:", token)
 
         // const laravelSessionCookie = cookies.find((cookie) =>
         //   cookie.startsWith("laravel_session")
@@ -295,6 +293,8 @@ export default {
         //   Cookies.set("division_id", division_id, { expires: 365 });
         //   Cookies.set("branch_id", branch_id, { expires: 365 });
         // } else {
+        sessionStorage.setItem("password", this.password);
+        sessionStorage.setItem("branches", JSON.stringify(branches));
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("id", id);
         sessionStorage.setItem("email", email);
@@ -323,7 +323,7 @@ export default {
     },
 
     redirectUser: function (role) {
-      switch (role.toLowerCase()) {
+      switch (role) {
         case "manager":
           this.$router.push("manager/dashboard");
           break;
@@ -337,7 +337,6 @@ export default {
           this.$router.push("supervisor/dashboard");
           break;
         case "director":
-        case "direktur":
           this.$router.push("director/dashboard");
           break;
         default:

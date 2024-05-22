@@ -331,7 +331,7 @@ export default {
           dueDate: this.deposit.due,
         },
         headers: {
-          title: this.title.toLowerCase(),
+          title: this.title,
           pic: this.person.value || undefined,
           branch: this.branchId,
           division: this.divisionId,
@@ -399,7 +399,7 @@ export default {
           headers: {
             branch: this.branchId,
             division: this.divisionId,
-            title: this.title.toLowerCase(),
+            title: this.title,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -444,20 +444,20 @@ export default {
     //     }
 
     //     let filteredData;
-    //     if (this.title.toLowerCase() === "director" || "direktur") {
+    //     if (this.title === "director" || "direktur") {
     //       filteredData = data.filter(
-    //         (user) => user.title.toLowerCase()!== "director" || "direktur" && user.title.toLowerCase()!== "admin"
+    //         (user) => user.title!== "director" || "direktur" && user.title!== "admin"
     //       );
-    //     } else if (this.title.toLowerCase() === "manager") {
+    //     } else if (this.title === "manager") {
     //       filteredData = data.filter(
     //         (user) =>
-    //           user.title.toLowerCase()!== "director" || "direktur" &&
-    //           user.title.toLowerCase()!== "admin" &&
-    //           user.title.toLowerCase()!== "manager"
+    //           user.title!== "director" || "direktur" &&
+    //           user.title!== "admin" &&
+    //           user.title!== "manager"
     //       );
-    //     } else if (this.title.toLowerCase() === "supervisor") {
-    //       filteredData = data.filter((user) => user.title.toLowerCase()=== "operator");
-    //     } else if (this.title.toLowerCase() === "operator") {
+    //     } else if (this.title === "supervisor") {
+    //       filteredData = data.filter((user) => user.title=== "operator");
+    //     } else if (this.title === "operator") {
     //       filteredData = data.filter((user) => user.u_name === this.username);
     //     }
 
