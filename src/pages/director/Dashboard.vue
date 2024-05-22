@@ -151,6 +151,9 @@ export default {
       branchId: sessionStorage.getItem("branch_id")
         ? sessionStorage.getItem("branch_id")
         : Cookies.get("branch_id"),
+      personId: sessionStorage.getItem("person_id")
+        ? sessionStorage.getItem("person_id")
+        : Cookies.get("person_id"),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -217,7 +220,9 @@ export default {
       handler(value) {
         // console.log("OWIGH");
         // console.log("LASOA: ", value.label);
+        sessionStorage.setItem("person_id", this.person.value);
         eventBus.$emit("person-selected", this.person);
+        console.log("🚀 ~ handler ~ this.person.value:", this.person.value)
       },
     },
 
@@ -357,8 +362,6 @@ export default {
         this.divisiOptions = listOfDivisi;
         this.divisi = divisiList[0];
 
-        const divisi = this.divisiOptions.d_name;
-        // console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -411,11 +414,16 @@ export default {
             user.title !== "admin"
         );
 
-        this.personOptions = filteredTitle;
-        this.person = this.personOptions[0];
+        const personId = parseInt(this.personId)
+        const personList = filteredTitle.filter(
+          (user) => user.value === personId
+        )
 
-        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
-        // console.log("Selected Person:", person);
+        this.personOptions = listOfPerson;
+        // this.person = personList[0];
+
+        this.person = this.personOptions.length > 0 ? personList[0] : null;
+        console.log("Selected Person:", person);
         eventBus.$emit("person-selected", this.person);
         // this.fetchData(person);
       } catch (error) {
