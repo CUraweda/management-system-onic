@@ -130,9 +130,7 @@ export default {
   },
   data() {
     return {
-      Id: sessionStorage.getItem("id")
-        ? sessionStorage.getItem("id")
-        : Cookies.get("id"),
+      Id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       email: sessionStorage.getItem("email")
         ? sessionStorage.getItem("email")
         : Cookies.get("email"),
@@ -222,7 +220,7 @@ export default {
         // console.log("LASOA: ", value.label);
         sessionStorage.setItem("person_id", this.person.value);
         eventBus.$emit("person-selected", this.person);
-        console.log("🚀 ~ handler ~ this.person.value:", this.person.value)
+        // console.log("🚀 ~ handler ~ this.person.value:", this.person.value);
       },
     },
 
@@ -294,7 +292,7 @@ export default {
           branch_id,
         };
 
-        console.log("🚀 ~ changeCompany ~ dataData:", dataData)
+        // console.log("🚀 ~ changeCompany ~ dataData:", dataData);
 
         sessionStorage.setItem("division", division);
         sessionStorage.setItem("branch", branch);
@@ -303,7 +301,7 @@ export default {
         sessionStorage.setItem("division_id", division_id);
         sessionStorage.setItem("branch_id", branch_id);
 
-        console.log("Diganti ", response);
+        // console.log("Diganti ", response);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -353,15 +351,12 @@ export default {
           value: data.d_id,
         }));
 
-        const divisionId = parseInt(this.divisionId)
-        console.log("🚀 ~ fetchDivisionData ~ divisionId:", divisionId)
-        const divisiList = listOfDivisi.filter(
-          (data) => data.value === divisionId
-        )
+        const divisionId = parseInt(this.divisionId);
+        // console.log("🚀 ~ fetchDivisionData ~ divisionId:", divisionId);
+        const divisiList = listOfDivisi.filter((data) => data.value === divisionId);
 
         this.divisiOptions = listOfDivisi;
         this.divisi = divisiList[0];
-
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -414,16 +409,11 @@ export default {
             user.title !== "admin"
         );
 
-        const personId = parseInt(this.personId)
-        const personList = filteredTitle.filter(
-          (user) => user.value === personId
-        )
-
-        this.personOptions = listOfPerson;
-        // this.person = personList[0];
-
-        this.person = this.personOptions.length > 0 ? personList[0] : null;
-        console.log("Selected Person:", person);
+        const personId = parseInt(this.personId);
+        const personList = filteredTitle.filter((user) => user.value === personId);
+        this.personOptions = filteredTitle;
+        this.person = personList.length > 0 ? personList[0] : this.personOptions[0];
+        // console.log("Selected Person:", this.person);
         eventBus.$emit("person-selected", this.person);
         // this.fetchData(person);
       } catch (error) {
@@ -445,14 +435,11 @@ export default {
           value: branch.company.c_id,
         }));
 
-        const branchId = parseInt(this.branchId)
-        const branchesList = listOfBranch.filter(
-          (user) => user.value === branchId
-        )
+        const branchId = parseInt(this.branchId);
+        const branchesList = listOfBranch.filter((user) => user.value === branchId);
 
         this.branchOptions = listOfBranch;
         this.branch = branchesList[0];
-
       } catch (error) {
         console.error("Error fetching users:", error);
       }

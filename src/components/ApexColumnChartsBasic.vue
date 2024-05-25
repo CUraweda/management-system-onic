@@ -254,11 +254,11 @@ export default {
   },
 
   mounted() {
+
     eventBus.$on('person-selected', person => {
       this.person = person;
       // console.log('Person yang dipilih:', this.person);
     });
-
     Promise.all([
       this.fetchData(),
       // this.fetchInProgress(),

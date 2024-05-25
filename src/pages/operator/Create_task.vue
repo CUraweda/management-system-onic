@@ -583,30 +583,49 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const id = parseInt(sessionStorage.getItem("id") || Cookies.get("id"), 10);
-        const { status, data } = await this.$axios.get("/user/all", {
-          headers: {
-            branch: this.branchId,
-            division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+        // const id = parseInt(sessionStorage.getItem("id") || Cookies.get("id"), 10);
+        // const { status, data } = await this.$axios.get("/user/all", {
+        //   headers: {
+        //     branch: this.branchId,
+        //     division: this.divisionId,
+        //     Authorization: `Bearer ${this.token}`,
+        //   },
+        // });
 
-        if (status !== 200) {
-          throw new Error("Error while fetching");
-        }
+        // if (status !== 200) {
+        //   throw new Error("Error while fetching");
+        // }
 
-        console.log("🚀 ~ fetchData ~ id:", id)
-        console.log("🚀 ~ fetchData ~ data:", data)
-        const filteredData = data.filter((user) => user.u_id === id);
-        console.log("Filtered Data:", filteredData);
+        // console.log("🚀 ~ fetchData ~ id:", id)
+        // console.log("🚀 ~ fetchData ~ data:", data)
+        // const filteredData = data.filter((user) => user.u_id === id);
+        // console.log("Filtered Data:", filteredData);
 
-        const listOfPic = filteredData.map((user) => ({
-          label: user.u_name,
-          value: user.u_name,
-          title: user.title, // Jika 'title' adalah properti yang valid pada objek 'user'
-          id: user.u_id,
-        }));
+        // const listOfPic = filteredData.map((user) => ({
+        //   label: user.u_name,
+        //   value: user.u_name,
+        //   title: user.title, // Jika 'title' adalah properti yang valid pada objek 'user'
+        //   id: user.u_id,
+        // }));
+
+        const name = sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username")
+
+        const title = sessionStorage.getItem("role")
+        ? sessionStorage.getItem("role")
+        : Cookies.get("role")
+
+        const id = sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id")
+
+        const listOfPic = [{
+          label: name,
+          value: name,
+          title: title,
+          id: id,
+        }]
 
         this.picOptions = listOfPic;
         this.selectedpic = this.picOptions[0]; // Atur selectedpic dengan nilai default

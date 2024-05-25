@@ -271,7 +271,7 @@ export default {
             },
           });
 
-          console.log("🚀 ~ fetchData ~ response:", response)
+          // console.log("🚀 ~ fetchData ~ response:", response)
 
           if (!response.data.total_rating) {
             this.Avgrate = 0;

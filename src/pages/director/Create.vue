@@ -575,7 +575,7 @@ export default {
   methods: {
     async getRole() {
       try {
-        console.log("bangbang");
+        // console.log("bangbang");
         const response = await this.$axios.get(`/role`, {
           headers: {
             "Content-Type": "application/json",
@@ -607,17 +607,17 @@ export default {
           },
         });
 
-        console.log("🚀 ~ fetchData ~ response:", response);
+        // console.log("🚀 ~ fetchData ~ response:", response);
 
         if (response.status !== 200) {
           throw Error("Error while fetching");
         }
 
         const filteredCompany = response.data.data.filter(
-          (user) => user.company_name === this.branch
+          (user) => user.company_name === this.branch && user.division === this.division
         );
 
-        console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);
+        // console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);
 
         const userRolesMap = {};
 
@@ -639,11 +639,11 @@ export default {
         });
 
         this.picOptions = filteredData;
-        console.log("🚀 ~ fetchData ~ filteredData:", filteredData);
+        // console.log("🚀 ~ fetchData ~ filteredData:", filteredData);
         this.selectedpic = this.picOptions[0];
 
         const selectedpic = this.picOptions.title;
-        console.log("Selected pic:", selectedpic);
+        // console.log("Selected pic:", this.selectedpic);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -653,7 +653,7 @@ export default {
       const loginUrl = "https://office.onic.co.id/api/master/employee/active";
 
       // Make the POST request using fetch
-      console.log("kabom");
+      // console.log("kabom");
       try {
         const response = await axios.get(loginUrl, {
           headers: {
@@ -662,7 +662,7 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        console.log("🚀 ~ fetchSpvData ~ response:", response);
+        // console.log("🚀 ~ fetchSpvData ~ response:", response);
 
         if (response.status !== 200) throw Error("Error while fetching");
 
@@ -672,7 +672,7 @@ export default {
             user.division === this.selectedpic.division
         );
 
-        console.log("🚀 ~ fetchSpvData ~ filteredCompany:", filteredCompany);
+        // console.log("🚀 ~ fetchSpvData ~ filteredCompany:", filteredCompany);
 
         const userRolesMap = {};
 
@@ -687,14 +687,14 @@ export default {
           id: user.id,
         }));
 
-        console.log("🚀 ~ listOfSpv ~ listOfSpv:", listOfSpv);
+        // console.log("🚀 ~ listOfSpv ~ listOfSpv:", listOfSpv);
 
         const SelectedPic = this.selectedpic.title;
         let supervisors;
-        console.log(
-          "🚀 ~ fetchSpvData ~ this.selectedpic.title:",
-          this.selectedpic.label
-        );
+        // console.log(
+        //   "🚀 ~ fetchSpvData ~ this.selectedpic.title:",
+        //   this.selectedpic.label
+        // );
 
         if (SelectedPic === "operator") {
           supervisors = listOfSpv.filter((user) => {
@@ -716,10 +716,10 @@ export default {
           console.log("titel nya manager");
         }
 
-        console.log("dadakan ", supervisors);
+        // console.log("dadakan ", supervisors);
 
         const listCompany = response.data.data.filter(
-          (user) => user.company_name === this.selectedpic.branch
+          (user) => user.company_name === this.selectedpic.branch && this.selectedpic.division
         );
 
         const listOfDirec = listCompany.map((user) => ({
@@ -727,9 +727,10 @@ export default {
           value: user.name,
           title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
           id: user.id,
+          divisi: user.division
         }));
 
-        console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
+        // console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
         const listSupervisor = listOfDirec.filter((user) => {
           const title = user.title;
           return (
@@ -743,35 +744,7 @@ export default {
         this.spvOptions =
           supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
         this.selectedspv = this.spvOptions[0];
-        // if (SelectedPic) {
-        //   const selectedTitleLowerCase = SelectedPic;
-
-        //   if (selectedTitleLowerCase === "operator") {
-        //     this.spvOptions = listOfSpv.filter((user) => {
-        //       const titleLowerCase = user.title;
-        //       return titleLowerCase === "supervisor";
-        //     });
-        //     console.log("Updating SPV options to supervisor.");
-        //     this.selectedspv = this.spvOptions[0];
-        //   } else if (selectedTitleLowerCase === "supervisor") {
-        //     this.spvOptions = listOfSpv.filter((user) => {
-        //       const titleLowerCase = user.title;
-        //       return titleLowerCase === "manager";
-        //     });
-        //     console.log("Updating SPV options to manager.");
-        //     this.selectedspv = this.spvOptions[0];
-        //   } else if (selectedTitleLowerCase === "manager") {
-        //     this.spvOptions = listOfSpv.filter((user) => {
-        //       const titleLowerCase = user.title;
-        //       return titleLowerCase === "director" || titleLowerCase === "direktur";
-        //     });
-        //     console.log("Updating SPV options to director.");
-        //     this.selectedspv = this.spvOptions[0];
-        //   } else {
-        //     this.spvOptions = null;
-        //     this.selectedspv = null;
-        //   }
-        // }
+        // console.log("🚀 ~ fetchSpvData ~ selectedspv:", this.spvOptions)
       } catch (error) {
         console.error("Error fetching users:", error);
       }

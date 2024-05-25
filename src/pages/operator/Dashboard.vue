@@ -223,16 +223,16 @@ export default {
         // console.log("OOOOP: ", value.label);
         // this.fetchDivisionData();
         this.changeCompany();
-        this.fetchPersonData();
+        // this.fetchPersonData();
       },
     },
   },
 
   mounted() {
-    this.getRole();
+    // this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
-    // this.fetchPersonData();
+    this.fetchPersonData();
     // this.fetchData();
   },
 
@@ -285,7 +285,7 @@ export default {
           branch_id,
         };
 
-        console.log("🚀 ~ changeCompany ~ dataData:", dataData)
+        // console.log("🚀 ~ changeCompany ~ dataData:", dataData)
 
         sessionStorage.setItem("division", division);
         sessionStorage.setItem("branch", branch);
@@ -294,7 +294,7 @@ export default {
         sessionStorage.setItem("division_id", division_id);
         sessionStorage.setItem("branch_id", branch_id);
 
-        console.log("Diganti ", response);
+        // console.log("Diganti ", response);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -321,28 +321,37 @@ export default {
       }
     },
     async fetchDivisionData() {
-      const loginUrl = "https://office.onic.co.id/api/master/division";
+      // const loginUrl = "https://office.onic.co.id/api/master/division";
 
       // Make the POST request using fetch
       try {
-        const response = await axios.get(loginUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+        // const response = await axios.get(loginUrl, {
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Accept: "application/json",
+        //     Authorization: `Bearer ${this.token}`,
+        //   },
+        // });
 
         // console.log("🚀 ~ fetchDivisionData ~ response:", response)
 
-        if (response.status !== 200) {
-          throw Error("Error while fetching");
-        }
+        // if (response.status !== 200) {
+        //   throw Error("Error while fetching");
+        // }
 
-        const listOfDivisi = response.data.data.map((data) => ({
-          label: data.d_name,
-          value: data.d_id,
-        }));
+        const d_name = sessionStorage.getItem("division")
+        ? sessionStorage.getItem("division")
+        : Cookies.get("division")
+
+        const d_id = sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id")
+
+        const listOfDivisi = [{
+          label: d_name,
+          value: d_id,
+        }]
+
 
         this.divisiOptions = listOfDivisi;
         this.divisi = this.divisiOptions[0];
@@ -355,51 +364,66 @@ export default {
     },
 
     async fetchPersonData() {
-      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+      // const loginUrl = "https://office.onic.co.id/api/master/employee/active";
 
       // Make the POST request using fetch
       try {
-        const response = await axios.get(loginUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+      //   const response = await axios.get(loginUrl, {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Accept: "application/json",
+      //       Authorization: `Bearer ${this.token}`,
+      //     },
+      //   });
 
         // console.log("🚀 ~ fetchPersonData ~ response:", response)
 
-        if (response.status !== 200) {
-          throw Error("Error while fetching");
-        }
+        // if (response.status !== 200) {
+        //   throw Error("Error while fetching");
+        // }
 
-        const branch = this.branch.label;
-        const division = this.divisi.label;
+        // const branch = this.branch.label;
+        // const division = this.divisi.label;
 
-        const filteredData = response.data.data.filter(
-          (user) => user.company_name === branch && user.division === division
-        );
+        // const filteredData = response.data.data.filter(
+        //   (user) => user.company_name === branch && user.division === division
+        // );
 
         // console.log("🚀 ~ fetchPersonData ~ filteredData:", filteredData)
 
-        const userRolesMap = {};
+        // const userRolesMap = {};
 
-        this.roles.forEach((role) => {
-          userRolesMap[role.u_id] = role;
-        });
+        // this.roles.forEach((role) => {
+        //   userRolesMap[role.u_id] = role;
+        // });
 
-        const listOfPerson = filteredData.map((data) => ({
-          label: data.name,
-          value: data.id,
-          title: userRolesMap[data.id] ? userRolesMap[data.id].role : "",
-        }));
+        // const listOfPerson = filteredData.map((data) => ({
+        //   label: data.name,
+        //   value: data.id,
+        //   title: userRolesMap[data.id] ? userRolesMap[data.id].role : "",
+        // }));
 
-        const filteredTitle = listOfPerson.filter(
-          (user) =>
-            user.title !== "director" &&
-            user.title !== "direktur" &&
-            user.title !== "admin"
-        );
+        // const filteredTitle = listOfPerson.filter(
+        //   (user) =>
+        //     user.title !== "director" &&
+        //     user.title !== "direktur" &&
+        //     user.title !== "admin"
+        // );
+
+        const name = sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username")
+
+        const id = sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id")
+
+        const filteredTitle = [{
+          label: name,
+          value: id,
+        }]
+
+        console.log("🚀 ~ fetchPersonData ~ filteredTitle:", filteredTitle)
 
         this.personOptions = filteredTitle;
         this.person = this.personOptions[0];
@@ -429,8 +453,13 @@ export default {
           value: branch.company.c_id,
         }));
 
+        const branchId = parseInt(this.branchId)
+        const branchesList = listOfBranch.filter(
+          (data) => data.value === branchId
+        )
+
         this.branchOptions = listOfBranch;
-        this.branch = this.branchOptions[0];
+        this.branch = branchesList[0];
 
         // const branch = this.branchOptions.d_name;
         // console.log("Selected Branch:", this.branch);

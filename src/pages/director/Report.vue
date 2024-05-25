@@ -492,8 +492,8 @@ export default {
         const response = await this.$axios.get("/image/" + this.fileName, {
           responseType: "blob",
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+          branch: this.branchId,
+          division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
