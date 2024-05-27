@@ -383,6 +383,7 @@ export default {
       history: "",
       description: "",
       task_type: "",
+      overdue: "",
       // Add other properties with default values
     };
   },
@@ -563,6 +564,7 @@ division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
+        this.overdue = response.data.overdue;
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -624,27 +626,28 @@ division: this.divisionId,
     },
 
     async UpdateStatus() {
-      if (this.status === "Idle") {
+       if (this.overdue) {
         this.$q.notify({
           color: "warning",
-          message: "Task Idle",
+          message: "This task is idle",
         });
-      } else {
-        const data = {
-          status: "Idle",
-        };
+       }
+      // } else {
+      //   const data = {
+      //     status: "Idle",
+      //   };
 
-        try {
-          await this.$axios.put("/task/edit/" + this.id, data, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        } catch (error) {
-          console.error("EROR:", error);
-        }
-      }
+      //   try {
+      //     await this.$axios.put("/task/edit/" + this.id, data, {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(data),
+      //     });
+      //   } catch (error) {
+      //     console.error("EROR:", error);
+      //   }
+      // }
     },
 
     stopCountdown() {

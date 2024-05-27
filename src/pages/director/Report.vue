@@ -458,6 +458,8 @@ export default {
       fileName: null,
       file_hasil: null,
       id: store.id,
+      pic_id: '',
+      spv_id:''
       // Add other properties with default values
     };
   },
@@ -625,6 +627,8 @@ division: this.divisionId,
 
         this.description = response.data.description;
         this.pic = response.data.pic;
+        this.pic_id = response.data.pic_id;
+        this.spv_id = response.data.spv_id;
         this.spv = response.data.spv;
 
         const dueDate = new Date(this.due_date);
@@ -669,28 +673,28 @@ division: this.divisionId,
     },
 
     async UpdateStatus() {
-      if (this.status === "Wait-app") {
+      // if (this.status === "Wait-app") {
         this.$q.notify({
           color: "warning",
-          message: "Task Idle",
+          message: "This task is idle",
         });
-      } else {
-        const data = {
-          status: "Idle",
-        };
+      // } else {
+      //   const data = {
+      //     status: "Idle",
+      //   };
 
-        try {
-          const id = this.id;
-          await this.$axios.put("/task/edit/" + id, data, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        } catch (error) {
-          console.error("EROR:", error);
-        }
-      }
+      //   try {
+      //     const id = this.id;
+      //     await this.$axios.put("/task/edit/" + id, data, {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(data),
+      //     });
+      //   } catch (error) {
+      //     console.error("EROR:", error);
+      //   }
+      // }
     },
 
     stopCountdown() {
@@ -813,7 +817,7 @@ division: this.divisionId,
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic,
+          pic_id: this.pic_id,
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {

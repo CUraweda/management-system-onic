@@ -130,6 +130,7 @@ export default {
   },
   data() {
     return {
+      Id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       email: sessionStorage.getItem("email")
         ? sessionStorage.getItem("email")
         : Cookies.get("email"),
@@ -148,6 +149,9 @@ export default {
       branchId: sessionStorage.getItem("branch_id")
         ? sessionStorage.getItem("branch_id")
         : Cookies.get("branch_id"),
+      personId: sessionStorage.getItem("person_id")
+        ? sessionStorage.getItem("person_id")
+        : Cookies.get("person_id"),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -204,7 +208,8 @@ export default {
       handler(value) {
         // console.log("WAKWAW");
         // console.log("UWAW: ", value.label);
-        sessionStorage.setItem("divisi1", this.divisi.label);
+        sessionStorage.setItem("division", this.divisi.label);
+        sessionStorage.setItem("division_id", this.divisi.value);
         this.fetchPersonData();
       },
     },
@@ -213,7 +218,9 @@ export default {
       handler(value) {
         // console.log("OWIGH");
         // console.log("LASOA: ", value.label);
+        sessionStorage.setItem("person_id", this.person.value);
         eventBus.$emit("person-selected", this.person);
+        // console.log("🚀 ~ handler ~ this.person.value:", this.person.value);
       },
     },
 
@@ -285,7 +292,7 @@ export default {
           branch_id,
         };
 
-        console.log("🚀 ~ changeCompany ~ dataData:", dataData)
+        // console.log("🚀 ~ changeCompany ~ dataData:", dataData);
 
         sessionStorage.setItem("division", division);
         sessionStorage.setItem("branch", branch);
@@ -294,7 +301,7 @@ export default {
         sessionStorage.setItem("division_id", division_id);
         sessionStorage.setItem("branch_id", branch_id);
 
-        console.log("Diganti ", response);
+        // console.log("Diganti ", response);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -321,28 +328,37 @@ export default {
       }
     },
     async fetchDivisionData() {
-      const loginUrl = "https://office.onic.co.id/api/master/division";
+      // const loginUrl = "https://office.onic.co.id/api/master/division";
 
       // Make the POST request using fetch
       try {
-        const response = await axios.get(loginUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+        // const response = await axios.get(loginUrl, {
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Accept: "application/json",
+        //     Authorization: `Bearer ${this.token}`,
+        //   },
+        // });
 
         // console.log("🚀 ~ fetchDivisionData ~ response:", response)
 
-        if (response.status !== 200) {
-          throw Error("Error while fetching");
-        }
+        // if (response.status !== 200) {
+        //   throw Error("Error while fetching");
+        // }
 
-        const listOfDivisi = response.data.data.map((data) => ({
-          label: data.d_name,
-          value: data.d_id,
-        }));
+        const d_name = sessionStorage.getItem("division")
+        ? sessionStorage.getItem("division")
+        : Cookies.get("division")
+
+        const d_id = sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id")
+
+        const listOfDivisi = [{
+          label: d_name,
+          value: d_id,
+        }]
+
 
         this.divisiOptions = listOfDivisi;
         this.divisi = this.divisiOptions[0];
@@ -401,11 +417,11 @@ export default {
             user.title !== "admin"
         );
 
+        const personId = parseInt(this.personId);
+        const personList = filteredTitle.filter((user) => user.value === personId);
         this.personOptions = filteredTitle;
-        this.person = this.personOptions[0];
-
-        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
-        // console.log("Selected Person:", person);
+        this.person = personList.length > 0 ? personList[0] : this.personOptions[0];
+        // console.log("Selected Person:", this.person);
         eventBus.$emit("person-selected", this.person);
         // this.fetchData(person);
       } catch (error) {
@@ -422,37 +438,35 @@ export default {
           this.branches = JSON.parse(branches);
         }
 
-        // console.log("🚀 DATA:", this.branches);
-
         const listOfBranch = this.branches.map((branch) => ({
           label: branch.company.c_name,
           value: branch.company.c_id,
         }));
 
-        this.branchOptions = listOfBranch;
-        this.branch = this.branchOptions[0];
+        const branchId = parseInt(this.branchId);
+        const branchesList = listOfBranch.filter((user) => user.value === branchId);
 
-        // const branch = this.branchOptions.d_name;
-        // console.log("Selected Branch:", this.branch);
+        this.branchOptions = listOfBranch;
+        this.branch = branchesList[0];
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     },
 
     redirectToTaskMonitoring(statusFilter) {
-      if (this.title === "operator") {
+      if (this.title.toLowerCase() === "operator") {
         this.$router.push({
-          path: `/${this.title}/task_list`,
+          path: `/${this.title.toLowerCase()}/task_list`,
           query: { status: statusFilter },
         });
-      } else if (this.title === "direktur") {
+      } else if (this.title.toLowerCase() === "direktur") {
         this.$router.push({
-          path: "/managerr/task_monitoring",
+          path: "/director/task_monitoring",
           query: { status: statusFilter },
         });
       } else {
         this.$router.push({
-          path: `/${this.title}/task_monitoring`,
+          path: `/${this.title.toLowerCase()}/task_monitoring`,
           query: { status: statusFilter },
         });
       }

@@ -669,28 +669,28 @@ division: this.divisionId,
     },
 
     async UpdateStatus() {
-      if (this.status === "Wait-app") {
+      // if (this.status === "Wait-app") {
         this.$q.notify({
           color: "warning",
-          message: "Task Idle",
+          message: "This task is idle",
         });
-      } else {
-        const data = {
-          status: "Idle",
-        };
+      // } else {
+      //   const data = {
+      //     status: "Idle",
+      //   };
 
-        try {
-          const id = this.id;
-          await this.$axios.put("/task/edit/" + id, data, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        } catch (error) {
-          console.error("EROR:", error);
-        }
-      }
+      //   try {
+      //     const id = this.id;
+      //     await this.$axios.put("/task/edit/" + id, data, {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(data),
+      //     });
+      //   } catch (error) {
+      //     console.error("EROR:", error);
+      //   }
+      // }
     },
 
     stopCountdown() {

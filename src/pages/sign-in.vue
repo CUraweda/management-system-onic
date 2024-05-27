@@ -87,15 +87,15 @@
                         </template>
                       </q-input>
 
-                      <div class="items-center justify-center row">
+                      <!-- <div class="items-center justify-center row">
                         <q-checkbox
                           v-model="right"
                           color="blue"
                           label="Keep me logged in"
-                        />
+                        /> -->
                         <q-space></q-space>
                         <!-- <a href="" style="color: #00bdd6"> forgot password?</a> -->
-                      </div>
+                      <!-- </div> -->
 
                       <div>
                         <q-btn
@@ -179,6 +179,26 @@ export default {
   },
 
   methods: {
+    async checker(id) {
+      // console.log("🚀 ~ checker ~ id:", id)
+      try{
+        const response = await this.$axios.get(`/task/late-notification/${id}`);
+        // console.log("respon: ", response)
+
+        const lateTask = response.data.length
+        if (lateTask > 0) {
+          this.$q.notify({
+            color: "negative",
+            message: `You Have ${lateTask} Overdue Task` ,
+          });
+        }
+
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
     async refreshToken(oldToken) {
       try {
         // Lakukan permintaan ke server untuk memperbarui token
@@ -245,13 +265,13 @@ export default {
           },
         });
 
-        const ResDat = await response.data;
-        const ResponseData = await ResDat.data.data;
-        const UserData = await ResponseData.user;
-        const AucData = await ResponseData.active_user_company;
-        const DivisionData = await AucData.division;
-        const BranchData = await AucData.company;
-        const PositionData = await AucData.position;
+        const ResDat = await response.data || '';
+        const ResponseData = await ResDat.data.data || '';
+        const UserData = await ResponseData.user || '';
+        const AucData = await ResponseData.active_user_company || '';
+        const DivisionData = await AucData.division || '';
+        const BranchData = await AucData.company || '';
+        const PositionData = await AucData.position || '';
         // Handle Data based on the server's response
 
         // Mendapatkan role berdasarkan user ID
@@ -259,22 +279,22 @@ export default {
         const roleData = await this.$axios.get(`/role/get-by-id/${userId}`);
 
         // const accessToken = Data.accessToken;
-        const email = UserData.u_email;
-        const id = UserData.u_id;
-        const name = UserData.u_name;
-        const division = DivisionData.d_name;
-        const role = roleData.data.data.role;
-        const branch = BranchData.c_name;
-        const branches = UserData.user_companies;
-        const position = PositionData.p_name;
-        const position_id = PositionData.p_id;
-        const division_id = DivisionData.d_id;
-        const branch_id = BranchData.c_id;
-        const token = ResDat.data.credential;
+        const email = UserData.u_email || '';
+        const id = UserData.u_id || '';
+        const name = UserData.u_name || '';
+        const division = DivisionData.d_name || '';
+        const role = roleData.data.data.role || '';
+        const branch = BranchData.c_name || '';
+        const branches = UserData.user_companies || '';
+        const position = PositionData.p_name || '';
+        const position_id = PositionData.p_id || '';
+        const division_id = DivisionData.d_id || '';
+        const branch_id = BranchData.c_id || '';
+        const token = ResDat.data.credential || '';
 
         // const laravelSessionCookie = cookies.find((cookie) =>
         //   cookie.startsWith("laravel_session")
-        // );
+        // ) || '';
         // if (laravel SessionCookie) {
         //   // Simpan nilai cookie di variabel lokal
         //   laravelSession = laravelSessionCookie.split(";")[0].split("=")[1];
@@ -313,6 +333,11 @@ export default {
           color: "positive",
           message: "Login Successful.",
         });
+
+        if (role !== "director" || role !== "admin" ) {
+          this.checker(id);
+        }
+
       } catch (error) {
         this.$q.notify({
           color: "negative",

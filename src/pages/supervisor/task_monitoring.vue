@@ -108,11 +108,7 @@
           <template v-slot:body="props">
             <q-tr
               :props="props"
-              :class="
-                props.row.status == 'Idle'
-                  ? 'bg-yellow-3 text-black'
-                  : 'bg-white text-black'
-              "
+              :class="props.row.overdue ? 'bg-yellow-3 text-black' : 'bg-white text-black'"
             >
               <q-td key="id" :props="props">
                 <div>{{ props.row.id }}</div>

@@ -221,8 +221,8 @@ export default {
       handler(value) {
         // console.log("UWEY");
         // console.log("OOOOP: ", value.label);
-        // this.fetchDivisionData();
         this.changeCompany();
+        this.fetchDivisionData();
         // this.fetchPersonData();
       },
     },
