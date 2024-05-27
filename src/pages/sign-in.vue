@@ -179,26 +179,6 @@ export default {
   },
 
   methods: {
-    async checker(id) {
-      // console.log("🚀 ~ checker ~ id:", id)
-      try{
-        const response = await this.$axios.get(`/task/late-notification/${id}`);
-        // console.log("respon: ", response)
-
-        const lateTask = response.data.length
-        if (lateTask > 0) {
-          this.$q.notify({
-            color: "negative",
-            message: `You Have ${lateTask} Overdue Task` ,
-          });
-        }
-
-      } catch (err) {
-        console.error(err);
-        throw err;
-      }
-    },
-
     async refreshToken(oldToken) {
       try {
         // Lakukan permintaan ke server untuk memperbarui token
@@ -265,6 +245,14 @@ export default {
           },
         });
 
+        if (response.status !== 200) {
+          this.$q.notify({
+          color: "negative",
+          position: "top",
+          message: "Invalid email or password",
+        });
+        }
+
         const ResDat = await response.data || '';
         const ResponseData = await ResDat.data.data || '';
         const UserData = await ResponseData.user || '';
@@ -280,7 +268,7 @@ export default {
 
         // const accessToken = Data.accessToken;
         const email = UserData.u_email || '';
-        const id = UserData.u_id || '';
+        const id = UserData? UserData.u_id : '';
         const name = UserData.u_name || '';
         const division = DivisionData.d_name || '';
         const role = roleData.data.data.role || '';
@@ -334,16 +322,10 @@ export default {
           message: "Login Successful.",
         });
 
-        if (role !== "director" || role !== "admin" ) {
-          this.checker(id);
-        }
+          this.checker(id, role);
 
       } catch (error) {
-        this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Invalid email or password",
-        });
+        console.error("error loggin in:", error)
       }
     },
 

@@ -239,6 +239,8 @@ export default {
     this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
+    this.checker();
+    this.notifChecker();
     // this.fetchPersonData();
     // this.fetchData();
   },
@@ -248,6 +250,35 @@ export default {
   },
 
   methods: {
+    async checker() {
+      try {
+        const response = await this.$axios.get("/task/checker");
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async notifChecker() {
+      console.log("🚀 ~ checker ~ id:", this.id)
+
+      try{
+        const response = await this.$axios.get(`/task/late-notification/${this.id}`);
+
+        const lateTask = response.data.length
+
+          if (lateTask > 0) {
+            this.$q.notify({
+              color: "negative",
+              message: `You Have ${lateTask} Overdue Task` ,
+            });
+        }
+
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
     async changeCompany() {
       const data = {
         u_email: this.email,
@@ -282,6 +313,7 @@ export default {
         const position_id = PositionData.p_id;
         const division_id = DivisionData.d_id;
         const branch_id = BranchData.c_id;
+        const token = ResDat.data.credential || '';
 
         const dataData = {
           division,
@@ -300,6 +332,7 @@ export default {
         sessionStorage.setItem("position_id", position_id);
         sessionStorage.setItem("division_id", division_id);
         sessionStorage.setItem("branch_id", branch_id);
+        sessionStorage.setItem("token", token);
 
         // console.log("Diganti ", response);
       } catch (error) {

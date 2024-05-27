@@ -239,6 +239,7 @@ export default {
     this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
+    this.checker();
     // this.fetchPersonData();
     // this.fetchData();
   },
@@ -248,6 +249,14 @@ export default {
   },
 
   methods: {
+    async checker() {
+      try {
+        const response = await this.$axios.get("/task/checker");
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
     async changeCompany() {
       const data = {
         u_email: this.email,

@@ -375,10 +375,10 @@ export default {
       Object.keys(monthsTasks).forEach((month) => {
         const tasksOfMonth = monthsTasks[month];
         const statusCounts = {
-          Open: tasksOfMonth.filter((task) => task.status === "Open").length,
+          Open: tasksOfMonth.filter((task) => task.overdue !== true && task.status === "Open").length,
           Completed: tasksOfMonth.filter((task) => task.status === "Close").length,
-          InProgress: tasksOfMonth.filter((task) => task.status === "In-progress").length,
-          Overdue: tasksOfMonth.filter((task) => task.status === "Idle").length,
+          InProgress: tasksOfMonth.filter((task) => task.overdue !== true && task.status === "In-progress").length,
+          Overdue: tasksOfMonth.filter((task) => task.status !== "Close" && task.overdue === true).length,
           Total: tasksOfMonth.length,
         };
         this.monthlyStatusCounts[month] = statusCounts;

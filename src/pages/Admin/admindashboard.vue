@@ -129,23 +129,19 @@
             </q-card-section>
 
             <q-card-section style="" class="">
-
               <q-select
-              outlined
-              dense
-              v-model="role"
-              :options="optionsRole"
-              label="Role"
-              class="q-px-md q-mb-sm"
+                outlined
+                dense
+                v-model="role"
+                :options="optionsRole"
+                label="Role"
+                class="q-px-md q-mb-sm"
               />
 
               <!-- <h2>List Cabang</h2> -->
 
               <v-row>
-                <v-col
-                  v-for="company in companies"
-                  :key="company.id"
-                >
+                <v-col v-for="company in companies" :key="company.id">
                   <div class="company_name-item q-ml-md q-mx-md">
                     <span>{{ company.label }}</span>
                   </div>
@@ -276,6 +272,21 @@
           </q-card>
         </q-dialog>
       </div>
+
+      <q-input
+        class="q-mb-md bg-grey-2 col-lg-2 col-md-2 col-sm-12 col-xs-12 under-title"
+        dense
+        text-color="black"
+        standout="bg-grey-3 no-shadow under-title"
+        v-model="search"
+        placeholder="Search..."
+      >
+        <template v-slot:prepend>
+          <q-icon name="search" text-color="black" />
+          <q-icon class="cursor-pointer col" />
+        </template>
+      </q-input>
+
       <q-table
         class="no-shadow q-ml-md"
         :data="rows"
@@ -532,6 +543,7 @@ import axios from "axios";
 export default defineComponent({
   data() {
     return {
+      search:'',
       Roles: [],
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
@@ -605,6 +617,7 @@ export default defineComponent({
       selectJabatan: ref(""),
       password: ref(""),
       rows: ref([]),
+      data: ref([]),
       confirmpassword: ref(""),
       DivisiOpt: ref([
         "Oprasional Sales",
@@ -688,9 +701,39 @@ export default defineComponent({
         if (value != true) this.clearInput();
       },
     },
+    search: {
+      handler(value) {
+        // this.getData()
+        this.search = value != "" ? value : "";
+        // console.log("dor")
+        if (this.search) {
+          // console.log("kiw")
+          this.filteredData();
+        }
+      }
+    }
+  },
+
+  computed: {
   },
 
   methods: {
+    filteredData() {
+    // console.log("huhu");
+    // console.log("pil ", this.search)
+    // console.log("🚀 ~ filtered ~ this.data:", this.rows)
+    const filtered = this.data.filter((item) => {
+      return item.name.toLowerCase().includes(this.search.toLowerCase());
+    });
+    this.rows = filtered;
+    // console.log("Filtered Data:", filtered);
+    return filtered;
+  },
+
+    searchData() {
+      this.searchResults = this.filteredData;
+    },
+
     async toggleDelete(rowData) {
       try {
         if (rowData.deleted === false) {
@@ -810,7 +853,7 @@ export default defineComponent({
     },
 
     async getcompany_nameList() {
-      const url = `https://office.onic.co.id/api/master/employee/show/${this.currentShownId}`
+      const url = `https://office.onic.co.id/api/master/employee/show/${this.currentShownId}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -826,25 +869,16 @@ export default defineComponent({
 
       console.log("DATA:", response);
       const branches = response.data.data.user_companies;
-      console.log("🚀 ~ getcompany_nameList ~ branches:", branches)
+      console.log("🚀 ~ getcompany_nameList ~ branches:", branches);
       const listOfcompany_name = branches.map((data) => ({
         label: data.company.c_name,
         value: data.company.c_id,
       }));
 
       this.optionscompany_name = listOfcompany_name;
-      // const selectedcompany_name = this.optionscompany_name.find(
-      //   (company_name) => company_name.value === company_name_id
-      // );
-      // this.company_name = selectedcompany_name || this.optionscompany_name[0];
-
-      // console.log("company_name DATA:", response.data.data);
 
       this.companies = listOfcompany_name;
-      console.log(
-        "🚀 ~ getcompany_nameList ~ this.company_nameList:",
-        this.companies
-      );
+      console.log("🚀 ~ getcompany_nameList ~ this.company_nameList:", this.companies);
     },
 
     async getcompany_name(company_name_id, division_id) {
@@ -967,7 +1001,7 @@ export default defineComponent({
         });
 
         this.roles = response.data.data;
-        console.log("🚀 ~ getRole ~ ole:", this.roles);
+        // console.log("🚀 ~ getRole ~ ole:", this.roles);
 
         return role;
       } catch (err) {
@@ -978,7 +1012,7 @@ export default defineComponent({
 
     async getData() {
       try {
-        console.log("bang");
+        // console.log("bang");
         const Url = "https://office.onic.co.id/api/master/employee/active";
         const response = await fetch(Url, {
           method: "GET",
@@ -995,16 +1029,18 @@ export default defineComponent({
 
         if (response.status === 200) {
           const data = resData.data;
-          console.log("🚀 ~ getRole ~ ole:", this.roles);
+          // console.log("🚀 ~ getRole ~ ole:", this.roles);
 
           const userRolesMap = {};
 
-          this.getRole()
+          this.getRole();
           this.roles.forEach((role) => {
             userRolesMap[role.u_id] = role;
           });
 
-          this.rows = data.map((user, index) => ({
+          // console.log(this.roles);
+
+          const datas = data.map((user, index) => ({
             id: user.id,
             name: user.name ? user.name : "",
             gender: user.gender ? user.gender : "",
@@ -1014,6 +1050,23 @@ export default defineComponent({
             position: user.position ? user.position : "",
             deleted: user.deleted,
           }));
+
+          const usersWithoutRoles = datas
+            .filter((user) => !user.role)
+            .map((user) => ({
+              u_id: user.id,
+              role: "operator",
+            }));
+          const ids = usersWithoutRoles;
+
+          this.data = datas;
+          this.rows = datas;
+
+          if (ids.length > 0) {
+            this.newUserRoles(ids);
+          }
+
+          // console.log(ids);
         }
       } catch (err) {
         console.error(err);
@@ -1097,6 +1150,22 @@ export default defineComponent({
       }
     },
     //DELETE END
+
+    async newUserRoles(ids) {
+      try {
+        console.log("🚀 ~ newUserRoles ~ data:", ids);
+        const { response } = await this.$axios.post("/role/create", {
+          data: ids,
+        });
+
+        this.getRole();
+        this.getData();
+      } catch (err) {
+        console.log(err);
+        return this.$q.notify({ message: err.message });
+      }
+    },
+
     async createUser() {
       try {
         const { status, data } = await this.$axios.post(

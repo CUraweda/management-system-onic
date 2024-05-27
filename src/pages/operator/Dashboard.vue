@@ -130,6 +130,9 @@ export default {
   },
   data() {
     return {
+      id: sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id"),
       email: sessionStorage.getItem("email")
         ? sessionStorage.getItem("email")
         : Cookies.get("email"),
@@ -233,6 +236,8 @@ export default {
     this.fetchBranchData();
     this.fetchDivisionData();
     this.fetchPersonData();
+    this.checker();
+    this.notifChecker();
     // this.fetchData();
   },
 
@@ -241,6 +246,35 @@ export default {
   },
 
   methods: {
+    async checker() {
+      try {
+        const response = await this.$axios.get("/task/checker");
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
+    async notifChecker() {
+      console.log("🚀 ~ checker ~ id:", this.id)
+
+      try{
+        const response = await this.$axios.get(`/task/late-notification/${this.id}`);
+
+        const lateTask = response.data.length
+
+          if (lateTask > 0) {
+            this.$q.notify({
+              color: "negative",
+              message: `You Have ${lateTask} Overdue Task` ,
+            });
+        }
+
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
     async changeCompany() {
       const data = {
         u_email: this.email,

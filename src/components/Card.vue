@@ -72,7 +72,7 @@
           class="no-shadow cursor-pointer q-hoverable"
           v-ripple
           clickable
-          @click="redirectToTaskMonitoring('Idle')"
+          @click="redirectToTaskMonitoring('Overdue')"
         >
           <q-card-section
             style="height: 270px"
@@ -305,15 +305,15 @@ export default {
       // } else if (this.role === "operator") {
       //   tasks = response.data.filter((task) => task.u_name === this.username);
       // }
-      this.TotalOpen = response.data.filter((task) => task.status === "Open").length;
+      this.TotalOpen = response.data.filter((task) => task.overdue !== true && task.status === "Open").length;
       this.TotalCompleted = response.data.filter((task) => task.status === "Close").length;
-      this.TotalInProgress = response.data.filter((task) => task.status === "In-progress").length;
-      this.TotalOverdue = response.data.filter((task) => task.status === "Idle").length;
+      this.TotalInProgress = response.data.filter((task) => task.overdue !== true && task.status === "In-progress").length;
+      this.TotalOverdue = response.data.filter((task) => task.overdue === true && task.status !== "Close").length;
       this.TotalTotal = response.data.length;
 
       // console.log("NGGAH", this.TotalTotal);
     },
-    
+
     redirectToTaskMonitoring(statusFilter) {
       if (this.role === "operator") {
         this.$router.push({
