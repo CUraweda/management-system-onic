@@ -220,7 +220,7 @@
                       props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' &&
                         props.row.status !== 'Idle') ||
-                      props.row.spv !== username
+                      props.row.spv.toLowerCase() !== username.toLowerCase()
                     "
                     @click="openEmployeeDialog(props.row)"
                   />

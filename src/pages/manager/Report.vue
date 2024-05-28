@@ -271,7 +271,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="spv !== username"
+                      :disable="spv.toLowerCase() !== username.toLowerCase()"
                       @click="Revise()"
                     />
                     <q-btn
@@ -285,7 +285,7 @@
                       :disable="
                         finished_at === null ||
                         (status !== 'In-progress' && status !== 'Idle') ||
-                        spv !== username
+                        spv.toLowerCase() !== username.toLowerCase()
                       "
                       @click="Ok()"
                     />
@@ -360,7 +360,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="spv !== username"
+                      :disable="spv.toLowerCase() !== username.toLowerCase()"
                       @click="Revise()"
                     />
                     <q-btn
@@ -374,7 +374,7 @@
                       :disable="
                         finished_at === null ||
                         (status !== 'In-progress' && status !== 'Idle') ||
-                        spv !== username
+                        spv.toLowerCase() !== username.toLowerCase()
                       "
                       @click="Ok()"
                     />
