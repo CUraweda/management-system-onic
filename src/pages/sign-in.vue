@@ -245,14 +245,6 @@ export default {
           },
         });
 
-        if (response.status !== 200) {
-          this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Invalid email or password",
-        });
-        }
-
         const ResDat = await response.data || '';
         const ResponseData = await ResDat.data.data || '';
         const UserData = await ResponseData.user || '';
@@ -325,7 +317,13 @@ export default {
           this.checker(id, role);
 
       } catch (error) {
-        console.error("error loggin in:", error)
+        if (error.response && error.response.status !== 200) {
+          this.$q.notify({
+          color: "negative",
+          position: "top",
+          message: error.response.data.message,
+        });
+        }
       }
     },
 
