@@ -205,7 +205,7 @@
                     color="red-2"
                     text-color="red"
                     label="Revise"
-                    :disable="props.row.spv !== username"
+                    :disable="props.row.spv.toLowerCase() !== username.toLowerCase()"
                     @click="Revise(props.row.id)"
                   />
                   <q-btn
@@ -238,7 +238,7 @@
                     color="green-2"
                     rounded
                     label="Edit"
-                    :disable="props.row.spv !== username"
+                    :disable="props.row.spv.toLowerCase() !== username.toLowerCase()"
                     @click="Edit(props.row.id)"
                   />
                   <q-btn
@@ -249,7 +249,7 @@
                     color="red-2"
                     rounded
                     label="Delete"
-                    :disable="props.row.spv !== username"
+                    :disable="props.row.spv.toLowerCase() !== username.toLowerCase()"
                     @click="Delete(props.row.id)"
                   />
                 </div>
