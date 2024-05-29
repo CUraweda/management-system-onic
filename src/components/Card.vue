@@ -257,6 +257,16 @@ export default {
       // console.log('Person yang dipilih:', this.person);
       this.fetchData();
     });
+    eventBus.$on('start-date-selected', start => {
+      this.start = start;
+      // console.log('Start yang dipilih:', this.start);
+      this.fetchData();
+    });
+    eventBus.$on('due-date-selected', due => {
+      this.due = due;
+      // console.log('Due yang dipilih:', this.due);
+      this.fetchData();
+    });
 
     // this.fetchBranchData();
     // this.fetchDivisionData();
@@ -273,7 +283,7 @@ export default {
   methods: {
     async fetchData() {
       const response = await this.$axios.get("/task/all", {
-        // params: { startDate: this.deposit.start, dueDate: this.deposit.due },
+        params: { startDate: this.start, dueDate: this.due },
         headers: {
           pic: this.person.value,
           Authorization: `Bearer ${this.token}`,

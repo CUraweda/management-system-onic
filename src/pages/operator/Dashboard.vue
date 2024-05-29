@@ -11,7 +11,8 @@
         name="Cabang"
         use-input
         input-debounce="0"
-        :options="branchOptions"
+        :options="filteredBranchOptions"
+        @filter="filterBranch"
         behavior="menu"
         class="col-2"
       >
@@ -29,7 +30,8 @@
         name="Division"
         use-input
         input-debounce="0"
-        :options="divisiOptions"
+        :options="filteredDivisionOptions"
+        @filter="filterDivision"
         behavior="menu"
         class="col-2"
       >
@@ -48,7 +50,8 @@
         name="Person"
         use-input
         input-debounce="0"
-        :options="personOptions"
+        :options="filteredPersonOptions"
+        @filter="filterPerson"
         behavior="menu"
         class="col-2"
       >
@@ -69,10 +72,10 @@
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
+            <q-popup-proxy ref="startDateProxy" cover transition-show="scale" transition-hide="scale">
+              <q-date @input="() => $refs.startDateProxy.hide()" v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
+                  <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -90,10 +93,10 @@
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
+            <q-popup-proxy ref="dueDateProxy" cover transition-show="scale" transition-hide="scale">
+              <q-date @input="() => $refs.dueDateProxy.hide()" v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
+                  <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -116,7 +119,7 @@
 import { eventBus } from "../../event-bus.js";
 import Cookies from "js-cookie";
 import Vue from "vue";
-import { exportFile } from "quasar";
+import { date } from "quasar";
 import CardBase from "components/CardBase";
 import { ref } from "vue";
 import axios from "axios";
@@ -164,6 +167,12 @@ export default {
         due: "",
       },
       roles: [],
+      branch: {},
+      divisi: {},
+      person: {},
+      filteredPersonOptions: [],
+      filteredDivisionOptions: [],
+      filteredBranchOptions: [],
       // branches: [],
     };
   },
@@ -171,9 +180,6 @@ export default {
   setup() {
     return {
       // role: ref(),
-      branch: ref(),
-      divisi: ref(),
-      person: ref(),
       personOptions: [],
       divisiOptions: [],
       branchOptions: [],
@@ -191,7 +197,7 @@ export default {
     "deposit.start": {
       handler(value) {
         this.deposit.start = value != "" ? value : "";
-        this.fetchData();
+        eventBus.$emit("start-date-selected", this.deposit.start);
       },
       // deep: true,
     },
@@ -199,7 +205,7 @@ export default {
     "deposit.due": {
       handler(value) {
         this.deposit.due = value != "" ? value : "";
-        this.fetchData();
+        eventBus.$emit("due-date-selected", this.deposit.due);
       },
     },
 
@@ -216,6 +222,8 @@ export default {
       handler(value) {
         // console.log("OWIGH");
         // console.log("LASOA: ", value.label);
+        eventBus.$emit("start-date-selected", this.deposit.start);
+        eventBus.$emit("due-date-selected", this.deposit.due);
         eventBus.$emit("person-selected", this.person);
       },
     },
@@ -232,6 +240,9 @@ export default {
   },
 
   mounted() {
+    const { start, end } = this.getStartAndEndOfWeek();
+    this.deposit.start = this.formatDate(start);
+    this.deposit.due = this.formatDate(end);
     // this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
@@ -246,6 +257,89 @@ export default {
   },
 
   methods: {
+    getStartAndEndOfWeek() {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+      const startOfWeek = new Date(today);
+      const endOfWeek = new Date(today);
+
+      // Set startOfWeek to the previous Monday
+      const diffToMonday = (dayOfWeek + 6) % 7;
+      startOfWeek.setDate(today.getDate() - diffToMonday);
+      startOfWeek.setHours(0, 0, 0, 0); // Set to 00:00
+
+      // Set endOfWeek to the next Sunday
+      const diffToSunday = (7 - dayOfWeek) % 7;
+      endOfWeek.setDate(today.getDate() + diffToSunday);
+      endOfWeek.setHours(23, 59, 59, 999); // Set to 23:59:59.999 for end of day
+
+      return {
+        start: startOfWeek,
+        end: endOfWeek
+      };
+    },
+
+    formatDate(dateObj) {
+      return date.formatDate(dateObj, 'YYYY-MM-DD HH:mm');
+    },
+  
+    filterBranch(val, update, abort) {
+      console.log("🚀 ~ filterBranch ~ val:", val)
+      console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
+      if (val === '') {
+        // this.fetchBranchData()
+        update(() => {
+          this.filteredBranchOptions = this.branchOptions
+        })
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.filteredBranchOptions = this.branchOptions.filter(option => {
+          return option.label.toLowerCase().includes(needle)
+        })
+      })
+        console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+    },
+
+    filterDivision(val, update, abort) {
+      console.log("🚀 ~ filterDivision ~ val:", val)
+      console.log("🚀 ~ update ~ this.divisiOptions:", this.divisiOptions)
+      if (val === '') {
+        // this.fetchDivisionData()
+        update(() => {
+          this.filteredDivisionOptions = this.divisiOptions
+        })
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.filteredDivisionOptions = this.divisiOptions.filter(option => {
+          return option.label.toLowerCase().includes(needle)
+        })
+      })
+        console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
+    },
+
+    filterPerson(val, update, abort) {
+      console.log("🚀 ~ filterPerson ~ val:", val)
+      console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
+      if (val === '') {
+        // this.fetchPersonData()
+        update(() => {
+          this.filteredPersonOptions = this.personOptions
+        })
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.filteredPersonOptions = this.personOptions.filter(option => {
+          return option.label.toLowerCase().includes(needle)
+        })
+      })
+        console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
+    },
+
     async checker() {
       try {
         const response = await this.$axios.get("/task/checker");
@@ -255,7 +349,7 @@ export default {
     },
 
     async notifChecker() {
-      console.log("🚀 ~ checker ~ id:", this.id)
+      // console.log("🚀 ~ checker ~ id:", this.id)
 
       try{
         const response = await this.$axios.get(`/task/late-notification/${this.id}`);

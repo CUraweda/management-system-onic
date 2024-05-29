@@ -703,18 +703,12 @@ export default defineComponent({
     },
     search: {
       handler(value) {
-        // this.getData()
         this.search = value != "" ? value : "";
-        // console.log("dor")
         if (this.search) {
-          // console.log("kiw")
           this.filteredData();
         }
       }
     }
-  },
-
-  computed: {
   },
 
   methods: {

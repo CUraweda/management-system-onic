@@ -271,19 +271,19 @@ export default {
             },
           });
 
-          console.log("🚀 ~ fetchData ~ response:", response)
+          // console.log("🚀 ~ fetchData ~ response:", response)
 
           if (!response.data.data.total_rating) {
-            console.log("gada")
+            // console.log("gada")
             this.Avgrate = 0;
           } else {
             const total_rating = response.data.data.total_rating;
-            console.log("🚀 ~ fetchData ~ total_rating:", total_rating)
+            // console.log("🚀 ~ fetchData ~ total_rating:", total_rating)
             const total_task = response.data.data.total_task;
-            console.log("🚀 ~ fetchData ~ total_task:", total_task)
+            // console.log("🚀 ~ fetchData ~ total_task:", total_task)
             // console.log("hasil" + response.data.u_rate);
             const Avgrate = total_rating / total_task;
-            console.log("🚀 ~ fetchData ~ Avgrate:", Avgrate)
+            // console.log("🚀 ~ fetchData ~ Avgrate:", Avgrate)
             this.Avgrate = parseFloat(Avgrate.toFixed(2));
           }
         }

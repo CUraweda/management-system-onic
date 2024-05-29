@@ -104,10 +104,11 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="startDateProxy"
                         >
-                          <q-date v-model="start_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date @input="() => $refs.startDateProxy.hide()" v-model="start_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -120,10 +121,11 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="startTimeProxy"
                         >
-                          <q-time v-model="start_date" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time @input="() => $refs.startTimeProxy.hide()" v-model="start_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -150,10 +152,11 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="dueDateProxy"
                         >
-                          <q-date v-model="due_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date @input="() => $refs.dueDateProxy.hide()" v-model="due_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -166,10 +169,11 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="dueTimeProxy"
                         >
-                          <q-time v-model="due_date" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time @input="() => $refs.dueTimeProxy.hide()" v-model="due_date" mask="YYYY-MM-DD HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -212,7 +216,8 @@
                       name="pic"
                       use-input
                       input-debounce="0"
-                      :options="picOptions"
+                      :options="filteredPicOptions"
+                      @filter="filterPic"
                       behavior="menu"
                       class="col-6"
                       :rules="[(val) => (val !== null && val !== '') || 'Required']"
@@ -293,7 +298,8 @@
                       name="spv"
                       use-input
                       input-debounce="0"
-                      :options="spvOptions"
+                      :options="filteredSpvOptions"
+                      @filter="filterSpv"
                       behavior="menu"
                       class="col-6"
                       :rules="[(val) => (val !== null && val !== '') || 'Required']"
@@ -448,6 +454,8 @@ export default {
       iteration: "daily",
       isMultitask: ref(false),
       sendedForm: ref({}),
+      filteredPicOptions: [],
+      filteredSpvOptions: []
     };
   },
 
@@ -573,6 +581,43 @@ export default {
   },
 
   methods: {
+    filterPic(val, update, abort) {
+      // console.log("🚀 ~ filterPic ~ val:", val)
+      // console.log("🚀 ~ update ~ this.picOptions:", this.picOptions)
+      if (val === '') {
+        update(() => {
+          this.filteredPicOptions = this.picOptions
+        })
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.filteredPicOptions = this.picOptions.filter(option => {
+          return option.label.toLowerCase().includes(needle)
+        })
+      })
+        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+    },
+    
+    filterSpv(val, update, abort) {
+      // console.log("🚀 ~ filterSpv ~ val:", val)
+      // console.log("🚀 ~ update ~ this.spvOptions:", this.spvOptions)
+      if (val === '') {
+        // this.fetchSpvData()
+        update(() => {
+          this.filteredSpvOptions = this.spvOptions
+        })
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.filteredSpvOptions = this.spvOptions.filter(option => {
+          return option.label.toLowerCase().includes(needle)
+        })
+      })
+        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+    },
+
     async getRole() {
       try {
         // console.log("bangbang");

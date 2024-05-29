@@ -175,6 +175,7 @@ export default {
 
   data() {
     return {
+      formattedString:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
       branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       search: "",
@@ -187,30 +188,35 @@ export default {
   mounted() {
     this.username = sessionStorage.getItem('username')? sessionStorage.getItem('username') : Cookies.get("username");
     this.title = sessionStorage.getItem('title')? sessionStorage.getItem('title') : Cookies.get("title");
-    // this.userAccessToken = sessionStorage.getItem('token') || '';
+    this.timer = setInterval(this.getTime, 1000);
+  },
+
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
 
   methods: {
     keluar() {
       sessionStorage.clear()
       this.$router.push('/')
+    },
+    getTime() {
+      const timeStamp = Date.now();
+      this.formattedString = date.formatDate(
+        timeStamp,
+        "dddd, D MMM YYYY h:mm A"
+      );
     }
   },
 
   setup() {
     const miniState = ref(true);
-    const timeStamp = Date.now();
-    const formattedString = date.formatDate(
-      timeStamp,
-      "dddd, D MMM YYYY h:m A"
-    );
 
     return {
       // search: ref(""),
       filter: "",
       drawer: ref(false),
       miniState,
-      formattedString,
 
       drawerClick(e) {
         // if in "mini" state and user

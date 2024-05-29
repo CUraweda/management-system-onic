@@ -259,25 +259,28 @@ export default {
       this.person = person;
       // console.log('Person yang dipilih:', this.person);
     });
-    Promise.all([
-      this.fetchData(),
-      // this.fetchInProgress(),
-      // this.fetchCompleted(),
-      // this.fetchOverdue(),
-      // this.fetchTotal(),
-      // this.fetchPersonData(),
-      // this.fetchDivisionData(),
-    ]).then(() => {
-      this.updateSeries();
-      this.intervalId = setInterval(() => {
-        // this.fetchData();
-        // this.fetchInProgress();
-        // this.fetchCompleted();
-        // this.fetchOverdue();
-        // this.fetchTotal();
-        // this.updateSeries();
-      }, 60000);
-    });
+    
+    if(this.person) {
+      Promise.all([
+        this.fetchData(),
+        // this.fetchInProgress(),
+        // this.fetchCompleted(),
+        // this.fetchOverdue(),
+        // this.fetchTotal(),
+        // this.fetchPersonData(),
+        // this.fetchDivisionData(),
+      ]).then(() => {
+        this.updateSeries();
+        this.intervalId = setInterval(() => {
+          // this.fetchData();
+          // this.fetchInProgress();
+          // this.fetchCompleted();
+          // this.fetchOverdue();
+          // this.fetchTotal();
+          // this.updateSeries();
+        }, 60000);
+      });
+    }
   },
 
   watch: {

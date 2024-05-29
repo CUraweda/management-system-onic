@@ -30,11 +30,11 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="depositDateProxy"
                   transition-show="scale"
                   transition-hide="scale"
+                  ref="startDateProxy"
                 >
-                  <q-date v-model="deposit.start" />
+                  <q-date @input="() => $refs.startDateProxy.hide()" v-model="deposit.start" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -51,11 +51,11 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
-                  ref="depositDateProxy"
                   transition-show="scale"
                   transition-hide="scale"
+                  ref="dueDateProxy"
                 >
-                  <q-date v-model="deposit.due" />
+                  <q-date @input="() => $refs.dueDateProxy.hide()" v-model="deposit.due" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -777,6 +777,22 @@ export default {
   },
 
   watch: {
+    "deposit.due": {
+      handler(value) {
+        this.fetchData();
+        this.fetchDeletedData();
+        this.fetchWaitedData();
+      },
+    },
+
+    "deposit.start": {
+      handler(value) {
+        this.fetchData();
+        this.fetchDeletedData();
+        this.fetchWaitedData();
+      },
+    },
+    
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
