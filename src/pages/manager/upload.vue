@@ -167,6 +167,8 @@ export default {
         : Cookies.get("branch_id"),
       search: ref(""),
       start: ref(),
+      employes: [],
+      role: [],
       end: ref(),
       pagination: {
         rowsPerPage: 5,
@@ -225,6 +227,8 @@ export default {
   },
 
   mounted() {
+    this.getRole();
+    this.fetchPersonData();
     this.fetchHistory();
     this.intervalId = setInterval(() => {
       this.fetchHistory();
@@ -262,9 +266,65 @@ export default {
   },
 
   methods: {
+    async getRole() {
+      try {
+        // console.log("bangbang")
+        const response = await this.$axios.get(`/role`, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        this.roles = response.data.data;
+        // console.log("🚀 ~ getRole ~ this.roles:", this.roles)
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
+    async fetchPersonData() {
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+
+      // Make the POST request using fetch
+      try {
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        if (response.status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
+        });
+
+        const listOfPerson = response.data.data.map((data) => ({
+          id: data.id,
+          username: data.name,
+          role: userRolesMap[data.id] ? userRolesMap[data.id].role : "",
+        }));
+
+        this.employes = listOfPerson;
+        console.log("🚀 ~ fetchPersonData ~ employes:", this.employes);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
+
     formatDashToSlash(data) {
       return data.replace(/\//g, "-");
     },
+
     async fetchHistory() {
       try {
         const histories = await this.$axios.get("/upload/", {
@@ -283,13 +343,30 @@ export default {
         });
       }
     },
+
     async importExcel() {
       try {
         if (!this.token) throw Error("You need to Log In first");
         if (!this.fileTask) throw Error("Please include an Excel file");
+        const username = sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username")
+        const u_id = sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id")
+        const title = sessionStorage.getItem("role")
+        ? sessionStorage.getItem("role")
+        : Cookies.get("role")
+        const user = {username, u_id, title}
+        console.log("🚀 ~ importExcel ~ this.employes:", this.employes);
+        const formData = new FormData();
+        formData.append("file", this.fileTask);
+        formData.append("user", JSON.stringify(user));
+        formData.append("employes", JSON.stringify(this.employes));
+
         const { status, data } = await this.$axios.post(
           "/upload/store-excel/",
-          { file: this.fileTask },
+          formData,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -297,6 +374,7 @@ export default {
             },
           }
         );
+
         if (status != 200) throw Error(data.message);
         this.fileTask = null;
         this.$router.push({ path: "/manager/task_monitoring" });

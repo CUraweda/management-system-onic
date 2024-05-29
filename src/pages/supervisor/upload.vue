@@ -276,9 +276,25 @@ export default {
       try {
         if (!this.token) throw Error("You need to Log In first");
         if (!this.fileTask) throw Error("Please include an Excel file");
+        const username = sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username")
+        const u_id = sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id")
+        const title = sessionStorage.getItem("role")
+        ? sessionStorage.getItem("role")
+        : Cookies.get("role")
+        const user = {username, u_id, title}
+        console.log("🚀 ~ importExcel ~ this.employes:", this.employes);
+        const formData = new FormData();
+        formData.append("file", this.fileTask);
+        formData.append("user", JSON.stringify(user));
+        formData.append("employes", JSON.stringify(this.employes));
+
         const { status, data } = await this.$axios.post(
           "/upload/store-excel/",
-          { file: this.fileTask },
+          formData,
           {
             headers: {
               Authorization: `Bearer ${this.token}`,
@@ -286,9 +302,10 @@ export default {
             },
           }
         );
+
         if (status != 200) throw Error(data.message);
         this.fileTask = null;
-        this.$router.push({ path: "/supervisor/task_monitoring" });
+        this.$router.push({ path: "/manager/task_monitoring" });
         return this.$q.notify({
           message: data.message,
         });
