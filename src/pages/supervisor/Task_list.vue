@@ -106,8 +106,8 @@
                     <div>{{ props.row.pic }}</div>
                   </q-td>
 
-                  <q-td key="pic_title" :props="props">
-                    <div>{{ props.row.pic_title }}</div>
+                  <q-td key="pic_role" :props="props">
+                    <div>{{ props.row.pic_role }}</div>
                   </q-td>
 
                   <q-td key="start_date" :props="props">
@@ -292,8 +292,8 @@
                     <div>{{ props.row.pic }}</div>
                   </q-td>
 
-                  <q-td key="pic_title" :props="props">
-                    <div>{{ props.row.pic_title }}</div>
+                  <q-td key="pic_role" :props="props">
+                    <div>{{ props.row.pic_role }}</div>
                   </q-td>
 
                   <q-td key="start_date" :props="props">
@@ -478,8 +478,8 @@
                     <div>{{ props.row.pic }}</div>
                   </q-td>
 
-                  <q-td key="pic_title" :props="props">
-                    <div>{{ props.row.pic_title }}</div>
+                  <q-td key="pic_role" :props="props">
+                    <div>{{ props.row.pic_role }}</div>
                   </q-td>
 
                   <q-td key="start_date" :props="props">
@@ -706,10 +706,10 @@ export default {
           sortable: true,
         },
         {
-          name: "pic_title",
+          name: "pic_role",
           align: "left",
           label: "Title",
-          field: "pic_title",
+          field: "pic_role",
           sortable: true,
         },
         {

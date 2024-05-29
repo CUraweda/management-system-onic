@@ -122,8 +122,8 @@
                 <div>{{ props.row.pic }}</div>
               </q-td>
 
-              <q-td key="pic_title" :props="props">
-                <div>{{ props.row.pic_title }}</div>
+              <q-td key="pic_role" :props="props">
+                <div>{{ props.row.pic_role }}</div>
               </q-td>
 
               <q-td key="start_date" :props="props">
@@ -385,10 +385,10 @@ export default {
           sortable: true,
         },
         {
-          name: "pic_title",
+          name: "pic_role",
           align: "left",
           label: "Title",
-          field: "pic_title",
+          field: "pic_role",
           sortable: true,
         },
         {
@@ -591,7 +591,7 @@ division: this.divisionId,
           start_date: new Date(taskToRevise.start_date).toISOString(),
           due_date: new Date(taskToRevise.due_date).toISOString(),
           description: taskToRevise.description,
-          pic_title: taskToRevise.pic_title,
+          pic_role: taskToRevise.pic_role,
           pic: taskToRevise.pic,
           spv: taskToRevise.spv,
           approved_at: null,
@@ -669,7 +669,7 @@ division: this.divisionId,
 
         if (Array.isArray(response.data)) {
           const filteredData = response.data.filter(
-            (item) => item.pic_title === "operator"
+            (item) => item.pic_role === "operator"
           );
           this.data = filteredData.sort(
             (a, b) => new Date(b.updated_at) - new Date(a.updated_at)

@@ -719,14 +719,10 @@ export default defineComponent({
 
   methods: {
     filteredData() {
-    // console.log("huhu");
-    // console.log("pil ", this.search)
-    // console.log("🚀 ~ filtered ~ this.data:", this.rows)
     const filtered = this.data.filter((item) => {
       return item.name.toLowerCase().includes(this.search.toLowerCase());
     });
     this.rows = filtered;
-    // console.log("Filtered Data:", filtered);
     return filtered;
   },
 

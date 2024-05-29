@@ -290,18 +290,18 @@ export default {
       // ) {
       //   tasks = response.data.filter(
       //     (task) =>
-      //       task.pic_title !== "director" &&
-      //       task.pic_title !== "direktur" &&
-      //       task.pic_title !== "admin"
+      //       task.pic_role !== "director" &&
+      //       task.pic_role !== "direktur" &&
+      //       task.pic_role !== "admin"
       //   );
       // } else if (this.role === "manager") {
       //   tasks = response.data.filter(
       //     (task) =>
-      //       task.pic_title !== "director" ||
-      //       ("direktur" && task.pic_title !== "admin" && task.pic_title !== "manager")
+      //       task.pic_role !== "director" ||
+      //       ("direktur" && task.pic_role !== "admin" && task.pic_role !== "manager")
       //   );
       // } else if (this.role === "supervisor") {
-      //   tasks = response.data.filter((task) => task.pic_title === "operator");
+      //   tasks = response.data.filter((task) => task.pic_role === "operator");
       // } else if (this.role === "operator") {
       //   tasks = response.data.filter((task) => task.u_name === this.username);
       // }

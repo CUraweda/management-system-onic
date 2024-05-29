@@ -360,6 +360,7 @@ export default {
         throw err;
       }
     },
+    
     async fetchDivisionData() {
       // const loginUrl = "https://office.onic.co.id/api/master/division";
 

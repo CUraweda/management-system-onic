@@ -49,6 +49,7 @@
         use-input
         input-debounce="0"
         :options="personOptions"
+        @filter="filterPerson"
         behavior="menu"
         class="col-2"
       >
@@ -176,6 +177,7 @@ export default {
       divisi: ref(),
       person: ref(),
       personOptions: [],
+      stringPersonOptions: [],
       divisiOptions: [],
       branchOptions: [],
       divisi1: [],
@@ -216,19 +218,13 @@ export default {
 
     person: {
       handler(value) {
-        // console.log("OWIGH");
-        // console.log("LASOA: ", value.label);
         sessionStorage.setItem("person_id", this.person.value);
         eventBus.$emit("person-selected", this.person);
-        // console.log("🚀 ~ handler ~ this.person.value:", this.person.value);
       },
     },
 
     branch: {
       handler(value) {
-        // console.log("UWEY");
-        // console.log("OOOOP: ", value.label);
-        // this.fetchDivisionData();
         this.changeCompany();
         this.fetchPersonData();
       },
@@ -250,6 +246,22 @@ export default {
   },
 
   methods: {
+    filterPerson(val, update) {
+      if (val === "") {
+        update(() => {
+          this.stringPersonOptions = this.personOptions;
+        });
+        return;
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.stringPersonOptions = this.personOptions.filter((v) =>
+          v.toLowerCase().includes(needle)
+        );
+      });
+    },
+
     async checker() {
       try {
         const response = await this.$axios.get("/task/checker");
@@ -259,20 +271,19 @@ export default {
     },
 
     async notifChecker() {
-      console.log("🚀 ~ checker ~ id:", this.id)
+      console.log("🚀 ~ checker ~ id:", this.id);
 
-      try{
+      try {
         const response = await this.$axios.get(`/task/late-notification/${this.id}`);
 
-        const lateTask = response.data.length
+        const lateTask = response.data.length;
 
-          if (lateTask > 0) {
-            this.$q.notify({
-              color: "negative",
-              message: `You Have ${lateTask} Overdue Task` ,
-            });
+        if (lateTask > 0) {
+          this.$q.notify({
+            color: "negative",
+            message: `You Have ${lateTask} Overdue Task`,
+          });
         }
-
       } catch (err) {
         console.error(err);
         throw err;
@@ -379,18 +390,19 @@ export default {
         // }
 
         const d_name = sessionStorage.getItem("division")
-        ? sessionStorage.getItem("division")
-        : Cookies.get("division")
+          ? sessionStorage.getItem("division")
+          : Cookies.get("division");
 
         const d_id = sessionStorage.getItem("division_id")
-        ? sessionStorage.getItem("division_id")
-        : Cookies.get("division_id")
+          ? sessionStorage.getItem("division_id")
+          : Cookies.get("division_id");
 
-        const listOfDivisi = [{
-          label: d_name,
-          value: d_id,
-        }]
-
+        const listOfDivisi = [
+          {
+            label: d_name,
+            value: d_id,
+          },
+        ];
 
         this.divisiOptions = listOfDivisi;
         this.divisi = this.divisiOptions[0];
