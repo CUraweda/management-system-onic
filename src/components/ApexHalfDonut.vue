@@ -89,6 +89,8 @@ export default {
   },
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       person: 0,
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
@@ -170,7 +172,22 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     async fetchDivisionData() {
       try {
         const { status, data } = await this.$axios.get("/divisi", {

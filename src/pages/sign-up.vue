@@ -123,6 +123,8 @@ export default {
   name: "SignIn",
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       email: ref(),
       name: ref(),
       password: ref(),
@@ -170,7 +172,22 @@ export default {
     }
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     async checkEmail() {
       try {
         const response = await this.$axios.get(`/user/check-email/`, {

@@ -186,6 +186,8 @@ export default {
   props: {},
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       person: null,
       username: sessionStorage.getItem("username")
         ? sessionStorage.getItem("username")
@@ -280,7 +282,22 @@ export default {
     clearInterval(this.intervalId);
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     async fetchData() {
       const response = await this.$axios.get("/task/all", {
         params: { startDate: this.start, dueDate: this.due },

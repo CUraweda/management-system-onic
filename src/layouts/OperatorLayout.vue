@@ -156,6 +156,8 @@ export default {
 
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
       branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       search: "",

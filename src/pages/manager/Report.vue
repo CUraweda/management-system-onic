@@ -433,6 +433,8 @@ export default {
   name: "ManagerReport",
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -500,7 +502,22 @@ export default {
     clearInterval(this.intervalId);
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     async downloadFile() {
       try {
         // Mengganti URL dengan endpoint yang sesuai

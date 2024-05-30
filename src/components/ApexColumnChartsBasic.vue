@@ -42,11 +42,11 @@
           </template>
         </q-select> -->
 
-        <!-- <q-input filled label="From" dense v-model="deposit.start" class="col-2">
+        <!-- <q-input filled label="From" dense v-model="formattedStartDate" class="col-2">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
+                <q-date v-model="formattedStartDate" mask="YYYY-MM-DD HH:mm">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -56,11 +56,11 @@
           </template>
         </q-input> -->
 
-        <!-- <q-input filled label="To" dense v-model="deposit.due" class="col-2">
+        <!-- <q-input filled label="To" dense v-model="formattedDueDate" class="col-2">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
+                <q-date v-model="formattedDueDate" mask="YYYY-MM-DD HH:mm">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -112,6 +112,8 @@ export default {
   },
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       monthlyStatusCounts: {},
       currentMonthIndex: 0,
       month: null,
@@ -325,7 +327,22 @@ export default {
     clearInterval(this.intervalId);
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     async fetchData(person) {
       const response = await this.$axios.get("/task/all", {
         params: {

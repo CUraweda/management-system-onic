@@ -28,8 +28,8 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.start"
-                mask="date"
+                v-model="formattedStartDate"
+                mask="##/##/####"
                 label="From"
               >
                 <template v-slot:append>
@@ -37,9 +37,9 @@
                     <q-popup-proxy
                       transition-show="scale"
                       transition-hide="scale"
-                      ref="startDateProxy"
+                      ref="popupProxy"
                     >
-                      <q-date @input="() => $refs.startDateProxy.hide()" v-model="deposit.start" />
+                      <q-date mask="YYYY-MM-DD" @input="updateStartDate" v-model="deposit.start" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -49,8 +49,8 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="deposit.due"
-                mask="date"
+                v-model="formattedDueDate"
+                mask="##/##/####"
                 label="To"
               >
                 <template v-slot:append>
@@ -58,9 +58,9 @@
                     <q-popup-proxy
                       transition-show="scale"
                       transition-hide="scale"
-                      ref="dueDateProxy"
+                      ref="duePopupProxy"
                     >
-                      <q-date @input="() => $refs.dueDateProxy.hide()" v-model="deposit.due" />
+                      <q-date mask="YYYY-MM-DD" @input="updateDueDate" v-model="deposit.due" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -335,6 +335,8 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -499,7 +501,22 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     openEmployeeDialog(row) {
       this.id = row.id;
       this.pic = row.pic;

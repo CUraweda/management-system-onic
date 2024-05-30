@@ -422,6 +422,8 @@ export default {
   name: "ManagerCreate",
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       token: ref(
         sessionStorage.getItem("token")
           ? sessionStorage.getItem("token")
@@ -588,7 +590,22 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     filterSpv(val, update, abort) {
       // console.log("🚀 ~ filterSpv ~ val:", val)
       // console.log("🚀 ~ update ~ this.spvOptions:", this.spvOptions)

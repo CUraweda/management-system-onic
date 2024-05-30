@@ -66,14 +66,15 @@
         filled
         label="From"
         dense
-        v-model="deposit.start"
+        v-model="formattedStartDate"
+        mask="##/##/####"
         class=""
         style="width: 155px"
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="fromDateProxy" cover transition-show="scale" transition-hide="scale">
-              <q-date @input="() => $refs.fromDateProxy.hide()" v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
+            <q-popup-proxy ref="popupProxy" cover transition-show="scale" transition-hide="scale">
+              <q-date @input="updateStartDate" v-model="deposit.start" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
@@ -87,14 +88,15 @@
         filled
         label="To"
         dense
-        v-model="deposit.due"
+        v-model="formattedDueDate"
+        mask="##/##/####"
         class=""
         style="width: 155px"
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="toDateProxy" cover transition-show="scale" transition-hide="scale">
-              <q-date @input="() => $refs.toDateProxy.hide()"  v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
+            <q-popup-proxy ref="duePopupProxy" cover transition-show="scale" transition-hide="scale">
+              <q-date @input="updateDueDate"  v-model="deposit.due" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
@@ -133,6 +135,8 @@ export default {
   },
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       Id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       email: sessionStorage.getItem("email")
         ? sessionStorage.getItem("email")
@@ -247,11 +251,14 @@ export default {
     const { start, end } = this.getStartAndEndOfWeek();
     this.deposit.start = this.formatDate(start);
     this.deposit.due = this.formatDate(end);
+    this.updateStartDate(this.deposit.start)
+    this.updateDueDate(this.deposit.due)
+    // this.formattedStartDate = this.formatDate(start);
+    // this.formattedDueDate = this.formatDate(end);
     this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
     this.checker();
-    console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
     // this.fetchPersonData();
     // this.fetchData();
   },
@@ -260,7 +267,23 @@ export default {
     clearInterval(this.intervalId);
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        console.log("🚀 ~ updateStartDate ~ val:", val)
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     getStartAndEndOfWeek() {
       const today = new Date();
       const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -284,7 +307,7 @@ export default {
     },
 
     formatDate(dateObj) {
-      return date.formatDate(dateObj, 'YYYY-MM-DD HH:mm');
+      return date.formatDate(dateObj, 'YYYY-MM-DD');
     },
   
     filterBranch(val, update, abort) {

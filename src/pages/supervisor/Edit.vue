@@ -620,7 +620,22 @@ export default {
     }, 6000);
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
     async fetchData() {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {

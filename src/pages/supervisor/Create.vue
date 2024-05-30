@@ -421,6 +421,8 @@ export default {
   name: "DirectorCreate",
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       division: sessionStorage.getItem("division")
         ? sessionStorage.getItem("division")
         : Cookies.get("division"),
@@ -572,7 +574,22 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     async getRole() {
       try {
         // console.log("bangbang");

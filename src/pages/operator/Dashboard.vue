@@ -66,14 +66,14 @@
         filled
         label="From"
         dense
-        v-model="deposit.start"
+        v-model="formattedStartDate"
         class=""
         style="width: 155px"
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="startDateProxy" cover transition-show="scale" transition-hide="scale">
-              <q-date @input="() => $refs.startDateProxy.hide()" v-model="deposit.start" mask="YYYY-MM-DD HH:mm">
+            <q-popup-proxy ref="popupProxy" cover transition-show="scale" transition-hide="scale">
+              <q-date @input="updateStartDate" v-model="deposit.start" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
@@ -87,14 +87,14 @@
         filled
         label="To"
         dense
-        v-model="deposit.due"
+        v-model="formattedDueDate"
         class=""
         style="width: 155px"
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="dueDateProxy" cover transition-show="scale" transition-hide="scale">
-              <q-date @input="() => $refs.dueDateProxy.hide()" v-model="deposit.due" mask="YYYY-MM-DD HH:mm">
+            <q-popup-proxy ref="duePopupProxy" cover transition-show="scale" transition-hide="scale">
+              <q-date @input="updateDueDate" v-model="deposit.due" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
@@ -133,6 +133,8 @@ export default {
   },
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       id: sessionStorage.getItem("id")
         ? sessionStorage.getItem("id")
         : Cookies.get("id"),
@@ -243,6 +245,8 @@ export default {
     const { start, end } = this.getStartAndEndOfWeek();
     this.deposit.start = this.formatDate(start);
     this.deposit.due = this.formatDate(end);
+    this.updateStartDate(this.deposit.start)
+    this.updateDueDate(this.deposit.due)
     // this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
@@ -256,7 +260,22 @@ export default {
     clearInterval(this.intervalId);
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     getStartAndEndOfWeek() {
       const today = new Date();
       const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -280,7 +299,7 @@ export default {
     },
 
     formatDate(dateObj) {
-      return date.formatDate(dateObj, 'YYYY-MM-DD HH:mm');
+      return date.formatDate(dateObj, 'YYYY-MM-DD');
     },
   
     filterBranch(val, update, abort) {

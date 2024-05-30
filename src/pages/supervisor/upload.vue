@@ -29,7 +29,7 @@
                 borderless
                 dense
                 v-model="start"
-                mask="date"
+                mask="##/##/####"
                 label="From"
               >
                 <template v-slot:append>
@@ -50,7 +50,7 @@
                 borderless
                 dense
                 v-model="end"
-                mask="date"
+                mask="##/##/####"
                 label="To"
               >
                 <template v-slot:append>
@@ -250,7 +250,22 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
     formatDashToSlash(data) {
       return data.replace(/\//g, "-");
     },

@@ -104,9 +104,9 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="startDateProxy"
+                          ref="popupProxy"
                         >
-                          <q-date @input="() => $refs.startDateProxy.hide()" v-model="start_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date @input="updateStartDate" v-model="start_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
                               <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
@@ -152,7 +152,7 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="dueDateProxy"
+                          ref="popupProxy"
                         >
                           <q-date @input="() => $refs.dueDateProxy.hide()" v-model="due_date" mask="YYYY-MM-DD HH:mm">
                             <div class="row items-center justify-end">
@@ -427,6 +427,8 @@ export default {
   name: "DirectorCreate",
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       division: sessionStorage.getItem("division")
         ? sessionStorage.getItem("division")
         : Cookies.get("division"),
@@ -580,7 +582,22 @@ export default {
     },
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     filterPic(val, update, abort) {
       // console.log("🚀 ~ filterPic ~ val:", val)
       // console.log("🚀 ~ update ~ this.picOptions:", this.picOptions)

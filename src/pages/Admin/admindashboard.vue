@@ -543,6 +543,8 @@ import axios from "axios";
 export default defineComponent({
   data() {
     return {
+      formattedDueDate:'',
+      formattedStartDate:'',
       search:'',
       Roles: [],
       divisionId: sessionStorage.getItem("division_id")
@@ -711,7 +713,22 @@ export default defineComponent({
     }
   },
 
-  methods: {
+    methods: {
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
+    },
     filteredData() {
     const filtered = this.data.filter((item) => {
       return item.name.toLowerCase().includes(this.search.toLowerCase());
