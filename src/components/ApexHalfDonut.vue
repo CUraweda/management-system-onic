@@ -49,10 +49,39 @@
 
       <q-card-section>
         <card-base class="">
-          <div class="q-mb-xl">Employee Performance Monitoring</div>
+          <div class="q-mb-xl col justify-left">
+            <span>Employee Performance Monitoring</span>
+
+            <!-- <q-separator inset /> -->
+            <q-scroll-area style="height: 150px; border-radius: '1px solid #BCC1CA'" class="q-mt-md">
+                <span class="text-h6 text-bold q-pr-xl  q-ml-md q-mt-md text-red">Overdue Task</span>
+                <q-separator inset />
+              <div v-for="overdueTask in overdueTasks" :key="overdueTask" class="q-py-xs">
+                <div class="task_title-item q-ml-md q-mx-md row justify-between">
+                  <span class="text-red">{{ overdueTask.task_title }}</span>
+                  <span class="text-red">{{
+                    overdueTask.due_date | formatTanggal
+                  }}</span>
+                  <!-- <span class="text-red">{{ overdueTask.due_date }}</span> -->
+                </div>
+              </div>
+              <q-space></q-space>
+              <q-separator inset />
+              <span class="text-h6 text-bold text-green q-ml-md q-mt-xl q-pt-xl">Open Task</span>
+              <q-separator inset />
+              <div v-for="openTask in openTasks" :key="openTask" class="q-py-xs">
+                <div class="task_title-item q-ml-md q-mx-md row justify-between">
+                  <span class="">{{ openTask.task_title }}</span>
+                  <span class="">{{ openTask.due_date | formatTanggal }}</span>
+                </div>
+              </div>
+              <q-separator inset />
+            </q-scroll-area>
+            <q-separator inset />
+          </div>
           <div class="row justify-center">
             <div class="col-12">
-              <div style="margin: 85px" class="q-ml-md q-mt-sm text-center">
+              <div style="margin: 25px" class="q-ml-md text-center">
                 <q-rating
                   v-model="Avgrate"
                   class="q-ml-md"
@@ -77,21 +106,34 @@
 </template>
 
 <script>
-import { eventBus } from '../event-bus.js';
+import moment from 'moment';
+import 'moment/locale/id';
+import { eventBus } from "../event-bus.js";
 import Cookies from "js-cookie";
 import { ref, inject } from "vue";
 import CardBase from "components/CardBase";
 
+moment.locale('id');
 export default {
   name: "ApexHalfDonut",
   components: {
     CardBase,
   },
+  filters: {
+    formatTanggal(value) {
+      if (value) {
+        return moment(value).format('DD MMMM YYYY [pukul] HH:mm'); // Format tanggal Indonesia
+      }
+      return value;
+    }
+  },
   data() {
     return {
+      overdueTasks: "",
+      openTasks: "",
       loading: ref(true),
-      formattedDueDate:'',
-      formattedStartDate:'',
+      formattedDueDate: "",
+      formattedStartDate: "",
       person: 0,
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
@@ -125,6 +167,10 @@ export default {
         ? sessionStorage.getItem("username")
         : Cookies.get("username"),
       Avgrate: 0,
+      columns: [
+        { name: 'Task', align: 'center', label: 'Task', field: 'task_title', sortable: true },
+        { name: 'Due Date', align: 'center', label: 'Due Date', field: 'due_date', sortable: true }
+      ]
     };
   },
 
@@ -136,11 +182,11 @@ export default {
   },
 
   mounted() {
-    eventBus.$on('person-selected', person => {
+    eventBus.$on("person-selected", (person) => {
       this.person = person;
-      // console.log('Person yang dipilih:', this.person);
+      this.fetchData();
+      this.getData();
     });
-    // this.fetchData();
 
     // this.fetchDivisionData();
     // console.log("wong: ", this.person);
@@ -151,6 +197,7 @@ export default {
       handler(val) {
         if (val) {
           this.fetchData();
+          this.getData();
         }
       },
     },
@@ -173,21 +220,64 @@ export default {
     },
   },
 
-    methods: {
-    updateStartDate (val) {
-      if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
-      }
-      this.$refs.popupProxy.hide()
+  methods: {
+    // formatLocalTime(tanggalIso) {
+    //   if (value) {
+    //     return moment(value).format('DD MMMM YYYY [pukul] HH:mm'); // Format tanggal Indonesia
+    //   }
+    //   return value;
+    // },
+    // formatLocalTime(tanggalIso) {
+    //   // Parse string ISO 8601 ke objek Date
+    //   const tanggal = new Date(tanggalIso);
+    //   console.log("🚀 ~ formatLocalTime ~ tanggal:", tanggal)
+
+    //   // Format ke string tanggal Indonesia
+    //   const hari = String(tanggal.getUTCDate()).padStart(2, "0");
+    //   console.log("🚀 ~ formatLocalTime ~ hari:", hari)
+    //   const bulan = String(tanggal.getUTCMonth() + 1).padStart(2, "0"); // getUTCMonth() dimulai dari 0
+    //   const tahun = tanggal.getUTCFullYear();
+    //   const jam = String(tanggal.getUTCHours()).padStart(2, "0");
+    //   const menit = String(tanggal.getUTCMinutes()).padStart(2, "0");
+    //   const detik = String(tanggal.getUTCSeconds()).padStart(2, "0");
+
+    //   return `${hari}-${bulan}-${tahun} ${jam}:${menit}:${detik}`;
+    // },
+
+    async getData() {
+      const response = await this.$axios.get("/task/all", {
+        params: { startDate: this.start, dueDate: this.due },
+        headers: {
+          pic: this.person.value,
+          Authorization: `Bearer ${this.token}`,
+        },
+      });
+      this.openTasks = response.data.filter(
+        (task) => task.overdue !== true && task.status === "Open"
+      );
+      // this.TaskCompleted = response.data.filter((task) => task.status === "Close");
+      // this.TaskInProgress = response.data.filter((task) => task.overdue !== true && task.status === "In-progress");
+      this.overdueTasks = response.data.filter(
+        (task) =>
+          task.overdue === true && task.status !== "Close" && task.status !== "Wait-app"
+      );
+      // this.TaskTotal = response.data.length;
     },
 
-    updateDueDate (val) {
+    updateStartDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedStartDate = `${day}/${month}/${year}`;
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.popupProxy.hide();
+    },
+
+    updateDueDate(val) {
+      if (val) {
+        const [year, month, day] = val.split("-");
+        this.formattedDueDate = `${day}/${month}/${year}`;
+      }
+      this.$refs.duePopupProxy.hide();
     },
     async fetchDivisionData() {
       try {

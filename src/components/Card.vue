@@ -251,13 +251,22 @@ export default {
         // console.log("UWAW: ", value.label);
         this.fetchData();
       },
+
+      person: {
+      handler(value) {
+        if (value) {
+          this.fetchData();
+        }
+      }
+      },
+
     },
   },
 
   mounted() {
     eventBus.$on('person-selected', person => {
       this.person = person;
-      console.log('Person yang dipilih:', this.person);
+      // console.log('Person yang dipilih:', this.person);
       this.fetchData();
     });
     eventBus.$on('start-date-selected', start => {
@@ -299,6 +308,7 @@ export default {
       }
       this.$refs.duePopupProxy.hide()
     },
+
     async fetchData() {
       const response = await this.$axios.get("/task/all", {
         params: { startDate: this.start, dueDate: this.due },
@@ -307,39 +317,12 @@ export default {
           Authorization: `Bearer ${this.token}`,
         },
       });
-      // console.log("HAHAHAHA:", response)
-
-      // console.log("walawe: ", this.divisi.value);
-      // let tasks;
-      // const role =  this.role;
-      // if (
-      //   role === "director" ||
-      //   role === "direktur"
-      // ) {
-      //   tasks = response.data.filter(
-      //     (task) =>
-      //       task.pic_role !== "director" &&
-      //       task.pic_role !== "direktur" &&
-      //       task.pic_role !== "admin"
-      //   );
-      // } else if (this.role === "manager") {
-      //   tasks = response.data.filter(
-      //     (task) =>
-      //       task.pic_role !== "director" ||
-      //       ("direktur" && task.pic_role !== "admin" && task.pic_role !== "manager")
-      //   );
-      // } else if (this.role === "supervisor") {
-      //   tasks = response.data.filter((task) => task.pic_role === "operator");
-      // } else if (this.role === "operator") {
-      //   tasks = response.data.filter((task) => task.u_name === this.username);
-      // }
       this.TotalOpen = response.data.filter((task) => task.overdue !== true && task.status === "Open").length;
       this.TotalCompleted = response.data.filter((task) => task.status === "Close").length;
       this.TotalInProgress = response.data.filter((task) => task.overdue !== true && task.status === "In-progress").length;
-      this.TotalOverdue = response.data.filter((task) => task.overdue === true && task.status !== "Close").length;
+      this.TotalOverdue = response.data.filter((task) => task.overdue === true && task.status !== "Close" && task.status !== "Wait-app").length;
       this.TotalTotal = response.data.length;
 
-      // console.log("NGGAH", this.TotalTotal);
     },
 
     redirectToTaskMonitoring(statusFilter) {

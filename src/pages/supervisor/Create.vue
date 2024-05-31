@@ -430,6 +430,9 @@ export default {
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
+      id: sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id"),
       division: sessionStorage.getItem("division")
         ? sessionStorage.getItem("division")
         : Cookies.get("division"),
@@ -708,9 +711,12 @@ export default {
           return user.title !== "director" && user.title !== "admin";
         });
 
+        const userId = parseInt(this.id);
+        const userList = filteredData.filter((user) => user.id === userId);
+
         this.picOptions = filteredData;
         // console.log("🚀 ~ fetchData ~ filteredData:", filteredData);
-        this.selectedpic = this.picOptions[0];
+        this.selectedpic = userList[0];
 
         const selectedpic = this.picOptions.title;
         // console.log("Selected pic:", this.selectedpic);
@@ -771,19 +777,19 @@ export default {
             const titleLowerCase = user.title;
             return titleLowerCase === "supervisor";
           });
-          console.log("titel nya op");
+          // console.log("titel nya op");
         } else if (SelectedPic === "supervisor") {
           supervisors = listOfSpv.filter((user) => {
             const titleLowerCase = user.title;
             return titleLowerCase === "manager";
           });
-          console.log("titel nya spv");
+          // console.log("titel nya spv");
         } else if (SelectedPic === "manager") {
           supervisors = listOfSpv.filter((user) => {
             const titleLowerCase = user.title;
             return titleLowerCase === "director";
           });
-          console.log("titel nya manager");
+          // console.log("titel nya manager");
         }
 
         // console.log("dadakan ", supervisors);

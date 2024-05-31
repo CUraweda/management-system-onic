@@ -72,14 +72,14 @@
       </q-card-section>
 
       <template>
-        <q-scroll-area class="horizontal-scrollbar" style="height: 410px">
+        <q-scroll-area class="horizontal-scrollbar" style="height: 460px">
           <div class="scroll-content" style="width: 1000px">
             <q-card-section>
               <CardBase>
                 <div class="col-12">
                   <apexchart
                     type="bar"
-                    height="321"
+                    height="373"
                     :options="chartOptions"
                     :series="series"
                     :pagination.sync="pagination"

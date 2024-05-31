@@ -68,6 +68,7 @@
         dense
         v-model="formattedStartDate"
         class=""
+        mask="##/##/####"
         style="width: 155px"
       >
         <template v-slot:append>
@@ -89,6 +90,7 @@
         dense
         v-model="formattedDueDate"
         class=""
+        mask="##/##/####"
         style="width: 155px"
       >
         <template v-slot:append>
@@ -125,7 +127,7 @@ import { ref } from "vue";
 import axios from "axios";
 
 export default {
-  name: "DashboardManager",
+  name: "DashboardSupervisor",
   components: {
     Card: () => import("components/Card"),
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
@@ -136,9 +138,7 @@ export default {
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
-      id: sessionStorage.getItem("id")
-        ? sessionStorage.getItem("id")
-        : Cookies.get("id"),
+      Id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       email: sessionStorage.getItem("email")
         ? sessionStorage.getItem("email")
         : Cookies.get("email"),
@@ -157,6 +157,9 @@ export default {
       branchId: sessionStorage.getItem("branch_id")
         ? sessionStorage.getItem("branch_id")
         : Cookies.get("branch_id"),
+      personId: sessionStorage.getItem("person_id")
+        ? sessionStorage.getItem("person_id")
+        : Cookies.get("person_id"),
       TotalOpen: "0",
       TotalInProgress: "0",
       TotalOverdue: "0",
@@ -184,6 +187,7 @@ export default {
     return {
       // role: ref(),
       personOptions: [],
+      stringPersonOptions: [],
       divisiOptions: [],
       branchOptions: [],
       divisi1: [],
@@ -216,15 +220,15 @@ export default {
       handler(value) {
         // console.log("WAKWAW");
         // console.log("UWAW: ", value.label);
-        sessionStorage.setItem("divisi1", this.divisi.label);
+        sessionStorage.setItem("division", this.divisi.label);
+        sessionStorage.setItem("division_id", this.divisi.value);
         this.fetchPersonData();
       },
     },
 
     person: {
       handler(value) {
-        // console.log("OWIGH");
-        // console.log("LASOA: ", value.label);
+        sessionStorage.setItem("person_id", this.person.value);
         eventBus.$emit("start-date-selected", this.deposit.start);
         eventBus.$emit("due-date-selected", this.deposit.due);
         eventBus.$emit("person-selected", this.person);
@@ -233,11 +237,8 @@ export default {
 
     branch: {
       handler(value) {
-        // console.log("UWEY");
-        // console.log("OOOOP: ", value.label);
         this.changeCompany();
-        this.fetchDivisionData();
-        // this.fetchPersonData();
+        this.fetchPersonData();
       },
     },
   },
@@ -248,11 +249,9 @@ export default {
     this.deposit.due = this.formatDate(end);
     this.updateStartDate(this.deposit.start)
     this.updateDueDate(this.deposit.due)
-    // this.getRole();
+    this.getRole();
     this.fetchBranchData();
     this.fetchDivisionData();
-    this.fetchPersonData();
-    eventBus.$emit("person-selected", this.person);
     this.checker();
     this.notifChecker();
     // this.fetchPersonData();
@@ -362,6 +361,7 @@ export default {
         console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
     },
 
+
     async checker() {
       try {
         const response = await this.$axios.get("/task/checker");
@@ -371,20 +371,19 @@ export default {
     },
 
     async notifChecker() {
-      // console.log("🚀 ~ checker ~ id:", this.id)
+      console.log("🚀 ~ checker ~ id:", this.Id);
 
-      try{
-        const response = await this.$axios.get(`/task/late-notification/${this.id}`);
+      try {
+        const response = await this.$axios.get(`/task/late-notification/${this.Id}`);
 
-        const lateTask = response.data.length
+        const lateTask = response.data.length;
 
-          if (lateTask > 0) {
-            this.$q.notify({
-              color: "negative",
-              message: `You Have ${lateTask} Overdue Task` ,
-            });
+        if (lateTask > 0) {
+          this.$q.notify({
+            color: "negative",
+            message: `You Have ${lateTask} Overdue Task`,
+          });
         }
-
       } catch (err) {
         console.error(err);
         throw err;
@@ -435,7 +434,7 @@ export default {
           branch_id,
         };
 
-        // console.log("🚀 ~ changeCompany ~ dataData:", dataData)
+        // console.log("🚀 ~ changeCompany ~ dataData:", dataData);
 
         sessionStorage.setItem("division", division);
         sessionStorage.setItem("branch", branch);
@@ -470,6 +469,7 @@ export default {
         throw err;
       }
     },
+
     async fetchDivisionData() {
       // const loginUrl = "https://office.onic.co.id/api/master/division";
 
@@ -490,18 +490,19 @@ export default {
         // }
 
         const d_name = sessionStorage.getItem("division")
-        ? sessionStorage.getItem("division")
-        : Cookies.get("division")
+          ? sessionStorage.getItem("division")
+          : Cookies.get("division");
 
         const d_id = sessionStorage.getItem("division_id")
-        ? sessionStorage.getItem("division_id")
-        : Cookies.get("division_id")
+          ? sessionStorage.getItem("division_id")
+          : Cookies.get("division_id");
 
-        const listOfDivisi = [{
-          label: d_name,
-          value: d_id,
-        }]
-
+        const listOfDivisi = [
+          {
+            label: d_name,
+            value: d_id,
+          },
+        ];
 
         this.divisiOptions = listOfDivisi;
         this.divisi = this.divisiOptions[0];
@@ -514,76 +515,50 @@ export default {
     },
 
     async fetchPersonData() {
-      // const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
 
       // Make the POST request using fetch
       try {
-      //   const response = await axios.get(loginUrl, {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Accept: "application/json",
-      //       Authorization: `Bearer ${this.token}`,
-      //     },
-      //   });
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
         // console.log("🚀 ~ fetchPersonData ~ response:", response)
 
-        // if (response.status !== 200) {
-        //   throw Error("Error while fetching");
-        // }
+        if (response.status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        // const branch = this.branch.label;
-        // const division = this.divisi.label;
+        const branch = this.branch.label;
+        const division = this.divisi.label;
 
-        // const filteredData = response.data.data.filter(
-        //   (user) => user.company_name === branch && user.division === division
-        // );
+        const id = parseInt(this.Id)
+        const listOfPerson = response.data.data.filter(
+          (user) => user.id === id
+        );
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
+        });
+
+        const filteredData = listOfPerson.map((data) => ({
+          label: data.name,
+          value: data.id,
+          title: userRolesMap[data.id] ? userRolesMap[data.id].role : "",
+        }));
 
         // console.log("🚀 ~ fetchPersonData ~ filteredData:", filteredData)
 
-        // const userRolesMap = {};
-
-        // this.roles.forEach((role) => {
-        //   userRolesMap[role.u_id] = role;
-        // });
-
-        // const listOfPerson = filteredData.map((data) => ({
-        //   label: data.name,
-        //   value: data.id,
-        //   title: userRolesMap[data.id] ? userRolesMap[data.id].role : "",
-        // }));
-
-        // const filteredTitle = listOfPerson.filter(
-        //   (user) =>
-        //     user.title !== "director" &&
-        //     user.title !== "direktur" &&
-        //     user.title !== "admin"
-        // );
-
-        const name = sessionStorage.getItem("username")
-        ? sessionStorage.getItem("username")
-        : Cookies.get("username")
-
-        const id = sessionStorage.getItem("id")
-        ? sessionStorage.getItem("id")
-        : Cookies.get("id")
-
-        const title = sessionStorage.getItem("role")
-        ? sessionStorage.getItem("role")
-        : Cookies.get("role")
-
-        const filteredTitle = [{
-          label: name,
-          value: id,
-          title: title,
-        }]
-
-        console.log("🚀 ~ fetchPersonData ~ filteredTitle:", filteredTitle)
-
-        this.personOptions = filteredTitle;
-        this.person = this.personOptions.length > 0 ? this.personOptions[0] : null;
+        this.personOptions = filteredData;
+        this.person = filteredData[0];
+        // console.log("Selected Person:", this.person);
         eventBus.$emit("person-selected", this.person);
-        // console.log("Selected Person:", person);
         // this.fetchData(person);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -599,23 +574,16 @@ export default {
           this.branches = JSON.parse(branches);
         }
 
-        // console.log("🚀 DATA:", this.branches);
-
         const listOfBranch = this.branches.map((branch) => ({
           label: branch.company.c_name,
           value: branch.company.c_id,
         }));
 
-        const branchId = parseInt(this.branchId)
-        const branchesList = listOfBranch.filter(
-          (data) => data.value === branchId
-        )
+        const branchId = parseInt(this.branchId);
+        const branchesList = listOfBranch.filter((user) => user.value === branchId);
 
         this.branchOptions = listOfBranch;
         this.branch = branchesList[0];
-
-        // const branch = this.branchOptions.d_name;
-        // console.log("Selected Branch:", this.branch);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -629,7 +597,7 @@ export default {
         });
       } else if (this.title.toLowerCase() === "direktur") {
         this.$router.push({
-          path: "/operator/task_monitoring",
+          path: "/director/task_monitoring",
           query: { status: statusFilter },
         });
       } else {

@@ -129,7 +129,7 @@
               </q-td>
 
               <q-td key="upload_date" :props="props">
-                <div>{{ props.row.uploadedDate }}</div>
+                <div>{{ formatLocalTime(props.row.uploadedDate) }}</div>
               </q-td>
 
               <q-td key="upload_by" :props="props">
@@ -270,6 +270,25 @@ export default {
   },
 
     methods: {
+      formatLocalTime(utcTime) {
+      if (utcTime === null) {
+        return ""; // Jika utcTime null, kembalikan string kosong
+      }
+
+      const options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+        timeZone: "UTC", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString("id-ID", options);
+      return localTime;
+    },
     updateStartDate (val) {
       if (val) {
         const [year, month, day] = val.split('-')
