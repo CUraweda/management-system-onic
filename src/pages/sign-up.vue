@@ -123,6 +123,7 @@ export default {
   name: "SignIn",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       email: ref(),
@@ -211,7 +212,7 @@ export default {
         })
       }
     },
-    
+
     async fetchData() {
       try {
         const response = await this.$axios.get('/user/helper-register')

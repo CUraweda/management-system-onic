@@ -427,6 +427,7 @@ export default {
   name: "SupervisorReport",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),

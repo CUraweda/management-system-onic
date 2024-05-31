@@ -159,6 +159,7 @@ export default {
   name: "TaskMonitoring3",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       divisionId: sessionStorage.getItem("division_id")
@@ -173,7 +174,8 @@ export default {
       role: [],
       end: ref(),
       pagination: {
-        rowsPerPage: 5,
+        page: 1,
+        rowsPerPage: 0
       },
     };
   },

@@ -89,6 +89,7 @@ export default {
   },
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       person: 0,

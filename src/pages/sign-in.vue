@@ -103,6 +103,7 @@
                           label="Sign In"
                           color="cyan"
                           type="submit"
+                          :disabled="isClicked"
                         />
                       </div>
                     </q-form>
@@ -137,6 +138,8 @@ export default {
 
   data() {
     return {
+      loading: ref(true),
+      isClicked: false,
       formattedDueDate:'',
       formattedStartDate:'',
       divisionId: sessionStorage.getItem("division_id")
@@ -181,6 +184,10 @@ export default {
   },
 
     methods: {
+    //   handleClick() {
+    //   this.isClicked = true;
+    // },
+
     updateStartDate (val) {
       if (val) {
         const [year, month, day] = val.split('-')
@@ -245,6 +252,7 @@ export default {
     },
 
     async SignIn() {
+      this.isClicked = true;
       const loginUrl = "https://office.onic.co.id/api/auth/login";
 
       // Define the data object containing the required parameters
@@ -324,6 +332,7 @@ export default {
         sessionStorage.setItem("division_id", division_id);
         sessionStorage.setItem("branch_id", branch_id);
         // }
+        this.isClicked = false;
         this.redirectUser(role);
 
         this.$q.notify({
@@ -340,7 +349,9 @@ export default {
           position: "top",
           message: error.response.data.message,
         });
-        }
+        this.isClicked = false;
+      }
+      this.isClicked = false;
       }
     },
 

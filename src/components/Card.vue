@@ -186,6 +186,7 @@ export default {
   props: {},
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       person: null,
@@ -256,7 +257,7 @@ export default {
   mounted() {
     eventBus.$on('person-selected', person => {
       this.person = person;
-      // console.log('Person yang dipilih:', this.person);
+      console.log('Person yang dipilih:', this.person);
       this.fetchData();
     });
     eventBus.$on('start-date-selected', start => {

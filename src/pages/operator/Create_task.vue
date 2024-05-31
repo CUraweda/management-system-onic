@@ -104,8 +104,9 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="startDateProxy"
                         >
-                          <q-date v-model="start_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date @input="() => $refs.startDateProxy.hide()" v-model="start_date" mask="DD-MM-YYYY HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -120,8 +121,9 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="startTimeProxy"
                         >
-                          <q-time v-model="start_date" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time @input="() => $refs.startTimeProxy.hide()" v-model="start_date" mask="DD-MM-YYYY HH:mm" format24h>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -150,8 +152,9 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="dueDateProxy"
                         >
-                          <q-date v-model="due_date" mask="YYYY-MM-DD HH:mm">
+                          <q-date @input="() => $refs.dueDateProxy.hide()" v-model="due_date" mask="DD-MM-YYYY HH:mm">
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -166,8 +169,9 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="dueTimeProxy"
                         >
-                          <q-time v-model="due_date" mask="YYYY-MM-DD HH:mm" format24h>
+                          <q-time @input="() => $refs.dueTimeProxy.hide()" v-model="due_date" mask="DD-MM-YYYY HH:mm" format24h>
                             <div class="row items-center justify-end">
                               <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
@@ -294,7 +298,8 @@
                       name="spv"
                       use-input
                       input-debounce="0"
-                      :options="spvOptions"
+                      :options="filteredSpvOptions"
+                      @filter="filterSpv"
                       behavior="menu"
                       class="col-6"
                       :rules="[(val) => (val !== null && val !== '') || 'Required']"
@@ -422,6 +427,7 @@ export default {
   name: "ManagerCreate",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       token: ref(
@@ -447,6 +453,7 @@ export default {
       iteration: "daily",
       isMultitask: ref(false),
       sendedForm: ref({}),
+      filteredSpvOptions: []
     };
   },
 
@@ -591,22 +598,7 @@ export default {
   },
 
     methods: {
-    updateStartDate (val) {
-      if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
-      }
-      this.$refs.popupProxy.hide()
-    },
-
-    updateDueDate (val) {
-      if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
-      }
-      this.$refs.duePopupProxy.hide()
-    },
-    filterSpv(val, update, abort) {
+      filterSpv(val, update, abort) {
       // console.log("🚀 ~ filterSpv ~ val:", val)
       // console.log("🚀 ~ update ~ this.spvOptions:", this.spvOptions)
       if (val === '') {
@@ -623,6 +615,29 @@ export default {
         })
       })
         // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+    },
+
+      convertToDate(dateString) {
+      const [day, month, yearTime] = dateString.split('-');
+      const [year, time] = yearTime.split(' ');
+      const formattedString = `${year}-${month}-${day}T${time}:00`;
+      return new Date(formattedString);
+    },
+
+    updateStartDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedStartDate = `${day}/${month}/${year}`
+      }
+      this.$refs.popupProxy.hide()
+    },
+
+    updateDueDate (val) {
+      if (val) {
+        const [year, month, day] = val.split('-')
+        this.formattedDueDate = `${day}/${month}/${year}`
+      }
+      this.$refs.duePopupProxy.hide()
     },
 
     async getRole() {
@@ -684,7 +699,7 @@ export default {
         const id = sessionStorage.getItem("id")
         ? sessionStorage.getItem("id")
         : Cookies.get("id")
-        
+
         const division = sessionStorage.getItem("division")
         ? sessionStorage.getItem("division")
         : Cookies.get("division")
@@ -868,8 +883,8 @@ export default {
         this.addToForm("task_title", this.task_title);
         this.addToForm("priority", this.priority.value);
         this.addToForm("status", "Wait-app");
-        this.addToForm("start_date", new Date(this.start_date).toISOString());
-        this.addToForm("due_date", new Date(this.due_date).toISOString());
+        this.addToForm("start_date", this.convertToDate(this.start_date));
+        this.addToForm("due_date", this.convertToDate(this.due_date));
         this.addToForm("description", `${this.description} \n`);
         this.addToForm("pic_title", this.selectedpic.title);
         this.addToForm(

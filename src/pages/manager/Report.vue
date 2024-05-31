@@ -433,6 +433,7 @@ export default {
   name: "ManagerReport",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       divisionId: sessionStorage.getItem("division_id")

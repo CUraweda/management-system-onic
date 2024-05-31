@@ -135,6 +135,7 @@ export default {
   },
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       Id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
@@ -306,7 +307,7 @@ export default {
     formatDate(dateObj) {
       return date.formatDate(dateObj, 'YYYY-MM-DD');
     },
-  
+
     filterBranch(val, update, abort) {
       console.log("🚀 ~ filterBranch ~ val:", val)
       console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
@@ -474,7 +475,7 @@ export default {
         throw err;
       }
     },
-    
+
     async fetchDivisionData() {
       // const loginUrl = "https://office.onic.co.id/api/master/division";
 
@@ -566,9 +567,12 @@ export default {
         );
 
         const personId = parseInt(this.personId);
+        const userId = parseInt(this.Id);
+
         const personList = filteredTitle.filter((user) => user.value === personId);
+        const userList = filteredTitle.filter((user) => user.value === userId);
         this.personOptions = filteredTitle;
-        this.person = personList.length > 0 ? personList[0] : this.personOptions[0];
+        this.person = personList.length > 0 ? personList[0] : userList[0];
         // console.log("Selected Person:", this.person);
         eventBus.$emit("person-selected", this.person);
         // this.fetchData(person);

@@ -104,7 +104,14 @@
           :grid="mode == 'grid'"
           :filter="filter"
           :pagination.sync="pagination"
+        :loading="loading"
         >
+        <template #loading>
+          <q-inner-loading showing color="primary">
+
+          </q-inner-loading>
+        </template>
+
           <template v-slot:body="props">
             <q-tr
               :props="props"
@@ -345,6 +352,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
@@ -452,7 +460,8 @@ export default {
       ],
       data: [],
       pagination: {
-        rowsPerPage: 5,
+        page: 1,
+        rowsPerPage: 0
       },
     };
   },
@@ -691,9 +700,11 @@ division: this.divisionId,
           this.data = filteredData.sort(
             (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
           );
+          this.loading = false;
         } else {
           console.error("Invalid response format:", response);
         }
+      this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }

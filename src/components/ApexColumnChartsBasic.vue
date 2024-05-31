@@ -112,6 +112,7 @@ export default {
   },
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       monthlyStatusCounts: {},
@@ -261,7 +262,7 @@ export default {
       this.person = person;
       // console.log('Person yang dipilih:', this.person);
     });
-    
+
     if(this.person) {
       Promise.all([
         this.fetchData(),

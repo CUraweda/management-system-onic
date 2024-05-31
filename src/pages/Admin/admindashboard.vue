@@ -543,6 +543,7 @@ import axios from "axios";
 export default defineComponent({
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       search:'',

@@ -356,6 +356,7 @@ export default {
 
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
@@ -613,6 +614,7 @@ division: this.divisionId,
         );
         this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
 
+      this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }

@@ -667,6 +667,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
@@ -803,7 +804,7 @@ export default {
         this.fetchWaitedData();
       },
     },
-    
+
     search: {
       handler(value) {
         this.search = value != "" ? value : "";
@@ -850,6 +851,7 @@ export default {
         this.data = response.data.sort(
           (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
         );
+      this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -893,6 +895,7 @@ export default {
         this.waiting_data = response.data.sort(
           (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
         );
+      this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -916,6 +919,7 @@ export default {
         this.deleted_data = response.data.sort(
           (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
         );
+      this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }

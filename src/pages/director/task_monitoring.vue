@@ -87,15 +87,21 @@
     <q-page class="q-pa-sm">
       <q-card>
         <q-table
-          class="no-shadow q-ml-md"
-          :data="data"
-          :hide-header="mode === 'grid'"
-          :columns="columns"
-          row-key="pic"
-          :grid="mode == 'grid'"
-          :filter="filter"
-          :pagination.sync="pagination"
+        class="no-shadow q-ml-md"
+        :data="data"
+        :hide-header="mode === 'grid'"
+        :columns="columns"
+        row-key="pic"
+        :grid="mode == 'grid'"
+        :filter="filter"
+        :pagination.sync="pagination"
+        :loading="loading"
         >
+        <template #loading>
+          <q-inner-loading showing color="primary">
+          </q-inner-loading>
+        </template>
+
           <template v-slot:body="props">
             <q-tr
               :props="props"
@@ -335,6 +341,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
@@ -442,14 +449,9 @@ export default {
         },
       ],
       data: [],
-      // pagination: {
-      //   page: 1,
-      //   rowsPerPage: 0, // jumlah item per halaman
-      // },
-
-      // FIX:tambah fitur loading dulu
       pagination: {
-        rowsPerPage: 5,
+        page: 1,
+        rowsPerPage: 0
       },
     };
   },
@@ -653,9 +655,11 @@ export default {
           this.data = response.data.sort(
             (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
           );
+          this.loading = false;
         } else {
           console.error("Invalid response format:", response);
         }
+      this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }

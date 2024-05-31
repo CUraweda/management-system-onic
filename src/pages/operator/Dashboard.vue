@@ -133,6 +133,7 @@ export default {
   },
   data() {
     return {
+      loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
       id: sessionStorage.getItem("id")
@@ -251,8 +252,10 @@ export default {
     this.fetchBranchData();
     this.fetchDivisionData();
     this.fetchPersonData();
+    eventBus.$emit("person-selected", this.person);
     this.checker();
     this.notifChecker();
+    // this.fetchPersonData();
     // this.fetchData();
   },
 
@@ -301,7 +304,7 @@ export default {
     formatDate(dateObj) {
       return date.formatDate(dateObj, 'YYYY-MM-DD');
     },
-  
+
     filterBranch(val, update, abort) {
       console.log("🚀 ~ filterBranch ~ val:", val)
       console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
@@ -565,19 +568,22 @@ export default {
         ? sessionStorage.getItem("id")
         : Cookies.get("id")
 
+        const title = sessionStorage.getItem("role")
+        ? sessionStorage.getItem("role")
+        : Cookies.get("role")
+
         const filteredTitle = [{
           label: name,
           value: id,
+          title: title,
         }]
 
         console.log("🚀 ~ fetchPersonData ~ filteredTitle:", filteredTitle)
 
         this.personOptions = filteredTitle;
-        this.person = this.personOptions[0];
-
-        const person = this.personOptions.length > 0 ? this.personOptions[0] : null;
-        // console.log("Selected Person:", person);
+        this.person = this.personOptions.length > 0 ? this.personOptions[0] : null;
         eventBus.$emit("person-selected", this.person);
+        // console.log("Selected Person:", person);
         // this.fetchData(person);
       } catch (error) {
         console.error("Error fetching users:", error);
