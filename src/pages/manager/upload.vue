@@ -28,18 +28,18 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="start"
+                v-model="formattedStartDate"
                 mask="##/##/####"
                 label="From"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy
-                      ref="depositDateProxy"
+                      ref="startDateProxy"
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="start" />
+                    <q-date v-model="start" @input="updateStartDate" mask="YYYY-MM-DD" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -49,18 +49,18 @@
                 class="bg-grey-3 q-px-md under-title col-lg-2 col-md-2 col-sm-5 col-xs-5"
                 borderless
                 dense
-                v-model="end"
+                v-model="formattedDueDate"
                 mask="##/##/####"
                 label="To"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy
-                      ref="depositDateProxy"
+                      ref="dueDateProxy"
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="end" />
+                    <q-date v-model="end" @input="updateDueDate" mask="YYYY-MM-DD" />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -115,7 +115,6 @@
         <q-table
           class="no-shadow q-ml-md"
           :data="data"
-          :hide-header="grid"
           :columns="columns"
         >
           <template v-slot:body="props">
@@ -150,6 +149,7 @@
 <script>
 import Cookies from "js-cookie";
 import axios from "axios";
+import {date} from 'quasar';
 import { ref } from "vue";
 import { exportFile } from "quasar";
 // import Status from "components/Status"
@@ -174,7 +174,8 @@ export default {
       role: [],
       end: ref(),
       pagination: {
-        rowsPerPage: 10
+        page: 1,
+        rowsPerPage: 0, // jumlah item per halaman
       },
     };
   },
@@ -229,7 +230,13 @@ export default {
     };
   },
 
+
   mounted() {
+    const { startDate, endDate } = this.getStartAndEndOfWeek();
+    this.start = this.formatDate(startDate);
+    this.end = this.formatDate(endDate);
+    this.updateStartDate(this.start)
+    this.updateDueDate(this.end)
     this.getRole();
     this.fetchPersonData();
     this.fetchHistory();
@@ -269,6 +276,32 @@ export default {
   },
 
     methods: {
+    getStartAndEndOfWeek() {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+      const startOfWeek = new Date(today);
+      const endOfWeek = new Date(today);
+
+      // Set startOfWeek to the previous Monday
+      const diffToMonday = (dayOfWeek + 6) % 7;
+      startOfWeek.setDate(today.getDate() - diffToMonday);
+      startOfWeek.setHours(0, 0, 0, 0); // Set to 00:00
+
+      // Set endOfWeek to the next Sunday
+      const diffToSunday = (7 - dayOfWeek) % 7;
+      endOfWeek.setDate(today.getDate() + diffToSunday);
+      endOfWeek.setHours(23, 59, 59, 999); // Set to 23:59:59.999 for end of day
+
+      return {
+        startDate: startOfWeek,
+        endDate: endOfWeek
+      };
+    },
+
+    formatDate(dateObj) {
+      return date.formatDate(dateObj, 'YYYY-MM-DD');
+    },
+
       formatLocalTime(utcTime) {
       if (utcTime === null) {
         return ""; // Jika utcTime null, kembalikan string kosong
@@ -288,12 +321,13 @@ export default {
       const localTime = new Date(utcTime).toLocaleString("id-ID", options);
       return localTime;
     },
+
     updateStartDate (val) {
       if (val) {
         const [year, month, day] = val.split('-')
         this.formattedStartDate = `${day}/${month}/${year}`
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.startDateProxy.hide()
     },
 
     updateDueDate (val) {
@@ -301,7 +335,7 @@ export default {
         const [year, month, day] = val.split('-')
         this.formattedDueDate = `${day}/${month}/${year}`
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.dueDateProxy.hide()
     },
     async getRole() {
       try {

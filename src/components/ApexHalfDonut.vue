@@ -187,31 +187,49 @@ export default {
       this.fetchData();
       this.getData();
     });
+    eventBus.$on('start-date-selected', start => {
+      this.start = start;
+      // console.log('Start yang dipilih:', this.start);
+      this.fetchData();
+      this.getData();
+    });
+    eventBus.$on('due-date-selected', due => {
+      this.due = due;
+      // console.log('Due yang dipilih:', this.due);
+      this.fetchData();
+      this.getData();
+    });
 
     // this.fetchDivisionData();
     // console.log("wong: ", this.person);
   },
 
   watch: {
-    person: {
-      handler(val) {
-        if (val) {
-          this.fetchData();
-          this.getData();
-        }
+    "deposit.start": {
+      handler(value) {
+        this.deposit.start = value != "" ? value : "";
+        this.fetchData();
+        this.getData();
+      },
+      // deep: true,
+    },
+
+    "deposit.due": {
+      handler(value) {
+        this.deposit.due = value != "" ? value : "";
+        this.fetchData();
+        this.getData();
       },
     },
 
-    // divisi: {
-    //   handler(value) {
-    //     console.log("Selected PIC changed. Updating SPV options...");
-    //     console.log("PIC title:", value.label);
-
-    //     if (value) {
-    //       this.fetchPersonData();
-    //     }
-    //   },
-    // },
+      person: {
+      handler(value) {
+        if (value) {
+          this.fetchData();
+          this.getData();
+        }
+      }
+      },
   },
 
   computed: {

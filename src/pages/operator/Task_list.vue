@@ -550,6 +550,7 @@ import Cookies from 'js-cookie';
 import { exportFile } from "quasar";
 import { defineComponent } from "vue";
 import axios from "axios";
+import {date} from 'quasar';
 // import Status from "components/Status"
 import { store } from "../../store/store.js";
 import { ref } from "vue";
@@ -685,7 +686,13 @@ export default {
     };
   },
 
+
   mounted() {
+    const { start, end } = this.getStartAndEndOfWeek();
+    this.deposit.start = this.formatDate(start);
+    this.deposit.due = this.formatDate(end);
+    this.updateStartDate(this.deposit.start)
+    this.updateDueDate(this.deposit.due)
     this.fetchDeletedData();
     this.fetchData();
     this.fetchWaitedData();
@@ -723,6 +730,32 @@ export default {
 },
 
     methods: {
+    getStartAndEndOfWeek() {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+      const startOfWeek = new Date(today);
+      const endOfWeek = new Date(today);
+
+      // Set startOfWeek to the previous Monday
+      const diffToMonday = (dayOfWeek + 6) % 7;
+      startOfWeek.setDate(today.getDate() - diffToMonday);
+      startOfWeek.setHours(0, 0, 0, 0); // Set to 00:00
+
+      // Set endOfWeek to the next Sunday
+      const diffToSunday = (7 - dayOfWeek) % 7;
+      endOfWeek.setDate(today.getDate() + diffToSunday);
+      endOfWeek.setHours(23, 59, 59, 999); // Set to 23:59:59.999 for end of day
+
+      return {
+        start: startOfWeek,
+        end: endOfWeek
+      };
+    },
+
+    formatDate(dateObj) {
+      return date.formatDate(dateObj, 'YYYY-MM-DD');
+    },
+
     updateStartDate (val) {
       if (val) {
         const [year, month, day] = val.split('-')
