@@ -355,6 +355,7 @@ export default {
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
+    username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
     divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
       branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
@@ -460,17 +461,16 @@ export default {
       ],
       data: [],
       pagination: {
-        page: 1,
-        rowsPerPage: 0
+        rowsPerPage: 10
       },
     };
   },
   mounted() {
     this.fetchData();
     this.statusFilter = this.$route.query.status;
-    this.intervalId = setinterval(() => {
-      this.fetchData();
-    }, 6000);
+    // this.intervalId = setinterval(() => {
+    //   this.fetchData();
+    // }, 6000);
   },
   setup() {
     return {

@@ -174,8 +174,7 @@ export default {
       role: [],
       end: ref(),
       pagination: {
-        page: 1,
-        rowsPerPage: 0
+        rowsPerPage: 10
       },
     };
   },

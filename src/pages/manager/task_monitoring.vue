@@ -460,8 +460,7 @@ export default {
       ],
       data: [],
       pagination: {
-        page: 1,
-        rowsPerPage: 0
+        rowsPerPage: 10
       },
     };
   },
