@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { eventBus } from '../event-bus.js';
+import { eventBus } from "../event-bus.js";
 const { DateTime } = require("luxon");
 import Cookies from "js-cookie";
 import Vue from "vue";
@@ -113,8 +113,8 @@ export default {
   data() {
     return {
       loading: ref(true),
-      formattedDueDate:'',
-      formattedStartDate:'',
+      formattedDueDate: "",
+      formattedStartDate: "",
       monthlyStatusCounts: {},
       currentMonthIndex: 0,
       month: null,
@@ -257,13 +257,12 @@ export default {
   },
 
   mounted() {
-
-    eventBus.$on('person-selected', person => {
+    eventBus.$on("person-selected", (person) => {
       this.person = person;
       // console.log('Person yang dipilih:', this.person);
     });
 
-    if(this.person) {
+    if (this.person) {
       Promise.all([
         this.fetchData(),
         // this.fetchInProgress(),
@@ -328,28 +327,36 @@ export default {
     clearInterval(this.intervalId);
   },
 
-    methods: {
-    updateStartDate (val) {
+  methods: {
+    updateStartDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedStartDate = `${day}/${month}/${year}`;
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.popupProxy.hide();
     },
 
-    updateDueDate (val) {
+    updateDueDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedDueDate = `${day}/${month}/${year}`;
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.duePopupProxy.hide();
     },
+
     async fetchData(person) {
+      const today = new Date();
+      const startOfYear = new Date(today.getFullYear(), 0, 1); // 1st January of current year
+      const endOfYear = new Date(today.getFullYear(), 11, 31); // 31st December of current year
+
+      // console.log(startOfYear)
+      // console.log(endOfYear)
+
       const response = await this.$axios.get("/task/all", {
         params: {
           search: this.search,
-          startDate: this.deposit.start,
-          dueDate: this.deposit.due,
+          startDate: startOfYear.toISOString().split("T")[0], // Format to YYYY-MM-DD
+          dueDate: endOfYear.toISOString().split("T")[0], // Format to YYYY-MM-DD
         },
         headers: {
           title: this.title,
@@ -396,10 +403,16 @@ export default {
       Object.keys(monthsTasks).forEach((month) => {
         const tasksOfMonth = monthsTasks[month];
         const statusCounts = {
-          Open: tasksOfMonth.filter((task) => task.overdue !== true && task.status === "Open").length,
+          Open: tasksOfMonth.filter(
+            (task) => task.overdue !== true && task.status === "Open"
+          ).length,
           Completed: tasksOfMonth.filter((task) => task.status === "Close").length,
-          InProgress: tasksOfMonth.filter((task) => task.overdue !== true && task.status === "In-progress").length,
-          Overdue: tasksOfMonth.filter((task) => task.status !== "Close" && task.overdue === true).length,
+          InProgress: tasksOfMonth.filter(
+            (task) => task.overdue !== true && task.status === "In-progress"
+          ).length,
+          Overdue: tasksOfMonth.filter(
+            (task) => task.status !== "Close" && task.overdue === true
+          ).length,
           Total: tasksOfMonth.length,
         };
         this.monthlyStatusCounts[month] = statusCounts;
