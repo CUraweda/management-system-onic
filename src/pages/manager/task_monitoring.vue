@@ -346,6 +346,9 @@ export default {
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
+      personId: sessionStorage.getItem("person_id")
+        ? sessionStorage.getItem("person_id")
+        : Cookies.get("person_id"),
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -682,6 +685,7 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
+            pic: this.personId,
             branch: this.branchId,
             division: this.divisionId,
             Authorization: `Bearer ${this.token}`,

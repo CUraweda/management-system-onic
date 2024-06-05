@@ -345,7 +345,8 @@ export default {
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
+      personId: sessionStorage.getItem("person_id")? sessionStorage.getItem("person_id") : Cookies.get("person_id"),
+      divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
       branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
       token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
@@ -676,6 +677,7 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
+          pic: this.personId,
           title: this.title,
           branch: this.branchId,
           division: this.divisionId,

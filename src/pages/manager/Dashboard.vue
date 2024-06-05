@@ -109,6 +109,7 @@
     <Card></Card>
     <div>
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
+      <dashboard-table></dashboard-table>
       <div class="row q-col-gutter-sm q-mt-xs">
         <apex-half-donut></apex-half-donut>
         <apex-column-charts-basic></apex-column-charts-basic>
@@ -132,6 +133,7 @@ export default {
     Card: () => import("components/Card"),
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
     ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
+    DashboardTable: () => import("components/DashboardTable"),
   },
   data() {
     return {

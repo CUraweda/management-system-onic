@@ -109,6 +109,7 @@
     <Card></Card>
     <div>
       <div class="text-h6 q-pl-md q-ma-md">PERFORMANCE MONITORING</div>
+      <dashboard-table></dashboard-table>
       <div class="row q-col-gutter-sm q-mt-xs">
         <apex-half-donut></apex-half-donut>
         <apex-column-charts-basic></apex-column-charts-basic>
@@ -132,6 +133,7 @@ export default {
     Card: () => import("components/Card"),
     ApexHalfDonut: () => import("components/ApexHalfDonut"),
     ApexColumnChartsBasic: () => import("components/ApexColumnChartsBasic"),
+    DashboardTable: () => import("components/DashboardTable"),
   },
   data() {
     return {
@@ -211,7 +213,7 @@ export default {
     "deposit.due": {
       handler(value) {
         this.deposit.due = value != "" ? value : "";
-        // this.fetchData();
+        // this.fetchDataTable();
         eventBus.$emit("due-date-selected", this.deposit.due);
       },
     },
@@ -261,7 +263,7 @@ export default {
     this.fetchDivisionData();
     this.checker();
     // this.fetchPersonData();
-    // this.fetchData();
+    // this.fetchDataTable();
   },
 
   beforeDestroy() {
@@ -285,6 +287,7 @@ export default {
       }
       this.$refs.duePopupProxy.hide()
     },
+
     getStartAndEndOfWeek() {
       const today = new Date();
       const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -544,7 +547,7 @@ export default {
         this.person = personList.length > 0 ? personList[0] : this.personOptions[0];
         // console.log("Selected Person:", this.person);
         eventBus.$emit("person-selected", this.person);
-        // this.fetchData(person);
+        // this.fetchDataTable(person);
       } catch (error) {
         console.error("Error fetching users:", error);
       }

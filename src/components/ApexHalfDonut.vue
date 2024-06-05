@@ -53,7 +53,7 @@
             <span>Employee Performance Monitoring</span>
 
             <!-- <q-separator inset /> -->
-            <q-scroll-area style="height: 150px; border-radius: '1px solid #BCC1CA'" class="q-mt-md">
+            <!-- <q-scroll-area style="height: 150px; border-radius: '1px solid #BCC1CA'" class="q-mt-md">
                 <span class="text-h6 text-bold q-pr-xl  q-ml-md q-mt-md text-red">Overdue Task</span>
                 <q-separator inset />
               <div v-for="overdueTask in overdueTasks" :key="overdueTask" class="q-py-xs">
@@ -62,7 +62,7 @@
                   <span class="text-red">{{
                     overdueTask.due_date | formatTanggal
                   }}</span>
-                  <!-- <span class="text-red">{{ overdueTask.due_date }}</span> -->
+                  <span class="text-red">{{ overdueTask.due_date }}</span>
                 </div>
               </div>
               <q-space></q-space>
@@ -76,12 +76,12 @@
                 </div>
               </div>
               <q-separator inset />
-            </q-scroll-area>
-            <q-separator inset />
+            </q-scroll-area> -->
+            <!-- <q-separator inset /> -->
           </div>
           <div class="row justify-center">
             <div class="col-12">
-              <div style="margin: 25px" class="q-ml-md text-center">
+              <div style="margin: 109px" class="q-ml-md text-center">
                 <q-rating
                   v-model="Avgrate"
                   class="q-ml-md"
