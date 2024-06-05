@@ -816,6 +816,7 @@ export default {
     getStartAndEndOfWeek() {
       const today = new Date();
       const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+      const startOfYear = new Date(today.getFullYear(), 0, 1); // 1st January of current year
       const startOfWeek = new Date(today);
       const endOfWeek = new Date(today);
 
@@ -830,7 +831,7 @@ export default {
       endOfWeek.setHours(23, 59, 59, 999); // Set to 23:59:59.999 for end of day
 
       return {
-        start: startOfWeek,
+        start: startOfYear,
         end: endOfWeek
       };
     },

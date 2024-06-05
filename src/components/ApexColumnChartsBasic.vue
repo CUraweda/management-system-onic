@@ -345,87 +345,100 @@ export default {
     },
 
     async fetchData(person) {
-      const today = new Date();
-      const startOfYear = new Date(today.getFullYear(), 0, 1); // 1st January of current year
-      const endOfYear = new Date(today.getFullYear(), 11, 31); // 31st December of current year
+  try {
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1); // 1st January of current year
+    const endOfYear = new Date(today.getFullYear(), 11, 31); // 31st December of current year
 
-      // console.log(startOfYear)
-      // console.log(endOfYear)
+    const response = await this.$axios.get("/task/all", {
+      params: {
+        search: this.search,
+        startDate: startOfYear.toISOString().split("T")[0], // Format to YYYY-MM-DD
+        dueDate: endOfYear.toISOString().split("T")[0], // Format to YYYY-MM-DD
+      },
+      headers: {
+        title: this.title,
+        pic: this.person.value || undefined,
+        branch: this.branchId,
+        division: this.divisionId,
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
 
-      const response = await this.$axios.get("/task/all", {
-        params: {
-          search: this.search,
-          startDate: startOfYear.toISOString().split("T")[0], // Format to YYYY-MM-DD
-          dueDate: endOfYear.toISOString().split("T")[0], // Format to YYYY-MM-DD
-        },
-        headers: {
-          title: this.title,
-          pic: this.person.value || undefined,
-          branch: this.branchId,
-          division: this.divisionId,
-          Authorization: `Bearer ${this.token}`,
-        },
-      });
+    const tasks = response.data;
 
-      const tasks = response.data;
+    if (!Array.isArray(tasks)) {
+      console.error("Response data is not an array:", tasks);
+      return;
+    }
 
-      const monthsTasks = {
-        January: [],
-        February: [],
-        March: [],
-        April: [],
-        May: [],
-        June: [],
-        July: [],
-        August: [],
-        September: [],
-        October: [],
-        November: [],
-        December: [],
+    const monthsTasks = {
+      January: [],
+      February: [],
+      March: [],
+      April: [],
+      May: [],
+      June: [],
+      July: [],
+      August: [],
+      September: [],
+      October: [],
+      November: [],
+      December: [],
+    };
+
+    tasks.forEach((task) => {
+      // Pastikan setiap task memiliki start_date
+      if (!task.start_date) {
+        console.error("Task missing start_date:", task);
+        return;
+      }
+
+      // Parse tanggal jatuh tempo dari tugas
+      const dueDate = DateTime.fromISO(task.start_date);
+
+      if (!dueDate.isValid) {
+        console.error("Invalid dueDate:", dueDate);
+        return;
+      }
+
+      // Ambil nama bulan dari tanggal jatuh tempo
+      const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(dueDate);
+
+      // Pastikan month ada di monthsTasks
+      if (!monthsTasks[month]) {
+        console.error("Invalid month:", month);
+        return;
+      }
+
+      // Masukkan tugas ke dalam objek monthsTasks
+      monthsTasks[month].push(task);
+    });
+
+    Object.keys(monthsTasks).forEach((month) => {
+      const tasksOfMonth = monthsTasks[month];
+      const statusCounts = {
+        Open: tasksOfMonth.filter(
+          (task) => task.overdue !== true && task.status === "Open"
+        ).length,
+        Completed: tasksOfMonth.filter((task) => task.status === "Close").length,
+        InProgress: tasksOfMonth.filter(
+          (task) => task.overdue !== true && task.status === "In-progress"
+        ).length,
+        Overdue: tasksOfMonth.filter(
+          (task) => task.status !== "Close" && task.overdue === true
+        ).length,
+        Total: tasksOfMonth.length,
       };
+      this.monthlyStatusCounts[month] = statusCounts;
+    });
 
-      tasks.forEach((task) => {
-        // Parse tanggal jatuh tempo dari tugas
-        const dueDate = DateTime.fromISO(task.start_date);
-
-        // Ambil nama bulan dari tanggal jatuh tempo
-        const month = dueDate.monthLong;
-        // console.log("🚀 ~ tasks.forEach ~ month:", month);
-
-        // Masukkan tugas ke dalam objek monthsTasks
-        monthsTasks[month].push(task);
-      });
-
-      // console.log("LOL");
-      // console.log(tasks.start_date);
-      // const january = tasks.filter((task) => task.status.getMonth() === "01");
-
-      Object.keys(monthsTasks).forEach((month) => {
-        const tasksOfMonth = monthsTasks[month];
-        const statusCounts = {
-          Open: tasksOfMonth.filter(
-            (task) => task.overdue !== true && task.status === "Open"
-          ).length,
-          Completed: tasksOfMonth.filter((task) => task.status === "Close").length,
-          InProgress: tasksOfMonth.filter(
-            (task) => task.overdue !== true && task.status === "In-progress"
-          ).length,
-          Overdue: tasksOfMonth.filter(
-            (task) => task.status !== "Close" && task.overdue === true
-          ).length,
-          Total: tasksOfMonth.length,
-        };
-        this.monthlyStatusCounts[month] = statusCounts;
-      });
-      // console.log("🚀 ~ fetchData ~ monthlyStatusCounts:", this.monthlyStatusCounts);
-      this.updateSeries();
-
-      // console.log("Jumlah Tugas Terbuka:", this.TotalOpen);
-      // console.log("Jumlah Tugas Selesai:", this.TotalCompleted);
-      // console.log("Jumlah Tugas Sedang Berlangsung:", this.TotalInProgress);
-      // console.log("Jumlah Tugas Telat:", this.TotalOverdue);
-      // console.log("Total Tugas:", this.TotalTotal);
-    },
+    this.updateSeries();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error; // Rethrow the error after logging it
+  }
+},
 
     async fetchDivisionData() {
       try {
