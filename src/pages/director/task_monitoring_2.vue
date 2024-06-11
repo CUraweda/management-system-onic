@@ -472,7 +472,22 @@ export default {
       this.$refs.duePopupProxy.hide()
     },
     formatLocalTime(utcTime) {
-      const localTime = new Date(utcTime).toLocaleString();
+      if (utcTime === null) {
+        return ""; // Jika utcTime null, kembalikan string kosong
+      }
+
+      const options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+         timeZone: "Asia/Jakarta", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+      };
+
+      const localTime = new Date(utcTime).toLocaleString("id-ID", options);
       return localTime;
     },
 

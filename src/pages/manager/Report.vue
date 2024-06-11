@@ -591,7 +591,7 @@ export default {
         minute: "numeric",
         second: "numeric",
         hour12: false,
-        timeZone: "UTC", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+        timeZone: "Asia/Jakarta", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
       };
 
       const localTime = new Date(utcTime).toLocaleString("id-ID", options);
