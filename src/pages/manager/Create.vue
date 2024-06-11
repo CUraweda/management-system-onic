@@ -684,7 +684,7 @@ export default {
         }
 
         const filteredCompany = response.data.data.filter(
-          (user) => user.company_name === this.branch && user.division === this.division
+          (user) => user.company_name === this.branch 
         );
 
         // console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);

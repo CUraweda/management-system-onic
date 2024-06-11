@@ -157,7 +157,7 @@
                             <div class="">
                               {{ formatLocalTime(created_at) }}
                             </div>
-                            <div class="">RIAN</div>
+                            <div class="">{{ created_by }}</div>
                           </div>
                         </div>
                       </q-card-section>

@@ -166,7 +166,8 @@ export default {
       start: ref(),
       end: ref(),
       pagination: {
-        rowsPerPage: 5,
+        page: 1,
+        rowsPerPage: 0,
       },
     };
   },

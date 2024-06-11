@@ -289,7 +289,7 @@ export default {
       data: [],
       pagination: {
         // page: 1,
-        rowsPerPage: 5, // jumlah item per halaman
+        rowsPerPage: 10, // jumlah item per halaman
       },
     };
   },
