@@ -327,7 +327,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Superior</q-item-label
+                    >Supervisor</q-item-label
                   >
                   <q-form
                     multiple

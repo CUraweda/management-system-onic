@@ -306,7 +306,7 @@
                         status === 'Deleted' ||
                         finished_at === null
                       "
-                      label="Submit To Superior"
+                      label="Submit To Supervisor"
                       no-caps
                       @click="uploadFile"
                       v-else-if="task_type === 'Single'"

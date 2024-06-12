@@ -264,7 +264,7 @@
                       :ripple="{ color: 'grey' }"
                       color="grey-3"
                       text-color="grey-7"
-                      label="Submit To Superior"
+                      label="Submit To Supervisor"
                       no-caps
                     />
                   </div>

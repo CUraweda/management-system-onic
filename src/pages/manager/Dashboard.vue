@@ -312,8 +312,8 @@ export default {
     },
 
     filterBranch(val, update, abort) {
-      console.log("🚀 ~ filterBranch ~ val:", val)
-      console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
+      // console.log("🚀 ~ filterBranch ~ val:", val)
+      // console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
       if (val === '') {
         // this.fetchBranchData()
         update(() => {
@@ -327,12 +327,12 @@ export default {
           return option.label.toLowerCase().includes(needle)
         })
       })
-        console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
     },
 
     filterDivision(val, update, abort) {
-      console.log("🚀 ~ filterDivision ~ val:", val)
-      console.log("🚀 ~ update ~ this.divisiOptions:", this.divisiOptions)
+      // console.log("🚀 ~ filterDivision ~ val:", val)
+      // console.log("🚀 ~ update ~ this.divisiOptions:", this.divisiOptions)
       if (val === '') {
         // this.fetchDivisionData()
         update(() => {
@@ -346,12 +346,12 @@ export default {
           return option.label.toLowerCase().includes(needle)
         })
       })
-        console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
+        // console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
     },
 
     filterPerson(val, update, abort) {
-      console.log("🚀 ~ filterPerson ~ val:", val)
-      console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
+      // console.log("🚀 ~ filterPerson ~ val:", val)
+      // console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
       if (val === '') {
         // this.fetchPersonData()
         update(() => {
@@ -365,7 +365,7 @@ export default {
           return option.label.toLowerCase().includes(needle)
         })
       })
-        console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
+        // console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
     },
 
     async checker() {
@@ -377,7 +377,7 @@ export default {
     },
 
     async notifChecker() {
-      console.log("🚀 ~ checker ~ id:", this.Id)
+      // console.log("🚀 ~ checker ~ id:", this.Id)
 
       try{
         const response = await this.$axios.get(`/task/late-notification/${this.Id}`);
@@ -480,43 +480,35 @@ export default {
     },
 
     async fetchDivisionData() {
-      // const loginUrl = "https://office.onic.co.id/api/master/division";
+      const loginUrl = "https://office.onic.co.id/api/master/division";
 
       // Make the POST request using fetch
       try {
-        // const response = await axios.get(loginUrl, {
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Accept: "application/json",
-        //     Authorization: `Bearer ${this.token}`,
-        //   },
-        // });
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
         // console.log("🚀 ~ fetchDivisionData ~ response:", response)
 
-        // if (response.status !== 200) {
-        //   throw Error("Error while fetching");
-        // }
+        if (response.status !== 200) {
+          throw Error("Error while fetching");
+        }
 
-        const d_name = sessionStorage.getItem("division")
-        ? sessionStorage.getItem("division")
-        : Cookies.get("division")
+        const listOfDivisi = response.data.data.map((data) => ({
+          label: data.d_name,
+          value: data.d_id,
+        }));
 
-        const d_id = sessionStorage.getItem("division_id")
-        ? sessionStorage.getItem("division_id")
-        : Cookies.get("division_id")
-
-        const listOfDivisi = [{
-          label: d_name,
-          value: d_id,
-        }]
-
+        const divisionId = parseInt(this.divisionId);
+        // console.log("🚀 ~ fetchDivisionData ~ divisionId:", divisionId);
+        const divisiList = listOfDivisi.filter((data) => data.value === divisionId);
 
         this.divisiOptions = listOfDivisi;
-        this.divisi = this.divisiOptions[0];
-
-        const divisi = this.divisiOptions.d_name;
-        // console.log("Selected Divisi:", divisi);
+        this.divisi = divisiList[0];
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -575,9 +567,12 @@ export default {
         const personList = filteredTitle.filter((user) => user.value === personId);
         const userList = filteredTitle.filter((user) => user.value === userId);
         this.personOptions = filteredTitle;
-        this.person = personList.length > 0 ? personList[0] : userList[0];
-        // console.log("Selected Person:", this.person);
-        eventBus.$emit("person-selected", this.person);
+        const options = personList && personList.length > 0 ? personList : userList;
+        // console.log("Selected Person:", options);
+        this.person = options && options.length  > 0 ? options[0] : filteredTitle[0]
+        // console.log("Selected Person:", personList);
+        // console.log("Selected Person:", userList);
+        // eventBus.$emit("person-selected", this.person);
         // this.fetchData(person);
       } catch (error) {
         console.error("Error fetching users:", error);

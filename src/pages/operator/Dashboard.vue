@@ -308,8 +308,8 @@ export default {
     },
 
     filterBranch(val, update, abort) {
-      console.log("🚀 ~ filterBranch ~ val:", val)
-      console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
+      // console.log("🚀 ~ filterBranch ~ val:", val)
+      // console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
       if (val === '') {
         // this.fetchBranchData()
         update(() => {
@@ -323,12 +323,12 @@ export default {
           return option.label.toLowerCase().includes(needle)
         })
       })
-        console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
     },
 
     filterDivision(val, update, abort) {
-      console.log("🚀 ~ filterDivision ~ val:", val)
-      console.log("🚀 ~ update ~ this.divisiOptions:", this.divisiOptions)
+      // console.log("🚀 ~ filterDivision ~ val:", val)
+      // console.log("🚀 ~ update ~ this.divisiOptions:", this.divisiOptions)
       if (val === '') {
         // this.fetchDivisionData()
         update(() => {
@@ -342,12 +342,12 @@ export default {
           return option.label.toLowerCase().includes(needle)
         })
       })
-        console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
+        // console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
     },
 
     filterPerson(val, update, abort) {
-      console.log("🚀 ~ filterPerson ~ val:", val)
-      console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
+      // console.log("🚀 ~ filterPerson ~ val:", val)
+      // console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
       if (val === '') {
         // this.fetchPersonData()
         update(() => {
@@ -361,7 +361,7 @@ export default {
           return option.label.toLowerCase().includes(needle)
         })
       })
-        console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
+        // console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
     },
 
 
@@ -374,7 +374,7 @@ export default {
     },
 
     async notifChecker() {
-      console.log("🚀 ~ checker ~ id:", this.Id);
+      // console.log("🚀 ~ checker ~ id:", this.Id);
 
       try {
         const response = await this.$axios.get(`/task/late-notification/${this.Id}`);

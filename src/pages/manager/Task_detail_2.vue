@@ -169,7 +169,7 @@
                     <q-btn unelevated dense class=" col-3" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
                       label="Send Back" no-caps to="/manager/task_detail" />
                     <q-btn unelevated dense class="col-6" :ripple="{ color: 'grey' }" color="grey-3" text-color="grey-7"
-                      label="Submit To Superior" no-caps />
+                      label="Submit To Supervisor" no-caps />
                   </div>
                 </div>
               </CardBase>

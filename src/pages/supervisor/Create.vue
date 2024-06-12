@@ -284,7 +284,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Superior</q-item-label
+                    >Supervisor</q-item-label
                   >
                   <q-form
                     multiple
@@ -582,6 +582,15 @@ export default {
     selectedpic: {
       handler(value) {
         this.fetchSpvData();
+        console.log("TITLE PIC : ", this.selectedpic.title)
+        console.log("TITLE SPV : ", this.selectedspv.title)
+      },
+    },
+
+    selectedspv: {
+      handler(value) {
+        console.log("TITLE PIC : ", this.selectedpic.title)
+        console.log("TITLE SPV : ", this.selectedspv.title)
       },
     },
   },
@@ -707,11 +716,20 @@ export default {
           id: user.id,
         }));
 
+        const userId = parseInt(this.id);
         const filteredData = listOfPic.filter((user) => {
-          return user.title !== "director" && user.title !== "admin";
+          if (user.id === userId) {
+            return true; // Kecualikan pengguna ini dari kondisi pengecualian
+          }
+          return (
+            user.title !== "director" &&
+            user.title !== "admin" &&
+            user.title !== "manager" &&
+            user.title !== "supervisor"
+          );
         });
 
-        const userId = parseInt(this.id);
+        // const userId = parseInt(this.id);
         const userList = filteredData.filter((user) => user.id === userId);
 
         this.picOptions = filteredData;
@@ -756,6 +774,13 @@ export default {
           userRolesMap[role.u_id] = role;
         });
 
+        const responseData = response.data.data.map((user) => ({
+            label: user.name,
+            value: user.name,
+            title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+            id: user.id,
+          }))
+
         const listOfSpv = filteredCompany.map((user) => ({
           label: user.name,
           value: user.name,
@@ -765,6 +790,58 @@ export default {
 
         // console.log("🚀 ~ listOfSpv ~ listOfSpv:", listOfSpv);
 
+        // const SelectedPic = this.selectedpic.title;
+        // let supervisors;
+        // console.log(
+        //   "🚀 ~ fetchSpvData ~ this.selectedpic.title:",
+        //   this.selectedpic.label
+        // );
+
+        // if (SelectedPic === "operator") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "supervisor";
+        //   });
+          // console.log("titel nya op");
+        // } else if (SelectedPic === "supervisor") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "manager";
+        //   });
+          // console.log("titel nya spv");
+        // } else if (SelectedPic === "manager") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "director";
+        //   });
+          // console.log("titel nya manager");
+        // }
+
+        // console.log("dadakan ", supervisors);
+
+        // const listCompany = response.data.data.filter(
+        //   (user) => user.company_name === this.selectedpic.branch && this.selectedpic.division
+        // );
+
+        // const listOfDirec = listCompany.map((user) => ({
+        //   label: user.name,
+        //   value: user.name,
+        //   title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+        //   id: user.id,
+        //   divisi: user.division
+        // }));
+
+        // console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
+        // const listSupervisor = listOfDirec.filter((user) => {
+        //   const title = user.title;
+        //   return (
+        //     title !== "admin" &&
+        //     title !== "operator" &&
+        //     user.id !== this.selectedpic.id &&
+        //     title !== this.selectedpic.title
+        //   );
+        // });
+
         const SelectedPic = this.selectedpic.title;
         let supervisors;
         // console.log(
@@ -772,30 +849,31 @@ export default {
         //   this.selectedpic.label
         // );
 
-        if (SelectedPic === "operator") {
-          supervisors = listOfSpv.filter((user) => {
-            const titleLowerCase = user.title;
-            return titleLowerCase === "supervisor";
-          });
+        // if (SelectedPic === "operator") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "supervisor";
+        //   });
           // console.log("titel nya op");
-        } else if (SelectedPic === "supervisor") {
-          supervisors = listOfSpv.filter((user) => {
-            const titleLowerCase = user.title;
-            return titleLowerCase === "manager";
-          });
+        // } else if (SelectedPic === "supervisor") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "manager";
+        //   });
           // console.log("titel nya spv");
-        } else if (SelectedPic === "manager") {
-          supervisors = listOfSpv.filter((user) => {
-            const titleLowerCase = user.title;
-            return titleLowerCase === "director";
-          });
+        // } else if (SelectedPic === "manager") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "director";
+        //   });
           // console.log("titel nya manager");
-        }
+        // }
 
         // console.log("dadakan ", supervisors);
 
         const listCompany = response.data.data.filter(
-          (user) => user.company_name === this.selectedpic.branch && this.selectedpic.division
+          (user) =>
+            user.company_name === this.selectedpic.branch && this.selectedpic.division
         );
 
         const listOfDirec = listCompany.map((user) => ({
@@ -803,24 +881,70 @@ export default {
           value: user.name,
           title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
           id: user.id,
-          divisi: user.division
+          divisi: user.division,
         }));
 
-        // console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
-        const listSupervisor = listOfDirec.filter((user) => {
-          const title = user.title;
-          return (
-            title !== "admin" &&
-            title !== "operator" &&
-            user.id !== this.selectedpic.id &&
-            title !== this.selectedpic.title
-          );
-        });
+        const listCompanyDivision = response.data.data.filter(
+          (user) =>
+            user.company_name === this.selectedpic.branch &&
+            user.division === this.selectedpic.division
+        );
 
-        this.spvOptions =
-          supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
+        const listOfDirecDivision = listCompanyDivision.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+          divisi: user.division,
+        }));
+
+        // console.log(listOf)
+
+        let listSupervisor;
+
+        if (SelectedPic === "operator") {
+          // Ambil data manager dan director dari listOfDirec
+          const managersAndDirectors = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title; // ubah menjadi huruf kecil
+            return (
+              (titleLowerCase === "manager" || titleLowerCase === "director") &&
+              user.id !== this.selectedpic.id
+            );
+          });
+
+          // Ambil data supervisor dari listOfDirecDivision
+          const supervisors = listOfDirecDivision.filter((user) => {
+            const titleLowerCase = user.title; // ubah menjadi huruf kecil
+            return titleLowerCase === "supervisor" && user.id !== this.selectedpic.id;
+          });
+
+          // Gabungkan kedua array
+          listSupervisor = [...managersAndDirectors, ...supervisors];
+        } else if (SelectedPic === "supervisor") {
+          listSupervisor = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title.toLowerCase(); // ubah menjadi huruf kecil
+            return (
+              (titleLowerCase === "manager" || titleLowerCase === "director") &&
+              user.id !== this.selectedpic.id
+            );
+          });
+        } else if (SelectedPic === "manager") {
+          listSupervisor = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title.toLowerCase(); // ubah menjadi huruf kecil
+            return titleLowerCase === "director" && user.id !== this.selectedpic.id;
+          });
+        }
+
+        const foundData = responseData.filter((item) => item.id === 12566);
+        //
+        const options = supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
+        //
+        const direktur = options.filter((item) => item.id === 12566);
+        //
+        this.spvOptions = direktur.length > 0 ? options : [...options, ...foundData];
+        //
         this.selectedspv = this.spvOptions[0];
-        // console.log("🚀 ~ fetchSpvData ~ selectedspv:", this.spvOptions)
+
       } catch (error) {
         console.error("Error fetching users:", error);
       }

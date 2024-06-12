@@ -106,7 +106,11 @@
                           transition-hide="scale"
                           ref="startDateProxy"
                         >
-                          <q-date @input="() => $refs.startDateProxy.hide()" v-model="start_date" mask="DD-MM-YYYY HH:mm">
+                          <q-date
+                            @input="() => $refs.startDateProxy.hide()"
+                            v-model="start_date"
+                            mask="DD-MM-YYYY HH:mm"
+                          >
                             <div class="row items-center justify-end">
                               <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
@@ -123,7 +127,12 @@
                           transition-hide="scale"
                           ref="startTimeProxy"
                         >
-                          <q-time @input="() => $refs.startTimeProxy.hide()" v-model="start_date" mask="DD-MM-YYYY HH:mm" format24h>
+                          <q-time
+                            @input="() => $refs.startTimeProxy.hide()"
+                            v-model="start_date"
+                            mask="DD-MM-YYYY HH:mm"
+                            format24h
+                          >
                             <div class="row items-center justify-end">
                               <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
@@ -154,7 +163,11 @@
                           transition-hide="scale"
                           ref="dueDateProxy"
                         >
-                          <q-date @input="() => $refs.dueDateProxy.hide()" v-model="due_date" mask="DD-MM-YYYY HH:mm">
+                          <q-date
+                            @input="() => $refs.dueDateProxy.hide()"
+                            v-model="due_date"
+                            mask="DD-MM-YYYY HH:mm"
+                          >
                             <div class="row items-center justify-end">
                               <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
@@ -171,7 +184,12 @@
                           transition-hide="scale"
                           ref="dueTimeProxy"
                         >
-                          <q-time @input="() => $refs.dueTimeProxy.hide()" v-model="due_date" mask="DD-MM-YYYY HH:mm" format24h>
+                          <q-time
+                            @input="() => $refs.dueTimeProxy.hide()"
+                            v-model="due_date"
+                            mask="DD-MM-YYYY HH:mm"
+                            format24h
+                          >
                             <div class="row items-center justify-end">
                               <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                             </div>
@@ -284,7 +302,7 @@
               <q-item>
                 <q-item-selection class="row items-center">
                   <q-item-label class="text-weight-bold q-pb-xs col-12"
-                    >Superior</q-item-label
+                    >Supervisor</q-item-label
                   >
                   <q-form
                     multiple
@@ -428,8 +446,8 @@ export default {
   data() {
     return {
       loading: ref(true),
-      formattedDueDate:'',
-      formattedStartDate:'',
+      formattedDueDate: "",
+      formattedStartDate: "",
       division: sessionStorage.getItem("division")
         ? sessionStorage.getItem("division")
         : Cookies.get("division"),
@@ -458,7 +476,7 @@ export default {
       isMultitask: ref(false),
       sendedForm: ref({}),
       filteredPicOptions: [],
-      filteredSpvOptions: []
+      filteredSpvOptions: [],
     };
   },
 
@@ -579,62 +597,71 @@ export default {
     selectedpic: {
       handler(value) {
         this.fetchSpvData();
+        console.log("TITLE PIC : ", this.selectedpic.title);
+        console.log("TITLE SPV : ", this.selectedspv.title);
+      },
+    },
+
+    selectedspv: {
+      handler(value) {
+        console.log("TITLE PIC : ", this.selectedpic.title);
+        console.log("TITLE SPV : ", this.selectedspv.title);
       },
     },
   },
 
-    methods: {
-    updateStartDate (val) {
+  methods: {
+    updateStartDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedStartDate = `${day}/${month}/${year}`;
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.popupProxy.hide();
     },
 
-    updateDueDate (val) {
+    updateDueDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedDueDate = `${day}/${month}/${year}`;
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.duePopupProxy.hide();
     },
 
     filterPic(val, update, abort) {
       // console.log("🚀 ~ filterPic ~ val:", val)
       // console.log("🚀 ~ update ~ this.picOptions:", this.picOptions)
-      if (val === '') {
+      if (val === "") {
         update(() => {
-          this.filteredPicOptions = this.picOptions
-        })
+          this.filteredPicOptions = this.picOptions;
+        });
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        this.filteredPicOptions = this.picOptions.filter(option => {
-          return option.label.toLowerCase().includes(needle)
-        })
-      })
-        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+        const needle = val.toLowerCase();
+        this.filteredPicOptions = this.picOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
     },
 
     filterSpv(val, update, abort) {
       // console.log("🚀 ~ filterSpv ~ val:", val)
       // console.log("🚀 ~ update ~ this.spvOptions:", this.spvOptions)
-      if (val === '') {
+      if (val === "") {
         // this.fetchSpvData()
         update(() => {
-          this.filteredSpvOptions = this.spvOptions
-        })
+          this.filteredSpvOptions = this.spvOptions;
+        });
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        this.filteredSpvOptions = this.spvOptions.filter(option => {
-          return option.label.toLowerCase().includes(needle)
-        })
-      })
-        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+        const needle = val.toLowerCase();
+        this.filteredSpvOptions = this.spvOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
     },
 
     async getRole() {
@@ -678,7 +705,7 @@ export default {
         }
 
         const filteredCompany = response.data.data.filter(
-          (user) => user.company_name === this.branch && user.division === this.division
+          (user) => user.company_name === this.branch
         );
 
         // console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);
@@ -744,6 +771,13 @@ export default {
           userRolesMap[role.u_id] = role;
         });
 
+        const responseData = response.data.data.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+        }));
+
         const listOfSpv = filteredCompany.map((user) => ({
           label: user.name,
           value: user.name,
@@ -755,35 +789,30 @@ export default {
 
         const SelectedPic = this.selectedpic.title;
         let supervisors;
-        // console.log(
-        //   "🚀 ~ fetchSpvData ~ this.selectedpic.title:",
-        //   this.selectedpic.label
-        // );
-
-        if (SelectedPic === "operator") {
-          supervisors = listOfSpv.filter((user) => {
-            const titleLowerCase = user.title;
-            return titleLowerCase === "supervisor";
-          });
-          // console.log("titel nya op");
-        } else if (SelectedPic === "supervisor") {
-          supervisors = listOfSpv.filter((user) => {
-            const titleLowerCase = user.title;
-            return titleLowerCase === "manager";
-          });
-          // console.log("titel nya spv");
-        } else if (SelectedPic === "manager") {
-          supervisors = listOfSpv.filter((user) => {
-            const titleLowerCase = user.title;
-            return titleLowerCase === "director";
-          });
-          // console.log("titel nya manager");
-        }
+        // if (SelectedPic === "operator") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "supervisor";
+        //   });
+        // console.log("titel nya op");
+        // } else if (SelectedPic === "supervisor") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "manager";
+        //   });
+        // console.log("titel nya spv");
+        // } else if (SelectedPic === "manager") {
+        //   supervisors = listOfSpv.filter((user) => {
+        //     const titleLowerCase = user.title;
+        //     return titleLowerCase === "director";
+        //   });
+        // console.log("titel nya manager");
+        // }
 
         // console.log("dadakan ", supervisors);
 
         const listCompany = response.data.data.filter(
-          (user) => user.company_name === this.selectedpic.branch && this.selectedpic.division
+          (user) => user.company_name === this.selectedpic.branch
         );
 
         const listOfDirec = listCompany.map((user) => ({
@@ -791,22 +820,81 @@ export default {
           value: user.name,
           title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
           id: user.id,
-          divisi: user.division
+          divisi: user.division,
         }));
 
-        // console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
-        const listSupervisor = listOfDirec.filter((user) => {
-          const title = user.title;
-          return (
-            title !== "admin" &&
-            title !== "operator" &&
-            user.id !== this.selectedpic.id &&
-            title !== this.selectedpic.title
-          );
-        });
+        const listCompanyDivision = response.data.data.filter(
+          (user) =>
+            user.company_name === this.selectedpic.branch &&
+            user.division === this.selectedpic.division
+        );
 
-        this.spvOptions =
-          supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
+        const listOfDirecDivision = listCompanyDivision.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+          divisi: user.division,
+        }));
+
+        // console.log(listOf)
+
+        let listSupervisor;
+
+        if (SelectedPic === "operator") {
+          // Ambil data manager dan director dari listOfDirec
+          const managersAndDirectors = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title; // ubah menjadi huruf kecil
+            return (
+              (titleLowerCase === "manager" || titleLowerCase === "director") &&
+              user.id !== this.selectedpic.id
+            );
+          });
+
+          // Ambil data supervisor dari listOfDirecDivision
+          const supervisors = listOfDirecDivision.filter((user) => {
+            const titleLowerCase = user.title; // ubah menjadi huruf kecil
+            return titleLowerCase === "supervisor" && user.id !== this.selectedpic.id;
+          });
+
+          // Gabungkan kedua array
+          listSupervisor = [...managersAndDirectors, ...supervisors];
+        } else if (SelectedPic === "supervisor") {
+          listSupervisor = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title.toLowerCase(); // ubah menjadi huruf kecil
+            return (
+              (titleLowerCase === "manager" || titleLowerCase === "director") &&
+              user.id !== this.selectedpic.id
+            );
+          });
+        } else if (SelectedPic === "manager") {
+          listSupervisor = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title.toLowerCase(); // ubah menjadi huruf kecil
+            return titleLowerCase === "director" && user.id !== this.selectedpic.id;
+          });
+        }
+
+        // console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
+        //  listOfDirec.filter((user) => {
+        //   const title = user.title;
+        //   return (
+        //     title !== "admin" &&
+        //     title !== "operator" &&
+        //     user.id !== this.selectedpic.id &&
+        //     title !== this.selectedpic.title
+        //   );
+        // });
+
+        const foundData = responseData.filter((item) => item.id === 12566);
+        //
+        foundData;
+        const options = supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
+        const direktur = options.filter((item) => item.id === 12566);
+        console.log(direktur)
+        //
+        options;
+        this.spvOptions = direktur.length > 0 ? options : [...options, ...foundData];
+        //
         this.selectedspv = this.spvOptions[0];
         // console.log("🚀 ~ fetchSpvData ~ selectedspv:", this.spvOptions)
       } catch (error) {
@@ -843,8 +931,8 @@ export default {
     },
 
     addToForm(properties, value) {
-      console.log("🚀 ~man addToForm ~ properties:", this.convertToDate(this.due_date))
-      console.log("🚀 ~man addToForm ~ properties:", properties, value)
+      console.log("🚀 ~man addToForm ~ properties:", this.convertToDate(this.due_date));
+      console.log("🚀 ~man addToForm ~ properties:", properties, value);
       // Check if the value is empty (undefined, null, or empty string)
       if (
         properties !== "bukti_tayang" &&
@@ -859,8 +947,8 @@ export default {
     },
 
     convertToDate(dateString) {
-      const [day, month, yearTime] = dateString.split('-');
-      const [year, time] = yearTime.split(' ');
+      const [day, month, yearTime] = dateString.split("-");
+      const [year, time] = yearTime.split(" ");
       const formattedString = `${year}-${month}-${day}T${time}:00`;
       return new Date(formattedString);
     },
