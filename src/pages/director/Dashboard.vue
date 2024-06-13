@@ -73,7 +73,12 @@
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="popupProxy" cover transition-show="scale" transition-hide="scale">
+            <q-popup-proxy
+              ref="popupProxy"
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
               <q-date @input="updateStartDate" v-model="deposit.start" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
@@ -95,8 +100,13 @@
       >
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy ref="duePopupProxy" cover transition-show="scale" transition-hide="scale">
-              <q-date @input="updateDueDate"  v-model="deposit.due" mask="YYYY-MM-DD">
+            <q-popup-proxy
+              ref="duePopupProxy"
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date @input="updateDueDate" v-model="deposit.due" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <!-- <q-btn v-close-popup label="Close" color="primary" flat /> -->
                 </div>
@@ -125,7 +135,8 @@ import Vue from "vue";
 import CardBase from "components/CardBase";
 import { ref } from "vue";
 import axios from "axios";
-import {date} from 'quasar';
+import { date } from "quasar";
+import { Dialog } from "quasar";
 
 export default {
   name: "DashboardDirector",
@@ -138,8 +149,8 @@ export default {
   data() {
     return {
       loading: ref(true),
-      formattedDueDate:'',
-      formattedStartDate:'',
+      formattedDueDate: "",
+      formattedStartDate: "",
       Id: sessionStorage.getItem("id") ? sessionStorage.getItem("id") : Cookies.get("id"),
       email: sessionStorage.getItem("email")
         ? sessionStorage.getItem("email")
@@ -254,8 +265,8 @@ export default {
     const { start, end } = this.getStartAndEndOfWeek();
     this.deposit.start = this.formatDate(start);
     this.deposit.due = this.formatDate(end);
-    this.updateStartDate(this.deposit.start)
-    this.updateDueDate(this.deposit.due)
+    this.updateStartDate(this.deposit.start);
+    this.updateDueDate(this.deposit.due);
     // this.formattedStartDate = this.formatDate(start);
     // this.formattedDueDate = this.formatDate(end);
     this.getRole();
@@ -270,22 +281,22 @@ export default {
     clearInterval(this.intervalId);
   },
 
-    methods: {
-    updateStartDate (val) {
+  methods: {
+    updateStartDate(val) {
       if (val) {
         // console.log("🚀 ~ updateStartDate ~ val:", val)
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedStartDate = `${day}/${month}/${year}`;
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.popupProxy.hide();
     },
 
-    updateDueDate (val) {
+    updateDueDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedDueDate = `${day}/${month}/${year}`;
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.duePopupProxy.hide();
     },
 
     getStartAndEndOfWeek() {
@@ -307,69 +318,69 @@ export default {
 
       return {
         start: startOfYear,
-        end: endOfWeek
+        end: endOfWeek,
       };
     },
 
     formatDate(dateObj) {
-      return date.formatDate(dateObj, 'YYYY-MM-DD');
+      return date.formatDate(dateObj, "YYYY-MM-DD");
     },
 
     filterBranch(val, update, abort) {
       // console.log("🚀 ~ filterBranch ~ val:", val)
       // console.log("🚀 ~ update ~ this.branchOptions:", this.branchOptions)
-      if (val === '') {
+      if (val === "") {
         // this.fetchBranchData()
         update(() => {
-          this.filteredBranchOptions = this.branchOptions
-        })
+          this.filteredBranchOptions = this.branchOptions;
+        });
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        this.filteredBranchOptions = this.branchOptions.filter(option => {
-          return option.label.toLowerCase().includes(needle)
-        })
-      })
-        // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+        const needle = val.toLowerCase();
+        this.filteredBranchOptions = this.branchOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
     },
 
     filterDivision(val, update, abort) {
       // console.log("🚀 ~ filterDivision ~ val:", val)
       // console.log("🚀 ~ update ~ this.divisiOptions:", this.divisiOptions)
-      if (val === '') {
+      if (val === "") {
         // this.fetchDivisionData()
         update(() => {
-          this.filteredDivisionOptions = this.divisiOptions
-        })
+          this.filteredDivisionOptions = this.divisiOptions;
+        });
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        this.filteredDivisionOptions = this.divisiOptions.filter(option => {
-          return option.label.toLowerCase().includes(needle)
-        })
-      })
-        // console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
+        const needle = val.toLowerCase();
+        this.filteredDivisionOptions = this.divisiOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredDivisionOptions:", this.filteredPersonOptions)
     },
 
     filterPerson(val, update, abort) {
       // console.log("🚀 ~ filterPerson ~ val:", val)
       // console.log("🚀 ~ update ~ this.personOptions:", this.personOptions)
-      if (val === '') {
+      if (val === "") {
         // this.fetchPersonData()
         update(() => {
-          this.filteredPersonOptions = this.personOptions
-        })
+          this.filteredPersonOptions = this.personOptions;
+        });
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        this.filteredPersonOptions = this.personOptions.filter(option => {
-          return option.label.toLowerCase().includes(needle)
-        })
-      })
-        // console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
+        const needle = val.toLowerCase();
+        this.filteredPersonOptions = this.personOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredPersonOptions:", this.filteredPersonOptions)
     },
 
     async checker() {
@@ -377,6 +388,12 @@ export default {
         const response = await this.$axios.get("/task/checker");
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -436,6 +453,12 @@ export default {
         // console.log("Diganti ", response);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -491,6 +514,12 @@ export default {
         this.divisi = divisiList[0];
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -551,6 +580,12 @@ export default {
         // this.fetchDataTable(person);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -575,6 +610,12 @@ export default {
         this.branch = branchesList[0];
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 

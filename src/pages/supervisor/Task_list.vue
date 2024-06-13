@@ -763,7 +763,7 @@ export default {
       deleted_data: [],
       waiting_data: [],
       pagination: {
-        rowsPerPage: 5,
+        rowsPerPage: 10,
       },
     };
   },

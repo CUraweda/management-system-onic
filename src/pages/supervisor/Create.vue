@@ -740,6 +740,12 @@ export default {
         // console.log("Selected pic:", this.selectedpic);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -947,6 +953,12 @@ export default {
 
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 

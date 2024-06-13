@@ -390,6 +390,12 @@ export default {
         console.log("🚀 ~ fetchPersonData ~ employes:", this.employes);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 

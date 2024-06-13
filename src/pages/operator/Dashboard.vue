@@ -370,6 +370,12 @@ export default {
         const response = await this.$axios.get("/task/checker");
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -449,6 +455,12 @@ export default {
         // console.log("Diganti ", response);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -514,6 +526,12 @@ export default {
         // console.log("Selected Divisi:", divisi);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -565,6 +583,12 @@ export default {
         // this.fetchData(person);
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
@@ -589,6 +613,12 @@ export default {
         this.branch = branchesList[0];
       } catch (error) {
         console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
       }
     },
 
