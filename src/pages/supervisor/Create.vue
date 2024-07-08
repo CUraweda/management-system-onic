@@ -1021,7 +1021,7 @@ export default {
         this.addToForm("start_date", this.convertToDate(this.start_date));
         this.addToForm("due_date", this.convertToDate(this.due_date));
         this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_title", this.selectedpic.title);
+        this.addToForm("pic_role", this.selectedpic.title);
         this.addToForm(
           "created_by",
           sessionStorage.getItem("username")

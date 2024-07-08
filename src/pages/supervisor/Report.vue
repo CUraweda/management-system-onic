@@ -265,7 +265,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="spv.toLowerCase() !== username.toLowerCase()"
+                      :disable="pic_role !== 'operator'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -279,7 +279,7 @@
                       :disable="
                         finished_at === null ||
                         (status !== 'In-progress' && status !== 'Idle') ||
-                        spv.toLowerCase() !== username.toLowerCase()
+                        pic_role !== 'operator'
                       "
                       @click="Ok()"
                     />
@@ -354,7 +354,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="spv.toLowerCase() !== username.toLowerCase()"
+                      :disable="pic_role !== 'operator'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -368,7 +368,7 @@
                       :disable="
                         finished_at === null ||
                         (status !== 'In-progress' && status !== 'Idle') ||
-                        spv.toLowerCase() !== username.toLowerCase()
+                        pic_role !== 'operator'
                       "
                       @click="Ok()"
                     />
@@ -642,6 +642,7 @@ division: this.divisionId,
         this.file_hasil = response.data.file_hasil;
 
         this.description = response.data.description;
+        this.pic_role = response.data.pic_role;
         this.pic = response.data.pic;
         this.spv = response.data.spv;
 
@@ -741,7 +742,7 @@ division: this.divisionId,
           start_date: new Date(response.data.start_date).toISOString(),
           due_date: new Date(response.data.due_date).toISOString(),
           description: response.data.description,
-          pic_title: response.data.pic_role,
+          pic_role: response.data.pic_role,
           pic: response.data.pic,
           spv: response.data.spv,
           approved_at: null,

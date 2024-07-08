@@ -265,7 +265,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="spv.toLowerCase() !== username.toLowerCase()"
+                      :disable="pic_role !== 'manager'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -279,7 +279,7 @@
                       :disable="
                         finished_at === null ||
                         (status !== 'In-progress' && status !== 'Idle') ||
-                        spv.toLowerCase() !== username.toLowerCase()
+                        pic_role !== 'manager'
                       "
                       @click="Ok()"
                     />
@@ -354,7 +354,7 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="spv.toLowerCase() !== username.toLowerCase()"
+                      :disable="pic_role !== 'manager'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -366,9 +366,7 @@
                       no-caps
                       class="col-5"
                       :disable="
-                        finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle') ||
-                        spv.toLowerCase() !== username.toLowerCase()
+                        pic_role !== 'manager'
                       "
                       @click="Ok()"
                     />
@@ -461,6 +459,7 @@ export default {
       fileName: null,
       file_hasil: null,
       id: store.id,
+      pic_role: '',
       pic_id: '',
       spv_id:''
       // Add other properties with default values
@@ -645,6 +644,7 @@ division: this.divisionId,
 
         this.description = response.data.description;
         this.pic = response.data.pic;
+        this.pic_role = response.data.pic_role;
         this.pic_id = response.data.pic_id;
         this.spv_id = response.data.spv_id;
         this.spv = response.data.spv;
@@ -745,7 +745,7 @@ division: this.divisionId,
           start_date: new Date(response.data.start_date).toISOString(),
           due_date: new Date(response.data.due_date).toISOString(),
           description: response.data.description,
-          pic_title: response.data.pic_role,
+          pic_role: response.data.pic_role,
           pic: response.data.pic,
           spv: response.data.spv,
           approved_at: null,

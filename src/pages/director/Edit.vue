@@ -648,7 +648,7 @@ export default {
         ).toLocaleString();
         this.form.due_date = new Date(response.data.due_date).toLocaleString();
         this.form.description = response.data.description;
-        this.form.pic_title = response.data.pic_title;
+        this.form.pic_role = response.data.pic_role;
         this.form.pic = response.data.pic;
         this.form.spv = response.data.spv;
         this.form.pic.value = response.data.pic_id;

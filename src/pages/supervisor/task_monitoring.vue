@@ -220,8 +220,8 @@
                     unelevated
                     color="red-2"
                     text-color="red"
-                    label="Revise"
-                    :disable="props.row.spv.toLowerCase() !== username.toLowerCase()"
+                    :disable="
+                      props.row.pic_role !== 'operator'"
                     @click="Revise(props.row.id)"
                   />
                   <q-btn
@@ -236,8 +236,7 @@
                       props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' &&
                         props.row.status !== 'Idle') ||
-                      props.row.spv.toLowerCase() !== username.toLowerCase()
-                    "
+                      props.row.pic_role !== 'operator'"
                     @click="openEmployeeDialog(props.row)"
                   />
                 </div>
@@ -254,7 +253,8 @@
                     color="green-2"
                     rounded
                     label="Edit"
-                    :disable="props.row.spv.toLowerCase() !== username.toLowerCase()"
+                    :disable="
+                      props.row.pic_role !== 'operator' "
                     @click="Edit(props.row.id)"
                   />
                   <q-btn
@@ -265,7 +265,8 @@
                     color="red-2"
                     rounded
                     label="Delete"
-                    :disable="props.row.spv.toLowerCase() !== username.toLowerCase()"
+                    :disable="
+                      props.row.pic_role !== 'operator'"
                     @click="Delete(props.row.id)"
                   />
                 </div>
