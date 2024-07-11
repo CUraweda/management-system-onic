@@ -212,8 +212,6 @@
                     color="red-2"
                     text-color="red"
                     label="Revise"
-                     :disable="
-                      props.row.pic_role !== 'supervisor'"
                     @click="Revise(props.row.id)"
                   />
                   <q-btn
@@ -227,8 +225,7 @@
                     :disable="
                       props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' &&
-                        props.row.status !== 'Idle') ||
-                       props.row.pic_role !== 'supervisor' "
+                        props.row.status !== 'Idle')"
                     @click="openEmployeeDialog(props.row)"
                   />
                 </div>
@@ -245,8 +242,6 @@
                     color="green-2"
                     rounded
                     label="Edit"
-                     :disable="
-                      props.row.pic_role !== 'supervisor' "
                     @click="Edit(props.row.id)"
                   />
                   <q-btn
@@ -257,8 +252,6 @@
                     color="red-2"
                     rounded
                     label="Delete"
-                    :disable="
-                      props.row.pic_role !== 'supervisor'"
                     @click="Delete(props.row.id)"
                   />
                 </div>

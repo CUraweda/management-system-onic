@@ -776,7 +776,7 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-        console.log("🚀 ~ fetchSpvData ~ response:", response.data.data);
+        // console.log("🚀 ~ fetchSpvData ~ response:", response.data.data);
 
         if (response.status !== 200) throw Error("Error while fetching");
 

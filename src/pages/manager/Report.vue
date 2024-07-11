@@ -271,7 +271,6 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="pic_role !== 'supervisor'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -284,8 +283,7 @@
                       class="col-5"
                       :disable="
                         finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle') ||
-                        pic_role !== 'supervisor'
+                        (status !== 'In-progress' && status !== 'Idle')
                       "
                       @click="Ok()"
                     />
@@ -360,7 +358,6 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="pic_role !== 'manager'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -373,8 +370,7 @@
                       class="col-5"
                       :disable="
                         finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle') ||
-                        pic_role !== 'manager'
+                        (status !== 'In-progress' && status !== 'Idle')
                       "
                       @click="Ok()"
                     />

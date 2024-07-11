@@ -219,6 +219,7 @@
                     no-caps
                     unelevated
                     color="red-2"
+                    label="Revise"
                     text-color="red"
                     :disable="
                       props.row.pic_role !== 'operator'"

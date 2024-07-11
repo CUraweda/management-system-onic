@@ -265,7 +265,6 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="pic_role !== 'manager'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -278,8 +277,7 @@
                       class="col-5"
                       :disable="
                         finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle') ||
-                        pic_role !== 'manager'
+                        (status !== 'In-progress' && status !== 'Idle')
                       "
                       @click="Ok()"
                     />
@@ -354,7 +352,6 @@
                       text-color="red"
                       label="Revise"
                       no-caps
-                      :disable="pic_role !== 'manager'"
                       @click="Revise()"
                     />
                     <q-btn
@@ -365,9 +362,6 @@
                       label="OK"
                       no-caps
                       class="col-5"
-                      :disable="
-                        pic_role !== 'manager'
-                      "
                       @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">

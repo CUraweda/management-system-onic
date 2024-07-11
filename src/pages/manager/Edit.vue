@@ -249,17 +249,17 @@
                     class="row q-gutter-sm items-center"
                   >
                     <q-select
-                      readonly
-                      multiple
                       dense
                       filled
-                      v-model="form.pic"
+                      v-model="selectedpic"
                       name="pic"
                       use-input
                       input-debounce="0"
-                      :options="picoptions"
+                      :options="filteredPicOptions"
+                      @filter="filterPic"
                       behavior="menu"
                       class="col-6"
+                      :rules="[(val) => (val !== null && val !== '') || 'Required']"
                     >
                       <template v-slot:no-option>
                         <q-item>
@@ -335,17 +335,17 @@
                     class="row q-gutter-sm items-center"
                   >
                     <q-select
-                      readonly
-                      multiple
                       dense
                       filled
-                      v-model="form.spv"
+                      v-model="selectedspv"
                       name="spv"
                       use-input
                       input-debounce="0"
-                      :options="spvoptions"
+                      :options="filteredSpvOptions"
+                      @filter="filterSpv"
                       behavior="menu"
                       class="col-6"
+                      :rules="[(val) => (val !== null && val !== '') || 'Required']"
                     >
                       <template v-slot:no-option>
                         <q-item>
@@ -481,8 +481,15 @@ export default {
   name: "ManagerEdit",
   data() {
     return {
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+      loading: ref(true),
+      formattedDueDate:'',
+      formattedStartDate:'',
+    division: sessionStorage.getItem("division")
+        ? sessionStorage.getItem("division")
+        : Cookies.get("division"),
+      branch: sessionStorage.getItem("branch")
+        ? sessionStorage.getItem("branch")
+        : Cookies.get("branch"),
       token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
       id: store.id,
       form: {
@@ -495,11 +502,18 @@ export default {
         description: "",
         pic: "",
         spv: "",
-      },
+        },
+      selectedpic: '',
+      selectedspv: '',
+      taskPic: "",
+      taskSpv: "",
+      filteredPicOptions: [],
+      filteredSpvOptions: []
     };
   },
 
   setup() {
+    const SpvApp = ref(false);
     const submittedpic = ref(false);
     const submitEmptypic = ref(false);
     const submitResultpic = ref([]);
@@ -508,6 +522,11 @@ export default {
     const submitResultspv = ref([]);
 
     return {
+      SpvApp,
+      role: ref(),
+      roles: [],
+      picOptions: ref([]),
+      spvOptions: ref([]),
       iteration: ref(""),
       task_type_options: [
         {
@@ -534,23 +553,10 @@ export default {
           value: "Normal",
         },
       ],
-      start_date: ref(null),
-      due_date: ref(null),
+      start_date: ref(),
+      due_date: ref(),
       pic: ref([]),
-      picoptions: [
-        {
-          label: "Bambang",
-          value: "Bambang",
-        },
-        {
-          label: "Tami",
-          value: "Tami",
-        },
-        {
-          label: "Rani",
-          value: "Rani",
-        },
-      ],
+
       submittedpic,
       submitEmptypic,
       submitResultpic,
@@ -570,21 +576,6 @@ export default {
         submitResultpic.value = data;
         submitEmptypic.value = data.length === 0;
       },
-      spv: ref([]),
-      spvoptions: [
-        {
-          label: "Rian",
-          value: "Rian",
-        },
-        {
-          label: "Kusuma",
-          value: "Kusuma",
-        },
-        {
-          label: "Didit",
-          value: "Didit",
-        },
-      ],
       submittedspv,
       submitEmptyspv,
       submitResultspv,
@@ -611,8 +602,42 @@ export default {
     };
   },
 
+  computed: {
+    pic_title() {
+      return this.SpvApp ? "supervisor" : "manager";
+    },
+  },
+
+  watch: {
+    task_type: {
+      handler(value) {
+        if (value != "Single") {
+          this.isMultitask = true;
+        } else this.isMultitask = false;
+        this.selectedpic = null;
+      },
+    },
+
+    selectedpic: {
+      handler(value) {
+        this.fetchSpvData();
+        console.log("TITLE PIC : ", this.selectedpic.title);
+        console.log("TITLE SPV : ", this.selectedspv.title);
+      },
+    },
+
+    selectedspv: {
+      handler(value) {
+        console.log("TITLE PIC : ", this.selectedpic.title);
+        console.log("TITLE SPV : ", this.selectedspv.title);
+      },
+    },
+  },
+
   mounted() {
+    this.getRole();
     this.fetchData();
+    // this.fetchPic();
     this.intervalId = setInterval(() => {
       this.fetchData();
     }, 60000);
@@ -636,29 +661,355 @@ export default {
         const [year, month, day] = val.split('-')
         this.formattedDueDate = `${day}/${month}/${year}`
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.duePopupProxy.hide()
     },
+
+    filterPic(val, update, abort) {
+      // console.log("🚀 ~ filterPic ~ val:", val)
+      // console.log("🚀 ~ update ~ this.picOptions:", this.picOptions)
+      if (val === "") {
+        update(() => {
+          this.filteredPicOptions = this.picOptions;
+        });
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filteredPicOptions = this.picOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+    },
+
+    filterSpv(val, update, abort) {
+      // console.log("🚀 ~ filterSpv ~ val:", val)
+      // console.log("🚀 ~ update ~ this.spvOptions:", this.spvOptions)
+      if (val === "") {
+        // this.fetchSpvData()
+        update(() => {
+          this.filteredSpvOptions = this.spvOptions;
+        });
+      }
+
+      update(() => {
+        const needle = val.toLowerCase();
+        this.filteredSpvOptions = this.spvOptions.filter((option) => {
+          return option.label.toLowerCase().includes(needle);
+        });
+      });
+      // console.log("🚀 ~ update ~ this.filteredBranchOptions:", this.filteredPersonOptions)
+    },
+
+    async getRole() {
+      try {
+        // console.log("bangbang");
+        const response = await this.$axios.get(`/role`, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        this.roles = response.data.data;
+        // console.log("🚀 ~ getRole ~ ole:", this.roles);
+
+        // return role;
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+
+    async fetchPic() {
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+
+      // Make the POST request using fetch
+      try {
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+
+        console.log("🚀 ~ fetchData ~ response:", response);
+
+        if (response.status !== 200) {
+          throw Error("Error while fetching");
+        }
+
+        const filteredCompany = response.data.data.filter(
+          (user) => user.company_name === this.branch
+        );
+
+        console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
+        });
+
+        const listOfPic = filteredCompany.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          division: user.division,
+          branch: user.company_name,
+          id: user.id,
+        }));
+
+        const userId = parseInt(this.Id);
+        const filteredData = listOfPic.filter((user) => {
+          return (
+            user.title !== "director" &&
+            user.title !== "admin" &&
+            user.title !== "manager"
+          );
+        });
+
+        // console.log("🚀 ~ filteredData ~ filteredData:", listOfPic)
+
+
+        const userList = filteredData.filter((user) => user.id === this.taskPic);
+
+        this.picOptions = filteredData;
+        // console.log("🚀 ~ fetchData ~ filteredData:", filteredData);
+        this.selectedpic = userList[0];
+
+        // const selectedpic = this.picOptions.title;
+        console.log("Selected pic:", this.selectedpic);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
+      }
+    },
+
+    async fetchSpvData() {
+      const loginUrl = "https://office.onic.co.id/api/master/employee/active";
+
+      // Make the POST request using fetch
+      // console.log("kabom");
+      try {
+        const response = await axios.get(loginUrl, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        // console.log("🚀 ~ fetchSpvData ~ response:", response);
+
+        if (response.status !== 200) throw Error("Error while fetching");
+
+        const filteredCompany = response.data.data.filter(
+          (user) =>
+            user.company_name === this.selectedpic.branch &&
+            user.division === this.selectedpic.division
+        );
+
+        // console.log("🚀 ~ fetchSpvData ~ filteredCompany:", filteredCompany);
+
+        const userRolesMap = {};
+
+        this.roles.forEach((role) => {
+          userRolesMap[role.u_id] = role;
+        });
+
+        const responseData = response.data.data.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+        }));
+
+        const listOfSpv = filteredCompany.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+        }));
+
+        // console.log("🚀 ~ listOfSpv ~ listOfSpv:", listOfSpv);
+
+        const SelectedPic = this.selectedpic.title;
+        let supervisors;
+
+        // console.log("dadakan ", supervisors);
+
+        const listCompany = response.data.data.filter(
+          (user) => user.company_name === this.selectedpic.branch
+        );
+
+        const listOfDirec = listCompany.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+          divisi: user.division,
+        }));
+
+        const listCompanyDivision = response.data.data.filter(
+          (user) =>
+            user.company_name === this.selectedpic.branch &&
+            user.division === this.selectedpic.division
+        );
+
+        const listOfDirecDivision = listCompanyDivision.map((user) => ({
+          label: user.name,
+          value: user.name,
+          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
+          id: user.id,
+          divisi: user.division,
+        }));
+
+        // console.log(listOf)
+
+        let listSupervisor;
+
+        if (SelectedPic === "operator") {
+          // Ambil data manager dan director dari listOfDirec
+          const managersAndDirectors = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title; // ubah menjadi huruf kecil
+            return (
+              (titleLowerCase === "manager" || titleLowerCase === "director") &&
+              user.id !== this.selectedpic.id
+            );
+          });
+
+          // Ambil data supervisor dari listOfDirecDivision
+          const supervisors = listOfDirecDivision.filter((user) => {
+            const titleLowerCase = user.title; // ubah menjadi huruf kecil
+            return titleLowerCase === "supervisor" && user.id !== this.selectedpic.id;
+          });
+
+          // Gabungkan kedua array
+          listSupervisor = [...managersAndDirectors, ...supervisors];
+        } else if (SelectedPic === "supervisor") {
+          listSupervisor = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title.toLowerCase(); // ubah menjadi huruf kecil
+            return (
+              (titleLowerCase === "manager" || titleLowerCase === "director") &&
+              user.id !== this.selectedpic.id
+            );
+          });
+        } else if (SelectedPic === "manager") {
+          listSupervisor = listOfDirec.filter((user) => {
+            const titleLowerCase = user.title.toLowerCase(); // ubah menjadi huruf kecil
+            return titleLowerCase === "director" && user.id !== this.selectedpic.id;
+          });
+        }
+
+        // console.log("🚀 ~ listSupervisor ~ listSupervisor:", listOfDirec);
+        //  listOfDirec.filter((user) => {
+        //   const title = user.title;
+        //   return (
+        //     title !== "admin" &&
+        //     title !== "operator" &&
+        //     user.id !== this.selectedpic.id &&
+        //     title !== this.selectedpic.title
+        //   );
+        // });
+
+        const foundData = responseData.filter((item) => item.id === 12566);
+        //
+        foundData;
+        const options = supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
+        const direktur = options.filter((item) => item.id === 12566);
+        console.log(direktur)
+        //
+        options;
+        const optionsList = direktur.length > 0 ? options : [...options, ...foundData];
+        //
+        const userList = optionsList.filter((user) => user.id === this.taskSpv);
+        this.spvOptions = optionsList;
+        this.selectedspv = userList[0];
+        // console.log("🚀 ~ fetchSpvData ~ selectedspv:", this.spvOptions)
+      } catch (error) {
+        console.error("Error fetching users:", error);
+
+        if (error.response && error.response.status === 401) {
+          alert("Your session has expired. Please sign in again.");
+          // Arahkan pengguna ke halaman sign in
+          this.$router.push( "/" ); // Sesuaikan dengan nama rute sign in Anda
+        }
+      }
+    },
+
+    // Metode untuk mengambil pic_id dari opsi pic yang dipilih
+    getSelectedPicId() {
+      if (this.selectedPic) {
+        const selectedPic = this.pic.find((pic) => pic.u_id === this.selectedPic.value);
+        if (selectedPic) {
+          this.pic_id = selectedPic.u_id;
+        }
+      }
+    },
+
+    // Metode untuk mengambil spv_id dari opsi spv yang dipilih
+    getSelectedSpvId() {
+      if (this.selectedSpv) {
+        const selectedSpv = this.spv.find((spv) => spv.u_id === this.selectedSpv.value);
+        if (selectedSpv) {
+          this.spv_id = selectedSpv.u_id;
+        }
+      }
+    },
+
+    removeItem(index) {
+      this.submitResultspv.splice(index, 1);
+    },
+
+    removeItempic(index) {
+      this.submitResultpic.splice(index, 1);
+    },
+
     async fetchData() {
       console.log(this.id);
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
-            Authorization: `Bearer ${this.token}`,
+          branch: this.branchId,
+          division: this.divisionId,
+          Authorization: `Bearer ${this.token}`,
           },
         });
+
         this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
-        this.form.iteration = response.data.Iteration;
+        this.form.iteration = response.data.iteration;
         this.form.start_date = new Date(
           response.data.start_date
         ).toLocaleString();
         this.form.due_date = new Date(response.data.due_date).toLocaleString();
         this.form.description = response.data.description;
-        this.form.pic = response.data.pic;
-        this.form.spv = response.data.spv;
+        // const pic_role = response.data.pic_role;
+        // const pic = response.data.pic;
+        // const spv = response.data.spv;
+        // const pic_id = response.data.pic_id;
+        // const spv_id = response.data.spv_id;
+
+        // this.taskPic = response.data.map((user) => ({
+        //   label: user.pic,
+        //   value: user.pic,
+        //   title: user.pic_role,
+        //   id: user.pic_id,
+        // }));
+
+        this.taskPic = response.data.pic_id;
+        this.taskSpv = response.data.spv_id;
+
+        this.fetchPic();
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -668,12 +1019,16 @@ division: this.divisionId,
       const data = {
         task_type: this.form.task_type,
         task_title: this.form.task_title,
+        iteration: this.form.iteration,
         priority: this.form.priority.value,
         start_date: new Date(this.form.start_date).toISOString(),
         due_date: new Date(this.form.due_date).toISOString(),
         description: this.form.description,
-        pic: this.form.pic,
-        spv: this.form.spv,
+        pic_id: this.selectedpic.id,
+        spv_id: this.selectedspv.id,
+        pic_role: this.selectedpic.title,
+        pic: this.selectedpic.label,
+        spv: this.selectedspv.label,
       };
 
       try {
@@ -698,27 +1053,6 @@ division: this.divisionId,
       }
     },
 
-    // handleFileUpload(event) {
-    //   const file = event.target.files[0];
-
-    //   if (file) {
-    //     const reader = new FileReader();
-
-    //     reader.onload = (e) => {
-    //       const content = e.target.result;
-
-    //       // Determine if the file is XLSX or CSV
-    //       if (file.name.endsWith('.xlsx')) {
-    //         this.parseXLSX(content);
-    //       } else if (file.name.endsWith('.csv')) {
-    //         this.parseCSV(content);
-    //       }
-    //     };
-
-    //     reader.readAsBinaryString(file);
-    //   }
-
-    // },
   },
 };
 </script>

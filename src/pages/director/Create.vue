@@ -567,7 +567,6 @@ export default {
       },
       model: ref(null),
       text: ref(""),
-
       address_detail: ref({}),
       card_detail: ref({}),
     };
