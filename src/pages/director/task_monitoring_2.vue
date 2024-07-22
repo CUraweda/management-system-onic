@@ -501,10 +501,11 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
-            spv: id,
+            // spv: id,
             // Authorization: `Bearer ${this.token}`,
           },
         });
+        // const data = response.data.filter((task) => task.pic_role == this.branch)
         this.data = response.data.sort(
           (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
         );

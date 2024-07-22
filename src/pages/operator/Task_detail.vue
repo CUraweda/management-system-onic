@@ -131,7 +131,7 @@
                               color="blue"
                               track-color="light-blue-1"
                               inner-track-color="blue-3"
-                              :max="100"
+                              :max="file_hasil? 100:90"
                             />
                           </div>
                         </div>
