@@ -52,6 +52,7 @@ import UploadSupervisor from "pages/supervisor/upload.vue";
 // operator
 import OperatorDashboard from "pages/operator/Dashboard.vue";
 import OperatorCreateTask from "pages/operator/Create_task.vue";
+import OperatorEditTask from "pages/operator/Edit.vue";
 import OperatorTaskDetail from "pages/operator/Task_detail.vue";
 import OperatorTaskDetail2 from "pages/operator/Task_detail_2.vue";
 import OperatorTaskList from "pages/operator/Task_list.vue";
@@ -255,6 +256,12 @@ const routes = [
         path: "create",
         meta: { title: "CREATE TASK" },
         component: OperatorCreateTask,
+      },
+      {
+        path: "edit",
+        meta: { title: "EDIT TASK" },
+        component: OperatorEditTask,
+        props: true,
       },
       {
         path: "task_detail",

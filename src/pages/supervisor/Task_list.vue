@@ -83,7 +83,7 @@
               class="no-shadow q-ml-md"
               :data="waiting_data"
               :hide-header="mode === 'grid'"
-              :columns="columns"
+              :columns="waitedColumns"
               row-key="pic"
               :grid="mode == 'grid'"
               :filter="filter"
@@ -373,7 +373,7 @@
                     </div>
                   </q-td>
 
-                  <q-td key="feed" :props="props">
+                  <!-- <q-td key="feed" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -402,10 +402,10 @@
                       />
                       @click="openEmployeeDialog(props.row.id)" />
                     </div>
-                  </q-td>
+                  </q-td> -->
 
                   <!-- action -->
-                  <q-td key="action" :props="props">
+                  <!-- <q-td key="action" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -428,7 +428,7 @@
                         @click="Delete(props.row.id)"
                       />
                     </div>
-                  </q-td>
+                  </q-td> -->
                   <!-- action -->
                 </q-tr>
               </template>
@@ -559,7 +559,7 @@
                     </div>
                   </q-td>
 
-                  <q-td key="feed" :props="props">
+                  <!-- <q-td key="feed" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -572,6 +572,7 @@
                         label="Revise"
                         @click="Revise(props.row.id)"
                       />
+
                       <q-btn
                         dense
                         unelevated
@@ -586,6 +587,7 @@
                             props.row.status !== 'Idle')
                         "
                       />
+
                       :disabled="props.row.finished_at === null ||
                       (props.row.status !== 'In-progress' && props.row.status
                       !== 'Idle')" /> :disabled="props.row.finished_at === null
@@ -595,10 +597,10 @@
                       !== 'Idle')" /> @click="openEmployeeDialog(props.row.id)"
                       />
                     </div>
-                  </q-td>
+                  </q-td> -->
 
                   <!-- action -->
-                  <q-td key="action" :props="props">
+                  <!-- <q-td key="action" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -621,7 +623,7 @@
                         @click="Delete(props.row.id)"
                       />
                     </div>
-                  </q-td>
+                  </q-td> -->
                   <!-- action -->
                 </q-tr>
               </template>
@@ -759,6 +761,85 @@ export default {
           sortable: true,
         },
       ],
+      waitedColumns: [
+        {
+          name: "id",
+          align: "left",
+          label: "Task Id",
+          field: "id",
+          sortable: true,
+        },
+        {
+          name: "task_title",
+          align: "left",
+          label: "Project",
+          field: "task_title",
+          sortable: true,
+        },
+        {
+          name: "pic",
+          align: "left",
+          label: "PIC",
+          field: "pic",
+          sortable: true,
+        },
+        {
+          name: "pic_role",
+          align: "left",
+          label: "Title",
+          field: "pic_role",
+          sortable: true,
+        },
+        {
+          name: "start_date",
+          align: "left",
+          label: "Start Project",
+          field: "start_date",
+          sortable: true,
+        },
+        {
+          name: "due_date",
+          align: "left",
+          label: "End Project",
+          field: "due_date",
+          sortable: true,
+        },
+        {
+          name: "status",
+          align: "center",
+          label: "Stage saat ini",
+          field: "status",
+          sortable: true,
+        },
+        {
+          name: "Progress",
+          align: "left",
+          label: "Progress bar",
+          field: "Progress",
+          sortable: true,
+        },
+        {
+          name: "progress",
+          align: "left",
+          label: "%",
+          field: "progress",
+          sortable: true,
+        },
+        {
+          name: "detail",
+          align: "left",
+          label: "Detail",
+          field: "detail",
+          sortable: true,
+        },
+        {
+          name: "action",
+          align: "left",
+          label: "Action",
+          field: "action",
+          sortable: true,
+        },
+      ],
       data: [],
       deleted_data: [],
       waiting_data: [],
@@ -820,8 +901,55 @@ export default {
         this.fetchWaitedData();
       },
     },
+    
+    'form.start_date': {
+      handler(value) {
+        console.log("🚀 ~ handler ~ value:", value)
+        this.form.due_date = moment(value, 'DD-MM-YYYY HH:mm').endOf('day').format('DD-MM-YYYY HH:mm');
+        console.log("🚀 ~ handler ~ this.form.due_date:", this.form.due_date)
+        // console.log("TITLE PIC : ", this.selectedpic.title);
+        // console.log("TITLE SPV : ", this.selectedspv.title);
+      },
+    },
   },
+
     methods: {
+
+      Edit(id) {
+      store.id = id;
+      this.$router.push("edit/");
+    },
+
+    async Delete(id) {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await this.$axios.put("/task/edit/" + id, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 200) {
+          this.$q.notify({
+            message: "Task Deleted",
+          });
+          this.fetchData();
+          this.fetchWaitedData();
+          this.fetchDeletedData();
+        } else {
+          this.$q.notify({
+            message: "Failed Deleted Task",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+
     getStartAndEndOfWeek() {
       const today = new Date();
       const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)

@@ -226,6 +226,7 @@
                   >
                     <q-select
                       dense
+                      disable
                       filled
                       v-model="selectedpic"
                       name="pic"
@@ -422,7 +423,7 @@
                       filled
                       type="submit"
                       v-close-popup
-                      to="/manager/task_monitoring"
+                      to="/operator/task_list"
                     />
                     <q-btn
                       unelevated
@@ -455,7 +456,7 @@ import moment from 'moment';
 import { store } from "../../store/store";
 
 export default {
-  name: "ManagerEdit",
+  name: "SuoervisorEdit",
   data() {
     return {
       loading: ref(true),
@@ -599,15 +600,15 @@ export default {
     selectedpic: {
       handler(value) {
         this.fetchSpvData();
-        console.log("TITLE PIC : ", this.selectedpic.title);
-        console.log("TITLE SPV : ", this.selectedspv.title);
+        // console.log("TITLE PIC : ", this.selectedpic.title);
+        // console.log("TITLE SPV : ", this.selectedspv.title);
       },
     },
 
     selectedspv: {
       handler(value) {
-        console.log("TITLE PIC : ", this.selectedpic.title);
-        console.log("TITLE SPV : ", this.selectedspv.title);
+        // console.log("TITLE PIC : ", this.selectedpic.title);
+        // console.log("TITLE SPV : ", this.selectedspv.title);
       },
     },
 
@@ -620,7 +621,6 @@ export default {
         // console.log("TITLE SPV : ", this.selectedspv.title);
       },
     },
-    
   },
 
   mounted() {
@@ -716,64 +716,40 @@ export default {
 
       // Make the POST request using fetch
       try {
-        const response = await axios.get(loginUrl, {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
+        const name = sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username")
 
-        console.log("🚀 ~ fetchData ~ response:", response);
+        const title = sessionStorage.getItem("role")
+        ? sessionStorage.getItem("role")
+        : Cookies.get("role")
 
-        if (response.status !== 200) {
-          throw Error("Error while fetching");
-        }
+        const id = sessionStorage.getItem("id")
+        ? sessionStorage.getItem("id")
+        : Cookies.get("id")
 
-        const filteredCompany = response.data.data.filter(
-          (user) => user.company_name === this.branch
-        );
+        const division = sessionStorage.getItem("division")
+        ? sessionStorage.getItem("division")
+        : Cookies.get("division")
 
-        console.log("🚀 ~ fetchData ~ filteredCompany:", filteredCompany);
+        const branch = sessionStorage.getItem("branch")
+        ? sessionStorage.getItem("branch")
+        : Cookies.get("branch")
 
-        const userRolesMap = {};
+        const listOfPic = [{
+          label: name,
+          value: name,
+          title: title,
+          branch: branch,
+          division: division,
+          id: parseInt(id),
+        }]
 
-        this.roles.forEach((role) => {
-          userRolesMap[role.u_id] = role;
-        });
+        this.picOptions = listOfPic;
+        this.selectedpic = this.picOptions[0]; // Atur selectedpic dengan nilai default
 
-        const listOfPic = filteredCompany.map((user) => ({
-          label: user.name,
-          value: user.name,
-          title: userRolesMap[user.id] ? userRolesMap[user.id].role : "",
-          division: user.division,
-          branch: user.company_name,
-          id: user.id,
-        }));
-
-        const userId = parseInt(this.userId);
-        const filteredData = listOfPic.filter((user) => {
-          if (user.id === userId) {
-            return true; // Kecualikan pengguna ini dari kondisi pengecualian
-          }
-          return (
-            user.title !== "director" &&
-            user.title !== "admin" &&
-            user.title !== "manager"
-          );
-        });
-
-        // console.log("🚀 ~ filteredData ~ filteredData:", listOfPic)
-
-
-        const userList = filteredData.filter((user) => user.id === this.taskPic);
-
-        this.picOptions = filteredData;
-        // console.log("🚀 ~ fetchData ~ filteredData:", filteredData);
-        this.selectedpic = userList[0];
-
-        // const selectedpic = this.picOptions.title;
-        console.log("Selected pic:", this.selectedpic);
+        const selectedpic = this.selectedpic.title; // Ambil 'title' dari selectedpic yang dipilih
+        console.log("Selected pic Title:", selectedpic);
       } catch (error) {
         console.error("Error fetching users:", error);
 
@@ -916,7 +892,7 @@ export default {
         foundData;
         const options = supervisors && supervisors.length > 0 ? supervisors : listSupervisor;
         const direktur = options.filter((item) => item.id === 12566);
-        console.log(direktur)
+        // console.log(direktur)
         //
         options;
         const optionsList = direktur.length > 0 ? options : [...options, ...foundData];
@@ -965,7 +941,7 @@ export default {
     },
 
     async fetchData() {
-      console.log(this.id);
+      // console.log(this.id);
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
@@ -1032,7 +1008,7 @@ export default {
           this.$q.notify({
             message: "Task Edited",
           });
-          this.$router.push("/manager/task_monitoring");
+          this.$router.push("/operator/task_list");
         } else {
           this.$q.notify({
             message: "Failed Edited task",

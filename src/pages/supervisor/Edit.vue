@@ -103,28 +103,24 @@
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Start Date</q-item-label
+                  <q-item-label class="q-pb-xs text-weight-bold">Start Date</q-item-label>
+                  <q-input
+                    filled
+                    dense
+                    v-model="form.start_date"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                   >
-                  <q-input filled dense v-model="form.start_date">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="startDateProxy"
                         >
-                          <q-date
-                            v-model="form.start_date"
-                            mask="YYYY-MM-DD HH:mm"
-                          >
+                          <q-date @input="() => $refs.startDateProxy.hide()" v-model="form.start_date" mask="DD-MM-YYYY HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -137,19 +133,11 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="startTimeProxy"
                         >
-                          <q-time
-                            v-model="form.start_date"
-                            mask="YYYY-MM-DD HH:mm"
-                            format24h
-                          >
+                          <q-time v-model="form.start_date"  @input="() => $refs.startTimeProxy.hide()" mask="DD-MM-YYYY HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -163,28 +151,24 @@
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <q-item>
                 <q-item-section>
-                  <q-item-label class="q-pb-xs text-weight-bold"
-                    >Due Date</q-item-label
+                <q-item-label class="q-pb-xs text-weight-bold">Due Date</q-item-label>
+                  <q-input
+                    filled
+                    dense
+                    v-model="form.due_date"
+                    :rules="[(val) => (val !== null && val !== '') || 'Required']"
                   >
-                  <q-input filled dense v-model="form.due_date">
                     <template v-slot:prepend>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="dueDateProxy"
                         >
-                          <q-date
-                            v-model="form.due_date"
-                            mask="YYYY-MM-DD HH:mm"
-                          >
+                          <q-date @input="() => $refs.dueDateProxy.hide()" v-model="form.due_date" mask="DD-MM-YYYY HH:mm">
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-date>
                         </q-popup-proxy>
@@ -197,19 +181,11 @@
                           cover
                           transition-show="scale"
                           transition-hide="scale"
+                          ref="dueTimeProxy"
                         >
-                          <q-time
-                            v-model="form.due_date"
-                            mask="YYYY-MM-DD HH:mm"
-                            format24h
-                          >
+                          <q-time @input="() => $refs.dueTimeProxy.hide()" v-model="form.due_date" mask="DD-MM-YYYY HH:mm" format24h>
                             <div class="row items-center justify-end">
-                              <q-btn
-                                v-close-popup
-                                label="Close"
-                                color="primary"
-                                flat
-                              />
+                              <q-btn v-close-popup label="Close" color="primary" flat />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -475,6 +451,7 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 import { exportFile } from "quasar";
 import axios from "axios";
+import moment from 'moment';
 import { store } from "../../store/store";
 
 export default {
@@ -491,6 +468,7 @@ export default {
         ? sessionStorage.getItem("branch")
         : Cookies.get("branch"),
       token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
+      userId: ref(sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id")),
       id: store.id,
       form: {
         task_type: "",
@@ -762,8 +740,11 @@ export default {
           id: user.id,
         }));
 
-        const userId = parseInt(this.id);
+        const userId = parseInt(this.userId);
         const filteredData = listOfPic.filter((user) => {
+          if (user.id === userId) {
+            return true; // Kecualikan pengguna ini dari kondisi pengecualian
+          }
           return (
             user.title !== "director" &&
             user.title !== "admin" &&
@@ -988,10 +969,8 @@ export default {
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
         this.form.iteration = response.data.iteration;
-        this.form.start_date = new Date(
-          response.data.start_date
-        ).toLocaleString();
-        this.form.due_date = new Date(response.data.due_date).toLocaleString();
+        this.form.start_date = moment(response.data.start_date).format('DD-MM-YYYY HH:mm');
+        this.form.due_date = moment(response.data.due_date).format('DD-MM-YYYY HH:mm');
         this.form.description = response.data.description;
         // const pic_role = response.data.pic_role;
         // const pic = response.data.pic;
@@ -1022,8 +1001,8 @@ export default {
         task_title: this.form.task_title,
         iteration: this.form.iteration,
         priority: this.form.priority.value,
-        start_date: new Date(this.form.start_date).toISOString(),
-        due_date: new Date(this.form.due_date).toISOString(),
+        start_date : moment(this.form.start_date, 'DD-MM-YYYY HH:mm').toISOString(),
+        due_date : moment(this.form.due_date, 'DD-MM-YYYY HH:mm').toISOString(),
         description: this.form.description,
         pic_id: this.selectedpic.id,
         spv_id: this.selectedspv.id,

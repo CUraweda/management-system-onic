@@ -83,7 +83,7 @@
               class="no-shadow q-ml-md"
               :data="waiting_data"
               :hide-header="mode === 'grid'"
-              :columns="columns"
+              :columns="waitedColumns"
               row-key="pic"
               :grid="mode == 'grid'"
               :filter="filter"
@@ -187,7 +187,34 @@
                     </div>
                   </q-td>
 
-                  <q-td key="feed" :props="props">
+                  <!-- action -->
+                  <q-td key="action" :props="props">
+                    <div class="q-gutter-sm">
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-green"
+                        no-caps
+                        unelevated
+                        color="green-2"
+                        rounded
+                        label="Edit"
+                        @click="Edit(props.row.id)"
+                      />
+                      <q-btn
+                        dense
+                        class="under-title q-px-sm text-red"
+                        no-caps
+                        unelevated
+                        color="red-2"
+                        rounded
+                        label="Delete"
+                        @click="Delete(props.row.id)"
+                      />
+                    </div>
+                  </q-td>
+                  <!-- action -->
+
+                  <!-- <q-td key="feed" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -216,7 +243,7 @@
                       />
                       @click="openEmployeeDialog(props.row.id)" />
                     </div>
-                  </q-td>
+                  </q-td> -->
                 </q-tr>
               </template>
             </q-table>
@@ -346,7 +373,7 @@
                     </div>
                   </q-td>
 
-                  <q-td key="feed" :props="props">
+                  <!-- <q-td key="feed" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -375,7 +402,7 @@
                       />
                       @click="openEmployeeDialog(props.row.id)" />
                     </div>
-                  </q-td>
+                  </q-td> -->
                 </q-tr>
               </template>
             </q-table>
@@ -505,7 +532,7 @@
                     </div>
                   </q-td>
 
-                  <q-td key="feed" :props="props">
+                  <!-- <q-td key="feed" :props="props">
                     <div class="q-gutter-sm">
                       <q-btn
                         dense
@@ -534,7 +561,7 @@
                       />
                       @click="openEmployeeDialog(props.row.id)" />
                     </div>
-                  </q-td>
+                  </q-td> -->
                 </q-tr>
               </template>
             </q-table>
@@ -671,6 +698,85 @@ export default {
           sortable: true,
         },
       ],
+      waitedColumns: [
+        {
+          name: "id",
+          align: "left",
+          label: "Task Id",
+          field: "id",
+          sortable: true,
+        },
+        {
+          name: "task_title",
+          align: "left",
+          label: "Project",
+          field: "task_title",
+          sortable: true,
+        },
+        {
+          name: "pic",
+          align: "left",
+          label: "PIC",
+          field: "pic",
+          sortable: true,
+        },
+        {
+          name: "pic_role",
+          align: "left",
+          label: "Title",
+          field: "pic_role",
+          sortable: true,
+        },
+        {
+          name: "start_date",
+          align: "left",
+          label: "Start Project",
+          field: "start_date",
+          sortable: true,
+        },
+        {
+          name: "due_date",
+          align: "left",
+          label: "End Project",
+          field: "due_date",
+          sortable: true,
+        },
+        {
+          name: "status",
+          align: "center",
+          label: "Stage saat ini",
+          field: "status",
+          sortable: true,
+        },
+        {
+          name: "Progress",
+          align: "left",
+          label: "Progress bar",
+          field: "Progress",
+          sortable: true,
+        },
+        {
+          name: "progress",
+          align: "left",
+          label: "%",
+          field: "progress",
+          sortable: true,
+        },
+        {
+          name: "detail",
+          align: "left",
+          label: "Detail",
+          field: "detail",
+          sortable: true,
+        },
+        {
+          name: "action",
+          align: "left",
+          label: "Action",
+          field: "action",
+          sortable: true,
+        },
+      ],
       data: [],
       waiting_data: [],
       deleted_data: [],
@@ -681,7 +787,6 @@ export default {
   },
   setup() {
     return {
-
       onItemClick() {},
     };
   },
@@ -730,6 +835,41 @@ export default {
 },
 
     methods: {
+      Edit(id) {
+      store.id = id;
+      this.$router.push("edit/");
+    },
+
+    async Delete(id) {
+      const data = {
+        status: "Deleted",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await this.$axios.put("/task/edit/" + id, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 200) {
+          this.$q.notify({
+            message: "Task Deleted",
+          });
+          this.fetchData();
+          this.fetchWaitedData();
+          this.fetchDeletedData();
+        } else {
+          this.$q.notify({
+            message: "Failed Deleted Task",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+
     getStartAndEndOfWeek() {
       const today = new Date();
       const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
@@ -772,6 +912,7 @@ export default {
       }
       this.$refs.duePopupProxy.hide()
     },
+
     async fetchData() {
       try {
         const statusFilter = this.$route.query.status;
