@@ -140,13 +140,13 @@
 
               <!-- <h2>List Cabang</h2> -->
 
-              <v-row>
-                <v-col v-for="company in companies" :key="company.id">
+              <div>
+                <div v-for="company in companies" :key="company.id">
                   <div class="company_name-item q-ml-md q-mx-md">
                     <span>{{ company.label }}</span>
                   </div>
-                </v-col>
-              </v-row>
+                </div>
+              </div>
               <div class="full-width">
                 <div style="display: flex; gap: 10px">
                   <!-- grrra -->
@@ -793,12 +793,12 @@ export default defineComponent({
 
     async getPosition(company_name_id, position_id) {
       try {
-        console.log("🚀 ~ getPosition ~ position_id:", position_id);
+        // console.log("🚀 ~ getPosition ~ position_id:", position_id);
         const { status, data } = await this.$axios.get("/position", {
           headers: {
             Authorization: `Bearer ${this.token}`,
-            company_name: this.company_nameId || undifined,
-            role: this.role.toLowerCase(),
+            company_name: this.company_nameId || undefined,
+            role: this.role,
           },
           params: {
             company_name_id: this.company_name.value || undifined,
@@ -809,7 +809,7 @@ export default defineComponent({
           throw Error("Error while fetching positions");
         }
 
-        console.log("DATA:", data);
+        // console.log("DATA:", data);
         const listOfPosition = data.data.map((data) => ({
           label: data.p_name,
           value: data.id,
@@ -827,12 +827,12 @@ export default defineComponent({
     },
 
     async getDivision(company_name_id, division_id) {
-      console.log("🚀 ~ getDivision ~ division_id-id-id:", division_id);
+      // console.log("🚀 ~ getDivision ~ division_id-id-id:", division_id);
       const { status, data } = await this.$axios.get("/divisi", {
         headers: {
           Authorization: `Bearer ${this.token}`,
           company_name: this.company_nameId,
-          role: this.role.toLowerCase(),
+          role: this.role,
         },
         params: {
           company_name_id: this.company_name.value || undefined,
@@ -843,7 +843,7 @@ export default defineComponent({
         throw Error("Error while fetching");
       }
 
-      console.log("DATA:", data.data);
+      // console.log("DATA:", data.data);
       const listOfDivisi = data.data.map((data) => ({
         label: data.d_name,
         value: data.id,
@@ -857,7 +857,7 @@ export default defineComponent({
     },
 
     async togglecompany_nameAccess() {
-      console.log("Selected company_name IDs:", this.selectedcompany_nameIds);
+      // console.log("Selected company_name IDs:", this.selectedcompany_nameIds);
     },
 
     async getcompany_nameList() {
@@ -875,9 +875,9 @@ export default defineComponent({
         throw Error("Error while fetching");
       }
 
-      console.log("DATA:", response);
+      // console.log("DATA:", response);
       const branches = response.data.data.user_companies;
-      console.log("🚀 ~ getcompany_nameList ~ branches:", branches);
+      // console.log("🚀 ~ getcompany_nameList ~ branches:", branches);
       const listOfcompany_name = branches.map((data) => ({
         label: data.company.c_name,
         value: data.company.c_id,
@@ -886,7 +886,7 @@ export default defineComponent({
       this.optionscompany_name = listOfcompany_name;
 
       this.companies = listOfcompany_name;
-      console.log("🚀 ~ getcompany_nameList ~ this.company_nameList:", this.companies);
+      // console.log("🚀 ~ getcompany_nameList ~ this.company_nameList:", this.companies);
     },
 
     async getcompany_name(company_name_id, division_id) {
@@ -901,7 +901,7 @@ export default defineComponent({
         throw Error("Error while fetching");
       }
 
-      console.log("DATA:", data.data);
+      // console.log("DATA:", data.data);
       const listOfcompany_name = data.data.map((data) => ({
         label: data.b_name,
         value: data.id,
@@ -963,7 +963,7 @@ export default defineComponent({
     //Button Setter
     setButton(rowData, act) {
       this.currentShownId = rowData.id;
-      console.log(this.currentShownId);
+      // console.log(this.currentShownId);
       act != "edit" ? "" : this.setEditUser();
       act != "delete" ? "" : this.deleteUser();
       act != "reset pass" ? "" : this.openDialogResetPassword();
@@ -977,7 +977,7 @@ export default defineComponent({
     },
     //Input nuller
     clearInput() {
-      console.log("hghghjghjg");
+      // console.log("hghghjghjg");
       const listOfModel = [
         "name",
         "email",
@@ -992,7 +992,7 @@ export default defineComponent({
         "confirmPassword",
       ];
       for (let index of listOfModel) {
-        console.log(this[index]);
+        // console.log(this[index]);
         this[index] = null;
       }
     },
@@ -1011,7 +1011,7 @@ export default defineComponent({
         this.roles = response.data.data;
         // console.log("🚀 ~ getRole ~ ole:", this.roles);
 
-        return role;
+        return response.data.data;
       } catch (err) {
         console.error(err);
         throw err;
@@ -1084,7 +1084,7 @@ export default defineComponent({
 
     //EDIT START
     async setEditUser() {
-      console.log("🚀 ~ setEditUser ~ this.currentShownId:", this.currentShownId);
+      // console.log("🚀 ~ setEditUser ~ this.currentShownId:", this.currentShownId);
       try {
         const { data, status } = await this.$axios.get(
           `/role/get-by-id/${this.currentShownId}`,
@@ -1098,13 +1098,13 @@ export default defineComponent({
           throw Error("Error while fetching data please try again");
           //TODO: CLOSE DIALOG
         }
-        console.log("🚀 ~ setEditUser ~ data:", data);
+        // console.log("🚀 ~ setEditUser ~ data:", data);
         this.openDialogUser(true);
         // this.passwordIf = false;
         // this.confirmPasswordIf = false;
         // this.name = data.name;
         this.role = data.data.role;
-        console.log("🚀 ~ setEditUser ~ role:", this.role);
+        // console.log("🚀 ~ setEditUser ~ role:", this.role);
         // this.division_id = data.division_id;
         // this.company_name_id = data.company_name_id;
         // this.getcompany_name(this.company_name_id, this.division_id);

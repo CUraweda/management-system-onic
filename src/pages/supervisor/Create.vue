@@ -419,6 +419,7 @@
 
 <script>
 import axios from "axios";
+import moment from 'moment';
 import Cookies from "js-cookie";
 import { ref } from "vue";
 import { store } from "../../store/store.js";
@@ -593,6 +594,17 @@ export default {
         console.log("TITLE SPV : ", this.selectedspv.title)
       },
     },
+
+    start_date: {
+      handler(value) {
+        console.log("🚀 ~ handler ~ value:", value)
+        this.due_date = moment(value, 'DD-MM-YYYY HH:mm').endOf('day').format('DD-MM-YYYY HH:mm');
+        console.log("🚀 ~ handler ~ this.due_date:", this.due_date)
+        // console.log("TITLE PIC : ", this.selectedpic.title);
+        // console.log("TITLE SPV : ", this.selectedspv.title);
+      },
+    },
+    
   },
 
     methods: {

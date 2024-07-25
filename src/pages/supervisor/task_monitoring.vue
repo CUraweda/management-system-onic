@@ -355,6 +355,7 @@ export default {
   name: "TaskMonitoring",
   data() {
     return {
+      pic_id: ref(),
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
@@ -563,6 +564,7 @@ export default {
     openEmployeeDialog(row) {
       this.id = row.id;
       this.pic = row.pic;
+      this.pic_id = row.pic_id;
       this.employee_dialog = true;
     },
 
@@ -762,7 +764,7 @@ division: this.divisionId,
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic,
+          pic_id: this.pic_id,
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {
@@ -770,8 +772,7 @@ division: this.divisionId,
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200)
-          throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });

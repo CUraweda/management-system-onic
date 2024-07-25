@@ -561,6 +561,7 @@ export default {
     openEmployeeDialog(row) {
       this.id = row.id;
       this.pic = row.pic;
+      this.pic_id = row.pic_id;
       this.employee_dialog = true;
     },
 
@@ -718,7 +719,7 @@ export default {
           status: "Close",
           approved_at: new Date().toISOString(),
           pic_rating: this.rate,
-          pic: this.pic,
+          pic_id: this.pic_id,
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {
