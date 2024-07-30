@@ -626,6 +626,31 @@ export default {
       }
     },
 
+    async Revising(id) {
+      const data = {
+        status: "Revised",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await this.$axios.put("/task/edit/" + id, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 200) {
+          this.fetchData();
+        } else {
+          this.$q.notify({
+            message: "Failed Revised Task",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+
     async fetchTaskById(id) {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
@@ -644,39 +669,20 @@ division: this.divisionId,
 
     async Revise(id) {
       try {
-        // 1. Ambil data dari tugas yang akan direvisi
-        const taskToRevise = await this.fetchTaskById(id);
-        console.log(" task yang kudu di rv:" + taskToRevise.fileName);
-
         // 2. Buat objek baru dengan status "open" dan progress 0
-        const revisedTaskData = {
-          task_type: taskToRevise.task_type,
-          task_title: taskToRevise.task_title,
-          priority: taskToRevise.priority,
-          iteration: taskToRevise.iteration,
-          start_date: new Date(taskToRevise.start_date).toISOString(),
-          due_date: new Date(taskToRevise.due_date).toISOString(),
-          description: taskToRevise.description,
-          pic_role: taskToRevise.pic_role,
-          pic: taskToRevise.pic,
-          spv: taskToRevise.spv,
-          approved_at: null,
-          approved_by: null,
-          started_at: null,
-          started_by: null,
-          finished_at: null,
-          finished_by: null,
-          status: "Open",
-          progress: 0,
-          fileName: taskToRevise.fileName,
-          filePath: taskToRevise.filePath,
-          fileSize: taskToRevise.fileSize,
-        };
+        let taskToRevise = await this.fetchTaskById(id);
+        taskToRevise.status = "Open";
+        taskToRevise.progress = 0;
+        taskToRevise.file_hasil = null;
+        taskToRevise.finished_at = null;
+        taskToRevise.finished_by = null;
+        taskToRevise.started_at = null;
+        taskToRevise.started_by = null;
 
         // 3. Kirim permintaan untuk membuat tugas baru
         const createTaskResponse = await this.$axios.post(
           "/task/new",
-          revisedTaskData,
+          taskToRevise,
           {
             headers: {
               "Content-Type": "application/json",
@@ -692,7 +698,7 @@ division: this.divisionId,
         const updateTaskResponse = await this.$axios.put(
           "/task/edit/" + id,
           {
-            status: "Deleted",
+            status: "Revised",
             deleted_at: new Date().toISOString(),
           },
           {
@@ -704,7 +710,7 @@ division: this.divisionId,
         if (!createTaskResponse.status === 200)
           throw Error("Failed to create revised task");
 
-        await this.Delete(id);
+        await this.Revising(id);
         this.$q.notify({
           message: "Task Revised",
         });
@@ -762,7 +768,6 @@ division: this.divisionId,
       try {
         const data = {
           status: "Close",
-          approved_at: new Date().toISOString(),
           pic_rating: this.rate,
           pic_id: this.pic_id,
         };

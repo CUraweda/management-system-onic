@@ -623,6 +623,31 @@ export default {
       }
     },
 
+    async Revising(id) {
+      const data = {
+        status: "Revised",
+        deleted_at: new Date().toISOString(),
+      };
+
+      try {
+        const response = await this.$axios.put("/task/edit/" + id, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 200) {
+          this.fetchData();
+        } else {
+          this.$q.notify({
+            message: "Failed Revised Task",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+
     async fetchTaskById(id) {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + id, {
@@ -644,8 +669,8 @@ export default {
         let taskToRevise = await this.fetchTaskById(id);
         taskToRevise.status = "Open";
         taskToRevise.progress = 0;
-        taskToRevise.approved_at = null;
-        taskToRevise.approved_by = null;
+        taskToRevise.file_hasil = null;
+
         taskToRevise.finished_at = null;
         taskToRevise.finished_by = null;
         taskToRevise.started_at = null;
@@ -659,7 +684,7 @@ export default {
         if (!createTaskResponse.status === 200)
           throw Error("Failed to create revised task");
 
-        await this.Delete(id);
+        await this.Revising(id);
         this.$q.notify({
           message: "Task Revised",
         });
@@ -717,7 +742,6 @@ export default {
       try {
         const data = {
           status: "Close",
-          approved_at: new Date().toISOString(),
           pic_rating: this.rate,
           pic_id: this.pic_id,
         };

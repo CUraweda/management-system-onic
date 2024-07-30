@@ -223,11 +223,11 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null">
+                  <q-btn @click="downloadFile()" :disable="this.fileName === null" :color="this.fileName === null ? 'white text-black' : 'green'">
                     <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
                     Download File
                   </q-btn>
-                  <q-btn @click="downloadFileHasil()" :disable="this.file_hasil === null">
+                  <q-btn @click="downloadFileHasil()" :disable="this.file_hasil === null" :color="this.file_hasil === null ? 'white text-black' : 'green'">
                     <q-tooltip v-if="this.file_hasil === null"
                       >No file attached</q-tooltip
                     >
@@ -616,8 +616,8 @@ export default {
         console.log(this.id);
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+          branch: this.branchId,
+          division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -718,44 +718,46 @@ division: this.divisionId,
       this.$router.push("/director/task_detail_2/");
     },
 
+    async fetchTaskById(id) {
+      try {
+        const response = await this.$axios.get("/task/get-by-id/" + id, {
+          headers: {
+            branch: this.branchId,
+            division: this.divisionId,
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching task by ID:", error);
+        throw error; // lemparkan kembali kesalahan untuk ditangani di luar
+      }
+    },
+
     async Revise() {
       try {
         const id = this.id;
         // 1. Ambil data dari tugas yang akan direvisi
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+          branch: this.branchId,
+          division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
-        // 2. Buat objek baru dengan status "open" dan progress 0
-        const revisedTaskData = {
-          task_type: response.data.task_type,
-          task_title: response.data.task_title,
-          priority: response.data.priority,
-          iteration: response.data.iteration,
-          start_date: new Date(response.data.start_date).toISOString(),
-          due_date: new Date(response.data.due_date).toISOString(),
-          description: response.data.description,
-          pic_role: response.data.pic_role,
-          pic: response.data.pic,
-          spv: response.data.spv,
-          approved_at: null,
-          approved_by: null,
-          started_at: null,
-          started_by: null,
-          finished_at: null,
-          finished_by: null,
-          status: "Wait-app",
-          progress: 0,
-          fileName: response.data.fileName,
-          file_hasil: response.data.file_hasil,
-        };
+        let taskToRevise = response.data;
+        taskToRevise.status = response.data.status === "Wait-app"? "Wait-app":"Open";
+        taskToRevise.progress = 0;
+        taskToRevise.file_hasil = null;
+
+        taskToRevise.finished_at = null;
+        taskToRevise.finished_by = null;
+        taskToRevise.started_at = null;
+        taskToRevise.started_by = null;
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", revisedTaskData, {
+        const createTaskResponse = await this.$axios.post("/task/new", taskToRevise, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -767,9 +769,9 @@ division: this.divisionId,
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
         const updateTaskResponse = await this.$axios.put(
-          "/task/edit/" + id,
+           "/task/edit/" + id,
           {
-            status: "Deleted",
+            status: "Revised",
             deleted_at: new Date().toISOString(),
           },
           {
@@ -797,6 +799,7 @@ division: this.divisionId,
     async Approve() {
       const data = {
         status: "Open",
+        approved_by: this.username,
         approved_at: new Date().toISOString(),
       };
 
@@ -827,7 +830,6 @@ division: this.divisionId,
       try {
         const data = {
           status: "Close",
-          approved_at: new Date().toISOString(),
           pic_rating: this.rate,
           pic_id: this.pic_id,
         };
