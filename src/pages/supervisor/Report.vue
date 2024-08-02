@@ -60,7 +60,9 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
+          <q-card
+            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
+          >
             <div
               v-for="(time, index) in timerData"
               :key="index"
@@ -164,7 +166,12 @@
                       <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" label="History">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    label="History"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -223,11 +230,25 @@
             <q-card-section class="">
               <CardBase class="col-12">
                 <div class="q-pa-md col-12">
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null" :color="this.fileName === null ? 'white text-black' : 'green'">
-                    <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
+                  <q-btn
+                    @click="downloadFile()"
+                    :disable="this.fileName === null"
+                    :color="
+                      this.fileName === null ? 'white text-black' : 'green'
+                    "
+                  >
+                    <q-tooltip v-if="this.fileName === null"
+                      >No file attached</q-tooltip
+                    >
                     Download File
                   </q-btn>
-                  <q-btn @click="downloadFileHasil()" :disable="this.file_hasil === null" :color="this.file_hasil === null ? 'white text-black' : 'green'">
+                  <q-btn
+                    @click="downloadFileHasil()"
+                    :disable="this.file_hasil === null"
+                    :color="
+                      this.file_hasil === null ? 'white text-black' : 'green'
+                    "
+                  >
                     <q-tooltip v-if="this.file_hasil === null"
                       >No file attached</q-tooltip
                     >
@@ -253,7 +274,9 @@
                     >
                       <template v-slot:no-option>
                         <q-item>
-                          <q-item-section class="text-grey"> No results </q-item-section>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
                         </q-item>
                       </template>
                     </q-select>
@@ -401,7 +424,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import Vue from "vue";
@@ -412,7 +435,8 @@ import { store } from "../../store/store";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -424,12 +448,22 @@ export default {
   data() {
     return {
       loading: ref(true),
-      formattedDueDate:'',
-      formattedStartDate:'',
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
-      token: ref(sessionStorage.getItem("token")? sessionStorage.getItem("token") : Cookies.get("token")),
-      username: sessionStorage.getItem("username")? sessionStorage.getItem("username") : Cookies.get("username"),
+      formattedDueDate: "",
+      formattedStartDate: "",
+      divisionId: sessionStorage.getItem("division_id")
+        ? sessionStorage.getItem("division_id")
+        : Cookies.get("division_id"),
+      branchId: sessionStorage.getItem("branch_id")
+        ? sessionStorage.getItem("branch_id")
+        : Cookies.get("branch_id"),
+      token: ref(
+        sessionStorage.getItem("token")
+          ? sessionStorage.getItem("token")
+          : Cookies.get("token")
+      ),
+      username: sessionStorage.getItem("username")
+        ? sessionStorage.getItem("username")
+        : Cookies.get("username"),
       chat: "",
       filter: "",
       mode: "list",
@@ -457,13 +491,13 @@ export default {
       fileName: null,
       file_hasil: null,
       id: store.id,
+      pic_id: pic_id,
       // Add other properties with default values
     };
   },
 
   setup() {
     return {
-
       rate: ref(0),
       text: ref(""),
       ratingModel: ref(0),
@@ -484,21 +518,21 @@ export default {
     clearInterval(this.intervalId);
   },
 
-    methods: {
-    updateStartDate (val) {
+  methods: {
+    updateStartDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedStartDate = `${day}/${month}/${year}`;
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.popupProxy.hide();
     },
 
-    updateDueDate (val) {
+    updateDueDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedDueDate = `${day}/${month}/${year}`;
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.duePopupProxy.hide();
     },
     async downloadFile() {
       try {
@@ -506,8 +540,8 @@ export default {
         const response = await this.$axios.get("/image/" + this.fileName, {
           responseType: "blob",
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -572,7 +606,7 @@ division: this.divisionId,
         minute: "numeric",
         second: "numeric",
         hour12: false,
-         timeZone: "Asia/Jakarta", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
+        timeZone: "Asia/Jakarta", // Pastikan waktu yang diterima dianggap sebagai waktu UTC
       };
 
       const localTime = new Date(utcTime).toLocaleString("id-ID", options);
@@ -617,8 +651,8 @@ division: this.divisionId,
         console.log(this.id);
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
@@ -641,19 +675,23 @@ division: this.divisionId,
         this.pic_role = response.data.pic_role;
         this.pic = response.data.pic;
         this.spv = response.data.spv;
-
+        this.pic_id = response.data.pic_id;
         const dueDate = new Date(this.due_date);
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+        this.timerData[0].value = Math.floor(
+          timeDifference / (24 * 60 * 60 * 1000)
+        );
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
+        this.timerData[3].value = Math.floor(
+          (timeDifference % (60 * 1000)) / 1000
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -685,10 +723,10 @@ division: this.divisionId,
 
     async UpdateStatus() {
       // if (this.status === "Wait-app") {
-        this.$q.notify({
-          color: "warning",
-          message: "This task is idle",
-        });
+      this.$q.notify({
+        color: "warning",
+        message: "This task is idle",
+      });
       // } else {
       //   const data = {
       //     status: "Idle",
@@ -723,14 +761,15 @@ division: this.divisionId,
         // 1. Ambil data dari tugas yang akan direvisi
         const response = await this.$axios.get("/task/get-by-id/" + id, {
           headers: {
-          branch: this.branchId,
-          division: this.divisionId,
+            branch: this.branchId,
+            division: this.divisionId,
             Authorization: `Bearer ${this.token}`,
           },
         });
 
         let taskToRevise = response.data;
-        taskToRevise.status = response.data.status === "Wait-app"? "Wait-app":"Open";
+        taskToRevise.status =
+          response.data.status === "Wait-app" ? "Wait-app" : "Open";
         taskToRevise.progress = 0;
         taskToRevise.file_hasil = null;
 
@@ -740,11 +779,15 @@ division: this.divisionId,
         taskToRevise.started_by = null;
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", taskToRevise, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          taskToRevise,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (createTaskResponse.status !== 200) {
           throw new Error("Failed to create revised task");
@@ -752,7 +795,7 @@ division: this.divisionId,
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
         const updateTaskResponse = await this.$axios.put(
-           "/task/edit/" + id,
+          "/task/edit/" + id,
           {
             status: "Revised",
             deleted_at: new Date().toISOString(),
@@ -815,6 +858,8 @@ division: this.divisionId,
           status: "Close",
           pic_rating: this.rate,
           pic: this.pic,
+          id: this.id,
+          pic: this.pic_id,
         };
 
         const response = await this.$axios.put("/task/acc/" + this.id, data, {
@@ -822,7 +867,8 @@ division: this.divisionId,
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
