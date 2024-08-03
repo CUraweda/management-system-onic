@@ -60,7 +60,9 @@
         </div>
 
         <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 box_2">
-          <q-card class="no-shadow q-pa-sm row float-right q-pt-none justify-center">
+          <q-card
+            class="no-shadow q-pa-sm row float-right q-pt-none justify-center"
+          >
             <div
               v-for="(time, index) in timerData"
               :key="index"
@@ -164,7 +166,12 @@
                       <q-card-section> </q-card-section>
                     </q-card>
                   </q-expansion-item>
-                  <q-expansion-item popup default-opened icon="" label="History">
+                  <q-expansion-item
+                    popup
+                    default-opened
+                    icon=""
+                    label="History"
+                  >
                     <q-separator />
                     <q-card>
                       <q-card-section>
@@ -226,13 +233,21 @@
                   <q-btn
                     @click="downloadFile()"
                     :disable="this.fileName === null"
-                    :color="this.fileName === null ? 'white text-black' : 'green'"
+                    :color="
+                      this.fileName === null ? 'white text-black' : 'green'
+                    "
                   >
-                    <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
+                    <q-tooltip v-if="this.fileName === null"
+                      >No file attached</q-tooltip
+                    >
                     Download File
                   </q-btn>
-                  <q-btn @click="downloadFileHasil()" :disable="this.file_hasil === null"
-                  :color="this.file_hasil === null ? 'white text-black' : 'green'"
+                  <q-btn
+                    @click="downloadFileHasil()"
+                    :disable="this.file_hasil === null"
+                    :color="
+                      this.file_hasil === null ? 'white text-black' : 'green'
+                    "
                   >
                     <q-tooltip v-if="this.file_hasil === null"
                       >No file attached</q-tooltip
@@ -350,7 +365,8 @@ import { store } from "../../store/store";
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null ? "" : String(formatted);
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
   formatted = formatted.split('"').join('""');
 
@@ -362,8 +378,8 @@ export default {
   data() {
     return {
       loading: ref(true),
-      formattedDueDate:'',
-      formattedStartDate:'',
+      formattedDueDate: "",
+      formattedStartDate: "",
       divisionId: sessionStorage.getItem("division_id")
         ? sessionStorage.getItem("division_id")
         : Cookies.get("division_id"),
@@ -405,6 +421,7 @@ export default {
       fileName: null,
       file_hasil: null,
       id: store.id,
+      pic_id: null,
       // Add other properties with default values
     };
   },
@@ -431,21 +448,21 @@ export default {
     clearInterval(this.intervalId);
   },
 
-    methods: {
-    updateStartDate (val) {
+  methods: {
+    updateStartDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedStartDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedStartDate = `${day}/${month}/${year}`;
       }
-      this.$refs.popupProxy.hide()
+      this.$refs.popupProxy.hide();
     },
 
-    updateDueDate (val) {
+    updateDueDate(val) {
       if (val) {
-        const [year, month, day] = val.split('-')
-        this.formattedDueDate = `${day}/${month}/${year}`
+        const [year, month, day] = val.split("-");
+        this.formattedDueDate = `${day}/${month}/${year}`;
       }
-      this.$refs.duePopupProxy.hide()
+      this.$refs.duePopupProxy.hide();
     },
     async downloadFile() {
       try {
@@ -569,6 +586,8 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
+        console.log("test", response.data);
+
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
@@ -590,19 +609,24 @@ export default {
         this.spv_id = response.data.spv_id;
         this.pic = response.data.pic;
         this.spv = response.data.spv;
+        this.pic_id = response.data.pic_id;
 
         const dueDate = new Date(this.due_date);
         const now = new Date();
         const timeDifference = dueDate.getTime() - now.getTime();
 
-        this.timerData[0].value = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+        this.timerData[0].value = Math.floor(
+          timeDifference / (24 * 60 * 60 * 1000)
+        );
         this.timerData[1].value = Math.floor(
           (timeDifference % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)
         );
         this.timerData[2].value = Math.floor(
           (timeDifference % (60 * 60 * 1000)) / (60 * 1000)
         );
-        this.timerData[3].value = Math.floor((timeDifference % (60 * 1000)) / 1000);
+        this.timerData[3].value = Math.floor(
+          (timeDifference % (60 * 1000)) / 1000
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -634,10 +658,10 @@ export default {
 
     async UpdateStatus() {
       // if (this.status === "Wait-app") {
-        this.$q.notify({
-          color: "warning",
-          message: "This task is idle",
-        });
+      this.$q.notify({
+        color: "warning",
+        message: "This task is idle",
+      });
       // } else {
       //   const data = {
       //     status: "Idle",
@@ -677,10 +701,10 @@ export default {
             Authorization: `Bearer ${this.token}`,
           },
         });
-
         // 2. Buat objek baru dengan status "open" dan progress 0
         let taskToRevise = response.data;
-        taskToRevise.status = response.data.status === "Wait-app"? "Wait-app":"Open";
+        taskToRevise.status =
+          response.data.status === "Wait-app" ? "Wait-app" : "Open";
         taskToRevise.progress = 0;
         taskToRevise.file_hasil = null;
 
@@ -690,11 +714,15 @@ export default {
         taskToRevise.started_by = null;
 
         // 3. Kirim permintaan untuk membuat tugas baru
-        const createTaskResponse = await this.$axios.post("/task/new", taskToRevise, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const createTaskResponse = await this.$axios.post(
+          "/task/new",
+          taskToRevise,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (createTaskResponse.status !== 200) {
           throw new Error("Failed to create revised task");
@@ -702,7 +730,7 @@ export default {
 
         // 4. Setelah berhasil membuat tugas baru, ubah status dan hapus tugas yang lama
         const updateTaskResponse = await this.$axios.put(
-           "/task/edit/" + id,
+          "/task/edit/" + id,
           {
             status: "Revised",
             deleted_at: new Date().toISOString(),
@@ -773,7 +801,8 @@ export default {
             "Content-Type": "application/json",
           },
         });
-        if (response.status != 200) throw Error("Terjadi kesalahan, mohon coba ulang");
+        if (response.status != 200)
+          throw Error("Terjadi kesalahan, mohon coba ulang");
         this.$q.notify({
           message: "Task Done",
         });
