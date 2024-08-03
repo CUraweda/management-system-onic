@@ -493,6 +493,8 @@ export default {
     async fetchData() {
       try {
         const id = sessionStorage.getItem("id")? sessionStorage.getItem("id") : Cookies.get("id");
+        const division = sessionStorage.getItem("division")? sessionStorage.getItem("division") : Cookies.get("division");
+        const branch = sessionStorage.getItem("branch")? sessionStorage.getItem("branch") : Cookies.get("branch");
         const response = await this.$axios.get("/task/waited", {
           params: {
             search: this.search,
@@ -500,6 +502,8 @@ export default {
             dueDate: this.deposit.due,
           },
           headers: {
+            branch: branch,
+            division: division,
             // spv: id,
             Authorization: `Bearer ${this.token}`,
           },

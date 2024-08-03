@@ -280,37 +280,8 @@
                         finished_at !== null
                       "
                     />
-                    <q-btn
-                      unelevated
-                      :ripple="{ color: 'grey' }"
-                      color="grey-3"
-                      text-color="grey-7"
-                      :disable="
-                        status === 'Wait-app' ||
-                        status === 'Deleted' ||
-                        finished_at !== null
-                      "
-                      label="Send To Other PIC"
-                      no-caps
-                      @click="send"
-                      v-if="task_type === 'Multi'"
-                    />
 
-                    <q-btn
-                      unelevated
-                      :ripple="{ color: 'grey' }"
-                      color="grey-3"
-                      text-color="grey-7"
-                      :disable="
-                        status === 'Wait-app' ||
-                        status === 'Deleted' ||
-                        finished_at === null
-                      "
-                      label="Submit To Supervisor"
-                      no-caps
-                      @click="uploadFile"
-                      v-else-if="task_type === 'Single'"
-                    />
+
                   </div>
                 </div>
               </CardBase>
@@ -359,8 +330,8 @@ export default {
       loading: ref(true),
       formattedDueDate:'',
       formattedStartDate:'',
-    divisionId: sessionStorage.getItem("division_id")? sessionStorage.getItem("division_id") : Cookies.get("division_id"),
-      branchId: sessionStorage.getItem("branch_id")? sessionStorage.getItem("branch_id") : Cookies.get("branch_id"),
+    division: sessionStorage.getItem("division")? sessionStorage.getItem("division") : Cookies.get("division"),
+      branch: sessionStorage.getItem("branch")? sessionStorage.getItem("branch") : Cookies.get("branch"),
       fileName: null,
       file_hasil: null,
       chat: "",
@@ -577,8 +548,8 @@ export default {
       try {
         const response = await this.$axios.get("/task/get-by-id/" + this.id, {
           headers: {
-branch: this.branchId,
-division: this.divisionId,
+          branch: this.branch,
+          division: this.division,
             Authorization: `Bearer ${this.token}`,
           },
         });

@@ -237,75 +237,7 @@
                   <div class="q-pt-md"></div>
 
                   <div
-                    v-if="task_type === 'Multi'"
-                    class="q-pt-md row q-gutter-md justify-between col-12 items-center"
-                  >
-                    <q-select
-                      multiple
-                      dense
-                      v-model="picrate"
-                      filled
-                      use-input
-                      input-debounce="0"
-                      :options="picoptions"
-                      behavior="menu"
-                      class="col-12"
-                    >
-                      <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey"> No results </q-item-section>
-                        </q-item>
-                      </template>
-                    </q-select>
-                    <q-btn
-                      unelevated
-                      class="col-5"
-                      :ripple="{ color: 'red' }"
-                      color="red-1"
-                      text-color="red"
-                      label="Revise"
-                      no-caps
-                      @click="Revise()"
-                    />
-                    <q-btn
-                      unelevated
-                      :ripple="{ color: 'blue' }"
-                      color="light-blue-1"
-                      text-color="blue"
-                      label="OK"
-                      no-caps
-                      class="col-5"
-                      :disable="
-                        finished_at === null ||
-                        (status !== 'In-progress' && status !== 'Idle')
-                      "
-                      @click="Ok()"
-                    />
-                    <div class="q-py-md text-weight-bold text-body1">
-                      Beri Rating untuk Pekerja!
-                    </div>
-                    <div class="q-gutter-md row col-12 items-center">
-                      <div
-                        class="q-pa-sm col-lg-2 col-md-2 col-sm-3 text-center bg-yellow-2 text-yellow-9"
-                      >
-                        Feedback
-                      </div>
-                      <q-slider
-                        class="col-lg-9 col-md-9 col-sm-8 col-xs-8 q-pt-lg"
-                        v-model="rate"
-                        color="orange"
-                        :min="0"
-                        :max="5"
-                        markers
-                        :marker-labels="rate"
-                        label-always
-                        :label-value="rate"
-                      />
-                    </div>
-                  </div>
-
-                  <div
-                    v-if="status === 'Wait-app' && task_type === 'Single'"
+                    v-if="status === 'Wait-app'"
                     class="q-pt-md row q-gutter-md justify-between col-12 items-center"
                   >
                     <q-btn
@@ -341,7 +273,7 @@
                   </div>
 
                   <div
-                    v-if="status !== 'Wait-app' && task_type === 'Single'"
+                    v-if="status !== 'Wait-app'"
                     class="q-pt-md row q-gutter-md justify-between col-12 items-center"
                   >
                     <q-btn

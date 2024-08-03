@@ -11,7 +11,7 @@
               General Information
             </q-card-section>
 
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-item>
                 <q-item-section>
                   <q-item-label class="q-pb-xs text-weight-bold"
@@ -31,7 +31,7 @@
                   </div>
                 </q-item-section>
               </q-item>
-            </div>
+            </div> -->
 
             <div class="col-12">
               <q-item>
@@ -978,7 +978,7 @@ export default {
           },
         });
 
-        this.form.task_type = response.data.task_type;
+        // this.form.task_type = response.data.task_type;
         this.form.task_title = response.data.task_title;
         this.form.priority = response.data.priority;
         this.form.iteration = response.data.iteration;
@@ -1012,7 +1012,7 @@ export default {
 
     async edit() {
       const data = {
-        task_type: this.form.task_type,
+        // task_type: this.form.task_type,
         task_title: this.form.task_title,
         iteration: this.form.iteration,
         priority: this.form.priority.value,

@@ -977,57 +977,63 @@ export default {
 
     async create() {
       try {
-        const pic =
-          this.selectedpic.value != undefined
-            ? this.selectedpic.value
-            : this.selectedpic.map((user) => user.value).join(",");
+        const picList = Array.isArray(this.selectedpic) ? this.selectedpic : [this.selectedpic];
         const spv = this.selectedspv.value;
 
-        this.addToForm("pic_id", this.selectedpic.id);
-        this.addToForm("spv_id", this.selectedspv.id);
-        this.addToForm("task_type", this.task_type);
-        this.addToForm("task_title", this.task_title);
-        this.addToForm("priority", this.priority.value);
-        this.addToForm("status", "Wait-app");
-        this.addToForm("start_date", this.convertToDate(this.start_date));
-        this.addToForm("due_date", this.convertToDate(this.due_date));
-        this.addToForm("description", `${this.description} \n`);
-        this.addToForm("pic_role", this.selectedpic.title);
-        this.addToForm(
-          "created_by",
-          sessionStorage.getItem("username")
-            ? sessionStorage.getItem("username")
-            : Cookies.get("username") || "Unknown"
-        );
-        this.addToForm("bukti_tayang", this.model);
-        this.addToForm("iteration", this.iteration);
-        this.addToForm("pic", this.selectedpic.label);
-        this.addToForm("spv", this.selectedspv.label);
+        const taskPromises = picList.map(async (pic) => {
+          const formData = new FormData();
+          formData.append("division", pic.division);
+          formData.append("branch", pic.branch);
+          formData.append("pic_id", pic.id);
+          formData.append("spv_id", this.selectedspv.id);
+          formData.append("task_type", this.task_type);
+          formData.append("task_title", this.task_title);
+          formData.append("priority", this.priority.value);
+          formData.append("status", "Wait-app");
+          formData.append("start_date", this.convertToDate(this.start_date).toISOString());
+          formData.append("due_date", this.convertToDate(this.due_date).toISOString());
+          formData.append("description", `${this.description} \n`);
+          formData.append("pic_role", pic.title);
+          formData.append(
+            "created_by",
+            sessionStorage.getItem("username")
+              ? sessionStorage.getItem("username")
+              : Cookies.get("username") || "Unknown"
+          );
+          formData.append("bukti_tayang", this.model);
+          formData.append("iteration", this.iteration);
+          formData.append("pic", pic.label);
+          formData.append("spv", this.selectedspv.label);
 
-        const response = await this.$axios.post("/task/new", this.sendedForm, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          const response = await this.$axios.post("/task/new", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          if (response.status === 200) {
+            this.$q.notify({
+              message: `Task Created for ${pic.label}`,
+            });
+          } else {
+            this.$q.notify({
+              message: `Failed Creating task for ${pic.label}`,
+            });
+          }
         });
 
-        if (response.status === 200) {
-          this.$q.notify({
-            message: "Task Created",
-          });
-          this.SpvApp
-            ? this.$router.push({ path: "/director/task_monitoring_2" })
-            : this.$router.push({ path: "/director/task_monitoring" });
-        } else {
-          this.$q.notify({
-            message: "Failed Creating task",
-          });
-        }
+        await Promise.all(taskPromises);
+
+        this.SpvApp
+          ? this.$router.push({ path: "/director/task_monitoring_2" })
+          : this.$router.push({ path: "/director/task_monitoring" });
+
       } catch (error) {
         console.error("Error when creating task:", error);
         return this.$q.notify({ message: error.message });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -941,6 +941,8 @@ export default {
             ? this.selectedpic.value
             : this.selectedpic.map((user) => user.value).join(",");
         const spv = this.selectedspv.value;
+        this.addToForm("division", this.selectedpic.division);
+        this.addToForm("branch", this.selectedpic.branch);
         this.addToForm("pic_id", this.selectedpic.id);
         this.addToForm("spv_id", this.selectedspv.id);
         this.addToForm("task_type", this.task_type);

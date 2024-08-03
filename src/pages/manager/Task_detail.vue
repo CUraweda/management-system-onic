@@ -280,37 +280,8 @@
                         finished_at !== null
                       "
                     />
-                    <q-btn
-                      unelevated
-                      :ripple="{ color: 'grey' }"
-                      color="grey-3"
-                      text-color="grey-7"
-                      :disable="
-                        status === 'Wait-app' ||
-                        status === 'Deleted' ||
-                        finished_at !== null
-                      "
-                      label="Send To Other PIC"
-                      no-caps
-                      @click="send"
-                      v-if="task_type === 'Multi'"
-                    />
 
-                    <q-btn
-                      unelevated
-                      :ripple="{ color: 'grey' }"
-                      color="grey-3"
-                      text-color="grey-7"
-                      :disable="
-                        status === 'Wait-app' ||
-                        status === 'Deleted' ||
-                        finished_at === null
-                      "
-                      label="Submit To Supervisor"
-                      no-caps
-                      @click="uploadFile"
-                      v-else-if="task_type === 'Single'"
-                    />
+
                   </div>
                 </div>
               </CardBase>
