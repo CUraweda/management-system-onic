@@ -420,8 +420,7 @@ export default {
       task_type: "",
       fileName: null,
       file_hasil: null,
-      id: store.id,
-      pic_id: pic_id,
+      pic_id: null,
       // Add other properties with default values
     };
   },
@@ -430,6 +429,7 @@ export default {
     return {
       rate: ref(0),
       text: ref(""),
+      id: store.id,
       ratingModel: ref(0),
       ratingColors: ["yellow"],
       picrate: ref([]),

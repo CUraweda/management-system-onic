@@ -294,6 +294,10 @@
                       label="OK"
                       no-caps
                       class="col-5"
+                      :disable="
+                        finished_at === null ||
+                        (status !== 'In-progress' && status !== 'Idle')
+                      "
                       @click="Ok()"
                     />
                     <div class="q-py-md text-weight-bold text-body1">

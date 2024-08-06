@@ -126,7 +126,7 @@
                             <div class="">100 %</div>
                             <div class="">{{ progress }} %</div>
                             <q-slider
-                              :disable="status === 'Wait-app' || status === 'Deleted'"
+                              :disable="status === 'Wait-app' || status === 'Deleted' || started_at === null"
                               v-model="progress"
                               color="blue"
                               track-color="light-blue-1"
@@ -235,7 +235,7 @@
               <CardBase class="  ">
                 <div class="q-pa-md">
                   <div class="q-pt-md"></div>
-                  <q-btn @click="downloadFile()" :disable="this.fileName === null" :color="this.fileName === null ? 'white text-black' : 'green'">
+                  <q-btn class="q-mb-md" @click="downloadFile()" :disable="this.fileName === null" :color="this.fileName === null ? 'white text-black' : 'green'">
                     <q-tooltip v-if="this.fileName === null">No file attached</q-tooltip>
                     Download File
                   </q-btn>
@@ -255,7 +255,7 @@
                     </q-file>
 
                     <q-btn
-                      v-if="file_hasil !== null"
+                      v-if="file_hasil !== null && finished_at === null"
                       dense
                       flat
                       color="red"
@@ -267,6 +267,7 @@
 
                   <div class="q-pt-md row justify-between">
                     <q-btn
+                      v-if="!started_at"
                       unelevated
                       class="q-mr-md"
                       :ripple="{ color: 'blue' }"
@@ -280,6 +281,36 @@
                         finished_at !== null
                       "
                     />
+                    <q-btn
+                      v-else
+                      unelevated
+                      class="q-mr-md"
+                      :ripple="{ color: 'blue' }"
+                      :color="started_at ? 'red-1' : 'blue-1'"
+                      :text-color="started_at ? 'red' : 'blue'"
+                      :label="started_at ? 'Finish' : 'Start'"
+                      @click="started_at ? FinishTask() : StartTask()"
+                      :disable="
+                        status === 'Wait-app' ||
+                        status === 'Deleted' ||
+                        finished_at !== null ||
+                        progress !== 100 ||
+                        file_hasil === null
+                      "
+                    />
+                    <q-btn
+                    unelevated
+                    :ripple="{ color: 'grey' }"
+                    color="grey-3"
+                    text-color="grey-7"
+                    :disable="
+                      status === 'Wait-app' ||
+                      status === 'Deleted'
+                    "
+                    label="Submit To Supervisor"
+                    no-caps
+                    @click="uploadFile"
+                  />
 
 
                   </div>
@@ -427,12 +458,12 @@ export default {
         const formData = new FormData();
         formData.append("file_hasil", file);
         const response = await this.$axios.put(`/task/file_hasil/${this.id}`, formData);
-        console.log(this.file_hasil);
-        console.log("File berhasil diunggah:", response.data);
+        // console.log(this.file_hasil);
+        // console.log("File berhasil diunggah:", response.data);
         this.$q.notify({
           message: "File Sended",
         });
-        this.$router.push("/supervisor/task_list");
+        // this.$router.push("/supervisor/task_list");
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
       }
@@ -498,6 +529,8 @@ export default {
           },
         });
 
+        this.SendUpdate();
+
         if (response.status === 200) {
           this.$q.notify({
             message: "Task Finish",
@@ -514,11 +547,13 @@ export default {
     },
 
     async SendUpdate() {
-      const updatedDescription = `${this.description} \n Supervisor: ${this.chat}`;
+      const username = sessionStorage.getItem("username");
+      const updatedDescription = `${this.description} \n ${username}: ${this.chat}`;
+      const nullDescription = `${this.description} \n ${username}: update ${this.progress}%`;
 
       const data = {
         progress: this.progress,
-        description: updatedDescription,
+        description: this.chat? updatedDescription : nullDescription,
       };
 
       try {
@@ -557,7 +592,7 @@ export default {
         this.task_type = response.data.task_type;
         this.task_title = response.data.task_title;
         this.priority = response.data.priority;
-        this.progress = response.data.progress;
+        this.progress = parseInt(response.data.progress);
         this.status = response.data.status;
         this.iteration = response.data.Iteration;
         this.created_by = response.data.created_by;

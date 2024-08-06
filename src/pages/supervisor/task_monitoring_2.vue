@@ -534,6 +534,7 @@ export default {
     },
 
     Report(id) {
+      console.log("🚀 ~ Report ~ id:", id)
       store.id = id;
       this.$router.push("report/");
     },
